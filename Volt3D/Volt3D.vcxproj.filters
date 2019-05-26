@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Volt3D">
+      <UniqueIdentifier>{456493b7-1ea1-42a8-a631-a9dc7c3cb033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Core">
+      <UniqueIdentifier>{87989972-4916-46fb-ab22-56f3997c26e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Vulkan">
+      <UniqueIdentifier>{326ae2ca-cb92-4ccc-baf2-1eef7afdc8b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Utils">
+      <UniqueIdentifier>{b7c0c04f-6f05-4907-a4ae-5152c0a30987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Enums">
+      <UniqueIdentifier>{fb519464-f5d0-4119-8820-b1184b18fd52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Config">
+      <UniqueIdentifier>{43f3de8d-dd6d-44c7-a608-2005a7ce0f76}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PreCompiled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Core\Window.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Core\Engine.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PreCompiled.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D.h">
+      <Filter>Volt3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Utils\Macros.h">
+      <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Utils\FileSystem.h">
+      <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Utils\Logger.h">
+      <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\GLFWCallbacks.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Window.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Engine.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h">
+      <Filter>Volt3D\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Enums\WindowMode.h">
+      <Filter>Volt3D\Enums</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
