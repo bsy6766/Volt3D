@@ -132,7 +132,7 @@ xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) 
       <SubSystem>Console</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\$(Platform)\$(Configuration)Volt3D.dll $(OutPutPath) /I /Y /D
+      <Command>xcopy $(SolutionDir)bin\$(Platform)\$(Configuration)\Volt3D.dll $(OutPutPath) /I /Y /D
 xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
