@@ -17,7 +17,7 @@
 #include "utils/Logger.h"
 
 #include "Window.h"
-//#include "Vulkan/Context.h"
+#include "Vulkan/Context.h"
 
 v3d::Engine::Engine()
 	: window(nullptr)
@@ -38,7 +38,7 @@ bool v3d::Engine::init(const std::string_view windowTitle)
 
 	if (!loadPreference()) return false;
 	if (!initWindow(windowTitle)) return false;
-
+	if (!initContext()) return false;
 
 	return true;
 }
@@ -57,11 +57,11 @@ v3d::glfw::Window& v3d::Engine::getView() const
 	return *window;
 }
 
-//v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
-//{
-//	// @todo: Handle error
-//	return *context;
-//}
+v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
+{
+	// @todo: Handle error
+	return *context;
+}
 
 bool v3d::Engine::loadPreference()
 {
@@ -96,16 +96,16 @@ bool v3d::Engine::initWindow(const std::string_view windowTitle)
 
 bool v3d::Engine::initContext()
 {
-	//context = new (std::nothrow) v3d::vulkan::Context();
-	//if(context == nullptr ) { logger.bad_alloc<v3d::vulkan::Context>(); return false; }
-	//if( !context->init( *window ) ) { logger.critical( "Failed to initialize Context" ); return false; }
+	context = new (std::nothrow) v3d::vulkan::Context();
+	if(context == nullptr ) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Context>(); return false; }
+	if( !context->init( *window, true ) ) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
 	return true;
 }
 
 void v3d::Engine::release()
 {
 	// release vulkan first
-	//if( context ) { delete context; context = nullptr; }
+	if( context ) { delete context; context = nullptr; }
 	// release glfw
 	if (window) { delete window; window = nullptr; }
 }

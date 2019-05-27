@@ -48,7 +48,7 @@ namespace v3d
 			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
 			v3d::vulkan::Surface* surface;
 			v3d::vulkan::PhysicalDevice* physicalDevice;
-			//Device* device;
+			v3d::vulkan::Device* device;
 			//SwapChain* swapChain;
 
 			bool initInstance(const v3d::glfw::Window& view);
@@ -56,7 +56,7 @@ namespace v3d
 			bool initDebugUtilsMessenger();
 			bool initSurface(const v3d::glfw::Window& view);
 			bool initPhysicalDevice();
-			//bool initLogicalDevice();
+			bool initDevice();
 			//bool initSwapChain();
 			//bool initGraphicsPipeline();
 			void release();
@@ -67,7 +67,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(Context);
 			~Context();
 
-			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer = _DEBUG);
+			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
 
 			std::vector<vk::ExtensionProperties> getExtensions() const;
 			std::vector<vk::LayerProperties> getLayers() const;

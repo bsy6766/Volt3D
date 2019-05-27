@@ -14,8 +14,8 @@
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
 #include "Vulkan/Surface.h"
-#include "PhysicalDevice.h"
-//#include "Device.h"
+#include "Vulkan/PhysicalDevice.h"
+#include "Vulkan/Device.h"
 //#include "SwapChain.h"
 //#include "Shader.h"
 #include "Utils.h"
@@ -51,8 +51,8 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 
 	if (!initInstance(window)) return false;
 	if (!initSurface(window)) return false;
-	//if( !initPhysicalDevice() ) return false;
-	//if( !initLogicalDevice() ) return false;
+	if( !initPhysicalDevice() ) return false;
+	if( !initDevice() ) return false;
 	//if( !initSwapChain() ) return false;
 
 	return true;
@@ -133,7 +133,7 @@ bool v3d::vulkan::Context::initSurface( const v3d::glfw::Window& window )
 
 	surface = new(std::nothrow) v3d::vulkan::Surface(std::move(vk::UniqueSurfaceKHR(cVkSurfaceKHR, instance->getHandle().get())));
 	if (surface == nullptr) v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Surface>();
-	return false;
+	return true;
 }
 
 bool v3d::vulkan::Context::initPhysicalDevice()
@@ -154,14 +154,44 @@ bool v3d::vulkan::Context::initPhysicalDevice()
 	return false;
 }
 
-/*
-bool v3d::vulkan::Context::initLogicalDevice()
+bool v3d::vulkan::Context::initDevice()
 {
-	device = new (std::nothrow) Device();
-	if( !device ) return false;
-	return device->init( *physicalDevice, *surface );
+	auto graphicsQueueFamilyIndex = physicalDevice->getGraphicsQueueFamilyIndex();
+
+	const float queuePriority = 1.0f;
+	vk::DeviceQueueCreateInfo deviceQueueCreateInfo = vk::DeviceQueueCreateInfo
+	(
+		{},
+		graphicsQueueFamilyIndex.value(),
+		1,
+		&queuePriority
+	);
+
+	//std::vector<vk::ExtensionProperties> extensions = physicalDevice->getHandle().enumerateDeviceExtensionProperties();
+	physicalDevice->enumerateDeviceExtensionProperties();
+//#ifdef BUILD_DEBUG
+//	v3d::Logger::getInstance().logExtensions(extensions);
+//#endif
+//	std::vector<const char*> requiredExtension = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+//	if (!vulkan::utils::checkExtensionProperties(extensions, requiredExtension)) return false;
+//
+//	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo
+//	(
+//		{},
+//		1,
+//		&deviceQueueCreateInfo,
+//		0,
+//		nullptr,
+//		uint32_t(requiredExtension.size()),
+//		requiredExtension.data()
+//	);
+//
+//	device = new (std::nothrow) v3d::vulkan::Device(std::move(physicalDevice->createDeviceUnique(createInfo)));
+//	if (device == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Device>(); return false; }
+	return true;
 }
 
+/*
 bool v3d::vulkan::Context::initSwapChain()
 {
 	swapChain = new (std::nothrow) SwapChain();
@@ -188,6 +218,7 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 }
 
 */
+
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();

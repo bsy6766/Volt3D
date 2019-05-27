@@ -62,6 +62,9 @@
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Device.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -113,6 +116,9 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Device.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

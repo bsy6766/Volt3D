@@ -39,7 +39,7 @@ namespace v3d
 		void run();
 
 		v3d::glfw::Window& getView() const;
-		//v3d::vulkan::Context& getVulkanContext() const;
+		v3d::vulkan::Context& getVulkanContext() const;
 	};
 }
 

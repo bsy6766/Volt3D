@@ -104,8 +104,7 @@
       <AdditionalDependencies>Volt3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D.dll $(OutPutPath) /I /Y /D
-xcopy $(SolutionDir)bin\llib\$(Platform)\$(Configuration)\Volt3D.lib $(ProjectDir) /I /Y /D
+      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D.* $(OutPutPath) /I /Y /D
 xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -138,9 +137,8 @@ xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) 
       <AdditionalDependencies>Volt3D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.dll $(OutPutPath) /I /Y /D
-xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.lib $(OutPutPath) /I /Y /D
-xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
+      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.* $(OutPutPath) /s/h/e/k/f/c/y
+xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /s/h/e/k/f/c/y</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

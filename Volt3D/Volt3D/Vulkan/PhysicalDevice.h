@@ -10,6 +10,9 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <optional>
+#include <vector>
+
 #include "utils/Macros.h"
 
 namespace v3d
@@ -32,12 +35,9 @@ namespace v3d
 
 		private:
 			vk::PhysicalDevice physicalDevice;
-			vk::PhysicalDeviceProperties physicalDeviceProperties;
-			vk::PhysicalDeviceFeatures physicalDeviceFeatures;
-			vk::PhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
-
-			//bool init(vk::UniqueInstance& instance);
-
+			//uint32_t graphicsQueueFamilyIndex;
+			//uint32_t presentQueueFamilyIndex;
+			
 			static bool isSuitable(const vk::PhysicalDevice& physicalDevice);
 
 		public:
@@ -47,38 +47,23 @@ namespace v3d
 			~PhysicalDevice() {}
 
 			CLASS_TO_VULKAN_HANDLE(vk::PhysicalDevice, physicalDevice);
+			
+			std::optional<uint32_t> getGraphicsQueueFamilyIndex();
+			std::optional<uint32_t> getPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface);
 
-			/*
-			vk::UniqueDevice createLogicalDevice(const vk::DeviceCreateInfo& createInfo);
-
-			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const
-			{
-				return physicalDevice.getQueueFamilyProperties();
-			}
-
-			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
-
-			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
-
-			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
-
-			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
-
-			vk::PhysicalDeviceProperties getProperties() const
-			{
-				return physicalDevice.getProperties();
-			}
-
-			std::vector<vk::ExtensionProperties> enumerateDeviceExtensionProperties() const
-			{
-				return physicalDevice.enumerateDeviceExtensionProperties();
-			}
-
-			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const
-			{
-				return physicalDevice.enumerateDeviceLayerProperties();
-			}
-			*/
+			inline vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
+			inline std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
+			inline vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
+			inline vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
+			inline std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
+			inline std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
+			inline vk::PhysicalDeviceProperties getProperties() const;
+			inline vk::PhysicalDeviceFeatures getFeatures() const;
+			inline vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
+			inline std::vector<vk::ExtensionProperties> enumerateDeviceExtensionProperties() const;
+			inline std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
+			//inline uint32_t getGraphicsQueueFamilyIndex() const	{ return graphicsQueueFamilyIndex; }
+			//inline uint32_t getPresentQueueFamilyIndex() const	{ return presentQueueFamilyIndex; }
 		};
 	}
 }

@@ -8,9 +8,9 @@
 #ifndef V3D_BUILD_CONFIG_H
 #define V3D_BUILD_CONFIG_H
 
-#if _DEBUG
+#ifdef _DEBUG
 #define BUILD_DEBUG
-#elif
+#else
 #define BUILD_RELEASE
 #endif
 
