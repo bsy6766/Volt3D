@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef GLFW_CALLBACKS_H
-#define GLFW_CALLBACKS_H
+#ifndef V3D_GLFW_GLFW_CALLBACKS_H
+#define V3D_GLFW_GLFW_CALLBACKS_H
 
 #include "Config/GLFWCallbackConfig.h"
 

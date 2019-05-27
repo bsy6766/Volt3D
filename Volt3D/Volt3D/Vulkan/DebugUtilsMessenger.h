@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef DEBUG_UTILS_MESSENGER_H
-#define DEBUG_UTILS_MESSENGER_H
+#ifndef V3D_VK_DEBUG_UTILS_MESSENGER_H
+#define V3D_VK_DEBUG_UTILS_MESSENGER_H
 
 #include <vulkan/vulkan.hpp>
 

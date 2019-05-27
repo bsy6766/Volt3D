@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef V3D_GLFW_WINDOW_H
+#define V3D_GLFW_WINDOW_H
 
 #include <vulkan/vulkan.hpp>
 
@@ -16,6 +16,7 @@
 
 namespace v3d
 {
+	namespace vulkan { class Instance; }
 	namespace glfw
 	{
 		/**
@@ -47,7 +48,7 @@ namespace v3d
 			bool closeWindow();
 			void releaseGLFW();
 
-			bool createWindowSurface(vk::UniqueInstance& instance, VkSurfaceKHR& surface) const;
+			bool createWindowSurface(v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
 
 			std::size_t getGLFWVKExtensions(std::vector<const char*>& extensions) const;
 		};

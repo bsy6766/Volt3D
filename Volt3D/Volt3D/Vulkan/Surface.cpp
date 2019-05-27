@@ -2,6 +2,6 @@
 
 #include "Surface.h"
 
-Surface::Surface( vk::UniqueSurfaceKHR&& surface )
+v3d::vulkan::Surface::Surface( vk::UniqueSurfaceKHR&& surface )
 	: surface( std::move( surface ) )
 {}

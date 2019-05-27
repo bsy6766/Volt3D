@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef V3D_LOGGER_H
+#define V3D_LOGGER_H
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"

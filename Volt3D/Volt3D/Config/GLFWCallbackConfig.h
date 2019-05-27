@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef GLFW_CALLBACK_CONFIG_H
-#define GLFW_CALLBACK_CONFIG_H
+#ifndef V3D_GLFW_GLFW_CALLBACK_CONFIG_H
+#define V3D_GLFW_GLFW_CALLBACK_CONFIG_H
 
 #ifndef V3D_GLFW_ERROR_CB
 #define V3D_GLFW_ERROR_CB

@@ -8,7 +8,9 @@
 #include <PreCompiled.h>
 
 #include "Window.h"
+
 #include "GLFWCallbacks.h"
+#include "Vulkan/Instance.h"
 
 v3d::glfw::Window::Window()
 	: window(nullptr)
@@ -65,9 +67,9 @@ void v3d::glfw::Window::initGLFWHints()
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
 
-bool v3d::glfw::Window::createWindowSurface(vk::UniqueInstance & instance, VkSurfaceKHR & surface) const
+bool v3d::glfw::Window::createWindowSurface(v3d::vulkan::Instance& instance, VkSurfaceKHR & surface) const
 {
-	if (glfwCreateWindowSurface(instance.get(), window, nullptr, &surface) != VK_SUCCESS)
+	if (glfwCreateWindowSurface(instance.getHandle().get(), window, nullptr, &surface) != VK_SUCCESS)
 	{
 		v3d::Logger::getInstance().critical("Failed to create KHR Surface");
 		return false;

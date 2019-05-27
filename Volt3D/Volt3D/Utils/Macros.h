@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef MACROS_H
-#define MACROS_H
+#ifndef V3D_MACROS_H
+#define V3D_MACROS_H
 
 #ifdef  VOLT3D_EXPORTS 
 #define VOLT3D_DLL __declspec(dllexport)  
@@ -14,17 +14,17 @@
 #define VOLT3D_DLL __declspec(dllimport)  
 #endif
 
-#define DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(CLASS)	\
-CLASS( const CLASS& ) = delete;							\
-CLASS& operator=( const CLASS& ) = delete;
+#define DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(_CLASS)	\
+_CLASS( const _CLASS& ) = delete;							\
+_CLASS& operator=( const _CLASS& ) = delete;
 
-#define DEFAULT_MOVE_CONSTRUCTORS(CLASS)		\
-CLASS( CLASS&& other ) = default;				\
-CLASS& operator=( CLASS&& other ) = default;
+#define DEFAULT_MOVE_CONSTRUCTORS(_CLASS)		\
+_CLASS( _CLASS&& other ) = default;				\
+_CLASS& operator=( _CLASS&& other ) = default;
 
-#define CLASS_TO_VULKAN_HANDLE(CLASS, HANDLE)								\
-inline explicit operator const CLASS& () const noexcept { return HANDLE; }	\
-inline const CLASS& getHandle() const { return HANDLE; }
+#define CLASS_TO_VULKAN_HANDLE(_CLASS, _HANDLE)								\
+inline explicit operator const _CLASS& () const noexcept { return _HANDLE; }	\
+inline const _CLASS& getHandle() const { return _HANDLE; }
 
 
 #endif

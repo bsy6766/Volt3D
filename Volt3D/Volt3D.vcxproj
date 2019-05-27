@@ -198,6 +198,7 @@
     <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
+    <ClInclude Include="Volt3D\Vulkan\Surface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

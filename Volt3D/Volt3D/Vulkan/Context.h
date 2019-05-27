@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef V3D_VK_CONTEXT_H
+#define V3D_VK_CONTEXT_H
 
 #include <vulkan/vulkan.hpp>
 
@@ -44,8 +44,9 @@ namespace v3d
 			v3d::vulkan::Instance* instance;
 
 			bool validationLayerEnabled;
-			DebugReportCallback* debugReportCallback;
-			DebugUtilsMessenger* debugUtilsMessenger;
+			v3d::vulkan::DebugReportCallback* debugReportCallback;
+			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
+			v3d::vulkan::Surface* surface;
 
 			//Surface* surface;
 			//PhysicalDevice* physicalDevice;
@@ -55,7 +56,7 @@ namespace v3d
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
 			bool initDebugUtilsMessenger();
-			//bool initSurface(const v3d::glfw::Window& view);
+			bool initSurface(const v3d::glfw::Window& view);
 			//bool initPhysicalDevice();
 			//bool initLogicalDevice();
 			//bool initSwapChain();

@@ -1,20 +1,35 @@
-﻿#pragma
+﻿/**
+*	@file Instance.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef V3D_VK_SURFACE_H
+#define V3D_VK_SURFACE_H
 
 #include <vulkan/vulkan.hpp>
 
 #include "utils/Macros.h"
 
-class Surface
+namespace v3d
 {
-private:
-	vk::UniqueSurfaceKHR surface;
+	namespace vulkan
+	{
+		class Surface
+		{
+		private:
+			vk::UniqueSurfaceKHR surface;
 
-public:
-	Surface( vk::UniqueSurfaceKHR&& surface );
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Surface );
-	DEFAULT_MOVE_CONSTRUCTORS( Surface );
-	~Surface() {}
+		public:
+			Surface(vk::UniqueSurfaceKHR&& surface);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Surface);
+			DEFAULT_MOVE_CONSTRUCTORS(Surface);
+			~Surface() {}
 
-	explicit operator const vk::UniqueSurfaceKHR& () const noexcept { return surface; }
-	vk::UniqueSurfaceKHR& getHandle() { return surface; }
-};
+			CLASS_TO_VULKAN_HANDLE(vk::UniqueSurfaceKHR, surface);
+		};
+	}
+}
+
+#endif

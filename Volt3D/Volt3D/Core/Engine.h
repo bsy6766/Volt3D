@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef V3D_ENGINE_H
+#define V3D_ENGINE_H
 
 #include "Utils/Macros.h"
 

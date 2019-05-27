@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef FILE_SYSTEM_H
-#define FILE_SYSTEM_H
+#ifndef V3D_FILE_SYSTEM_H
+#define V3D_FILE_SYSTEM_H
 
 #include <filesystem>
 #include <string>

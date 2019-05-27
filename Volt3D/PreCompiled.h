@@ -1,3 +1,6 @@
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Windows Header Files
+#include <windows.h>
 
 // externals
 #define GLFW_INCLUDE_VULKAN
@@ -6,10 +9,6 @@
 
 // Graphics API
 #include <vulkan/vulkan.hpp>
-
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files
-#include <windows.h>
 
 // volt3d
 #include "Volt3D/Utils/Logger.h"

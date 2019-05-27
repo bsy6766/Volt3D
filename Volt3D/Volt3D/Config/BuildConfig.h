@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef BUILD_CONFIG_H
-#define BUILD_CONFIG_H
+#ifndef V3D_BUILD_CONFIG_H
+#define V3D_BUILD_CONFIG_H
 
 #if _DEBUG
 #define BUILD_DEBUG

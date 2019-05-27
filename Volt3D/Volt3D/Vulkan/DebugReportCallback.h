@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef DEBUG_REPORT_CALLBACK_H
-#define DEBUG_REPORT_CALLBACK_H
+#ifndef V3D_VK_DEBUG_REPORT_CALLBACK_H
+#define V3D_VK_DEBUG_REPORT_CALLBACK_H
 
 #include <vulkan/vulkan.hpp>
 

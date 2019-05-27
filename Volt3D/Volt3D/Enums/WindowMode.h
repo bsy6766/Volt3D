@@ -5,8 +5,8 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef WINDOW_MODE_H
-#define WINDOW_MODE_H
+#ifndef V3D_GLFW_WINDOW_MODE_H
+#define V3D_GLFW_WINDOW_MODE_H
 
 namespace v3d
 {
