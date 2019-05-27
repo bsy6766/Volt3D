@@ -103,6 +103,7 @@
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +123,7 @@
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +146,7 @@
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,6 +170,7 @@
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="PreCompiled.h" />
     <ClInclude Include="Volt3D.h" />
+    <ClInclude Include="Volt3D\Config\BuildConfig.h" />
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
     <ClInclude Include="Volt3D\Core\GLFWCallbacks.h" />
@@ -189,6 +194,10 @@
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
     <ClInclude Include="Volt3D\Utils\Macros.h" />
+    <ClInclude Include="Volt3D\Vulkan\Context.h" />
+    <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
+    <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h" />
+    <ClInclude Include="Volt3D\Vulkan\Instance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -201,6 +210,10 @@
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
     <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

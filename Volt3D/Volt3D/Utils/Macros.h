@@ -22,4 +22,9 @@ CLASS& operator=( const CLASS& ) = delete;
 CLASS( CLASS&& other ) = default;				\
 CLASS& operator=( CLASS&& other ) = default;
 
+#define CLASS_TO_VULKAN_HANDLE(CLASS, HANDLE)								\
+inline explicit operator const CLASS& () const noexcept { return HANDLE; }	\
+inline const CLASS& getHandle() const { return HANDLE; }
+
+
 #endif

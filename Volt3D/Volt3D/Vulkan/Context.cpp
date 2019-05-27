@@ -1,26 +1,36 @@
-﻿#include <PreCompiled.h>
+﻿/**
+*	@file Context.cpp
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#include <PreCompiled.h>
 
 #include "Context.h"
 
-#include <glm/glm.hpp>
-
-#include "Core/View.h"
-#include "DebugCallback.h"	
-#include "Surface.h"
-#include "PhysicalDevice.h"
-#include "Device.h"
-#include "SwapChain.h"
-#include "Shader.h"
+#include "Core/Window.h"
+#include "vulkan/Instance.h"
+#include "Vulkan/DebugReportCallback.h"
+#include "Vulkan/DebugUtilsMessenger.h"
+//#include "DebugCallback.h"	
+//#include "Surface.h"
+//#include "PhysicalDevice.h"
+//#include "Device.h"
+//#include "SwapChain.h"
+//#include "Shader.h"
 #include "Utils.h"
+#include "Config/BuildConfig.h"
 
 v3d::vulkan::Context::Context()
-	: instance()
-	, enableValidationLayer(false)
-	, debugCallback(nullptr)
-	, surface(nullptr)
-	, physicalDevice(nullptr)
-	, device(nullptr)
-	, swapChain(nullptr)
+	: instance(nullptr)
+	, validationLayerEnabled(false)
+	, debugReportCallback(nullptr)
+	, debugUtilsMessenger(nullptr)
+	//, surface(nullptr)
+	//, physicalDevice(nullptr)
+	//, device(nullptr)
+	//, swapChain(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -28,79 +38,96 @@ v3d::vulkan::Context::~Context()
 	release();
 }
 
-bool v3d::vulkan::Context::init( const View& view, const bool enableValidationLayer )
+bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool enableValidationLayer )
 {
 	// Init logger
-	auto& logger = Logger::getInstance();
+	auto& logger = v3d::Logger::getInstance();
 
 	// Get version
 	uint32_t major, minor, patch;
 	if( !vulkan::utils::getVersion( major, minor, patch ) ) { logger.critical( "Failed to get Context version." ); return false; }
 	logger.trace( "Context version: " + std::to_string( major ) + "." + std::to_string( minor ) + "." + std::to_string( patch ) );
 
-	this->enableValidationLayer = enableValidationLayer;
+	validationLayerEnabled = enableValidationLayer;
 
-	if( !initInstance( view ) ) return false;
-	if( !initSurface( view ) ) return false;
-	if( !initPhysicalDevice() ) return false;
-	if( !initLogicalDevice() ) return false;
-	if( !initSwapChain() ) return false;
+	if( !initInstance(window) ) return false;
+	//if( !initSurface( view ) ) return false;
+	//if( !initPhysicalDevice() ) return false;
+	//if( !initLogicalDevice() ) return false;
+	//if( !initSwapChain() ) return false;
 
 	return true;
 }
 
-bool v3d::vulkan::Context::initInstance( const View & view )
+bool v3d::vulkan::Context::initInstance( const v3d::glfw::Window & window)
 {
 	auto& logger = Logger::getInstance();
 
 	vk::ApplicationInfo appInfo( "Learn Context", VK_MAKE_VERSION( 1, 0, 0 ), "Context", VK_MAKE_VERSION( 1, 0, 0 ), VK_API_VERSION_1_1 );
 
 	std::vector<vk::ExtensionProperties> extensions = getExtensions();
-#if _DEBUG
+#ifdef BUILD_DEBUG
 	logger.logExtensions( extensions );
 #endif
 
 	std::vector<vk::LayerProperties> layers = getLayers();
-#if _DEBUG
+#ifdef BUILD_DEBUG
 	logger.logLayers( layers );
 #endif
+
 	std::vector<const char*> requiredExtensions;
-	view.getGLFWVKExtensions( requiredExtensions );
-	if( _DEBUG ) 
+	window.getGLFWVKExtensions( requiredExtensions );
+
+	if (validationLayerEnabled)
 	{
-		requiredExtensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
-		requiredExtensions.push_back( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
+		requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		requiredExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 	}
 
 	if( !vulkan::utils::checkExtensionProperties( extensions, requiredExtensions ) ) return false;
 
 	std::vector<const char*> requiredLayers;
-	if( _DEBUG ) requiredLayers.push_back( "VK_LAYER_KHRONOS_validation" );
+	if(validationLayerEnabled) requiredLayers.push_back( "VK_LAYER_KHRONOS_validation" );
 
 	if( !vulkan::utils::checkLayerProperties( layers, requiredLayers ) ) return false;
 
-	vk::InstanceCreateInfo createInfo( {}, &appInfo, uint32_t(requiredLayers.size()), requiredLayers.data(), uint32_t(requiredExtensions.size()), requiredExtensions.data() );
-
-	instance = std::move( vk::createInstanceUnique( createInfo ) );
+	const vk::InstanceCreateInfo createInfo
+	( 
+		{}, 
+		&appInfo, 
+		uint32_t(requiredLayers.size()), 
+		requiredLayers.data(), 
+		uint32_t(requiredExtensions.size()), 
+		requiredExtensions.data() 
+	);
+	
+	instance = new (std::nothrow) v3d::vulkan::Instance(std::move(vk::createInstanceUnique(createInfo)));
+	if (instance == nullptr) { v3d::Logger::getInstance().bad_alloc<Instance>(); return false; }
 
 	logger.trace( "Created Context instance" );
 
-	if( _DEBUG )
-	{
-		if( !initDebugCallback() ) return false;
-	}
+	if(validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
 
 	return true;
 }
 
-bool v3d::vulkan::Context::initDebugCallback()
+bool v3d::vulkan::Context::initDebugReport()
 {
-	debugCallback = new (std::nothrow) DebugCallback();
-	if( debugCallback == nullptr ) { Logger::getInstance().critical( "std::bad_alloc" ); return false; }
-	if( !debugCallback->init( instance ) ) return false;
+	debugReportCallback = new (std::nothrow) v3d::vulkan::DebugReportCallback();
+	if (debugReportCallback == nullptr) { v3d::Logger::getInstance().bad_alloc<DebugReportCallback>(); return false; }
+	if (!debugReportCallback->init(*instance)) return false;
 	return true;
 }
 
+bool v3d::vulkan::Context::initDebugUtilsMessenger()
+{
+	debugUtilsMessenger = new (std::nothrow) v3d::vulkan::DebugUtilsMessenger();
+	if (debugUtilsMessenger == nullptr) { v3d::Logger::getInstance().bad_alloc<DebugUtilsMessenger>(); return false; }
+	if (!debugUtilsMessenger->init(*instance)) return false;
+	return true;
+}
+
+/*
 bool v3d::vulkan::Context::initSurface( const View& view )
 {
 	VkSurfaceKHR cVkSurfaceKHR;
@@ -149,15 +176,16 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 	return true;
 }
 
+*/
 void v3d::vulkan::Context::release()
 {
-	auto& logger = Logger::getInstance();
+	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
-	if( enableValidationLayer && debugCallback ) 
-	{ 
-		delete debugCallback; 
-		debugCallback = nullptr;
-	}
+	//if( enableValidationLayer && debugCallback ) 
+	//{ 
+	//	delete debugCallback; 
+	//	debugCallback = nullptr;
+	//}
 	logger.info( "Releasing Context finished" );
 }
 

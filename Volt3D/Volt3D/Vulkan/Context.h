@@ -1,46 +1,65 @@
-﻿#ifndef CONTEXT_H
+﻿/**
+*	@file Context.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef CONTEXT_H
 #define CONTEXT_H
 
 #include <vulkan/vulkan.hpp>
 
 #include <vector>
-#include <optional>
 
 #include "utils/Macros.h"
-
-class View;
-class DebugCallback;
-class PhysicalDevice;
-class Device;
-class Surface;
-class SwapChain;
+#include "Config/BuildConfig.h"
 
 namespace v3d
 {
+	namespace glfw { class Window; }
 	namespace vulkan
 	{
+		class View;
+		class Instance;
+		class DebugReportCallback;
+		class DebugUtilsMessenger;
+		class PhysicalDevice;
+		class Device;
+		class Surface;
+		class SwapChain;
+
+		/**
+		*	@class Context
+		*	@brief Vulkan context.
+		*
+		*	@group vulkan
+		*
+		*	@since 1.0
+		*/
 		class Context
 		{
 		private:
 			// Context instance
-			vk::UniqueInstance instance;
+			v3d::vulkan::Instance* instance;
 
-			// Debug + validation layer
-			bool enableValidationLayer;
-			DebugCallback* debugCallback;
+			bool validationLayerEnabled;
+			DebugReportCallback* debugReportCallback;
+			DebugUtilsMessenger* debugUtilsMessenger;
 
-			Surface* surface;
-			PhysicalDevice* physicalDevice;
-			Device* device;
-			SwapChain* swapChain;
+			//Surface* surface;
+			//PhysicalDevice* physicalDevice;
+			//Device* device;
+			//SwapChain* swapChain;
 
-			bool initInstance(const Window& view);
-			bool initDebugCallback();
-			bool initSurface(const Window& view);
-			bool initPhysicalDevice();
-			bool initLogicalDevice();
-			bool initSwapChain();
-			bool initGraphicsPipeline();
+			bool initInstance(const v3d::glfw::Window& view);
+			bool initDebugReport();
+			bool initDebugUtilsMessenger();
+			//bool initSurface(const v3d::glfw::Window& view);
+			//bool initPhysicalDevice();
+			//bool initLogicalDevice();
+			//bool initSwapChain();
+			//bool initGraphicsPipeline();
 			void release();
 
 		public:
@@ -49,7 +68,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(Context);
 			~Context();
 
-			bool init(const Window& view, const bool enableValidationLayer = _DEBUG);
+			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer = _DEBUG);
 
 			std::vector<vk::ExtensionProperties> getExtensions() const;
 			std::vector<vk::LayerProperties> getLayers() const;

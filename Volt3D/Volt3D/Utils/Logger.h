@@ -19,6 +19,7 @@
 #include <fstream>
 
 #include "Macros.h"
+#include "Config/BuildConfig.h"
 
 namespace spdlog
 {
@@ -67,7 +68,7 @@ namespace v3d
 			std::string strTo(size_needed, 0);
 			WideCharToMultiByte(CP_UTF8, 0, &loggerPathWStr[0], (int)loggerPathWStr.size(), &strTo[0], size_needed, NULL, NULL);
 			
-#ifdef _DEBUG
+#ifdef BUILD_DEBUG
 			logger->trace("Trace test");
 			logger->debug("Debug test");
 			logger->info("Info test");
@@ -89,7 +90,7 @@ namespace v3d
 			console->set_pattern("%^[%l] [%c] %v%$");
 			console->set_level(spdlog::level::trace);
 
-#ifdef _DEBUG
+#ifdef BUILD_DEBUG
 			console->trace("Trace test");
 			console->debug("Debug test");
 			console->info("Info test");
@@ -137,7 +138,7 @@ namespace v3d
 		template<class T>
 		void bad_alloc() { if (logger) logger->critical(std::string("std::bad_alloc on ") + std::string(typeid(T).name())); }
 
-#ifdef _DEBUG
+#ifdef BUILD_DEBUG
 		void logExtensions(const std::vector<vk::ExtensionProperties> & extensions) const
 		{
 			logger->trace("Available VK extensions: " + std::to_string(extensions.size()));

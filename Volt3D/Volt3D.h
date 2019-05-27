@@ -26,5 +26,9 @@
 #include "Utils/Macros.h"
 
 // Vulkan
+#include "Vulkan/Context.h"
+#include "Vulkan/Instance.h"
+#include "Vulkan/DebugReportCallback.h"
+#include "Vulkan/DebugUtilsMessenger.h"
 
 #endif

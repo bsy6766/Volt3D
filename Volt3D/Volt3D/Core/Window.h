@@ -18,6 +18,14 @@ namespace v3d
 {
 	namespace glfw
 	{
+		/**
+		*	@class Window
+		*	@brief Simple wrapper for GLFW
+		*
+		*	@group GLFW
+		*
+		*	@since 1.0
+		*/
 		class VOLT3D_DLL Window
 		{
 			friend class Engine;

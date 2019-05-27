@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -27,13 +23,17 @@
     <Filter Include="Volt3D\Config">
       <UniqueIdentifier>{43f3de8d-dd6d-44c7-a608-2005a7ce0f76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DLL">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>DLL</Filter>
     </ClCompile>
     <ClCompile Include="PreCompiled.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>DLL</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Window.cpp">
       <Filter>Volt3D\Core</Filter>
@@ -44,13 +44,22 @@
     <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Context.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Instance.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D.h">
-      <Filter>Volt3D</Filter>
+      <Filter>DLL</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Macros.h">
       <Filter>Volt3D\Utils</Filter>
@@ -75,6 +84,24 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Enums\WindowMode.h">
       <Filter>Volt3D\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Context.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Instance.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D.h">
+      <Filter>Volt3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Config\BuildConfig.h">
+      <Filter>Volt3D\Config</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

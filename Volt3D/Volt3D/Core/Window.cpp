@@ -1,4 +1,11 @@
-﻿#include <PreCompiled.h>
+﻿/**
+*	@file Window.cpp
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#include <PreCompiled.h>
 
 #include "Window.h"
 #include "GLFWCallbacks.h"
@@ -39,7 +46,7 @@ bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
 
 	window = glfwCreateWindow(1280, 720, std::string(windowTitle).c_str(), nullptr, nullptr);
 
-	glfwMakeContextCurrent(window);
+	//glfwMakeContextCurrent(window);
 	glfwSetWindowUserPointer(window, this);
 	
 	v3d::glfw::initCallbacks(window);
