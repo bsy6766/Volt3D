@@ -1,5 +1,16 @@
-﻿#ifndef WINDOW_H
+﻿/**
+*	@file Window.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef WINDOW_H
 #define WINDOW_H
+
+#include <vulkan/vulkan.hpp>
+
+#include <vector>
 
 #include "utils/Macros.h"
 
@@ -7,7 +18,7 @@ namespace v3d
 {
 	namespace glfw
 	{
-		class Window
+		class VOLT3D_DLL Window
 		{
 			friend class Engine;
 		private:

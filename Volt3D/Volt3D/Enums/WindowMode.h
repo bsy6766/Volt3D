@@ -1,7 +1,12 @@
+/**
+*	@file WindowMode.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
 #ifndef WINDOW_MODE_H
 #define WINDOW_MODE_H
-
-#include <exception>
 
 namespace v3d
 {
@@ -31,7 +36,8 @@ namespace v3d
 			else if (windowModeInt == 2) return v3d::glfw::WindowMode::WINDOWED_FULLSCREEN;
 			else
 			{
-				std::throw runtime
+				// @todo: throw error
+				return v3d::glfw::WindowMode::WINDOWED;
 			}
 		}
 	}

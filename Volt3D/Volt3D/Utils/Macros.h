@@ -1,4 +1,12 @@
-﻿#pragma
+﻿/**
+*	@file Macros.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef MACROS_H
+#define MACROS_H
 
 #ifdef  VOLT3D_EXPORTS 
 #define VOLT3D_DLL __declspec(dllexport)  
@@ -13,3 +21,5 @@ CLASS& operator=( const CLASS& ) = delete;
 #define DEFAULT_MOVE_CONSTRUCTORS(CLASS)		\
 CLASS( CLASS&& other ) = default;				\
 CLASS& operator=( CLASS&& other ) = default;
+
+#endif

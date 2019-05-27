@@ -1,3 +1,11 @@
+
+/**
+*	@file Volt3D.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
 #ifndef VOLT3D_H
 #define VOLT3D_H
 

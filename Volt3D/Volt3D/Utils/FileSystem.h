@@ -1,3 +1,10 @@
+/**
+*	@file FileSystem.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 

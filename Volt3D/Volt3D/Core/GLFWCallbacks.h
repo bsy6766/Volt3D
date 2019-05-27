@@ -1,7 +1,16 @@
-﻿#ifndef GLFW_CALLBACKS_H
+﻿/**
+*	@file GLFWCallbacks.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef GLFW_CALLBACKS_H
 #define GLFW_CALLBACKS_H
 
 #include "Config/GLFWCallbackConfig.h"
+
+struct GLFWwindow;
 
 namespace v3d
 {

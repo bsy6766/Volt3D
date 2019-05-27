@@ -13,10 +13,10 @@
 //#include "Vulkan/Context.h"
 
 v3d::Engine::Engine()
-	: view( nullptr )
-	, context( nullptr )
+	: window(nullptr)
+	, context(nullptr)
 {
-	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
+	v3d::Logger::getInstance().init(FileSystem::getWorkingDirectoryW(), L"log.txt");
 	v3d::Logger::getInstance().initConsole();
 }
 
@@ -38,16 +38,16 @@ bool v3d::Engine::init(const std::string_view windowTitle)
 
 void v3d::Engine::run()
 {
-	while( view && view->isRunning() )
+	while (window && window->isRunning())
 	{
-		view->pollGLFWEvent();
+		window->pollGLFWEvent();
 	}
 }
 
 v3d::glfw::Window& v3d::Engine::getView() const
 {
 	// @todo: Handle error
-	return *view;
+	return *window;
 }
 
 //v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
@@ -80,10 +80,10 @@ bool v3d::Engine::loadPreference()
 bool v3d::Engine::initWindow(const std::string_view windowTitle)
 {
 	auto& logger = Logger::getInstance();
-	view = new (std::nothrow) v3d::glfw::Window();
-	if (view == nullptr) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
-	if (!view->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
-	if (!view->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
+	window = new (std::nothrow) v3d::glfw::Window();
+	if (window == nullptr) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
+	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
+	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
 	return true;
 }
 
@@ -91,7 +91,7 @@ bool v3d::Engine::initContext()
 {
 	//context = new (std::nothrow) v3d::vulkan::Context();
 	//if(context == nullptr ) { logger.bad_alloc<v3d::vulkan::Context>(); return false; }
-	//if( !context->init( *view ) ) { logger.critical( "Failed to initialize Context" ); return false; }
+	//if( !context->init( *window ) ) { logger.critical( "Failed to initialize Context" ); return false; }
 	return true;
 }
 
@@ -100,5 +100,5 @@ void v3d::Engine::release()
 	// release vulkan first
 	//if( context ) { delete context; context = nullptr; }
 	// release glfw
-	if( view ) { delete view; view = nullptr; }
+	if (window) { delete window; window = nullptr; }
 }

@@ -1,15 +1,29 @@
-﻿#ifndef ENGINE_H
+﻿/**
+*	@file Engine.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef ENGINE_H
 #define ENGINE_H
+
+#include "Utils/Macros.h"
 
 namespace v3d
 {
 	namespace glfw { class Window; }
 	namespace vulkan { class Context; }
 
-	class Engine
+	/**
+	*	@class Engine
+	*
+	*	@since 1.0
+	*/
+	class VOLT3D_DLL Engine
 	{
 	private:
-		v3d::glfw::Window* view;
+		v3d::glfw::Window* window;
 		v3d::vulkan::Context* context;
 
 		bool loadPreference();
@@ -25,7 +39,7 @@ namespace v3d
 		void run();
 
 		v3d::glfw::Window& getView() const;
-		v3d::vulkan::Context& getVulkanContext() const;
+		//v3d::vulkan::Context& getVulkanContext() const;
 	};
 }
 

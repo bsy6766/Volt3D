@@ -94,15 +94,17 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Volt3D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Volt3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\$(Platform)\$(Configuration)Volt3D.dll $(OutPutPath) /I /Y /D
+      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D.dll $(OutPutPath) /I /Y /D
+xcopy $(SolutionDir)bin\llib\$(Platform)\$(Configuration)\Volt3D.lib $(ProjectDir) /I /Y /D
 xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -126,13 +128,15 @@ xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) 
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Volt3D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>Volt3D_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\$(Platform)\$(Configuration)\Volt3D.dll $(OutPutPath) /I /Y /D
+      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.dll $(OutPutPath) /I /Y /D
+xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.lib $(OutPutPath) /I /Y /D
 xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>

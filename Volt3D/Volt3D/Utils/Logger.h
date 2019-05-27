@@ -1,3 +1,10 @@
+/**
+*	@file Logger.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
 #ifndef LOGGER_H
 #define LOGGER_H
 
