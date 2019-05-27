@@ -1,5 +1,5 @@
 ﻿/**
-*	@file Instance.h
+*	@file Surface.h
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -16,6 +16,14 @@ namespace v3d
 {
 	namespace vulkan
 	{
+		/**
+		*	@class Surface
+		*	@brief A wrapper of vulkan's surface
+		*
+		*	@group vulkan
+		*
+		*	@since 1.0
+		*/
 		class Surface
 		{
 		private:

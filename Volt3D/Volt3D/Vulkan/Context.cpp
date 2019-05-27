@@ -14,7 +14,7 @@
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
 #include "Vulkan/Surface.h"
-//#include "PhysicalDevice.h"
+#include "PhysicalDevice.h"
 //#include "Device.h"
 //#include "SwapChain.h"
 //#include "Shader.h"
@@ -27,7 +27,7 @@ v3d::vulkan::Context::Context()
 	, debugReportCallback(nullptr)
 	, debugUtilsMessenger(nullptr)
 	, surface(nullptr)
-	//, physicalDevice(nullptr)
+	, physicalDevice(nullptr)
 	//, device(nullptr)
 	//, swapChain(nullptr)
 {}
@@ -131,19 +131,30 @@ bool v3d::vulkan::Context::initSurface( const v3d::glfw::Window& window )
 	VkSurfaceKHR cVkSurfaceKHR;
 	if( !window.createWindowSurface( *instance, cVkSurfaceKHR ) ) return false;
 
-	surface = new(std::nothrow) Surface(std::move(vk::UniqueSurfaceKHR(cVkSurfaceKHR, instance->getHandle().get())));
+	surface = new(std::nothrow) v3d::vulkan::Surface(std::move(vk::UniqueSurfaceKHR(cVkSurfaceKHR, instance->getHandle().get())));
 	if (surface == nullptr) v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Surface>();
 	return false;
 }
 
-/*
 bool v3d::vulkan::Context::initPhysicalDevice()
 {
-	physicalDevice = new (std::nothrow) PhysicalDevice();
-	if( !physicalDevice ) return false;
-	return physicalDevice->init( instance );
+	std::vector<vk::PhysicalDevice> physicalDevices = std::move(instance->enumeratePhysicalDevices());
+
+	for (vk::PhysicalDevice& curPhysicalDevice : physicalDevices)
+	{
+		if (v3d::vulkan::PhysicalDevice::isSuitable(curPhysicalDevice))
+		{
+			physicalDevice = new (std::nothrow) v3d::vulkan::PhysicalDevice(std::move(curPhysicalDevice));
+			if (physicalDevice == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::PhysicalDevice>(); return false; }
+			return true;
+		}
+	}
+
+	v3d::Logger::getInstance().critical("Failed to find suitable GPU with GRAPHICS BIT");
+	return false;
 }
 
+/*
 bool v3d::vulkan::Context::initLogicalDevice()
 {
 	device = new (std::nothrow) Device();

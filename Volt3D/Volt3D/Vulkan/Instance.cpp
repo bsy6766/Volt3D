@@ -27,3 +27,8 @@ inline vk::UniqueDebugUtilsMessengerEXT v3d::vulkan::Instance::createDebugUtilsM
 {
 	return std::move(instance.get().createDebugUtilsMessengerEXTUnique(createInfo));
 }
+
+inline std::vector<vk::PhysicalDevice> v3d::vulkan::Instance::enumeratePhysicalDevices() const
+{
+	return std::move(instance->enumeratePhysicalDevices());
+}

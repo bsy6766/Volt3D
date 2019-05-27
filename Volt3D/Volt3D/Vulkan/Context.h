@@ -47,9 +47,7 @@ namespace v3d
 			v3d::vulkan::DebugReportCallback* debugReportCallback;
 			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
 			v3d::vulkan::Surface* surface;
-
-			//Surface* surface;
-			//PhysicalDevice* physicalDevice;
+			v3d::vulkan::PhysicalDevice* physicalDevice;
 			//Device* device;
 			//SwapChain* swapChain;
 
@@ -57,7 +55,7 @@ namespace v3d
 			bool initDebugReport();
 			bool initDebugUtilsMessenger();
 			bool initSurface(const v3d::glfw::Window& view);
-			//bool initPhysicalDevice();
+			bool initPhysicalDevice();
 			//bool initLogicalDevice();
 			//bool initSwapChain();
 			//bool initGraphicsPipeline();

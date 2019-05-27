@@ -40,6 +40,7 @@ namespace v3d
 			inline PFN_vkVoidFunction getProcAddr(const char* pName) const;
 			inline vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique(const vk::DebugReportCallbackCreateInfoEXT& createInfo) const;
 			inline vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique(const vk::DebugUtilsMessengerCreateInfoEXT& createInfo) const;
+			inline std::vector<vk::PhysicalDevice> enumeratePhysicalDevices() const;
 		};
 	}
 }

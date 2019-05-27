@@ -1,51 +1,86 @@
-﻿#pragma
+﻿/**
+*	@file PhysicalDevice.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef V3D_VK_PHYSICAL_DEVICE_H
+#define V3D_VK_PHYSICAL_DEVICE_H
 
 #include <vulkan/vulkan.hpp>
 
 #include "utils/Macros.h"
 
-class Surface;
-
-class PhysicalDevice
+namespace v3d
 {
-	friend class Vulkan;
-private:
-	PhysicalDevice();
+	namespace vulkan
+	{
+		class Surface;
 
-	vk::PhysicalDevice physicalDevice;
-	vk::PhysicalDeviceProperties physicalDeviceProperties;
-	vk::PhysicalDeviceFeatures physicalDeviceFeatures;
-	vk::PhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+		/**
+		*	@class PhysicalDevice
+		*	@brief A wrapper of vulkan's physical device (GPU)
+		*
+		*	@group vulkan
+		*
+		*	@since 1.0
+		*/
+		class PhysicalDevice
+		{
+			friend class Context;
 
-	bool init( vk::UniqueInstance& instance );
+		private:
+			vk::PhysicalDevice physicalDevice;
+			vk::PhysicalDeviceProperties physicalDeviceProperties;
+			vk::PhysicalDeviceFeatures physicalDeviceFeatures;
+			vk::PhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
 
-public:
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( PhysicalDevice );
-	DEFAULT_MOVE_CONSTRUCTORS( PhysicalDevice );
-	~PhysicalDevice() {}
+			//bool init(vk::UniqueInstance& instance);
 
-	vk::UniqueDevice createLogicalDevice(const vk::DeviceCreateInfo & createInfo);
+			static bool isSuitable(const vk::PhysicalDevice& physicalDevice);
 
-	explicit operator const vk::PhysicalDevice& () const noexcept 
-	{ return physicalDevice; }
+		public:
+			PhysicalDevice(vk::PhysicalDevice&& physicalDevice);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(PhysicalDevice);
+			DEFAULT_MOVE_CONSTRUCTORS(PhysicalDevice);
+			~PhysicalDevice() {}
 
-	std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const
-	{ return physicalDevice.getQueueFamilyProperties(); }
-	
-	vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR( const Surface& surface ) const;
+			CLASS_TO_VULKAN_HANDLE(vk::PhysicalDevice, physicalDevice);
 
-	vk::Bool32 getSurfaceSupportKHR( const uint32_t index, const Surface& surface ) const;
+			/*
+			vk::UniqueDevice createLogicalDevice(const vk::DeviceCreateInfo& createInfo);
 
-	std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR( const Surface& surface ) const;
+			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const
+			{
+				return physicalDevice.getQueueFamilyProperties();
+			}
 
-	std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR( const Surface& surface ) const;
+			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
 
-	vk::PhysicalDeviceProperties getProperties() const
-	{ return physicalDevice.getProperties(); }
+			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
 
-	std::vector<vk::ExtensionProperties> enumerateDeviceExtensionProperties() const
-	{ return physicalDevice.enumerateDeviceExtensionProperties(); }
+			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
 
-	std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const
-	{ return physicalDevice.enumerateDeviceLayerProperties(); }
-};
+			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
+
+			vk::PhysicalDeviceProperties getProperties() const
+			{
+				return physicalDevice.getProperties();
+			}
+
+			std::vector<vk::ExtensionProperties> enumerateDeviceExtensionProperties() const
+			{
+				return physicalDevice.enumerateDeviceExtensionProperties();
+			}
+
+			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const
+			{
+				return physicalDevice.enumerateDeviceLayerProperties();
+			}
+			*/
+		};
+	}
+}
+
+#endif
