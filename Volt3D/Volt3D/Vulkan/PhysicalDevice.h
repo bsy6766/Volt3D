@@ -35,35 +35,36 @@ namespace v3d
 
 		private:
 			vk::PhysicalDevice physicalDevice;
-			//uint32_t graphicsQueueFamilyIndex;
-			//uint32_t presentQueueFamilyIndex;
+			std::optional<uint32_t> graphicsQueueFamilyIndex;
+			std::optional<uint32_t> presentQueueFamilyIndex;
 			
 			static bool isSuitable(const vk::PhysicalDevice& physicalDevice);
 
+			std::optional<uint32_t> initGraphicsQueueFamilyIndex();
+			std::optional<uint32_t> initPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface);
+
 		public:
-			PhysicalDevice(vk::PhysicalDevice&& physicalDevice);
+			PhysicalDevice(vk::PhysicalDevice&& physicalDevice, Surface& surface);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(PhysicalDevice);
 			DEFAULT_MOVE_CONSTRUCTORS(PhysicalDevice);
 			~PhysicalDevice() {}
 
 			CLASS_TO_VULKAN_HANDLE(vk::PhysicalDevice, physicalDevice);
 			
-			std::optional<uint32_t> getGraphicsQueueFamilyIndex();
-			std::optional<uint32_t> getPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface);
 
-			inline vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
-			inline std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
-			inline vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
-			inline vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
-			inline std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
-			inline std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
-			inline vk::PhysicalDeviceProperties getProperties() const;
-			inline vk::PhysicalDeviceFeatures getFeatures() const;
-			inline vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
-			inline std::vector<vk::ExtensionProperties> enumerateDeviceExtensionProperties() const;
-			inline std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
-			//inline uint32_t getGraphicsQueueFamilyIndex() const	{ return graphicsQueueFamilyIndex; }
-			//inline uint32_t getPresentQueueFamilyIndex() const	{ return presentQueueFamilyIndex; }
+			vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
+			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
+			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
+			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
+			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
+			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
+			vk::PhysicalDeviceProperties getProperties() const;
+			vk::PhysicalDeviceFeatures getFeatures() const;
+			vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
+			std::vector<vk::ExtensionProperties> EnumerateDeviceExtensionProperties() const;
+			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
+			std::optional<uint32_t> getGraphicsQueueFamilyIndex() const;
+			std::optional<uint32_t> getPresentQueueFamilyIndex() const;
 		};
 	}
 }

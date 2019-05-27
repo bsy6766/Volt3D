@@ -9,12 +9,6 @@
 
 #include "Device.h"
 
-#include <optional>
-
-#include "Surface.h"
-#include "PhysicalDevice.h"
-#include "Utils.h"
-
 v3d::vulkan::Device::Device(vk::UniqueDevice&& device)
 	: device(std::move(device))
 {}

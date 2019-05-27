@@ -30,6 +30,10 @@ namespace v3d
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Device);
 			DEFAULT_MOVE_CONSTRUCTORS(Device);
 			~Device() {}
+
+			CLASS_TO_VULKAN_HANDLE(vk::UniqueDevice, device);
+
+			vk::UniqueSwapchainKHR createSwapchainKHRUnique(vk::SwapchainCreateInfoKHR& createInfo) const;
 		};
 	}
 }

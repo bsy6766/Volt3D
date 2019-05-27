@@ -13,10 +13,10 @@
 
 #include <sstream>
 
-v3d::vulkan::PhysicalDevice::PhysicalDevice(vk::PhysicalDevice&& physicalDevice)
+v3d::vulkan::PhysicalDevice::PhysicalDevice(vk::PhysicalDevice&& physicalDevice, Surface& surface)
 	: physicalDevice(physicalDevice)
-	//, graphicsQueueFamilyIndex(0)
-	//, presentQueueFamilyIndex(0)
+	, graphicsQueueFamilyIndex(initGraphicsQueueFamilyIndex())
+	, presentQueueFamilyIndex(initPresentsQueueFamilyIndex(surface))
 {}
 
 bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalDevice)
@@ -74,13 +74,13 @@ bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalD
 	return true;
 }
 
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getGraphicsQueueFamilyIndex()
+std::optional<uint32_t> v3d::vulkan::PhysicalDevice::initGraphicsQueueFamilyIndex()
 {
 	std::optional<uint32_t> gIndex;
 
 	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 	if (queueFamilyProperties.empty()) return gIndex;
-	
+
 	uint32_t i = 0;
 	for (auto& queueFamilyProperty : queueFamilyProperties)
 	{
@@ -96,7 +96,7 @@ std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getGraphicsQueueFamilyIndex
 	return gIndex;
 }
 
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface)
+std::optional<uint32_t> v3d::vulkan::PhysicalDevice::initPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface)
 {
 	std::optional<uint32_t> pIndex = 0;
 
@@ -119,57 +119,67 @@ std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getPresentsQueueFamilyIndex
 	return pIndex;
 }
 
-inline vk::UniqueDevice v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
+vk::UniqueDevice v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
 {
 	return std::move(physicalDevice.createDeviceUnique(createInfo));
 }
 
-inline std::vector<vk::QueueFamilyProperties> v3d::vulkan::PhysicalDevice::getQueueFamilyProperties() const
+std::vector<vk::QueueFamilyProperties> v3d::vulkan::PhysicalDevice::getQueueFamilyProperties() const
 {
 	return physicalDevice.getQueueFamilyProperties();
 }
 
-inline vk::SurfaceCapabilitiesKHR v3d::vulkan::PhysicalDevice::getSurfaceCapabilitiesKHR( const Surface& surface ) const
+vk::SurfaceCapabilitiesKHR v3d::vulkan::PhysicalDevice::getSurfaceCapabilitiesKHR(const Surface& surface) const
 {
-	return physicalDevice.getSurfaceCapabilitiesKHR( reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get() );
+	return physicalDevice.getSurfaceCapabilitiesKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
 }
 
-inline vk::Bool32 v3d::vulkan::PhysicalDevice::getSurfaceSupportKHR( const uint32_t index, const Surface& surface ) const
+vk::Bool32 v3d::vulkan::PhysicalDevice::getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const
 {
-	return physicalDevice.getSurfaceSupportKHR( index, reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get() );
+	return physicalDevice.getSurfaceSupportKHR(index, reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
 }
 
-inline std::vector<vk::SurfaceFormatKHR> v3d::vulkan::PhysicalDevice::getSurfaceFormatsKHR( const Surface& surface ) const
+std::vector<vk::SurfaceFormatKHR> v3d::vulkan::PhysicalDevice::getSurfaceFormatsKHR(const Surface& surface) const
 {
-	return physicalDevice.getSurfaceFormatsKHR( reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get() );
+	return physicalDevice.getSurfaceFormatsKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
 }
 
-inline std::vector<vk::PresentModeKHR> v3d::vulkan::PhysicalDevice::getSurfacePresentModesKHR( const Surface& surface ) const
+std::vector<vk::PresentModeKHR> v3d::vulkan::PhysicalDevice::getSurfacePresentModesKHR(const Surface& surface) const
 {
-	return physicalDevice.getSurfacePresentModesKHR( reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get() );
+	return physicalDevice.getSurfacePresentModesKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
 }
 
-inline vk::PhysicalDeviceProperties v3d::vulkan::PhysicalDevice::getProperties() const
+vk::PhysicalDeviceProperties v3d::vulkan::PhysicalDevice::getProperties() const
 {
 	return physicalDevice.getProperties();
 }
 
-inline vk::PhysicalDeviceFeatures v3d::vulkan::PhysicalDevice::getFeatures() const
+vk::PhysicalDeviceFeatures v3d::vulkan::PhysicalDevice::getFeatures() const
 {
 	return physicalDevice.getFeatures();
 }
 
-inline vk::PhysicalDeviceMemoryProperties v3d::vulkan::PhysicalDevice::getMemoryProperties() const
+vk::PhysicalDeviceMemoryProperties v3d::vulkan::PhysicalDevice::getMemoryProperties() const
 {
 	return physicalDevice.getMemoryProperties();
 }
 
-inline std::vector<vk::ExtensionProperties> v3d::vulkan::PhysicalDevice::enumerateDeviceExtensionProperties() const
+std::vector<vk::ExtensionProperties> v3d::vulkan::PhysicalDevice::EnumerateDeviceExtensionProperties() const
 {
 	return physicalDevice.enumerateDeviceExtensionProperties();
 }
 
-inline std::vector<vk::LayerProperties> v3d::vulkan::PhysicalDevice::enumerateDeviceLayerProperties() const
+std::vector<vk::LayerProperties> v3d::vulkan::PhysicalDevice::enumerateDeviceLayerProperties() const
 {
 	return physicalDevice.enumerateDeviceLayerProperties();
+}
+
+std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getGraphicsQueueFamilyIndex() const
+{
+	return graphicsQueueFamilyIndex;
+}
+
+std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getPresentQueueFamilyIndex() const
+{
+	return presentQueueFamilyIndex;
 }

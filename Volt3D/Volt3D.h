@@ -30,5 +30,9 @@
 #include "Vulkan/Instance.h"
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
+#include "Vulkan/Surface.h"
+#include "Vulkan/PhysicalDevice.h"
+#include "Vulkan/Device.h"
+#include "Vulkan/SwapChain.h"
 
 #endif

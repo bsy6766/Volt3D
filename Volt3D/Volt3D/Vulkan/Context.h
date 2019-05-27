@@ -49,7 +49,7 @@ namespace v3d
 			v3d::vulkan::Surface* surface;
 			v3d::vulkan::PhysicalDevice* physicalDevice;
 			v3d::vulkan::Device* device;
-			//SwapChain* swapChain;
+			v3d::vulkan::SwapChain* swapChain;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -57,7 +57,7 @@ namespace v3d
 			bool initSurface(const v3d::glfw::Window& view);
 			bool initPhysicalDevice();
 			bool initDevice();
-			//bool initSwapChain();
+			bool initSwapChain();
 			//bool initGraphicsPipeline();
 			void release();
 

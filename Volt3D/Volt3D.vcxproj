@@ -201,6 +201,7 @@
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Surface.h" />
+    <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

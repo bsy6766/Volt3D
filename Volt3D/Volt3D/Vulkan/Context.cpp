@@ -10,13 +10,13 @@
 #include "Context.h"
 
 #include "Core/Window.h"
-#include "vulkan/Instance.h"
-#include "Vulkan/DebugReportCallback.h"
-#include "Vulkan/DebugUtilsMessenger.h"
-#include "Vulkan/Surface.h"
-#include "Vulkan/PhysicalDevice.h"
-#include "Vulkan/Device.h"
-//#include "SwapChain.h"
+#include "Instance.h"
+#include "DebugReportCallback.h"
+#include "DebugUtilsMessenger.h"
+#include "Surface.h"
+#include "PhysicalDevice.h"
+#include "Device.h"
+#include "SwapChain.h"
 //#include "Shader.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
@@ -144,7 +144,7 @@ bool v3d::vulkan::Context::initPhysicalDevice()
 	{
 		if (v3d::vulkan::PhysicalDevice::isSuitable(curPhysicalDevice))
 		{
-			physicalDevice = new (std::nothrow) v3d::vulkan::PhysicalDevice(std::move(curPhysicalDevice));
+			physicalDevice = new (std::nothrow) v3d::vulkan::PhysicalDevice(std::move(curPhysicalDevice), *surface);
 			if (physicalDevice == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::PhysicalDevice>(); return false; }
 			return true;
 		}
@@ -167,38 +167,102 @@ bool v3d::vulkan::Context::initDevice()
 		&queuePriority
 	);
 
-	//std::vector<vk::ExtensionProperties> extensions = physicalDevice->getHandle().enumerateDeviceExtensionProperties();
-	physicalDevice->enumerateDeviceExtensionProperties();
-//#ifdef BUILD_DEBUG
-//	v3d::Logger::getInstance().logExtensions(extensions);
-//#endif
-//	std::vector<const char*> requiredExtension = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-//	if (!vulkan::utils::checkExtensionProperties(extensions, requiredExtension)) return false;
-//
-//	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo
-//	(
-//		{},
-//		1,
-//		&deviceQueueCreateInfo,
-//		0,
-//		nullptr,
-//		uint32_t(requiredExtension.size()),
-//		requiredExtension.data()
-//	);
-//
-//	device = new (std::nothrow) v3d::vulkan::Device(std::move(physicalDevice->createDeviceUnique(createInfo)));
-//	if (device == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Device>(); return false; }
+	std::vector<vk::ExtensionProperties> extensions = physicalDevice->EnumerateDeviceExtensionProperties();
+
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().logExtensions(extensions);
+#endif
+	std::vector<const char*> requiredExtension = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	if (!vulkan::utils::checkExtensionProperties(extensions, requiredExtension)) return false;
+
+	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo
+	(
+		{},
+		1,
+		&deviceQueueCreateInfo,
+		0,
+		nullptr,
+		uint32_t(requiredExtension.size()),
+		requiredExtension.data()
+	);
+
+	device = new (std::nothrow) v3d::vulkan::Device(std::move(physicalDevice->createDeviceUnique(createInfo)));
+	if (device == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Device>(); return false; }
+
+	return true;
+}
+
+bool v3d::vulkan::Context::initSwapChain()
+{
+	std::vector<vk::SurfaceFormatKHR> formats = physicalDevice->getSurfaceFormatsKHR(*surface);
+	if (formats.empty()) return false;
+
+	vk::Format format = (formats.front().format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats.front().format;
+
+	vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice->getSurfaceCapabilitiesKHR(*surface);
+	vk::Extent2D swapChainExtent;
+	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
+	{
+		// If the surface size is undefined, the size is set to the size of the images requested.
+		swapChainExtent.width = std::clamp(1280u, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+		swapChainExtent.height = std::clamp(720u, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+	}
+	else
+	{
+		// If the surface size is defined, the swap chain size must match
+		swapChainExtent = surfaceCapabilities.currentExtent;
+	}
+
+	// The FIFO present mode is guaranteed by the spec to be supported
+	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
+	// Visit again to learn more about present mode.
+
+	vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;
+
+	vk::CompositeAlphaFlagBitsKHR compositeAlpha =
+		(surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied) ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied :
+		(surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied :
+		(surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit) ? vk::CompositeAlphaFlagBitsKHR::eInherit : vk::CompositeAlphaFlagBitsKHR::eOpaque;
+
+	vk::SwapchainCreateInfoKHR createInfo
+	(
+		vk::SwapchainCreateFlagsKHR(),
+		reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get(),
+		surfaceCapabilities.minImageCount,
+		format,
+		vk::ColorSpaceKHR::eSrgbNonlinear,
+		swapChainExtent,
+		1,
+		vk::ImageUsageFlagBits::eColorAttachment,
+		vk::SharingMode::eExclusive,
+		0,
+		nullptr,
+		preTransform,
+		compositeAlpha,
+		swapchainPresentMode,
+		true,
+		nullptr
+	);
+
+	/*
+	uint32_t queueFamilyIndices[2] = { physicalDevice.getGraphicsQueueFamilyIndex(), physicalDevice.getPresentQueueFamilyIndex() };
+	if( queueFamilyIndices[0] != queueFamilyIndices[1] )
+	{
+		// If the graphics and present queues are from different queue families, we either have to explicitly transfer ownership of images between
+		// the queues, or we have to create the swapchain with imageSharingMode as VK_SHARING_MODE_CONCURRENT
+		createInfo.imageSharingMode = vk::SharingMode::eConcurrent;
+		createInfo.queueFamilyIndexCount = 2;
+		createInfo.pQueueFamilyIndices = queueFamilyIndices;
+	}
+	*/
+
+	swapChain = new (std::nothrow) v3d::vulkan::SwapChain(std::move(device->createSwapchainKHRUnique(createInfo)));
+	if (swapChain == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::SwapChain>(); return false; }
+
 	return true;
 }
 
 /*
-bool v3d::vulkan::Context::initSwapChain()
-{
-	swapChain = new (std::nothrow) SwapChain();
-	if( !swapChain ) return false;
-	return swapChain->init( *physicalDevice, *device, *surface );
-}
-
 bool v3d::vulkan::Context::initGraphicsPipeline()
 {
 	//Shader* vertShader = Shader::create( "Shaders/vert.spv", logicalDevice );
