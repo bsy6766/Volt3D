@@ -12,6 +12,8 @@
 
 #include "utils/Macros.h"
 
+#include <vector>
+
 namespace v3d
 {
 	namespace vulkan
@@ -34,6 +36,7 @@ namespace v3d
 			CLASS_TO_VULKAN_HANDLE(vk::UniqueDevice, device);
 
 			vk::UniqueSwapchainKHR createSwapchainKHRUnique(vk::SwapchainCreateInfoKHR& createInfo) const;
+			vk::UniqueShaderModule createShaderModuleUnique(std::vector<char> buffer) const;
 		};
 	}
 }

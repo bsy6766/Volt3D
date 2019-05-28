@@ -28,8 +28,8 @@ v3d::vulkan::Context::Context()
 	, debugUtilsMessenger(nullptr)
 	, surface(nullptr)
 	, physicalDevice(nullptr)
-	//, device(nullptr)
-	//, swapChain(nullptr)
+	, device(nullptr)
+	, swapChain(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()

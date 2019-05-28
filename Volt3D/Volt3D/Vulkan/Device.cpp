@@ -17,3 +17,8 @@ vk::UniqueSwapchainKHR v3d::vulkan::Device::createSwapchainKHRUnique(vk::Swapcha
 {
 	return std::move(device->createSwapchainKHRUnique(createInfo));
 }
+
+vk::UniqueShaderModule v3d::vulkan::Device::createShaderModuleUnique(std::vector<char> buffer) const
+{
+	return std::move(device->createShaderModuleUnique(vk::ShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), buffer.size(), reinterpret_cast<const uint32_t*>(buffer.data()))));
+}

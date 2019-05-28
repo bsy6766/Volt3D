@@ -32,7 +32,6 @@ namespace v3d
 
 			std::vector<char> readFile(std::string_view fileName);
 
-			bool init(std::string_view fileName, v3d::vulkan::Device& device);
 		public:
 			Shader(std::string_view fileName, v3d::vulkan::Device& device);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Shader);
