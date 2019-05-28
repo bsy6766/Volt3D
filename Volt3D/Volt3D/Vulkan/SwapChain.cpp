@@ -17,6 +17,7 @@
 v3d::vulkan::SwapChain::SwapChain(vk::UniqueSwapchainKHR&& swapChain)
 	: swapChain(std::move(swapChain))
 {
+	/*
 	std::vector<vk::Image> swapChainImages = device.getSwapchainImagesKHR(swapChain.get());
 
 	imageViews.reserve(swapChainImages.size());
@@ -27,4 +28,5 @@ v3d::vulkan::SwapChain::SwapChain(vk::UniqueSwapchainKHR&& swapChain)
 		vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, format, componentMapping, subResourceRange);
 		imageViews.push_back(std::move(device.createImageViewUnique(imageViewCreateInfo)));
 	}
+	*/
 }

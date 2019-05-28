@@ -28,7 +28,7 @@ namespace v3d
 		*
 		*	@since 1.0
 		*/
-		class SwapChain
+		class VOLT3D_DLL SwapChain
 		{
 		private:
 			vk::UniqueSwapchainKHR swapChain;

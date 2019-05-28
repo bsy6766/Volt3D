@@ -12,3 +12,8 @@
 v3d::vulkan::Device::Device(vk::UniqueDevice&& device)
 	: device(std::move(device))
 {}
+
+vk::UniqueSwapchainKHR v3d::vulkan::Device::createSwapchainKHRUnique(vk::SwapchainCreateInfoKHR & createInfo) const
+{
+	return std::move(device->createSwapchainKHRUnique(createInfo));
+}

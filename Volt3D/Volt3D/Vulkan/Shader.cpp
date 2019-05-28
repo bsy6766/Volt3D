@@ -1,14 +1,21 @@
+/**
+*	@file Shader.cpp
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
 #include <PreCompiled.h>
 
 #include "Shader.h"
 
 #include <fstream>
 
-Shader::Shader( std::string_view fileName, vk::UniqueDevice& device )
+v3d::vulkan::Shader::Shader( std::string_view fileName, v3d::vulkan::Device& device )
 	//: shaderModule( device->createShaderModuleUnique( reinterpret_cast<const uint32_t*>(readFile( fileName ).data()) ) )
 {}
 
-std::vector<char> Shader::readFile( std::string_view fileName )
+std::vector<char> v3d::vulkan::Shader::readFile( std::string_view fileName )
 {
 	std::vector<char> buffer;
 
@@ -26,7 +33,7 @@ std::vector<char> Shader::readFile( std::string_view fileName )
 	return buffer;
 }
 
-bool Shader::init( std::string_view fileName, vk::UniqueDevice& device )
+bool v3d::vulkan::Shader::init( std::string_view fileName, v3d::vulkan::Device& device )
 {
 	auto buffer = readFile( fileName );
 

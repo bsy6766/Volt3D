@@ -19,7 +19,7 @@ namespace v3d
 		class Surface;
 		class PhysicalDevice;
 
-		class Device
+		class VOLT3D_DLL Device
 		{
 			friend class Vulkan;
 		private:

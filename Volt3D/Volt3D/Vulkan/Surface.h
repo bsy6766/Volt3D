@@ -24,7 +24,7 @@ namespace v3d
 		*
 		*	@since 1.0
 		*/
-		class Surface
+		class VOLT3D_DLL Surface
 		{
 		private:
 			vk::UniqueSurfaceKHR surface;

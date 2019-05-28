@@ -157,6 +157,7 @@ bool v3d::vulkan::Context::initPhysicalDevice()
 bool v3d::vulkan::Context::initDevice()
 {
 	auto graphicsQueueFamilyIndex = physicalDevice->getGraphicsQueueFamilyIndex();
+	if (!graphicsQueueFamilyIndex.has_value()) return false;
 
 	const float queuePriority = 1.0f;
 	vk::DeviceQueueCreateInfo deviceQueueCreateInfo = vk::DeviceQueueCreateInfo

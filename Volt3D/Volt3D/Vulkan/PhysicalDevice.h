@@ -29,7 +29,7 @@ namespace v3d
 		*
 		*	@since 1.0
 		*/
-		class PhysicalDevice
+		class VOLT3D_DLL PhysicalDevice
 		{
 			friend class Context;
 
@@ -51,7 +51,6 @@ namespace v3d
 
 			CLASS_TO_VULKAN_HANDLE(vk::PhysicalDevice, physicalDevice);
 			
-
 			vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
 			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
 			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;

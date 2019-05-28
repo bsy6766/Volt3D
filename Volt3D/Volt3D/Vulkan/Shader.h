@@ -1,26 +1,45 @@
-#pragma once
+/**
+*	@file Shader.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
 
-#include <string>
 #include <vulkan/vulkan.hpp>
+
+#include <string_view>
 
 #include "utils/Macros.h"
 
-class Shader
+namespace v3d
 {
-private:
-	
-	vk::UniqueShaderModule shaderModule;
+	namespace vulkan
+	{
+		class Device;
 
-	std::vector<char> readFile( std::string_view fileName );
+		/**
+		*	@class Shader
+		*	@brief Wrapper for Vulkan's shader module
+		*
+		*	@group Vulkan
+		*
+		*	@since 1.0
+		*/
+		class VOLT3D_DLL Shader
+		{
+		private:
+			vk::UniqueShaderModule shaderModule;
 
-	bool init( std::string_view fileName, vk::UniqueDevice& device );
-public:
-	Shader( std::string_view fileName, vk::UniqueDevice& device );
+			std::vector<char> readFile(std::string_view fileName);
 
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Shader );
-	DEFAULT_MOVE_CONSTRUCTORS( Shader );
-	~Shader() {}
+			bool init(std::string_view fileName, v3d::vulkan::Device& device);
+		public:
+			Shader(std::string_view fileName, v3d::vulkan::Device& device);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Shader);
+			DEFAULT_MOVE_CONSTRUCTORS(Shader);
+			~Shader() {}
 
-	const vk::UniqueShaderModule& operator()() const noexcept { return shaderModule; }
-};
-
+			CLASS_TO_VULKAN_HANDLE(vk::UniqueShaderModule, shaderModule);
+		};
+	}
+}

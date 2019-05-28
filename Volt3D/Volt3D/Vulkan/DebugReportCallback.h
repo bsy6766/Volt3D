@@ -26,7 +26,7 @@ namespace v3d
 		*	
 		*	@since 1.0
 		*/
-		class DebugReportCallback
+		class VOLT3D_DLL DebugReportCallback
 		{
 			friend class Context;
 

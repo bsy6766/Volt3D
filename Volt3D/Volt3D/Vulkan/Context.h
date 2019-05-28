@@ -37,7 +37,7 @@ namespace v3d
 		*
 		*	@since 1.0
 		*/
-		class Context
+		class VOLT3D_DLL Context
 		{
 		private:
 			// Context instance

@@ -26,7 +26,7 @@ namespace v3d
 		*
 		*	@since 1.0
 		*/
-		class DebugUtilsMessenger
+		class VOLT3D_DLL DebugUtilsMessenger
 		{
 			friend class Context;
 
