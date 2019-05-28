@@ -58,7 +58,7 @@ namespace v3d
 			bool initPhysicalDevice();
 			bool initDevice();
 			bool initSwapChain();
-			//bool initGraphicsPipeline();
+			bool initGraphicsPipeline();
 			void release();
 
 		public:
@@ -68,9 +68,6 @@ namespace v3d
 			~Context();
 
 			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
-
-			std::vector<vk::ExtensionProperties> getExtensions() const;
-			std::vector<vk::LayerProperties> getLayers() const;
 		};
 	}
 }

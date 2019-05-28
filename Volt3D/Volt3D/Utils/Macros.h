@@ -22,9 +22,13 @@ _CLASS& operator=( const _CLASS& ) = delete;
 _CLASS( _CLASS&& other ) = default;				\
 _CLASS& operator=( _CLASS&& other ) = default;
 
-#define CLASS_TO_VULKAN_HANDLE(_CLASS, _HANDLE)								\
+#define CLASS_TO_VK_HANDLE(_CLASS, _HANDLE)										\
 inline explicit operator const _CLASS& () const noexcept { return _HANDLE; }	\
 inline const _CLASS& getHandle() const { return _HANDLE; }
 
+#define UNIQUE_TO_CPP_VK_HANDLE(_UNIQUE_, _CPP_, _HANDLE_)						\
+inline explicit operator const _UNIQUE_& () const noexcept { return _HANDLE_; }	\
+inline const _UNIQUE_& getHandle() const { return _HANDLE_; }					\
+inline const _CPP_& get() const { return _HANDLE_.get(); }
 
 #endif

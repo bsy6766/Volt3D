@@ -30,17 +30,22 @@ namespace v3d
 		*/
 		class VOLT3D_DLL SwapChain
 		{
+			friend class Context;
+
 		private:
 			vk::UniqueSwapchainKHR swapChain;
+			std::vector<vk::Image> swapChainImages;
 			std::vector<vk::UniqueImageView> imageViews;
 
+			bool init(v3d::vulkan::PhysicalDevice& physicalDevice, v3d::vulkan::Device& device, v3d::vulkan::Surface& surface);
+
 		public:
-			SwapChain(vk::UniqueSwapchainKHR&& swapChain);
+			SwapChain();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(SwapChain);
 			DEFAULT_MOVE_CONSTRUCTORS(SwapChain);
 			~SwapChain() {};
 
-			CLASS_TO_VULKAN_HANDLE(vk::UniqueSwapchainKHR, swapChain);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueSwapchainKHR, vk::SwapchainKHR, swapChain);
 		};
 	}
 }

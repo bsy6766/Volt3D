@@ -14,8 +14,11 @@
 
 namespace v3d
 {
+	namespace glfw { class Window; }
 	namespace vulkan
 	{
+		class Instance;
+
 		/**
 		*	@class Surface
 		*	@brief A wrapper of vulkan's surface
@@ -26,16 +29,20 @@ namespace v3d
 		*/
 		class VOLT3D_DLL Surface
 		{
+			friend class Context;
+
 		private:
 			vk::UniqueSurfaceKHR surface;
 
+			bool init(const v3d::glfw::Window& window, const v3d::vulkan::Instance& instance);
+
 		public:
-			Surface(vk::UniqueSurfaceKHR&& surface);
+			Surface();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Surface);
 			DEFAULT_MOVE_CONSTRUCTORS(Surface);
 			~Surface() {}
 
-			CLASS_TO_VULKAN_HANDLE(vk::UniqueSurfaceKHR, surface);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueSurfaceKHR, vk::SurfaceKHR, surface);
 		};
 	}
 }

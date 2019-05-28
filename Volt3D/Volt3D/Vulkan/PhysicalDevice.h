@@ -19,6 +19,7 @@ namespace v3d
 {
 	namespace vulkan
 	{
+		class Instance;
 		class Surface;
 
 		/**
@@ -35,21 +36,20 @@ namespace v3d
 
 		private:
 			vk::PhysicalDevice physicalDevice;
-			std::optional<uint32_t> graphicsQueueFamilyIndex;
-			std::optional<uint32_t> presentQueueFamilyIndex;
-			
-			static bool isSuitable(const vk::PhysicalDevice& physicalDevice);
+			uint32_t graphicsQueueFamilyIndex;
+			uint32_t presentQueueFamilyIndex;
 
-			std::optional<uint32_t> initGraphicsQueueFamilyIndex();
-			std::optional<uint32_t> initPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface);
+			bool init(const v3d::vulkan::Instance& instance, const v3d::vulkan::Surface& surface);
+			
+			bool isSuitable(const vk::PhysicalDevice& physicalDevice);
 
 		public:
-			PhysicalDevice(vk::PhysicalDevice&& physicalDevice, Surface& surface);
+			PhysicalDevice();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(PhysicalDevice);
 			DEFAULT_MOVE_CONSTRUCTORS(PhysicalDevice);
 			~PhysicalDevice() {}
 
-			CLASS_TO_VULKAN_HANDLE(vk::PhysicalDevice, physicalDevice);
+			CLASS_TO_VK_HANDLE(vk::PhysicalDevice, physicalDevice);
 			
 			vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
 			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
@@ -62,8 +62,8 @@ namespace v3d
 			vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
 			std::vector<vk::ExtensionProperties> EnumerateDeviceExtensionProperties() const;
 			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
-			std::optional<uint32_t> getGraphicsQueueFamilyIndex() const;
-			std::optional<uint32_t> getPresentQueueFamilyIndex() const;
+			uint32_t getGraphicsQueueFamilyIndex() const;
+			uint32_t getPresentQueueFamilyIndex() const;
 		};
 	}
 }

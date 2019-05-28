@@ -1,5 +1,12 @@
-﻿#ifndef UTILS_H
-#define UTILS_H
+﻿/**
+*	@file Utils.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef V3D_VK_UTILS_H
+#define V3D_VK_UTILS_H
 
 #include <vulkan/vulkan.hpp>
 
@@ -13,6 +20,16 @@ namespace v3d
 	{
 		namespace utils
 		{
+			static std::vector<vk::ExtensionProperties> getExtensions()
+			{
+				return vk::enumerateInstanceExtensionProperties();
+			}
+
+			static std::vector<vk::LayerProperties> getLayers()
+			{
+				return vk::enumerateInstanceLayerProperties();
+			}
+
 			static bool checkLayerProperty(std::vector<vk::LayerProperties>& layers, const char* requiredLayer)
 			{
 				for (const auto& layer : layers)

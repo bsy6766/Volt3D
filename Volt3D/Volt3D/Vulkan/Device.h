@@ -20,23 +20,37 @@ namespace v3d
 	{
 		class Surface;
 		class PhysicalDevice;
+		class SwapChain;
 
+		/**
+		*	@class Device
+		*	@breif Wrapper for Vulkan's device
+		*
+		*	@group vulkan
+		*
+		*	@since 1.0
+		*/
 		class VOLT3D_DLL Device
 		{
-			friend class Vulkan;
+			friend class Context;
+
 		private:
 			vk::UniqueDevice device;
 			
+			bool init(v3d::vulkan::PhysicalDevice& physicalDevice);
+
 		public:
-			Device(vk::UniqueDevice&& device);
+			Device();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Device);
 			DEFAULT_MOVE_CONSTRUCTORS(Device);
 			~Device() {}
 
-			CLASS_TO_VULKAN_HANDLE(vk::UniqueDevice, device);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueDevice, vk::Device, device);
 
-			vk::UniqueSwapchainKHR createSwapchainKHRUnique(vk::SwapchainCreateInfoKHR& createInfo) const;
+			vk::UniqueSwapchainKHR createSwapchainKHRUnique(const vk::SwapchainCreateInfoKHR& createInfo) const;
 			vk::UniqueShaderModule createShaderModuleUnique(std::vector<char> buffer) const;
+			std::vector<vk::Image> getSwapchainImagesKHR(const v3d::vulkan::SwapChain& swapChain) const;
+			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
 		};
 	}
 }

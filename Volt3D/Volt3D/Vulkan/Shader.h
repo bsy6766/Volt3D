@@ -38,7 +38,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(Shader);
 			~Shader() {}
 
-			CLASS_TO_VULKAN_HANDLE(vk::UniqueShaderModule, shaderModule);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueShaderModule, vk::ShaderModule, shaderModule);
 		};
 	}
 }

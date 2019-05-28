@@ -9,15 +9,64 @@
 
 #include "PhysicalDevice.h"
 
+#include "Instance.h"
 #include "Surface.h"
 
-#include <sstream>
-
-v3d::vulkan::PhysicalDevice::PhysicalDevice(vk::PhysicalDevice&& physicalDevice, Surface& surface)
+v3d::vulkan::PhysicalDevice::PhysicalDevice()
 	: physicalDevice(physicalDevice)
-	, graphicsQueueFamilyIndex(initGraphicsQueueFamilyIndex())
-	, presentQueueFamilyIndex(initPresentsQueueFamilyIndex(surface))
+	, graphicsQueueFamilyIndex(0)
+	, presentQueueFamilyIndex(0)
 {}
+
+bool v3d::vulkan::PhysicalDevice::init(const v3d::vulkan::Instance& instance, const v3d::vulkan::Surface& surface)
+{
+	std::vector<vk::PhysicalDevice> physicalDevices = std::move(instance.enumeratePhysicalDevices());
+	bool foundPhyscialDevice = false;
+
+	for (vk::PhysicalDevice& curPhysicalDevice : physicalDevices)
+	{
+		if (isSuitable(curPhysicalDevice))
+		{
+			physicalDevice = curPhysicalDevice;
+			foundPhyscialDevice = true;
+			break;
+		}
+	}
+
+	if (!foundPhyscialDevice) return false;
+
+	std::optional<uint32_t> gIndex;
+	std::optional<uint32_t> pIndex;
+
+	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+	if (queueFamilyProperties.empty()) return false;
+
+	uint32_t i = 0;
+	for (auto& queueFamilyProperty : queueFamilyProperties)
+	{
+		if (queueFamilyProperty.queueCount > 0 && (queueFamilyProperty.queueFlags & vk::QueueFlagBits::eGraphics))
+		{
+			gIndex.emplace(i);
+		}
+
+		vk::Bool32 supportSurface = physicalDevice.getSurfaceSupportKHR(i, surface.get());
+		if (queueFamilyProperty.queueCount > 0 && supportSurface)
+		{
+			pIndex.emplace(i);
+		}
+
+		if (gIndex.has_value() && pIndex.has_value())
+		{
+			graphicsQueueFamilyIndex = gIndex.value();
+			presentQueueFamilyIndex = pIndex.value();
+			return true;
+		}
+
+		i++;
+	}
+
+	return false;
+}
 
 bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalDevice)
 {
@@ -72,51 +121,6 @@ bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalD
 	logger.critical("Failed to find discrete GPU");
 
 	return true;
-}
-
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::initGraphicsQueueFamilyIndex()
-{
-	std::optional<uint32_t> gIndex;
-
-	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-	if (queueFamilyProperties.empty()) return gIndex;
-
-	uint32_t i = 0;
-	for (auto& queueFamilyProperty : queueFamilyProperties)
-	{
-		if (queueFamilyProperty.queueCount > 0 && (queueFamilyProperty.queueFlags & vk::QueueFlagBits::eGraphics))
-		{
-			gIndex.emplace(i);
-			break;
-		}
-
-		i++;
-	}
-
-	return gIndex;
-}
-
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::initPresentsQueueFamilyIndex(v3d::vulkan::Surface& surface)
-{
-	std::optional<uint32_t> pIndex = 0;
-
-	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-	if (queueFamilyProperties.empty()) return pIndex;
-
-	uint32_t i = 0;
-	for (auto& queueFamilyProperty : queueFamilyProperties)
-	{
-		vk::Bool32 supportSurface = physicalDevice.getSurfaceSupportKHR(i, surface.getHandle().get());
-		if (queueFamilyProperty.queueCount > 0 && supportSurface)
-		{
-			pIndex.emplace(i);
-			break;
-		}
-
-		i++;
-	}
-
-	return pIndex;
 }
 
 vk::UniqueDevice v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
@@ -174,12 +178,12 @@ std::vector<vk::LayerProperties> v3d::vulkan::PhysicalDevice::enumerateDeviceLay
 	return physicalDevice.enumerateDeviceLayerProperties();
 }
 
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getGraphicsQueueFamilyIndex() const
+uint32_t v3d::vulkan::PhysicalDevice::getGraphicsQueueFamilyIndex() const
 {
 	return graphicsQueueFamilyIndex;
 }
 
-std::optional<uint32_t> v3d::vulkan::PhysicalDevice::getPresentQueueFamilyIndex() const
+uint32_t v3d::vulkan::PhysicalDevice::getPresentQueueFamilyIndex() const
 {
 	return presentQueueFamilyIndex;
 }

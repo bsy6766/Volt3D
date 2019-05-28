@@ -9,6 +9,18 @@
 
 #include "Surface.h"
 
-v3d::vulkan::Surface::Surface( vk::UniqueSurfaceKHR&& surface )
-	: surface( std::move( surface ) )
+#include "Core/Window.h"
+#include "Instance.h"
+
+v3d::vulkan::Surface::Surface()
+	: surface()
 {}
+
+bool v3d::vulkan::Surface::init(const v3d::glfw::Window& window, const v3d::vulkan::Instance& instance)
+{
+	VkSurfaceKHR cVkSurfaceKHR;
+	if (!window.createWindowSurface(instance, cVkSurfaceKHR)) return false;
+	surface = std::move(vk::UniqueSurfaceKHR(cVkSurfaceKHR, instance.get()));
+
+	return true;
+}

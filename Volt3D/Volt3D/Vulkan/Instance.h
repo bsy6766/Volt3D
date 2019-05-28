@@ -16,6 +16,7 @@
 
 namespace v3d
 {
+	namespace glfw { class Window; }
 	namespace vulkan
 	{
 		/**
@@ -26,16 +27,20 @@ namespace v3d
 		*/
 		class VOLT3D_DLL Instance
 		{
+			friend class Context;
+
 		private:
 			vk::UniqueInstance instance;
 
+			bool init(const v3d::glfw::Window& window, const bool validationLayerEnabled);
+
 		public:
-			Instance(vk::UniqueInstance&& instance);
+			Instance();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Instance);
 			DEFAULT_MOVE_CONSTRUCTORS(Instance);
 			~Instance() {}
 
-			CLASS_TO_VULKAN_HANDLE(vk::UniqueInstance, instance);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueInstance, vk::Instance, instance);
 
 			inline PFN_vkVoidFunction getProcAddr(const char* pName) const;
 			inline vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique(const vk::DebugReportCallbackCreateInfoEXT& createInfo) const;

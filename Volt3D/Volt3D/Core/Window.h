@@ -48,7 +48,7 @@ namespace v3d
 			bool closeWindow();
 			void releaseGLFW();
 
-			bool createWindowSurface(v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
+			bool createWindowSurface(const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
 
 			std::size_t getGLFWVKExtensions(std::vector<const char*>& extensions) const;
 		};

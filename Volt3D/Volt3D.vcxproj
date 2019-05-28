@@ -203,6 +203,7 @@
     <ClInclude Include="Volt3D\Vulkan\Shader.h" />
     <ClInclude Include="Volt3D\Vulkan\Surface.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
+    <ClInclude Include="Volt3D\Vulkan\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Volt3D\Vulkan\Shader.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\frag.spv" />
