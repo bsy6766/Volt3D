@@ -51,6 +51,8 @@ namespace v3d
 			vk::UniqueShaderModule createShaderModuleUnique(std::vector<char> buffer) const;
 			std::vector<vk::Image> getSwapchainImagesKHR(const v3d::vulkan::SwapChain& swapChain) const;
 			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
+			vk::UniquePipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
+			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 		};
 	}
 }

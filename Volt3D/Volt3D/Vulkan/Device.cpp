@@ -73,3 +73,13 @@ vk::UniqueImageView v3d::vulkan::Device::createImageViewUnique(const vk::ImageVi
 {
 	return device->createImageViewUnique(createInfo);
 }
+
+vk::UniquePipelineLayout v3d::vulkan::Device::createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const
+{
+	return device->createPipelineLayoutUnique(createInfo);
+}
+
+vk::UniquePipeline v3d::vulkan::Device::createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const
+{
+	return device->createGraphicsPipelineUnique(nullptr, createInfo);
+}

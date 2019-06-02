@@ -12,20 +12,33 @@
 #include "Device.h"
 #include "Shader.h"
 #include "SwapChain.h"
+#include "RenderPass.h"
 
 v3d::vulkan::Pipeline::Pipeline()
-	: pipeline()
+	: pipelineLayout()
+	, pipeline()
 {}
 
-bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain)
+bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass)
 {
+	vk::PipelineLayoutCreateInfo layoutCreateInfo
+	(
+		vk::PipelineLayoutCreateFlags(),
+		0,
+		nullptr,
+		0,
+		nullptr
+	);
+
+	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
+
 	v3d::vulkan::Shader vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
 
 	v3d::vulkan::Shader fragShader;
 	if (!fragShader.init("Shaders/frag.spv", device)) return false;
 
-	vk::PipelineShaderStageCreateInfo shaderStageCreateInfos[2] =
+	vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
 	{
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main"),
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
@@ -170,6 +183,26 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		2,
 		dynamicStates
 	);
+
+	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
+	(
+		vk::PipelineCreateFlags(),                  // flags
+		2,                                          // stageCount
+		pipelineShaderStageCreateInfos,             // pStages
+		&pipelineVertexInputStateCreateInfo,        // pVertexInputState
+		&pipelineInputAssemblyStateCreateInfo,      // pInputAssemblyState
+		nullptr,                                    // pTessellationState
+		&pipelineViewportStateCreateInfo,           // pViewportState
+		&pipelineRasterizationStateCreateInfo,      // pRasterizationState
+		&pipelineMultisampleStateCreateInfo,        // pMultisampleState
+		nullptr,							        // pDepthStencilState
+		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
+		&pipelineDynamicStateCreateInfo,            // pDynamicState
+		pipelineLayout.get(),                       // layout
+		renderPass.get()                            // renderPass
+	);
+
+	pipeline = device.createPipelineUnique(graphicsPipelineCreateInfo);
 
 	return true;
 }

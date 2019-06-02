@@ -19,6 +19,7 @@
 #include "SwapChain.h"
 #include "Shader.h"
 #include "RenderPass.h"
+#include "Pipeline.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -101,7 +102,7 @@ bool v3d::vulkan::Context::initPhysicalDevice()
 	if (!physicalDevice) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::PhysicalDevice>(); return false; }
 	if (!physicalDevice->init(*instance, *surface)) return false;
 
-	return false;
+	return true;
 }
 
 bool v3d::vulkan::Context::initDevice()
@@ -130,7 +131,9 @@ bool v3d::vulkan::Context::initRenderPass()
 
 bool v3d::vulkan::Context::initGraphicsPipeline()
 {
-
+	pipeline = new (std::nothrow) v3d::vulkan::Pipeline();
+	if (pipeline == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Pipeline>(); return false; }
+	if (!pipeline->init(*device, *swapChain, *renderPass)) return false;
 	return true;
 }
 

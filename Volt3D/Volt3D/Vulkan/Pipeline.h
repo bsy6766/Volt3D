@@ -18,6 +18,7 @@ namespace v3d
 	{
 		class Device;
 		class SwapChain;
+		class RenderPass;
 
 		/**
 		*	@class Pipeline
@@ -32,9 +33,10 @@ namespace v3d
 			friend class Context;
 
 		private:
+			vk::UniquePipelineLayout pipelineLayout;
 			vk::UniquePipeline pipeline;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain);
+			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass);
 
 		public:
 			Pipeline();
