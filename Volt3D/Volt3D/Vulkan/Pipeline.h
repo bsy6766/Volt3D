@@ -1,12 +1,12 @@
 ﻿/**
-*	@file RenderPass.h
+*	@file Pipeline.h
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef V3D_VK_RENDER_PASS_H
-#define V3D_VK_RENDER_PASS_H
+#ifndef V3D_VK_PIPELINE_H
+#define V3D_VK_PIPELINE_H
 
 #include <vulkan/vulkan.hpp>
 
@@ -20,28 +20,29 @@ namespace v3d
 		class SwapChain;
 
 		/**
-		*	@class RenderPass
-		*	@brief Wrapper for Vulkan's RenderPass
+		*	@class Pipeline
+		*	@brief Wrapper of Vulkan's Pipeline
 		*
 		*	@group vulkan
 		*
 		*	@since 1.0
 		*/
-		class VOLT3D_DLL RenderPass
+		class VOLT3D_DLL Pipeline
 		{
 			friend class Context;
+
 		private:
-			vk::UniqueRenderPass renderPass;
+			vk::UniquePipeline pipeline;
 
 			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain);
 
 		public:
-			RenderPass();
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(RenderPass);
-			DEFAULT_MOVE_CONSTRUCTORS(RenderPass);
-			~RenderPass() {}
+			Pipeline();
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Pipeline);
+			DEFAULT_MOVE_CONSTRUCTORS(Pipeline);
+			~Pipeline() {}
 
-			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueRenderPass, vk::RenderPass, renderPass);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniquePipeline, vk::Pipeline, pipeline);
 		};
 	}
 }

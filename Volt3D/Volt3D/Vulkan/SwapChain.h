@@ -1,5 +1,5 @@
 ﻿/**
-*	@file Surface.h
+*	@file SwapChain.h
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek

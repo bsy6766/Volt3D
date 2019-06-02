@@ -78,6 +78,9 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>DLL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -145,7 +148,10 @@
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\RenderPass.h" />
+    <ClInclude Include="Volt3D\Vulkan\RenderPass.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vert.spv">

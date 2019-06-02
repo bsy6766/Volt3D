@@ -9,8 +9,8 @@
 
 #include "RenderPass.h"
 
-#include "Vulkan/Device.h"
-#include "Vulkan/SwapChain.h"
+#include "Device.h"
+#include "SwapChain.h"
 
 v3d::vulkan::RenderPass::RenderPass()
 	: renderPass()

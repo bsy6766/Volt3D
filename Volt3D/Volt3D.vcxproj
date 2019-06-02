@@ -200,6 +200,7 @@
     <ClInclude Include="Volt3D\Vulkan\Device.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Shader.h" />
     <ClInclude Include="Volt3D\Vulkan\Surface.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="Volt3D\Vulkan\Device.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Shader.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />

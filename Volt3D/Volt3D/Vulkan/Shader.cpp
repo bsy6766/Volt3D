@@ -35,7 +35,7 @@ std::vector<char> v3d::vulkan::Shader::readFile(std::string_view fileName)
 	return buffer;
 }
 
-bool v3d::vulkan::Shader::init(std::string_view fileName, v3d::vulkan::Device& device)
+bool v3d::vulkan::Shader::init(std::string_view fileName, const v3d::vulkan::Device& device)
 {
 	shaderModule = std::move(device.createShaderModuleUnique(readFile(fileName)));
 	return true;

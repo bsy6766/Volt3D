@@ -31,6 +31,7 @@ namespace v3d
 		class VOLT3D_DLL Shader
 		{
 			friend class Context;
+			friend class Pipeline;
 
 		private:
 			Shader();
@@ -39,7 +40,7 @@ namespace v3d
 
 			std::vector<char> readFile(std::string_view fileName);
 
-			bool init(std::string_view fileName, v3d::vulkan::Device& device);
+			bool init(std::string_view fileName, const v3d::vulkan::Device& device);
 
 		public:
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Shader);
