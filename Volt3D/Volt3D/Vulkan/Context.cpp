@@ -17,7 +17,7 @@
 #include "PhysicalDevice.h"
 #include "Device.h"
 #include "SwapChain.h"
-//#include "Shader.h"
+#include "Shader.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -30,6 +30,8 @@ v3d::vulkan::Context::Context()
 	, physicalDevice(nullptr)
 	, device(nullptr)
 	, swapChain(nullptr)
+	, renderPass(nullptr)
+	, pipeline(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -55,6 +57,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initPhysicalDevice()) return false;
 	if (!initDevice()) return false;
 	if (!initSwapChain()) return false;
+	if (!initGraphicsPipeline()) return false;
 
 	return true;
 }
@@ -116,35 +119,178 @@ bool v3d::vulkan::Context::initSwapChain()
 	return true;
 }
 
-/*
+bool v3d::vulkan::Context::initRenderPass()
+{
+	return false;
+}
+
 bool v3d::vulkan::Context::initGraphicsPipeline()
 {
-	//Shader* vertShader = Shader::create( "Shaders/vert.spv", logicalDevice );
-	//if( !vertShader ) return false;
-	//Shader* fragShader = Shader::create( "Shaders/frag.spv", logicalDevice );
-	//if( !fragShader ) return false;
+	v3d::vulkan::Shader vertShader;
+	if (!vertShader.init("Shaders/vert.spv", *device)) return false;
 
+	v3d::vulkan::Shader fragShader;
+	if (!fragShader.init("Shaders/frag.spv", *device)) return false;
+	
+	vk::PipelineShaderStageCreateInfo shaderStageCreateInfos[2] =
+	{
+	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main"),
+	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
+	};
 
-	//const auto v = { Shader() };
+	// @note visit later
+	//vk::VertexInputBindingDescription vertexInputBindingDescription(0, sizeof(coloredCubeData[0]));
+	//vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
+	//{
+	//  vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
+	//  vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
+	//};
 
-	//vk::PipelineShaderStageCreateInfo vertCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, &(Shader()), "main" );
+	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
+	(
+		vk::PipelineVertexInputStateCreateFlags(),
+		0,
+		nullptr,
+		0,
+		nullptr
+	);
 
-	//delete vertShader;
-	//delete fragShader;
+	vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo
+	(
+		vk::PipelineInputAssemblyStateCreateFlags(), 
+		vk::PrimitiveTopology::eTriangleList
+	);
+
+	const vk::Extent2D& extent = swapChain->getExtent2D();
+
+	vk::Viewport viewport
+	(
+		0.0f,
+		0.0f,
+		static_cast<float>(extent.width),
+		static_cast<float>(extent.height),
+		0.0f, 
+		1.0f
+	);
+
+	vk::Rect2D scissor
+	(
+		vk::Offset2D(0, 0),
+		extent
+	);
+
+	vk::PipelineViewportStateCreateInfo pipelineViewportStateCreateInfo
+	(
+		vk::PipelineViewportStateCreateFlags(), 
+		1, 
+		&viewport, 
+		1,
+		&scissor
+	);
+
+	vk::PipelineRasterizationStateCreateInfo pipelineRasterizationStateCreateInfo
+	(
+		vk::PipelineRasterizationStateCreateFlags(),  // flags
+		false,                                        // depthClampEnable
+		false,                                        // rasterizerDiscardEnable
+		vk::PolygonMode::eFill,                       // polygonMode
+		vk::CullModeFlagBits::eBack,                  // cullMode
+		vk::FrontFace::eClockwise,                    // frontFace
+		false,                                        // depthBiasEnable
+		0.0f,                                         // depthBiasConstantFactor
+		0.0f,                                         // depthBiasClamp
+		0.0f,                                         // depthBiasSlopeFactor
+		1.0f                                          // lineWidth
+	);
+
+	// Not using multisampling
+	vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
+
+	// @note visit later
+	// Depth and stencil
+	//vk::StencilOpState stencilOpState(vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::CompareOp::eAlways);
+	//vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo
+	//(
+	//	vk::PipelineDepthStencilStateCreateFlags(), // flags
+	//	true,                                       // depthTestEnable
+	//	true,                                       // depthWriteEnable
+	//	vk::CompareOp::eLessOrEqual,                // depthCompareOp
+	//	false,                                      // depthBoundTestEnable
+	//	false,                                      // stencilTestEnable
+	//	stencilOpState,                             // front
+	//	stencilOpState                              // back
+	//);
+
+	vk::ColorComponentFlags colorComponentFlags
+	(
+		vk::ColorComponentFlagBits::eR | 
+		vk::ColorComponentFlagBits::eG | 
+		vk::ColorComponentFlagBits::eB | 
+		vk::ColorComponentFlagBits::eA
+	);
+
+	// Blending off
+	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
+	(
+		false,                      // blendEnable
+		vk::BlendFactor::eZero,     // srcColorBlendFactor
+		vk::BlendFactor::eZero,     // dstColorBlendFactor
+		vk::BlendOp::eAdd,          // colorBlendOp
+		vk::BlendFactor::eZero,     // srcAlphaBlendFactor
+		vk::BlendFactor::eZero,     // dstAlphaBlendFactor
+		vk::BlendOp::eAdd,          // alphaBlendOp
+		colorComponentFlags         // colorWriteMask
+	);
+
+	// typical blending
+	//vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
+	//(
+	//	true,									// blendEnable
+	//	vk::BlendFactor::eSrcAlpha,				// srcColorBlendFactor
+	//	vk::BlendFactor::eOneMinusSrcAlpha,     // dstColorBlendFactor
+	//	vk::BlendOp::eAdd,						// colorBlendOp
+	//	vk::BlendFactor::eOne,					// srcAlphaBlendFactor
+	//	vk::BlendFactor::eZero,					// dstAlphaBlendFactor
+	//	vk::BlendOp::eAdd,						// alphaBlendOp
+	//	colorComponentFlags						// colorWriteMask
+	//);
+
+	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo
+	(
+		vk::PipelineColorBlendStateCreateFlags(),   // flags
+		false,                                      // logicOpEnable
+		vk::LogicOp::eNoOp,                         // logicOp
+		1,                                          // attachmentCount
+		&pipelineColorBlendAttachmentState,         // pAttachments
+		{ { (1.0f, 1.0f, 1.0f, 1.0f) } }            // blendConstants
+	);
+
+	vk::DynamicState dynamicStates[2] = 
+	{ 
+		vk::DynamicState::eViewport, 
+		vk::DynamicState::eScissor
+	};
+
+	vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo
+	(
+		vk::PipelineDynamicStateCreateFlags(), 
+		2, 
+		dynamicStates
+	);
 
 	return true;
 }
-
-*/
 
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
-	//if( enableValidationLayer && debugCallback ) 
-	//{ 
-	//	delete debugCallback; 
-	//	debugCallback = nullptr;
-	//}
+	SAFE_DELETE(swapChain);
+	SAFE_DELETE(device);
+	SAFE_DELETE(physicalDevice);
+	SAFE_DELETE(surface);
+	SAFE_DELETE(debugUtilsMessenger);
+	SAFE_DELETE(debugReportCallback);
+	SAFE_DELETE(instance);
 	logger.info("Releasing Context finished");
 }

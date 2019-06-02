@@ -49,27 +49,27 @@ bool v3d::vulkan::Device::init(v3d::vulkan::PhysicalDevice& physicalDevice)
 		requiredExtension.data()
 	);
 
-	device = std::move(physicalDevice.createDeviceUnique(createInfo));
+	device = physicalDevice.createDeviceUnique(createInfo);
 
 	return true;
 }
 
 vk::UniqueSwapchainKHR v3d::vulkan::Device::createSwapchainKHRUnique(const vk::SwapchainCreateInfoKHR & createInfo) const
 {
-	return std::move(device->createSwapchainKHRUnique(createInfo));
+	return device->createSwapchainKHRUnique(createInfo);
 }
 
 vk::UniqueShaderModule v3d::vulkan::Device::createShaderModuleUnique(std::vector<char> buffer) const
 {
-	return std::move(device->createShaderModuleUnique(vk::ShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), buffer.size(), reinterpret_cast<const uint32_t*>(buffer.data()))));
+	return device->createShaderModuleUnique(vk::ShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), buffer.size(), reinterpret_cast<const uint32_t*>(buffer.data())));
 }
 
 std::vector<vk::Image> v3d::vulkan::Device::getSwapchainImagesKHR(const v3d::vulkan::SwapChain& swapChain) const
 {
-	return std::move(device->getSwapchainImagesKHR(swapChain.get()));
+	return device->getSwapchainImagesKHR(swapChain.get());
 }
 
 vk::UniqueImageView v3d::vulkan::Device::createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const
 {
-	return std::move(device->createImageViewUnique(createInfo));
+	return device->createImageViewUnique(createInfo);
 }

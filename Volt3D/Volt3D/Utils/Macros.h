@@ -14,17 +14,20 @@
 #define VOLT3D_DLL __declspec(dllimport)  
 #endif
 
-#define DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(_CLASS)	\
-_CLASS( const _CLASS& ) = delete;							\
-_CLASS& operator=( const _CLASS& ) = delete;
+#define SAFE_DELETE(_INSTANCE_)								\
+if(_INSTANCE_) { delete _INSTANCE_; _INSTANCE_ = nullptr; }	
 
-#define DEFAULT_MOVE_CONSTRUCTORS(_CLASS)		\
-_CLASS( _CLASS&& other ) = default;				\
-_CLASS& operator=( _CLASS&& other ) = default;
+#define DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(_CLASS_)	\
+_CLASS_( const _CLASS_& ) = delete;							\
+_CLASS_& operator=( const _CLASS_& ) = delete;
 
-#define CLASS_TO_VK_HANDLE(_CLASS, _HANDLE)										\
-inline explicit operator const _CLASS& () const noexcept { return _HANDLE; }	\
-inline const _CLASS& getHandle() const { return _HANDLE; }
+#define DEFAULT_MOVE_CONSTRUCTORS(_CLASS_)			\
+_CLASS_( _CLASS_&& other ) = default;				\
+_CLASS_& operator=( _CLASS_&& other ) = default;
+
+#define CLASS_TO_VK_HANDLE(_CLASS_, _HANDLE_)									\
+inline explicit operator const _CLASS_& () const noexcept { return _HANDLE_; }	\
+inline const _CLASS_& getHandle() const { return _HANDLE_; }
 
 #define UNIQUE_TO_CPP_VK_HANDLE(_UNIQUE_, _CPP_, _HANDLE_)						\
 inline explicit operator const _UNIQUE_& () const noexcept { return _HANDLE_; }	\

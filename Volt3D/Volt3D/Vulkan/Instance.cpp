@@ -55,7 +55,7 @@ bool v3d::vulkan::Instance::init(const v3d::glfw::Window& window, const bool val
 		requiredExtensions.data()
 	);
 
-	instance = std::move(vk::createInstanceUnique(createInfo));
+	instance = vk::createInstanceUnique(createInfo);
 
 	return true;
 }
@@ -67,15 +67,15 @@ PFN_vkVoidFunction v3d::vulkan::Instance::getProcAddr(const char* pName) const
 
 inline vk::UniqueDebugReportCallbackEXT v3d::vulkan::Instance::createDebugReportCallbackEXTUnique(const vk::DebugReportCallbackCreateInfoEXT& createInfo) const
 {
-	return std::move(instance.get().createDebugReportCallbackEXTUnique(createInfo));
+	return instance.get().createDebugReportCallbackEXTUnique(createInfo);
 }
 
 inline vk::UniqueDebugUtilsMessengerEXT v3d::vulkan::Instance::createDebugUtilsMessengerEXTUnique(const vk::DebugUtilsMessengerCreateInfoEXT& createInfo) const
 {
-	return std::move(instance.get().createDebugUtilsMessengerEXTUnique(createInfo));
+	return instance.get().createDebugUtilsMessengerEXTUnique(createInfo);
 }
 
 inline std::vector<vk::PhysicalDevice> v3d::vulkan::Instance::enumeratePhysicalDevices() const
 {
-	return std::move(instance->enumeratePhysicalDevices());
+	return instance->enumeratePhysicalDevices();
 }

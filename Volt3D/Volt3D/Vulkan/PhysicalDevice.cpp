@@ -20,7 +20,7 @@ v3d::vulkan::PhysicalDevice::PhysicalDevice()
 
 bool v3d::vulkan::PhysicalDevice::init(const v3d::vulkan::Instance& instance, const v3d::vulkan::Surface& surface)
 {
-	std::vector<vk::PhysicalDevice> physicalDevices = std::move(instance.enumeratePhysicalDevices());
+	std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 	bool foundPhyscialDevice = false;
 
 	for (vk::PhysicalDevice& curPhysicalDevice : physicalDevices)
@@ -125,7 +125,7 @@ bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalD
 
 vk::UniqueDevice v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
 {
-	return std::move(physicalDevice.createDeviceUnique(createInfo));
+	return physicalDevice.createDeviceUnique(createInfo);
 }
 
 std::vector<vk::QueueFamilyProperties> v3d::vulkan::PhysicalDevice::getQueueFamilyProperties() const

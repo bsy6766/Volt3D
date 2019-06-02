@@ -13,8 +13,8 @@
 
 #include "Device.h"
 
-v3d::vulkan::Shader::Shader(std::string_view fileName, v3d::vulkan::Device& device)
-	: shaderModule(std::move(device.createShaderModuleUnique(readFile(fileName))))
+v3d::vulkan::Shader::Shader()
+	: shaderModule()
 {}
 
 std::vector<char> v3d::vulkan::Shader::readFile(std::string_view fileName)
@@ -33,4 +33,10 @@ std::vector<char> v3d::vulkan::Shader::readFile(std::string_view fileName)
 	file.close();
 
 	return buffer;
+}
+
+bool v3d::vulkan::Shader::init(std::string_view fileName, v3d::vulkan::Device& device)
+{
+	shaderModule = std::move(device.createShaderModuleUnique(readFile(fileName)));
+	return true;
 }

@@ -28,6 +28,8 @@ namespace v3d
 		class Device;
 		class Surface;
 		class SwapChain;
+		class RenderPass;
+		class Pipeline;
 
 		/**
 		*	@class Context
@@ -50,6 +52,8 @@ namespace v3d
 			v3d::vulkan::PhysicalDevice* physicalDevice;
 			v3d::vulkan::Device* device;
 			v3d::vulkan::SwapChain* swapChain;
+			v3d::vulkan::RenderPass* renderPass;
+			v3d::vulkan::Pipeline* pipeline;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -58,6 +62,7 @@ namespace v3d
 			bool initPhysicalDevice();
 			bool initDevice();
 			bool initSwapChain();
+			bool initRenderPass();
 			bool initGraphicsPipeline();
 			void release();
 

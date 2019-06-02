@@ -17,6 +17,7 @@
 
 v3d::vulkan::SwapChain::SwapChain()
 	: swapChain()
+	, extent()
 {}
 
 bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v3d::vulkan::Device& device, v3d::vulkan::Surface& surface)
@@ -27,17 +28,16 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	vk::Format format = (formats.front().format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats.front().format;
 
 	vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-	vk::Extent2D swapChainExtent;
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
 	{
 		// If the surface size is undefined, the size is set to the size of the images requested.
-		swapChainExtent.width = std::clamp(1280u, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
-		swapChainExtent.height = std::clamp(720u, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+		extent.width = std::clamp(1280u, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+		extent.height = std::clamp(720u, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
 	}
 	else
 	{
 		// If the surface size is defined, the swap chain size must match
-		swapChainExtent = surfaceCapabilities.currentExtent;
+		extent = surfaceCapabilities.currentExtent;
 	}
 
 	// The FIFO present mode is guaranteed by the spec to be supported
@@ -58,7 +58,7 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 		surfaceCapabilities.minImageCount,
 		format,
 		vk::ColorSpaceKHR::eSrgbNonlinear,
-		swapChainExtent,
+		extent,
 		1,
 		vk::ImageUsageFlagBits::eColorAttachment,
 		vk::SharingMode::eExclusive,
@@ -97,4 +97,9 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	}
 
 	return true;
+}
+
+const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const
+{
+	return extent;
 }

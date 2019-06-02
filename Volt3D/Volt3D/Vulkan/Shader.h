@@ -27,13 +27,18 @@ namespace v3d
 		*/
 		class VOLT3D_DLL Shader
 		{
+			friend class Context;
+
 		private:
+			Shader();
+
 			vk::UniqueShaderModule shaderModule;
 
 			std::vector<char> readFile(std::string_view fileName);
 
+			bool init(std::string_view fileName, v3d::vulkan::Device& device);
+
 		public:
-			Shader(std::string_view fileName, v3d::vulkan::Device& device);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Shader);
 			DEFAULT_MOVE_CONSTRUCTORS(Shader);
 			~Shader() {}
