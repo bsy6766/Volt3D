@@ -34,6 +34,7 @@ namespace v3d
 
 		private:
 			vk::UniqueSwapchainKHR swapChain;
+			vk::Format format;
 			vk::Extent2D extent;
 			std::vector<vk::Image> swapChainImages;
 			std::vector<vk::UniqueImageView> imageViews;
@@ -48,6 +49,7 @@ namespace v3d
 
 			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueSwapchainKHR, vk::SwapchainKHR, swapChain);
 
+			const vk::Format& getFormat() const;
 			const vk::Extent2D& getExtent2D() const;
 		};
 	}

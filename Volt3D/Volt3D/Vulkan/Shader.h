@@ -5,6 +5,9 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
+#ifndef V3D_VK_SHADER_H
+#define V3D_VK_SHADER_H
+
 #include <vulkan/vulkan.hpp>
 
 #include <string_view>
@@ -47,3 +50,5 @@ namespace v3d
 		};
 	}
 }
+
+#endif

@@ -17,6 +17,7 @@
 
 v3d::vulkan::SwapChain::SwapChain()
 	: swapChain()
+	, format()
 	, extent()
 {}
 
@@ -25,7 +26,7 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	std::vector<vk::SurfaceFormatKHR> formats = physicalDevice.getSurfaceFormatsKHR(surface);
 	if (formats.empty()) return false;
 
-	vk::Format format = (formats.front().format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats.front().format;
+	format = (formats.front().format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats.front().format;
 
 	vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
@@ -97,6 +98,11 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	}
 
 	return true;
+}
+
+const vk::Format& v3d::vulkan::SwapChain::getFormat() const
+{
+	return format;
 }
 
 const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const

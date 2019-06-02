@@ -77,6 +77,9 @@
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp">
+      <Filter>DLL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -142,6 +145,7 @@
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\RenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vert.spv">

@@ -18,6 +18,7 @@
 #include "Device.h"
 #include "SwapChain.h"
 #include "Shader.h"
+#include "RenderPass.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -121,7 +122,10 @@ bool v3d::vulkan::Context::initSwapChain()
 
 bool v3d::vulkan::Context::initRenderPass()
 {
-	return false;
+	renderPass = new (std::nothrow) v3d::vulkan::RenderPass();
+	if (renderPass == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::RenderPass>(); return false; }
+	if (!renderPass->init(*device, *swapChain)) return false;
+	return true;
 }
 
 bool v3d::vulkan::Context::initGraphicsPipeline()
@@ -285,6 +289,7 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(renderPass);
 	SAFE_DELETE(swapChain);
 	SAFE_DELETE(device);
 	SAFE_DELETE(physicalDevice);
