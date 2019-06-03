@@ -80,11 +80,11 @@
     <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
-      <Filter>DLL</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Core\Preference.cpp">
       <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
