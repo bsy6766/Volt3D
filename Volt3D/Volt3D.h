@@ -1,4 +1,3 @@
-
 /**
 *	@file Volt3D.h
 *
@@ -9,6 +8,10 @@
 #ifndef VOLT3D_H
 #define VOLT3D_H
 
+// Config
+#include "Config/BuildConfig.h"
+#include "Config/GLFWCallbackConfig.h"
+
 // Core
 #include "Core/Engine.h"
 #include "Core/GLFWCallbacks.h"
@@ -17,9 +20,6 @@
 // Enums
 #include "Enums/WindowMode.h"
 
-// Config
-#include "Config/GLFWCallbackConfig.h"
-
 // Utils
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"
@@ -27,12 +27,16 @@
 
 // Vulkan
 #include "Vulkan/Context.h"
-#include "Vulkan/Instance.h"
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
-#include "Vulkan/Surface.h"
-#include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Device.h"
+#include "Vulkan/Instance.h"
+#include "Vulkan/PhysicalDevice.h"
+#include "Vulkan/Pipeline.h"
+#include "Vulkan/RenderPass.h"
+#include "Vulkan/Shader.h"
+#include "Vulkan/Surface.h"
 #include "Vulkan/SwapChain.h"
+#include "Vulkan/Utils.h"
 
 #endif
