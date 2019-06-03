@@ -51,6 +51,8 @@ namespace v3d
 
 			const vk::Format& getFormat() const;
 			const vk::Extent2D& getExtent2D() const;
+			const std::size_t getImageViewsSize() const;
+			const std::vector<vk::UniqueImageView>& getImageViews() const;
 		};
 	}
 }

@@ -53,6 +53,7 @@ namespace v3d
 			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
 			vk::UniquePipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
+			vk::UniqueFramebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
 		};
 	}
 }

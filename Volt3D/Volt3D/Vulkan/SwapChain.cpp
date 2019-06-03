@@ -109,3 +109,13 @@ const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const
 {
 	return extent;
 }
+
+const std::size_t v3d::vulkan::SwapChain::getImageViewsSize() const
+{
+	return imageViews.size();
+}
+
+const std::vector<vk::UniqueImageView>& v3d::vulkan::SwapChain::getImageViews() const
+{
+	return imageViews;
+}

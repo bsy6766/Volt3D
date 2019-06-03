@@ -83,3 +83,8 @@ vk::UniquePipeline v3d::vulkan::Device::createPipelineUnique(const vk::GraphicsP
 {
 	return device->createGraphicsPipelineUnique(nullptr, createInfo);
 }
+
+vk::UniqueFramebuffer v3d::vulkan::Device::createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const
+{
+	return device->createFramebufferUnique(createInfo);
+}

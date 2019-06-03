@@ -30,6 +30,7 @@ namespace v3d
 		class SwapChain;
 		class RenderPass;
 		class Pipeline;
+		class FrameBuffer;
 
 		/**
 		*	@class Context
@@ -54,6 +55,7 @@ namespace v3d
 			v3d::vulkan::SwapChain* swapChain;
 			v3d::vulkan::RenderPass* renderPass;
 			v3d::vulkan::Pipeline* pipeline;
+			v3d::vulkan::FrameBuffer* frameBuffer;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -64,6 +66,7 @@ namespace v3d
 			bool initSwapChain();
 			bool initRenderPass();
 			bool initGraphicsPipeline();
+			bool initFrameBuffer();
 			void release();
 
 		public:

@@ -15,6 +15,7 @@
 // Core
 #include "Core/Engine.h"
 #include "Core/GLFWCallbacks.h"
+#include "Core/Preference.h"
 #include "Core/Window.h"
 
 // Enums
@@ -30,6 +31,7 @@
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
 #include "Vulkan/Device.h"
+#include "Vulkan/FrameBuffer.h"
 #include "Vulkan/Instance.h"
 #include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Pipeline.h"

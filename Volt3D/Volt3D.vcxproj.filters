@@ -86,6 +86,9 @@
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\FrameBuffer.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -159,6 +162,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Preference.h">
       <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\FrameBuffer.h">
+      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 #include "Shader.h"
 #include "RenderPass.h"
 #include "Pipeline.h"
+#include "FrameBuffer.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -34,6 +35,7 @@ v3d::vulkan::Context::Context()
 	, swapChain(nullptr)
 	, renderPass(nullptr)
 	, pipeline(nullptr)
+	, frameBuffer(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -59,6 +61,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initPhysicalDevice()) return false;
 	if (!initDevice()) return false;
 	if (!initSwapChain()) return false;
+	if (!initRenderPass()) return false;
 	if (!initGraphicsPipeline()) return false;
 
 	return true;
@@ -137,10 +140,20 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 	return true;
 }
 
+bool v3d::vulkan::Context::initFrameBuffer()
+{
+	frameBuffer = new (std::nothrow) v3d::vulkan::FrameBuffer();
+	if (frameBuffer == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::FrameBuffer>(); return false; }
+	if (!frameBuffer->init(*swapChain, *renderPass, *device)) return false;
+	return true;
+}
+
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(frameBuffer);
+	SAFE_DELETE(pipeline);
 	SAFE_DELETE(renderPass);
 	SAFE_DELETE(swapChain);
 	SAFE_DELETE(device);

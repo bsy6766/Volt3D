@@ -62,12 +62,7 @@ namespace v3d
 			logger = spdlog::basic_logger_mt("Log", loggerPath.c_str());
 			logger->set_pattern("[%l] [%c] %v");
 			logger->set_level(spdlog::level::trace);
-
-			std::wstring loggerPathWStr = loggerPath.c_str();
-			int size_needed = WideCharToMultiByte(CP_UTF8, 0, &loggerPathWStr[0], (int)loggerPathWStr.size(), NULL, 0, NULL, NULL);
-			std::string strTo(size_needed, 0);
-			WideCharToMultiByte(CP_UTF8, 0, &loggerPathWStr[0], (int)loggerPathWStr.size(), &strTo[0], size_needed, NULL, NULL);
-			
+						
 #ifdef BUILD_DEBUG
 			logger->trace("Trace test");
 			logger->debug("Debug test");
@@ -77,7 +72,7 @@ namespace v3d
 			logger->critical("Critical test");
 #endif
 
-			logger->trace("Created log file at \"" + strTo + "\"");
+			logger->trace((std::wstring(L"Created log file at: ") + loggerPath.wstring()).c_str());
 			logger->flush();
 
 			return true;
