@@ -136,7 +136,8 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.106.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>python $(SolutionDir)header_generator.py</Command>
+      <Command>python $(SolutionDir)BuildScripts\header_generator.py
+python $(SolutionDir)BuildScripts\export_includes.py</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
