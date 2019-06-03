@@ -83,6 +83,9 @@
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>DLL</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Core\Preference.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -151,7 +154,12 @@
     <ClInclude Include="Volt3D\Vulkan\RenderPass.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipeline.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Preference.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vert.spv">

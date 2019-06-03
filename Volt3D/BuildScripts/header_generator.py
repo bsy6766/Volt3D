@@ -15,12 +15,15 @@ subDirLUT = set([])
 rootSize = len("Volt3D\\")
 
 for filename in glob.iglob('Volt3D/**/*.h', recursive=True):
-	nextDir = filename[rootSize:].find('\\')
-	subDir = filename[rootSize:nextDir+rootSize]
-	if subDir not in subDirLUT:
-		subDirLUT.add(subDir)
-		fileStr += "\n// " + subDir + "\n";
-	fileStr += "#include \"" + filename[rootSize:].replace("\\", "/") + "\"\n"
+	# print(filename)
+	rootDir = filename[:rootSize]
+	if rootDir == "Volt3D\\":
+		subDir = filename[rootSize:filename[rootSize:].find('\\')+rootSize]
+		# print(subDir)
+		if subDir not in subDirLUT:
+			subDirLUT.add(subDir)
+			fileStr += "\n// " + subDir + "\n";
+		fileStr += "#include \"" + filename[rootSize:].replace("\\", "/") + "\"\n"
 
 
 fileStr += "\n#endif"

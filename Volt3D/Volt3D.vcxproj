@@ -137,7 +137,8 @@
     </Link>
     <PostBuildEvent>
       <Command>python $(SolutionDir)BuildScripts\header_generator.py
-python $(SolutionDir)BuildScripts\export_includes.py</Command>
+python $(SolutionDir)BuildScripts\export_includes.py
+python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -196,6 +197,7 @@ python $(SolutionDir)BuildScripts\export_includes.py</Command>
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
     <ClInclude Include="Volt3D\Core\GLFWCallbacks.h" />
+    <ClInclude Include="Volt3D\Core\Preference.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
     <ClInclude Include="Volt3D\Enums\WindowMode.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
@@ -224,6 +226,7 @@ python $(SolutionDir)BuildScripts\export_includes.py</Command>
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
     <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp" />
+    <ClCompile Include="Volt3D\Core\Preference.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
