@@ -88,3 +88,8 @@ vk::UniqueFramebuffer v3d::vulkan::Device::createFrameBuffer(const vk::Framebuff
 {
 	return device->createFramebufferUnique(createInfo);
 }
+
+vk::UniqueCommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const
+{
+	return device->createCommandPoolUnique(createInfo);
+}
