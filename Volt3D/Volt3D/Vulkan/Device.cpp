@@ -98,3 +98,8 @@ std::vector<vk::UniqueCommandBuffer> v3d::vulkan::Device::allocateCommandBuffers
 {
 	return device->allocateCommandBuffersUnique(allocInfo);
 }
+
+vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const
+{
+	return device->createSemaphoreUnique(createInfo);
+}

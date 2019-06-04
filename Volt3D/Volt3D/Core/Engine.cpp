@@ -48,7 +48,27 @@ void v3d::Engine::run()
 	while (window && window->isRunning())
 	{
 		window->pollGLFWEvent();
+		preUpdate();
+		update();
+		render();
+		postUpdate();
 	}
+}
+
+void v3d::Engine::preUpdate()
+{
+}
+
+void v3d::Engine::update()
+{
+}
+
+void v3d::Engine::postUpdate()
+{
+}
+
+void v3d::Engine::render()
+{
 }
 
 v3d::glfw::Window& v3d::Engine::getView() const

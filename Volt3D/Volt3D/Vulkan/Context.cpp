@@ -22,6 +22,7 @@
 #include "Pipeline.h"
 #include "FrameBuffer.h"
 #include "CommandPool.h"
+#include "Semaphore.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -67,6 +68,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
+	if (!initSemaphore()) return false;
 
 	return true;
 }
@@ -160,10 +162,69 @@ bool v3d::vulkan::Context::initCommandPool()
 	return true;
 }
 
+bool v3d::vulkan::Context::initSemaphore()
+{
+	semaphore = new (std::nothrow) v3d::vulkan::Semaphore();
+	if (semaphore == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Semaphore>(); return false; }
+	if (!semaphore->init(*device)) return false;
+	return true;
+}
+
+const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
+{
+	return *instance;
+}
+
+const v3d::vulkan::Surface& v3d::vulkan::Context::getSurface() const
+{
+	return *surface;
+}
+
+const v3d::vulkan::PhysicalDevice& v3d::vulkan::Context::getPhysicalDevice() const
+{
+	return *physicalDevice;
+}
+
+const v3d::vulkan::Device& v3d::vulkan::Context::getDevice() const
+{
+	return *device;
+}
+
+const v3d::vulkan::SwapChain& v3d::vulkan::Context::getSwapChain() const
+{
+	return *swapChain;
+}
+
+const v3d::vulkan::RenderPass& v3d::vulkan::Context::getRenderPass() const
+{
+	return *renderPass;
+}
+
+const v3d::vulkan::Pipeline& v3d::vulkan::Context::getPipeline() const
+{
+	return *pipeline;
+}
+
+const v3d::vulkan::FrameBuffer& v3d::vulkan::Context::getFrameBuffer() const
+{
+	return *frameBuffer;
+}
+
+const v3d::vulkan::CommandPool& v3d::vulkan::Context::getCommandPool() const
+{
+	return *commandPool;
+}
+
+const v3d::vulkan::Semaphore& v3d::vulkan::Context::getSemaphore() const
+{
+	return *semaphore;
+}
+
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(semaphore);
 	SAFE_DELETE(commandPool);
 	SAFE_DELETE(frameBuffer);
 	SAFE_DELETE(pipeline);

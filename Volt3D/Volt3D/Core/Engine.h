@@ -31,6 +31,11 @@ namespace v3d
 		bool initContext();
 		void release();
 
+		void preUpdate();
+		void update();
+		void postUpdate();
+		void render();
+
 	public:
 		Engine();
 		~Engine();

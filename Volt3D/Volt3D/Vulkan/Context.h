@@ -32,6 +32,7 @@ namespace v3d
 		class Pipeline;
 		class FrameBuffer;
 		class CommandPool;
+		class Semaphore;
 
 		/**
 		*	@class Context
@@ -58,6 +59,7 @@ namespace v3d
 			v3d::vulkan::Pipeline* pipeline;
 			v3d::vulkan::FrameBuffer* frameBuffer;
 			v3d::vulkan::CommandPool* commandPool;
+			v3d::vulkan::Semaphore* semaphore;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -70,6 +72,7 @@ namespace v3d
 			bool initGraphicsPipeline();
 			bool initFrameBuffer();
 			bool initCommandPool();
+			bool initSemaphore();
 			void release();
 
 		public:
@@ -79,6 +82,17 @@ namespace v3d
 			~Context();
 
 			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
+
+			const v3d::vulkan::Instance& getInstance() const;
+			const v3d::vulkan::Surface& getSurface() const;
+			const v3d::vulkan::PhysicalDevice& getPhysicalDevice() const;
+			const v3d::vulkan::Device& getDevice() const;
+			const v3d::vulkan::SwapChain& getSwapChain() const;
+			const v3d::vulkan::RenderPass& getRenderPass() const;
+			const v3d::vulkan::Pipeline& getPipeline() const;
+			const v3d::vulkan::FrameBuffer& getFrameBuffer() const;
+			const v3d::vulkan::CommandPool& getCommandPool() const;
+			const v3d::vulkan::Semaphore& getSemaphore() const;
 		};
 	}
 }

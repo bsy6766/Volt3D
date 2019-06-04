@@ -56,6 +56,7 @@ namespace v3d
 			vk::UniqueFramebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
 			vk::UniqueCommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
 			std::vector<vk::UniqueCommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
+			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
 		};
 	}
 }

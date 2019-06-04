@@ -53,6 +53,8 @@ namespace v3d
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(CommandPool);
 			DEFAULT_MOVE_CONSTRUCTORS(CommandPool);
 			~CommandPool() {}
+
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueCommandPool, vk::CommandPool, commandPool);
 		};
 	}
 }

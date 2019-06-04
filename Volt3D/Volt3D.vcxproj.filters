@@ -92,6 +92,9 @@
     <ClCompile Include="Volt3D\Vulkan\CommandPool.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Semaphore.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -170,6 +173,9 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\CommandPool.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Semaphore.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
