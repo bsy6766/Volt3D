@@ -35,6 +35,8 @@ namespace v3d
 		private:
 			vk::UniquePipelineLayout pipelineLayout;
 			vk::UniquePipeline pipeline;
+			vk::Viewport viewport;
+			vk::Rect2D scissor;
 
 			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass);
 
@@ -45,6 +47,9 @@ namespace v3d
 			~Pipeline() {}
 
 			UNIQUE_TO_CPP_VK_HANDLE(vk::UniquePipeline, vk::Pipeline, pipeline);
+
+			vk::Viewport getViewport() const;
+			vk::Rect2D getScissor() const;
 		};
 	}
 }

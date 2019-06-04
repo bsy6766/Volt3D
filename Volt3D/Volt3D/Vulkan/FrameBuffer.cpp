@@ -43,3 +43,13 @@ bool v3d::vulkan::FrameBuffer::init(const v3d::vulkan::SwapChain& swapChain, con
 
 	return true;
 }
+
+const std::vector<vk::UniqueFramebuffer>& v3d::vulkan::FrameBuffer::getFrameBuffers() const
+{
+	return frameBuffers;
+}
+
+std::size_t v3d::vulkan::FrameBuffer::size() const
+{
+	return frameBuffers.size();
+}

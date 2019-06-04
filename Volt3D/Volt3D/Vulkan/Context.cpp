@@ -21,6 +21,7 @@
 #include "RenderPass.h"
 #include "Pipeline.h"
 #include "FrameBuffer.h"
+#include "CommandPool.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -36,6 +37,7 @@ v3d::vulkan::Context::Context()
 	, renderPass(nullptr)
 	, pipeline(nullptr)
 	, frameBuffer(nullptr)
+	, commandPool(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -63,6 +65,8 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
 	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
 
 	return true;
 }
@@ -148,10 +152,19 @@ bool v3d::vulkan::Context::initFrameBuffer()
 	return true;
 }
 
+bool v3d::vulkan::Context::initCommandPool()
+{
+	commandPool = new (std::nothrow) v3d::vulkan::CommandPool();
+	if (commandPool == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::CommandPool>(); return false; }
+	if (!commandPool->init(*physicalDevice, *device, *frameBuffer, *renderPass, *swapChain, *pipeline)) return false;
+	return true;
+}
+
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(commandPool);
 	SAFE_DELETE(frameBuffer);
 	SAFE_DELETE(pipeline);
 	SAFE_DELETE(renderPass);

@@ -31,6 +31,7 @@ namespace v3d
 		class RenderPass;
 		class Pipeline;
 		class FrameBuffer;
+		class CommandPool;
 
 		/**
 		*	@class Context
@@ -56,6 +57,7 @@ namespace v3d
 			v3d::vulkan::RenderPass* renderPass;
 			v3d::vulkan::Pipeline* pipeline;
 			v3d::vulkan::FrameBuffer* frameBuffer;
+			v3d::vulkan::CommandPool* commandPool;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -67,6 +69,7 @@ namespace v3d
 			bool initRenderPass();
 			bool initGraphicsPipeline();
 			bool initFrameBuffer();
+			bool initCommandPool();
 			void release();
 
 		public:

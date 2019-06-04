@@ -93,3 +93,8 @@ vk::UniqueCommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPo
 {
 	return device->createCommandPoolUnique(createInfo);
 }
+
+std::vector<vk::UniqueCommandBuffer> v3d::vulkan::Device::allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const
+{
+	return device->allocateCommandBuffersUnique(allocInfo);
+}

@@ -44,6 +44,9 @@ namespace v3d
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(FrameBuffer);
 			DEFAULT_MOVE_CONSTRUCTORS(FrameBuffer);
 			~FrameBuffer() {}
+
+			const std::vector<vk::UniqueFramebuffer>& getFrameBuffers() const;
+			std::size_t size() const;
 		};
 	}
 }

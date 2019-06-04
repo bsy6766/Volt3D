@@ -20,6 +20,10 @@ namespace v3d
 	{
 		class PhysicalDevice;
 		class Device;
+		class SwapChain;
+		class Pipeline;
+		class RenderPass;
+		class FrameBuffer;
 
 		/**
 		*	@class CommandPool
@@ -35,9 +39,14 @@ namespace v3d
 
 		private:
 			vk::UniqueCommandPool commandPool;
-			std::vector<vk::UniqueCommandBuffer> commandBuffer;
+			std::vector<vk::UniqueCommandBuffer> commandBuffers;
 
-			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device);
+			bool init(	const v3d::vulkan::PhysicalDevice& physicalDevice, 
+						const v3d::vulkan::Device& device, 
+						const v3d::vulkan::FrameBuffer& frameBuffer, 
+						const v3d::vulkan::RenderPass& renderPass,
+						const v3d::vulkan::SwapChain& swapChain,
+						const v3d::vulkan::Pipeline& pipeline);
 
 		public:
 			CommandPool();

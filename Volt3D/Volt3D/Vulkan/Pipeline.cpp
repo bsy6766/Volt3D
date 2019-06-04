@@ -17,7 +17,19 @@
 v3d::vulkan::Pipeline::Pipeline()
 	: pipelineLayout()
 	, pipeline()
+	, viewport()
+	, scissor()
 {}
+
+vk::Viewport v3d::vulkan::Pipeline::getViewport() const
+{
+	return viewport;
+}
+
+vk::Rect2D v3d::vulkan::Pipeline::getScissor() const
+{
+	return scissor;
+}
 
 bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass)
 {
@@ -69,7 +81,7 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 
 	const vk::Extent2D& extent = swapChain.getExtent2D();
 
-	vk::Viewport viewport
+	viewport = vk::Viewport
 	(
 		0.0f,
 		0.0f,
@@ -79,7 +91,7 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		1.0f
 	);
 
-	vk::Rect2D scissor
+	scissor = vk::Rect2D
 	(
 		vk::Offset2D(0, 0),
 		extent
