@@ -17,10 +17,12 @@
 #include "utils/Logger.h"
 
 #include "Window.h"
+#include "Time.h"
 #include "Vulkan/Context.h"
 
 v3d::Engine::Engine()
 	: window(nullptr)
+	, time(nullptr)
 	, context(nullptr)
 {
 	v3d::Logger::getInstance().init(FileSystem::getWorkingDirectoryW(), L"log.txt");
@@ -38,49 +40,10 @@ bool v3d::Engine::init(const std::string_view windowTitle)
 
 	if (!loadPreference()) return false;
 	if (!initWindow(windowTitle)) return false;
+	if (!initTime()) return false;
 	if (!initContext()) return false;
 
 	return true;
-}
-
-void v3d::Engine::run()
-{
-	while (window && window->isRunning())
-	{
-		window->pollGLFWEvent();
-		preUpdate();
-		update();
-		render();
-		postUpdate();
-	}
-}
-
-void v3d::Engine::preUpdate()
-{
-}
-
-void v3d::Engine::update()
-{
-}
-
-void v3d::Engine::postUpdate()
-{
-}
-
-void v3d::Engine::render()
-{
-}
-
-v3d::glfw::Window& v3d::Engine::getView() const
-{
-	// @todo: Handle error
-	return *window;
-}
-
-v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
-{
-	// @todo: Handle error
-	return *context;
 }
 
 bool v3d::Engine::loadPreference()
@@ -108,9 +71,16 @@ bool v3d::Engine::initWindow(const std::string_view windowTitle)
 {
 	auto& logger = Logger::getInstance();
 	window = new (std::nothrow) v3d::glfw::Window();
-	if (window == nullptr) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
+	if (!window) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
 	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
+	return true;
+}
+
+bool v3d::Engine::initTime()
+{
+	time = new (std::nothrow) v3d::glfw::Time();
+	if (!time) { v3d::Logger::getInstance().bad_alloc<v3d::glfw::Time>(); return false; }
 	return true;
 }
 
@@ -128,4 +98,51 @@ void v3d::Engine::release()
 	if( context ) { delete context; context = nullptr; }
 	// release glfw
 	if (window) { delete window; window = nullptr; }
+}
+
+void v3d::Engine::run()
+{
+	time->resetTime();
+
+	while (window && window->isRunning())
+	{
+		window->pollGLFWEvent();
+
+		const float delta = static_cast<float>(time->getElaspedTime());
+
+		preUpdate(delta);
+		update(delta);
+		render();
+		postUpdate(delta);
+	}
+}
+
+void v3d::Engine::preUpdate(const float delta)
+{
+}
+
+void v3d::Engine::update(const float delta)
+{
+}
+
+void v3d::Engine::postUpdate(const float delta)
+{
+}
+
+void v3d::Engine::render()
+{
+	if (!context) return;
+	context->render();
+}
+
+v3d::glfw::Window& v3d::Engine::getView() const
+{
+	// @todo: Handle error
+	return *window;
+}
+
+v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
+{
+	// @todo: Handle error
+	return *context;
 }

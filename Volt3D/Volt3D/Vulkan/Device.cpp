@@ -11,6 +11,7 @@
 
 #include "PhysicalDevice.h"
 #include "SwapChain.h"
+#include "Semaphore.h"
 #include "Utils.h"
 
 v3d::vulkan::Device::Device()
@@ -50,7 +51,7 @@ bool v3d::vulkan::Device::init(v3d::vulkan::PhysicalDevice& physicalDevice)
 	);
 
 	device = physicalDevice.createDeviceUnique(createInfo);
-
+	
 	return true;
 }
 
@@ -102,4 +103,16 @@ std::vector<vk::UniqueCommandBuffer> v3d::vulkan::Device::allocateCommandBuffers
 vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const
 {
 	return device->createSemaphoreUnique(createInfo);
+}
+
+uint32_t v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
+{
+	vk::ResultValue<uint32_t> ret = device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.getImageAvailableSemaphore().get(), nullptr);
+	assert(ret.result == vk::Result::eSuccess);
+	return ret.value;
+}
+
+vk::Queue v3d::vulkan::Device::getQueue(const uint32_t familyIndex, const uint32_t queueIndex) const
+{
+	return device->getQueue(familyIndex, queueIndex);
 }

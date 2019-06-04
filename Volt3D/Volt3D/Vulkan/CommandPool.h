@@ -55,6 +55,8 @@ namespace v3d
 			~CommandPool() {}
 
 			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueCommandPool, vk::CommandPool, commandPool);
+
+			const vk::UniqueCommandBuffer& getBufferAt(const uint32_t index) const;
 		};
 	}
 }

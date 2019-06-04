@@ -82,3 +82,9 @@ bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalD
 
 	return true;
 }
+
+const vk::UniqueCommandBuffer& v3d::vulkan::CommandPool::getBufferAt(const uint32_t index) const
+{
+	assert(index < commandBuffers.size());
+	return commandBuffers[index];
+}

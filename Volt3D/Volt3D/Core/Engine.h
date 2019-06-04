@@ -12,7 +12,7 @@
 
 namespace v3d
 {
-	namespace glfw { class Window; }
+	namespace glfw { class Window; class Time; }
 	namespace vulkan { class Context; }
 
 	/**
@@ -24,16 +24,18 @@ namespace v3d
 	{
 	private:
 		v3d::glfw::Window* window;
+		v3d::glfw::Time* time;
 		v3d::vulkan::Context* context;
 
 		bool loadPreference();
 		bool initWindow(const std::string_view windowTitle);
+		bool initTime();
 		bool initContext();
 		void release();
 
-		void preUpdate();
-		void update();
-		void postUpdate();
+		void preUpdate(const float delta);
+		void update(const float delta);
+		void postUpdate(const float delta);
 		void render();
 
 	public:

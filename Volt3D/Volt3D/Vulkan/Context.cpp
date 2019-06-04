@@ -23,6 +23,7 @@
 #include "FrameBuffer.h"
 #include "CommandPool.h"
 #include "Semaphore.h"
+#include "Queue.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -39,6 +40,8 @@ v3d::vulkan::Context::Context()
 	, pipeline(nullptr)
 	, frameBuffer(nullptr)
 	, commandPool(nullptr)
+	, semaphore(nullptr)
+	, queue(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -69,6 +72,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 	if (!initSemaphore()) return false;
+	if (!initQueue()) return false;
 
 	return true;
 }
@@ -170,6 +174,49 @@ bool v3d::vulkan::Context::initSemaphore()
 	return true;
 }
 
+bool v3d::vulkan::Context::initQueue()
+{
+	queue = new (std::nothrow) v3d::vulkan::Queue();
+	if (queue == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Queue>(); return false; }
+	if (!queue->init(*physicalDevice, *device)) return false;
+	return true;
+}
+
+void v3d::vulkan::Context::render()
+{
+	const uint32_t imageIndex = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *semaphore);
+	assert(imageIndex < frameBuffer->size());
+
+	vk::Semaphore waitSemaphores[] = { semaphore->getImageAvailableSemaphore().get() };
+	vk::Semaphore signalSemaphores[] = { semaphore->getRenderFinishedSemaphore().get() };
+	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(imageIndex).get() };
+	vk::SubmitInfo submitInfo
+	(
+		1,
+		waitSemaphores,
+		waitFlags,
+		1,
+		commandBuffers,
+		1,
+		signalSemaphores
+	);
+
+	queue->submit(submitInfo);
+
+	vk::SwapchainKHR swapChains[] = { swapChain->get() };
+	vk::PresentInfoKHR presentInfo
+	(
+		1,
+		signalSemaphores,
+		1,
+		swapChains,
+		&imageIndex
+	);
+
+	queue->present(presentInfo);
+}
+
 const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
 {
 	return *instance;
@@ -224,6 +271,7 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(queue);
 	SAFE_DELETE(semaphore);
 	SAFE_DELETE(commandPool);
 	SAFE_DELETE(frameBuffer);

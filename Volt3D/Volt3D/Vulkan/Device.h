@@ -21,6 +21,7 @@ namespace v3d
 		class Surface;
 		class PhysicalDevice;
 		class SwapChain;
+		class Semaphore;
 
 		/**
 		*	@class Device
@@ -57,6 +58,8 @@ namespace v3d
 			vk::UniqueCommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
 			std::vector<vk::UniqueCommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
+			uint32_t acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const;
+			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
 		};
 	}
 }

@@ -9,18 +9,27 @@
 
 #include "Semaphore.h"
 
+#include "Device.h"
+
 v3d::vulkan::Semaphore::Semaphore()
-	: semaphore()
+	: imageAvailableSemaphore()
+	, renderFinishedSemaphore()
 {}
+
+const vk::UniqueSemaphore& v3d::vulkan::Semaphore::getImageAvailableSemaphore() const
+{
+	return imageAvailableSemaphore;
+}
+
+const vk::UniqueSemaphore& v3d::vulkan::Semaphore::getRenderFinishedSemaphore() const
+{
+	return renderFinishedSemaphore;
+}
 
 bool v3d::vulkan::Semaphore::init(const v3d::vulkan::Device& device)
 {
-	vk::SemaphoreCreateInfo createInfo
-	(
-		vk::SemaphoreCreateFlags()
-	);
-
-
+	imageAvailableSemaphore = device.createSemaphore(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
+	renderFinishedSemaphore = device.createSemaphore(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
 
 	return true;
 }

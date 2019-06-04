@@ -31,3 +31,6 @@
 #include <unordered_set>
 #include <filesystem>
 #include <sstream>
+#include <functional>
+#include <limits>
+#include <cassert>

@@ -33,6 +33,7 @@ namespace v3d
 		class FrameBuffer;
 		class CommandPool;
 		class Semaphore;
+		class Queue;
 
 		/**
 		*	@class Context
@@ -44,6 +45,8 @@ namespace v3d
 		*/
 		class VOLT3D_DLL Context
 		{
+			friend class Engine;
+
 		private:
 			// Context instance
 			v3d::vulkan::Instance* instance;
@@ -60,6 +63,7 @@ namespace v3d
 			v3d::vulkan::FrameBuffer* frameBuffer;
 			v3d::vulkan::CommandPool* commandPool;
 			v3d::vulkan::Semaphore* semaphore;
+			v3d::vulkan::Queue* queue;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -73,7 +77,10 @@ namespace v3d
 			bool initFrameBuffer();
 			bool initCommandPool();
 			bool initSemaphore();
+			bool initQueue();
 			void release();
+
+			void render();
 
 		public:
 			Context();

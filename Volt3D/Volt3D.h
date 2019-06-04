@@ -16,6 +16,7 @@
 #include "Core/Engine.h"
 #include "Core/GLFWCallbacks.h"
 #include "Core/Preference.h"
+#include "Core/Time.h"
 #include "Core/Window.h"
 
 // Enums
@@ -36,7 +37,9 @@
 #include "Vulkan/Instance.h"
 #include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Pipeline.h"
+#include "Vulkan/Queue.h"
 #include "Vulkan/RenderPass.h"
+#include "Vulkan/Semaphore.h"
 #include "Vulkan/Shader.h"
 #include "Vulkan/Surface.h"
 #include "Vulkan/SwapChain.h"
