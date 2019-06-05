@@ -108,6 +108,7 @@ void v3d::Engine::run()
 	{
 		window->pollGLFWEvent();
 
+		time->updateTime();
 		const float delta = static_cast<float>(time->getElaspedTime());
 
 		preUpdate(delta);

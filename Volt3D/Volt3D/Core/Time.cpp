@@ -9,6 +9,8 @@
 
 #include "Time.h"
 
+#include "Config/BuildConfig.h"
+
 v3d::glfw::Time::Time()
 	: currentTime(0)
 	, previousTime(0)
@@ -24,6 +26,8 @@ void v3d::glfw::Time::updateTime()
 	currentTime = glfwGetTime();
 
 	elapsedTime = currentTime - previousTime;
+
+	updateFPS();
 }
 
 void v3d::glfw::Time::updateFPS()
@@ -34,6 +38,10 @@ void v3d::glfw::Time::updateFPS()
 	if (fpsElapsedTime > 1.0)
 	{
 		if (onFPSUpdated) onFPSUpdated(fps);
+
+#ifdef BUILD_DEBUG
+		v3d::Logger::getInstance().traceConsole("FPS: " +  std::to_string(fps));
+#endif
 
 		fps = 0;
 		fpsElapsedTime -= 1.0;

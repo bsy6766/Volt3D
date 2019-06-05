@@ -30,10 +30,16 @@ namespace v3d
 		class VOLT3D_DLL Window
 		{
 			friend class Engine;
+			friend class vulkan::Instance;
+
 		private:
 			Window();
 
 			GLFWwindow* window;
+
+			bool vsync;
+
+			std::size_t getGLFWVKExtensions(std::vector<const char*>& extensions) const;
 
 		public:
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Window);
@@ -50,7 +56,9 @@ namespace v3d
 
 			bool createWindowSurface(const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
 
-			std::size_t getGLFWVKExtensions(std::vector<const char*>& extensions) const;
+			void setVsync(const bool enabled);
+
+			bool isVsyncEnabled() const;
 		};
 	}
 }

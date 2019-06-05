@@ -14,6 +14,7 @@
 
 v3d::glfw::Window::Window()
 	: window(nullptr)
+	, vsync(true)
 {}
 
 v3d::glfw::Window::~Window() { releaseGLFW(); }
@@ -45,6 +46,8 @@ bool v3d::glfw::Window::initGLFW()
 bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
 {
 	initGLFWHints();
+
+	setVsync(vsync);
 
 	window = glfwCreateWindow(1280, 720, std::string(windowTitle).c_str(), nullptr, nullptr);
 	if (!window) return false;
@@ -100,6 +103,17 @@ void v3d::glfw::Window::releaseGLFW()
 	closeWindow();
 	if (window) { glfwDestroyWindow(window); window = nullptr; }
 	glfwTerminate();
+}
+
+void v3d::glfw::Window::setVsync(const bool enabled)
+{
+	vsync = enabled;
+	glfwSwapInterval(vsync ? 1 : 0);
+}
+
+bool v3d::glfw::Window::isVsyncEnabled() const
+{
+	return vsync;
 }
 
 std::size_t v3d::glfw::Window::getGLFWVKExtensions(std::vector<const char*> & extensions) const

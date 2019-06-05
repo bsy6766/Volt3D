@@ -190,6 +190,9 @@
     <ClInclude Include="Volt3D\Core\Time.h">
       <Filter>Volt3D\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Volt3D\Utils\Timer.h">
+      <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vert.spv">

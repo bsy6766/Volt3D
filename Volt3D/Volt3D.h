@@ -26,6 +26,7 @@
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"
 #include "Utils/Macros.h"
+#include "Utils/Timer.h"
 
 // Vulkan
 #include "Vulkan/CommandPool.h"

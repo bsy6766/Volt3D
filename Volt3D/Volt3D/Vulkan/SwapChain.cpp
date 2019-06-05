@@ -41,7 +41,10 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 		extent = surfaceCapabilities.currentExtent;
 	}
 
-	// The FIFO present mode is guaranteed by the spec to be supported
+	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
+	if (presentModes.empty()) return false;
+
+	// The FIFO present mode is guaranteed by the spec to be supported (aka vsync)
 	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
 	// Visit again to learn more about present mode.
 

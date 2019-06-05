@@ -204,6 +204,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
     <ClInclude Include="Volt3D\Utils\Macros.h" />
+    <ClInclude Include="Volt3D\Utils\Timer.h" />
     <ClInclude Include="Volt3D\Vulkan\CommandPool.h" />
     <ClInclude Include="Volt3D\Vulkan\Context.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
