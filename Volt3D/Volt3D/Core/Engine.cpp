@@ -115,6 +115,8 @@ void v3d::Engine::run()
 		render();
 		postUpdate(delta);
 	}
+
+	context->waitIdle();
 }
 
 void v3d::Engine::preUpdate(const float delta)

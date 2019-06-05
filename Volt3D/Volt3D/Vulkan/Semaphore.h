@@ -31,18 +31,17 @@ namespace v3d
 			friend class Context;
 
 		private:
-			vk::UniqueSemaphore imageAvailableSemaphore;
-			vk::UniqueSemaphore renderFinishedSemaphore;
+			vk::UniqueSemaphore semaphore;
 
 			bool init(const v3d::vulkan::Device& device);
+
 		public:
 			Semaphore();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Semaphore);
 			DEFAULT_MOVE_CONSTRUCTORS(Semaphore);
 			~Semaphore() {};
 
-			const vk::UniqueSemaphore& getImageAvailableSemaphore() const;
-			const vk::UniqueSemaphore& getRenderFinishedSemaphore() const;
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueSemaphore, vk::Semaphore, semaphore);
 		};
 	}
 }

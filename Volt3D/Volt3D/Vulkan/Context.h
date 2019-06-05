@@ -62,8 +62,10 @@ namespace v3d
 			v3d::vulkan::Pipeline* pipeline;
 			v3d::vulkan::FrameBuffer* frameBuffer;
 			v3d::vulkan::CommandPool* commandPool;
-			v3d::vulkan::Semaphore* semaphore;
-			v3d::vulkan::Queue* queue;
+			v3d::vulkan::Semaphore* imageAvailableSemaphore;
+			v3d::vulkan::Semaphore* renderFinishedSemaphore;
+			v3d::vulkan::Queue* graphicsQueue;
+			v3d::vulkan::Queue* presentQueue;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -81,6 +83,7 @@ namespace v3d
 			void release();
 
 			void render();
+			void waitIdle();
 
 		public:
 			Context();
@@ -99,7 +102,6 @@ namespace v3d
 			const v3d::vulkan::Pipeline& getPipeline() const;
 			const v3d::vulkan::FrameBuffer& getFrameBuffer() const;
 			const v3d::vulkan::CommandPool& getCommandPool() const;
-			const v3d::vulkan::Semaphore& getSemaphore() const;
 		};
 	}
 }

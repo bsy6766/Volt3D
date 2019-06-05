@@ -16,7 +16,6 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class PhysicalDevice;
 		class Device;
 
 		/**
@@ -34,21 +33,20 @@ namespace v3d
 		private:
 			Queue();
 
-			vk::Queue graphicsQueue;
-			vk::Queue presentQueue;
+			vk::Queue queue;
 
-			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device);
+			bool init(const v3d::vulkan::Device& device, const uint32_t familyIndex);
 
 		public:
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Queue);
 			DEFAULT_MOVE_CONSTRUCTORS(Queue);
 			~Queue() {}
 
-			const vk::Queue& getGraphicsQueue() const;
-			const vk::Queue& getPresentQueue() const;
+			CLASS_TO_VK_HANDLE(vk::Queue, queue);
 
 			void submit(const vk::SubmitInfo& submitInfo) const;
 			void present(const vk::PresentInfoKHR& presentInfo) const;
+			void waitIdle() const;
 		};
 	}
 }

@@ -107,7 +107,7 @@ vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCrea
 
 uint32_t v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
 {
-	vk::ResultValue<uint32_t> ret = device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.getImageAvailableSemaphore().get(), nullptr);
+	vk::ResultValue<uint32_t> ret = device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.get(), nullptr);
 	assert(ret.result == vk::Result::eSuccess);
 	return ret.value;
 }

@@ -12,24 +12,11 @@
 #include "Device.h"
 
 v3d::vulkan::Semaphore::Semaphore()
-	: imageAvailableSemaphore()
-	, renderFinishedSemaphore()
+	: semaphore()
 {}
-
-const vk::UniqueSemaphore& v3d::vulkan::Semaphore::getImageAvailableSemaphore() const
-{
-	return imageAvailableSemaphore;
-}
-
-const vk::UniqueSemaphore& v3d::vulkan::Semaphore::getRenderFinishedSemaphore() const
-{
-	return renderFinishedSemaphore;
-}
 
 bool v3d::vulkan::Semaphore::init(const v3d::vulkan::Device& device)
 {
-	imageAvailableSemaphore = device.createSemaphore(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
-	renderFinishedSemaphore = device.createSemaphore(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
-
+	semaphore = device.createSemaphore(vk::SemaphoreCreateInfo(vk::SemaphoreCreateFlags()));
 	return true;
 }
