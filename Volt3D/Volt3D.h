@@ -34,6 +34,7 @@
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
 #include "Vulkan/Device.h"
+#include "Vulkan/Fence.h"
 #include "Vulkan/FrameBuffer.h"
 #include "Vulkan/Instance.h"
 #include "Vulkan/PhysicalDevice.h"

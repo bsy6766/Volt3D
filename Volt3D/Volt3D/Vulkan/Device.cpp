@@ -12,6 +12,7 @@
 #include "PhysicalDevice.h"
 #include "SwapChain.h"
 #include "Semaphore.h"
+#include "Fence.h"
 #include "Utils.h"
 
 v3d::vulkan::Device::Device()
@@ -105,6 +106,11 @@ vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCrea
 	return device->createSemaphoreUnique(createInfo);
 }
 
+vk::UniqueFence v3d::vulkan::Device::createFence(const vk::FenceCreateInfo& createInfo) const
+{
+	return device->createFenceUnique(createInfo);
+}
+
 uint32_t v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
 {
 	vk::ResultValue<uint32_t> ret = device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.get(), nullptr);
@@ -115,4 +121,14 @@ uint32_t v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swa
 vk::Queue v3d::vulkan::Device::getQueue(const uint32_t familyIndex, const uint32_t queueIndex) const
 {
 	return device->getQueue(familyIndex, queueIndex);
+}
+
+void v3d::vulkan::Device::waitForFences(const v3d::vulkan::Fence& fence) const
+{
+	device->waitForFences(1, &fence.get(), true, std::numeric_limits<uint64_t>::max());
+}
+
+void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
+{
+	device->resetFences(1, &fence.get());
 }

@@ -33,6 +33,7 @@ namespace v3d
 		class FrameBuffer;
 		class CommandPool;
 		class Semaphore;
+		class Fence;
 		class Queue;
 
 		/**
@@ -62,10 +63,14 @@ namespace v3d
 			v3d::vulkan::Pipeline* pipeline;
 			v3d::vulkan::FrameBuffer* frameBuffer;
 			v3d::vulkan::CommandPool* commandPool;
-			v3d::vulkan::Semaphore* imageAvailableSemaphore;
-			v3d::vulkan::Semaphore* renderFinishedSemaphore;
+			std::vector<v3d::vulkan::Semaphore*> imageAvailableSemaphores;
+			std::vector<v3d::vulkan::Semaphore*> renderFinishedSemaphores;
+			std::vector<v3d::vulkan::Fence*> frameFences;
 			v3d::vulkan::Queue* graphicsQueue;
 			v3d::vulkan::Queue* presentQueue;
+
+			const int MAX_FRAMES_IN_FLIGHT = 2;
+			int current_frame;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -79,6 +84,7 @@ namespace v3d
 			bool initFrameBuffer();
 			bool initCommandPool();
 			bool initSemaphore();
+			bool initFences();
 			bool initQueue();
 			void release();
 

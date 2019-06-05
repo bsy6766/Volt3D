@@ -23,6 +23,7 @@
 #include "FrameBuffer.h"
 #include "CommandPool.h"
 #include "Semaphore.h"
+#include "Fence.h"
 #include "Queue.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
@@ -40,10 +41,12 @@ v3d::vulkan::Context::Context()
 	, pipeline(nullptr)
 	, frameBuffer(nullptr)
 	, commandPool(nullptr)
-	, imageAvailableSemaphore(nullptr)
-	, renderFinishedSemaphore(nullptr)
+	, imageAvailableSemaphores()
+	, renderFinishedSemaphores()
+	, frameFences()
 	, graphicsQueue(nullptr)
 	, presentQueue(nullptr)
+	, current_frame(0)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -74,6 +77,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 	if (!initSemaphore()) return false;
+	if (!initFences()) return false;
 	if (!initQueue()) return false;
 
 	return true;
@@ -170,13 +174,35 @@ bool v3d::vulkan::Context::initCommandPool()
 
 bool v3d::vulkan::Context::initSemaphore()
 {
-	imageAvailableSemaphore = new (std::nothrow) v3d::vulkan::Semaphore();
-	if (imageAvailableSemaphore == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Semaphore>(); return false; }
-	if (!imageAvailableSemaphore->init(*device)) return false;
+	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		{
+			v3d::vulkan::Semaphore* semaphore = new (std::nothrow) v3d::vulkan::Semaphore();
+			if (semaphore == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Semaphore>(); return false; }
+			if (!semaphore->init(*device)) return false;
+			imageAvailableSemaphores.push_back(semaphore);
+		}
 
-	renderFinishedSemaphore = new (std::nothrow) v3d::vulkan::Semaphore();
-	if (renderFinishedSemaphore == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Semaphore>(); return false; }
-	if (!renderFinishedSemaphore->init(*device)) return false;
+		{
+			v3d::vulkan::Semaphore* semaphore = new (std::nothrow) v3d::vulkan::Semaphore();
+			if (semaphore == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Semaphore>(); return false; }
+			if (!semaphore->init(*device)) return false;
+			renderFinishedSemaphores.push_back(semaphore);
+		}
+	}
+
+	return true;
+}
+
+bool v3d::vulkan::Context::initFences()
+{
+	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+	{
+		v3d::vulkan::Fence* fence = new (std::nothrow) v3d::vulkan::Fence();
+		if (fence == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Fence>(); return false; }
+		if (!fence->init(*device)) return false;
+		frameFences.push_back(fence);
+	}
 
 	return true;
 }
@@ -195,11 +221,14 @@ bool v3d::vulkan::Context::initQueue()
 
 void v3d::vulkan::Context::render()
 {
-	const uint32_t imageIndex = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *imageAvailableSemaphore);
+	device->waitForFences(*frameFences[current_frame]);
+	device->resetFences(*frameFences[current_frame]);
+
+	const uint32_t imageIndex = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *imageAvailableSemaphores[current_frame]);
 	assert(imageIndex < frameBuffer->size());
 
-	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphore->get() };
-	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphore->get() };
+	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
+	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame]->get() };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
 	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(imageIndex).get() };
 	vk::SubmitInfo submitInfo
@@ -213,7 +242,7 @@ void v3d::vulkan::Context::render()
 		signalSemaphores
 	);
 
-	graphicsQueue->submit(submitInfo);
+	graphicsQueue->submit(submitInfo, *frameFences[current_frame]);
 
 	vk::SwapchainKHR swapChains[] = { swapChain->get() };
 	vk::PresentInfoKHR presentInfo
@@ -227,6 +256,8 @@ void v3d::vulkan::Context::render()
 
 	presentQueue->present(presentInfo);
 	presentQueue->waitIdle();
+
+	current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void v3d::vulkan::Context::waitIdle()
@@ -285,8 +316,10 @@ void v3d::vulkan::Context::release()
 	logger.info("Releasing Context...");
 	SAFE_DELETE(graphicsQueue);
 	SAFE_DELETE(presentQueue);
-	SAFE_DELETE(imageAvailableSemaphore);
-	SAFE_DELETE(renderFinishedSemaphore);
+	for (auto& s : imageAvailableSemaphores) { SAFE_DELETE(s); }
+	imageAvailableSemaphores.clear();
+	for (auto& s : renderFinishedSemaphores) { SAFE_DELETE(s); }
+	renderFinishedSemaphores.clear();
 	SAFE_DELETE(commandPool);
 	SAFE_DELETE(frameBuffer);
 	SAFE_DELETE(pipeline);

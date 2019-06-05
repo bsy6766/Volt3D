@@ -45,7 +45,7 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	if (presentModes.empty()) return false;
 
 	// The FIFO present mode is guaranteed by the spec to be supported (aka vsync)
-	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
+	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eMailbox;
 	// Visit again to learn more about present mode.
 
 	vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;

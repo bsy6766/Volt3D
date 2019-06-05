@@ -101,6 +101,9 @@
     <ClCompile Include="Volt3D\Core\Time.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Fence.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -192,6 +195,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Timer.h">
       <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Fence.h">
+      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
