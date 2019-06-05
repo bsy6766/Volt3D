@@ -28,7 +28,7 @@
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
-v3d::vulkan::Context::Context()
+v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
 	: instance(nullptr)
 	, validationLayerEnabled(false)
 	, debugReportCallback(nullptr)
@@ -47,6 +47,8 @@ v3d::vulkan::Context::Context()
 	, graphicsQueue(nullptr)
 	, presentQueue(nullptr)
 	, current_frame(0)
+	, window(window)
+	, frameBufferSize(window.getFrameBufferSize())
 {}
 
 v3d::vulkan::Context::~Context()
@@ -136,7 +138,7 @@ bool v3d::vulkan::Context::initSwapChain()
 {
 	swapChain = new (std::nothrow) v3d::vulkan::SwapChain();
 	if (swapChain == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::SwapChain>(); return false; }
-	if (!swapChain->init(*physicalDevice, *device, *surface)) return false;
+	if (!swapChain->init(*physicalDevice, *device, *surface, window)) return false;
 	return true;
 }
 
@@ -243,7 +245,6 @@ bool v3d::vulkan::Context::recreateSwapChain()
 void v3d::vulkan::Context::render()
 {
 	device->waitForFences(*frameFences[current_frame]);
-	device->resetFences(*frameFences[current_frame]);
 
 	const vk::ResultValue<uint32_t> result = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *imageAvailableSemaphores[current_frame]);
 	if (result.result == vk::Result::eErrorOutOfDateKHR)
@@ -252,7 +253,9 @@ void v3d::vulkan::Context::render()
 		return;
 	}
 	else if (result.result != vk::Result::eSuccess && result.result != vk::Result::eSuboptimalKHR)
-	{ throw std::runtime_error("failed to acquire swap chain image!"); }
+	{ 
+		throw std::runtime_error("failed to acquire swap chain image!"); 
+	}
 	assert(result.value < frameBuffer->size());
 
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
@@ -270,6 +273,8 @@ void v3d::vulkan::Context::render()
 		signalSemaphores
 	);
 
+	device->resetFences(*frameFences[current_frame]);
+
 	graphicsQueue->submit(submitInfo, *frameFences[current_frame]);
 
 	vk::SwapchainKHR swapChains[] = { swapChain->get() };
@@ -282,7 +287,17 @@ void v3d::vulkan::Context::render()
 		&result.value
 	);
 
-	presentQueue->present(presentInfo);
+	const vk::Result presentResult = presentQueue->present(presentInfo);
+
+	if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR || frameBufferSize != window.getFrameBufferSize())
+	{
+		frameBufferSize = window.getFrameBufferSize();
+		recreateSwapChain();
+	}
+	else if (presentResult != vk::Result::eSuccess)
+	{
+		throw std::runtime_error("Failed to present swap chain image");
+	}
 
 	current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 }

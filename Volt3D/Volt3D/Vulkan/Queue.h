@@ -47,7 +47,7 @@ namespace v3d
 
 			void submit(const vk::SubmitInfo& submitInfo) const;
 			void submit(const vk::SubmitInfo& submitInfo, const v3d::vulkan::Fence& fence) const;
-			void present(const vk::PresentInfoKHR& presentInfo) const;
+			vk::Result present(const vk::PresentInfoKHR& presentInfo) const;
 			void waitIdle() const;
 		};
 	}

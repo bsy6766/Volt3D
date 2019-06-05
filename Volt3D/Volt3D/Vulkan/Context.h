@@ -49,6 +49,8 @@ namespace v3d
 			friend class Engine;
 
 		private:
+			Context(const v3d::glfw::Window& window);
+
 			// Context instance
 			v3d::vulkan::Instance* instance;
 
@@ -71,6 +73,9 @@ namespace v3d
 
 			const int MAX_FRAMES_IN_FLIGHT = 2;
 			int current_frame;
+			glm::uvec2 frameBufferSize;
+
+			const v3d::glfw::Window& window;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -93,7 +98,6 @@ namespace v3d
 			void waitIdle();
 
 		public:
-			Context();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Context);
 			DEFAULT_MOVE_CONSTRUCTORS(Context);
 			~Context();

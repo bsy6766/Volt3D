@@ -7,47 +7,34 @@
 
 #include <PreCompiled.h>
 
-#include <algorithm>
-
 #include "SwapChain.h"
 
 #include "PhysicalDevice.h"
 #include "Device.h"
 #include "Surface.h"
+#include "Core/Window.h"
 
 v3d::vulkan::SwapChain::SwapChain()
 	: swapChain()
-	, format()
+	, surfaceFormat()
 	, extent()
 {}
 
-bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v3d::vulkan::Device& device, v3d::vulkan::Surface& surface)
+bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device, const v3d::vulkan::Surface& surface, const v3d::glfw::Window& window)
 {
-	std::vector<vk::SurfaceFormatKHR> formats = physicalDevice.getSurfaceFormatsKHR(surface);
-	if (formats.empty()) return false;
+	// surface format
+	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
+	if (surfaceFormats.empty()) return false;
+	surfaceFormat = selectSurfaceFormat(surfaceFormats);
 
-	format = (formats.front().format == vk::Format::eUndefined) ? vk::Format::eB8G8R8A8Unorm : formats.front().format;
-
-	vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max())
-	{
-		// If the surface size is undefined, the size is set to the size of the images requested.
-		extent.width = std::clamp(1280u, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
-		extent.height = std::clamp(720u, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
-	}
-	else
-	{
-		// If the surface size is defined, the swap chain size must match
-		extent = surfaceCapabilities.currentExtent;
-	}
+	// extent2D
+	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+	extent = selectExtent(surfaceCapabilities, window);
 
 	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
 	if (presentModes.empty()) return false;
-
-	// The FIFO present mode is guaranteed by the spec to be supported (aka vsync)
-	vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eMailbox;
-	// Visit again to learn more about present mode.
-
+	const vk::PresentModeKHR swapchainPresentMode = selectPresentMode(presentModes);
+	
 	vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;
 
 	vk::CompositeAlphaFlagBitsKHR compositeAlpha =
@@ -60,8 +47,8 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 		vk::SwapchainCreateFlagsKHR(),
 		reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get(),
 		surfaceCapabilities.minImageCount,
-		format,
-		vk::ColorSpaceKHR::eSrgbNonlinear,
+		surfaceFormat.format,
+		surfaceFormat.colorSpace,
 		extent,
 		1,
 		vk::ImageUsageFlagBits::eColorAttachment,
@@ -96,16 +83,46 @@ bool v3d::vulkan::SwapChain::init(v3d::vulkan::PhysicalDevice& physicalDevice, v
 	vk::ImageSubresourceRange subResourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
 	for (auto image : swapChainImages)
 	{
-		vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, format, componentMapping, subResourceRange);
+		vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, surfaceFormat.format, componentMapping, subResourceRange);
 		imageViews.push_back(std::move(device.createImageViewUnique(imageViewCreateInfo)));
 	}
 
 	return true;
 }
 
+vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats) const
+{
+	if (surfaceFormats.size() == 1 && surfaceFormats.front().format == vk::Format::eUndefined) return { vk::Format::eB8G8R8A8Unorm , vk::ColorSpaceKHR::eSrgbNonlinear };
+	
+	for(const auto& surfaceFormat : surfaceFormats)
+	{
+		if (surfaceFormat.format == vk::Format::eB8G8R8A8Unorm && surfaceFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) return surfaceFormat;
+	}
+
+	return surfaceFormats.front();
+}
+
+vk::Extent2D v3d::vulkan::SwapChain::selectExtent(const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window) const
+{
+	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() || surfaceCapabilities.currentExtent.height == std::numeric_limits<uint32_t>::max())
+	{
+		const glm::uvec2 frameBufferSize = window.getFrameBufferSize();
+		return { static_cast<uint32_t>(frameBufferSize.x) , static_cast<uint32_t>(frameBufferSize.y) };
+	}
+	else
+	{
+		return surfaceCapabilities.currentExtent;
+	}
+}
+
+vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode(const std::vector<vk::PresentModeKHR>& presentModes) const
+{
+	return vk::PresentModeKHR::eFifo;
+}
+
 const vk::Format& v3d::vulkan::SwapChain::getFormat() const
 {
-	return format;
+	return surfaceFormat.format;
 }
 
 const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const

@@ -73,7 +73,7 @@ bool v3d::Engine::initWindow(const std::string_view windowTitle)
 	window = new (std::nothrow) v3d::glfw::Window();
 	if (!window) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
-	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
+	if (!window->initWindow(windowTitle, this)) { logger.critical("Failed to create GLFW window"); return false; }
 	return true;
 }
 
@@ -86,7 +86,7 @@ bool v3d::Engine::initTime()
 
 bool v3d::Engine::initContext()
 {
-	context = new (std::nothrow) v3d::vulkan::Context();
+	context = new (std::nothrow) v3d::vulkan::Context(*window);
 	if(context == nullptr ) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Context>(); return false; }
 	if( !context->init( *window, true ) ) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
 	return true;
@@ -103,6 +103,8 @@ void v3d::Engine::release()
 void v3d::Engine::run()
 {
 	time->resetTime();
+
+	static glm::uvec2 fb = window->getFrameBufferSize();
 
 	while (window && window->isRunning())
 	{
@@ -121,6 +123,11 @@ void v3d::Engine::run()
 	context->waitIdle();
 }
 
+void v3d::Engine::end()
+{
+	if (window) window->closeWindow();
+}
+
 void v3d::Engine::preUpdate(const float delta)
 {
 }
@@ -137,6 +144,11 @@ void v3d::Engine::render()
 {
 	if (!context) return;
 	context->render();
+}
+
+void v3d::Engine::onFrameBufferSizeDirty()
+{
+	//if(context) context->
 }
 
 v3d::glfw::Window& v3d::Engine::getView() const

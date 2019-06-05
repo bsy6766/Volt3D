@@ -44,9 +44,12 @@ namespace v3d
 
 		bool init(const std::string_view windowTitle);
 		void run();
+		void end();
 
 		v3d::glfw::Window& getView() const;
 		v3d::vulkan::Context& getVulkanContext() const;
+
+		void onFrameBufferSizeDirty();
 	};
 }
 

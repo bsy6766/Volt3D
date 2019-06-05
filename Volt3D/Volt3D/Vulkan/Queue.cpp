@@ -33,9 +33,16 @@ void v3d::vulkan::Queue::submit(const vk::SubmitInfo& submitInfo, const v3d::vul
 	queue.submit(submitInfo, fence.get());
 }
 
-void v3d::vulkan::Queue::present(const vk::PresentInfoKHR& presentInfo) const
+vk::Result v3d::vulkan::Queue::present(const vk::PresentInfoKHR& presentInfo) const
 {
-	queue.presentKHR(presentInfo);
+	try
+	{
+		return queue.presentKHR(presentInfo);
+	}
+	catch (vk::OutOfDateKHRError&)
+	{
+		return vk::Result::eErrorOutOfDateKHR;
+	}
 }
 
 void v3d::vulkan::Queue::waitIdle() const

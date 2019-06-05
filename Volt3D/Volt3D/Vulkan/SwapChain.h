@@ -35,12 +35,16 @@ namespace v3d
 
 		private:
 			vk::UniqueSwapchainKHR swapChain;
-			vk::Format format;
+			vk::SurfaceFormatKHR surfaceFormat;
 			vk::Extent2D extent;
 			std::vector<vk::Image> swapChainImages;
 			std::vector<vk::UniqueImageView> imageViews;
 
-			bool init(v3d::vulkan::PhysicalDevice& physicalDevice, v3d::vulkan::Device& device, v3d::vulkan::Surface& surface);
+			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device, const v3d::vulkan::Surface& surface, const v3d::glfw::Window& window);
+
+			vk::SurfaceFormatKHR selectSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats) const;
+			vk::Extent2D selectExtent(const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window) const;
+			vk::PresentModeKHR selectPresentMode(const std::vector<vk::PresentModeKHR>& presentModes) const;
 
 		public:
 			SwapChain();

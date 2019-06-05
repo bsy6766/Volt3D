@@ -34,3 +34,4 @@
 #include <functional>
 #include <limits>
 #include <cassert>
+#include <algorithm>

@@ -10,6 +10,7 @@
 #include "Window.h"
 
 #include "GLFWCallbacks.h"
+#include "Engine.h"
 #include "Vulkan/Instance.h"
 
 v3d::glfw::Window::Window()
@@ -43,7 +44,7 @@ bool v3d::glfw::Window::initGLFW()
 	}
 }
 
-bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
+bool v3d::glfw::Window::initWindow(const std::string_view windowTitle, const v3d::Engine* engine)
 {
 	initGLFWHints();
 
@@ -53,7 +54,7 @@ bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
 	if (!window) return false;
 
 	//glfwMakeContextCurrent(window);
-	glfwSetWindowUserPointer(window, this);
+	glfwSetWindowUserPointer(window, &engine);
 	
 	v3d::glfw::initCallbacks(window);
 
