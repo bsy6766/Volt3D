@@ -113,7 +113,8 @@ void v3d::Engine::run()
 
 		preUpdate(delta);
 		update(delta);
-		render();
+
+		if(!window->isIconified()) render();
 		postUpdate(delta);
 	}
 

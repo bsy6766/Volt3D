@@ -14,6 +14,7 @@
 
 namespace v3d
 {
+	namespace glfw { class Window; }
 	namespace vulkan
 	{
 		class PhysicalDevice;

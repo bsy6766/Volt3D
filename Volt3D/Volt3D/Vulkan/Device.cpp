@@ -13,6 +13,7 @@
 #include "SwapChain.h"
 #include "Semaphore.h"
 #include "Fence.h"
+#include "CommandPool.h"
 #include "Utils.h"
 
 v3d::vulkan::Device::Device()
@@ -111,11 +112,14 @@ vk::UniqueFence v3d::vulkan::Device::createFence(const vk::FenceCreateInfo& crea
 	return device->createFenceUnique(createInfo);
 }
 
-uint32_t v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
+vk::ResultValue<uint32_t> v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
 {
-	vk::ResultValue<uint32_t> ret = device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.get(), nullptr);
-	assert(ret.result == vk::Result::eSuccess);
-	return ret.value;
+	return device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.get(), nullptr);
+}
+
+void v3d::vulkan::Device::waitIdle() const
+{
+	device->waitIdle();
 }
 
 vk::Queue v3d::vulkan::Device::getQueue(const uint32_t familyIndex, const uint32_t queueIndex) const
@@ -131,4 +135,9 @@ void v3d::vulkan::Device::waitForFences(const v3d::vulkan::Fence& fence) const
 void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
 {
 	device->resetFences(1, &fence.get());
+}
+
+void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const
+{
+	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), reinterpret_cast<const vk::CommandBuffer*>(commandPool.getBufferData()));
 }

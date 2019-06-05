@@ -116,6 +116,18 @@ bool v3d::glfw::Window::isVsyncEnabled() const
 	return vsync;
 }
 
+bool v3d::glfw::Window::isIconified() const
+{
+	return glfwGetWindowAttrib(window, GLFW_ICONIFIED);
+}
+
+glm::uvec2 v3d::glfw::Window::getFrameBufferSize() const
+{
+	int w, h;
+	glfwGetFramebufferSize(window, &w, &h);
+	return glm::uvec2(w, h);
+}
+
 std::size_t v3d::glfw::Window::getGLFWVKExtensions(std::vector<const char*> & extensions) const
 {
 	extensions.clear();

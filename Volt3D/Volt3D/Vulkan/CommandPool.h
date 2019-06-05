@@ -36,17 +36,15 @@ namespace v3d
 		class VOLT3D_DLL CommandPool
 		{
 			friend class Context;
+			friend class Device;
 
 		private:
 			vk::UniqueCommandPool commandPool;
 			std::vector<vk::UniqueCommandBuffer> commandBuffers;
 
-			bool init(	const v3d::vulkan::PhysicalDevice& physicalDevice, 
-						const v3d::vulkan::Device& device, 
-						const v3d::vulkan::FrameBuffer& frameBuffer, 
-						const v3d::vulkan::RenderPass& renderPass,
-						const v3d::vulkan::SwapChain& swapChain,
-						const v3d::vulkan::Pipeline& pipeline);
+			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device);
+			bool initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline);
+			void clearCommandBuffers();
 
 		public:
 			CommandPool();
@@ -57,6 +55,8 @@ namespace v3d
 			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueCommandPool, vk::CommandPool, commandPool);
 
 			const vk::UniqueCommandBuffer& getBufferAt(const uint32_t index) const;
+			std::size_t getBufferSize() const;
+			const vk::UniqueCommandBuffer* getBufferData() const;
 		};
 	}
 }

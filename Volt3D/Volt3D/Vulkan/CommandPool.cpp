@@ -21,7 +21,7 @@ v3d::vulkan::CommandPool::CommandPool()
 	, commandBuffers()
 {}
 
-bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline)
+bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device)
 {
 	uint32_t graphicsFamilyIndex = physicalDevice.getGraphicsQueueFamilyIndex();
 
@@ -33,9 +33,14 @@ bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalD
 
 	commandPool = device.createCommandPool(createInfo);
 
+	return true;
+}
+
+bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline)
+{
 	const auto& frameBuffers = frameBuffer.getFrameBuffers();
 	const std::size_t fbSize = frameBuffers.size();
-	
+
 	vk::CommandBufferAllocateInfo allocInfo
 	(
 		commandPool.get(),
@@ -55,7 +60,7 @@ bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalD
 
 		vk::CommandBuffer& cb = commandBuffers[i].get();
 		cb.begin(beginInfo);
-		
+
 		vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
 
 		vk::RenderPassBeginInfo renderPassInfo
@@ -83,8 +88,23 @@ bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalD
 	return true;
 }
 
+void v3d::vulkan::CommandPool::clearCommandBuffers()
+{
+	commandBuffers.clear();
+}
+
 const vk::UniqueCommandBuffer& v3d::vulkan::CommandPool::getBufferAt(const uint32_t index) const
 {
 	assert(index < commandBuffers.size());
 	return commandBuffers[index];
+}
+
+std::size_t v3d::vulkan::CommandPool::getBufferSize() const
+{
+	return commandBuffers.size();
+}
+
+const vk::UniqueCommandBuffer* v3d::vulkan::CommandPool::getBufferData() const
+{
+	return commandBuffers.data();
 }

@@ -168,7 +168,8 @@ bool v3d::vulkan::Context::initCommandPool()
 {
 	commandPool = new (std::nothrow) v3d::vulkan::CommandPool();
 	if (commandPool == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::CommandPool>(); return false; }
-	if (!commandPool->init(*physicalDevice, *device, *frameBuffer, *renderPass, *swapChain, *pipeline)) return false;
+	if (!commandPool->init(*physicalDevice, *device)) return false;
+	if (!commandPool->initCommandBuffers(*device, *frameBuffer, *renderPass, *swapChain, *pipeline)) return false;
 	return true;
 }
 
@@ -219,18 +220,45 @@ bool v3d::vulkan::Context::initQueue()
 	return true;
 }
 
+bool v3d::vulkan::Context::recreateSwapChain()
+{
+	device->waitIdle();
+
+	SAFE_DELETE(frameBuffer);
+	SAFE_DELETE(pipeline);
+	SAFE_DELETE(renderPass);
+	SAFE_DELETE(swapChain);
+	device->freeCommandBuffers(*commandPool);
+	commandPool->clearCommandBuffers();
+
+	if (!initSwapChain()) return false;
+	if (!initRenderPass()) return false;
+	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!commandPool->initCommandBuffers(*device, *frameBuffer, *renderPass, *swapChain, *pipeline)) return false;
+
+	return true;
+}
+
 void v3d::vulkan::Context::render()
 {
 	device->waitForFences(*frameFences[current_frame]);
 	device->resetFences(*frameFences[current_frame]);
 
-	const uint32_t imageIndex = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *imageAvailableSemaphores[current_frame]);
-	assert(imageIndex < frameBuffer->size());
+	const vk::ResultValue<uint32_t> result = device->acquireNextImage(*swapChain, std::numeric_limits<uint64_t>::max(), *imageAvailableSemaphores[current_frame]);
+	if (result.result == vk::Result::eErrorOutOfDateKHR)
+	{
+		recreateSwapChain();
+		return;
+	}
+	else if (result.result != vk::Result::eSuccess && result.result != vk::Result::eSuboptimalKHR)
+	{ throw std::runtime_error("failed to acquire swap chain image!"); }
+	assert(result.value < frameBuffer->size());
 
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame]->get() };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(imageIndex).get() };
+	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(result.value).get() };
 	vk::SubmitInfo submitInfo
 	(
 		1,
@@ -251,18 +279,17 @@ void v3d::vulkan::Context::render()
 		signalSemaphores,
 		1,
 		swapChains,
-		&imageIndex
+		&result.value
 	);
 
 	presentQueue->present(presentInfo);
-	presentQueue->waitIdle();
 
 	current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void v3d::vulkan::Context::waitIdle()
 {
-	device->get().waitIdle();
+	device->waitIdle();
 }
 
 const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
@@ -314,6 +341,7 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	for (auto& f : frameFences) { SAFE_DELETE(f); }
 	SAFE_DELETE(graphicsQueue);
 	SAFE_DELETE(presentQueue);
 	for (auto& s : imageAvailableSemaphores) { SAFE_DELETE(s); }

@@ -86,6 +86,7 @@ namespace v3d
 			bool initSemaphore();
 			bool initFences();
 			bool initQueue();
+			bool recreateSwapChain();
 			void release();
 
 			void render();

@@ -9,6 +9,7 @@
 #define V3D_GLFW_WINDOW_H
 
 #include <vulkan/vulkan.hpp>
+#include <glm/glm.hpp>
 
 #include <vector>
 
@@ -57,8 +58,10 @@ namespace v3d
 			bool createWindowSurface(const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
 
 			void setVsync(const bool enabled);
-
 			bool isVsyncEnabled() const;
+
+			bool isIconified() const;
+			glm::uvec2 getFrameBufferSize() const;
 		};
 	}
 }

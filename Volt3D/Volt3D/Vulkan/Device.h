@@ -23,6 +23,7 @@ namespace v3d
 		class SwapChain;
 		class Semaphore;
 		class Fence;
+		class CommandPool;
 
 		/**
 		*	@class Device
@@ -60,10 +61,12 @@ namespace v3d
 			std::vector<vk::UniqueCommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
 			vk::UniqueFence createFence(const vk::FenceCreateInfo& createInfo) const;
-			uint32_t acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const;
+			vk::ResultValue<uint32_t> acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const;
+			void waitIdle() const;
 			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
 			void waitForFences(const v3d::vulkan::Fence& fence) const;
 			void resetFences(const v3d::vulkan::Fence& fence) const;
+			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const;
 		};
 	}
 }
