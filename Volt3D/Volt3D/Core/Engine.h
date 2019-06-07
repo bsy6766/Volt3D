@@ -48,8 +48,6 @@ namespace v3d
 
 		v3d::glfw::Window& getView() const;
 		v3d::vulkan::Context& getVulkanContext() const;
-
-		void onFrameBufferSizeDirty();
 	};
 }
 

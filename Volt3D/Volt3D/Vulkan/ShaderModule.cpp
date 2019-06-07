@@ -1,5 +1,5 @@
 /**
-*	@file Shader.cpp
+*	@file ShaderModule.cpp
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -13,11 +13,11 @@
 
 #include "Device.h"
 
-v3d::vulkan::Shader::Shader()
+v3d::vulkan::ShaderModule::ShaderModule()
 	: shaderModule()
 {}
 
-std::vector<char> v3d::vulkan::Shader::readFile(std::string_view fileName)
+std::vector<char> v3d::vulkan::ShaderModule::readFile(std::string_view fileName)
 {
 	std::vector<char> buffer;
 
@@ -35,7 +35,7 @@ std::vector<char> v3d::vulkan::Shader::readFile(std::string_view fileName)
 	return buffer;
 }
 
-bool v3d::vulkan::Shader::init(std::string_view fileName, const v3d::vulkan::Device& device)
+bool v3d::vulkan::ShaderModule::init(std::string_view fileName, const v3d::vulkan::Device& device)
 {
 	shaderModule = std::move(device.createShaderModuleUnique(readFile(fileName)));
 	return true;

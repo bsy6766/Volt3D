@@ -218,7 +218,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Queue.h" />
     <ClInclude Include="Volt3D\Vulkan\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Semaphore.h" />
-    <ClInclude Include="Volt3D\Vulkan\Shader.h" />
+    <ClInclude Include="Volt3D\Vulkan\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\Surface.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
@@ -249,7 +249,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Queue.cpp" />
     <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Semaphore.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Shader.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />

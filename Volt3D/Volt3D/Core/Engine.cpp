@@ -146,11 +146,6 @@ void v3d::Engine::render()
 	context->render();
 }
 
-void v3d::Engine::onFrameBufferSizeDirty()
-{
-	//if(context) context->
-}
-
 v3d::glfw::Window& v3d::Engine::getView() const
 {
 	// @todo: Handle error

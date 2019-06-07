@@ -10,7 +10,7 @@
 #include "Pipeline.h"
 
 #include "Device.h"
-#include "Shader.h"
+#include "ShaderModule.h"
 #include "SwapChain.h"
 #include "RenderPass.h"
 
@@ -44,10 +44,10 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 
 	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
 
-	v3d::vulkan::Shader vertShader;
+	v3d::vulkan::ShaderModule vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
 
-	v3d::vulkan::Shader fragShader;
+	v3d::vulkan::ShaderModule fragShader;
 	if (!fragShader.init("Shaders/frag.spv", device)) return false;
 
 	vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =

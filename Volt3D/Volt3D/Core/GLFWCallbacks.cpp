@@ -2,7 +2,7 @@
 
 #include "GLFWCallbacks.h"
 
-#include "Engine.h"
+#include "Window.h"
 
 void v3d::glfw::initCallbacks(GLFWwindow* window)
 {
@@ -125,7 +125,7 @@ void v3d::glfw::glfwWindowMaximizedCallback(GLFWwindow* window, int iconified)
 #ifdef V3D_GLFW_FRAMEBUFFER_SIZE_CB
 void v3d::glfw::glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-	static_cast<v3d::Engine*>(glfwGetWindowUserPointer(window))->onFrameBufferSizeDirty();
+
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_CONTENT_SCALE_CB
@@ -138,7 +138,7 @@ void v3d::glfw::glfwWindowContentScaleCallback(GLFWwindow* window, float xscale,
 void v3d::glfw::glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) 
-		static_cast<v3d::Engine*>(glfwGetWindowUserPointer(window))->end();
+		static_cast<v3d::glfw::Window*>(glfwGetWindowUserPointer(window))->closeWindow();
 }
 #endif
 #ifdef V3D_GLFW_CHAR_CB

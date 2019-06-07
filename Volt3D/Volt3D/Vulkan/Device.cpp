@@ -144,6 +144,6 @@ void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& com
 	{
 		commandBuffers.push_back(cb.get());
 	}
-	//device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), reinterpret_cast<const vk::CommandBuffer*>(commandPool.getBufferData()));
-	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandBuffers.data());
+	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), reinterpret_cast<const vk::CommandBuffer*>(commandPool.getBufferData()));
+	//device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandBuffers.data());
 }

@@ -71,9 +71,6 @@
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Shader.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -102,6 +99,9 @@
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Fence.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,9 +163,6 @@
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Shader.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -197,6 +194,9 @@
       <Filter>Volt3D\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Fence.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\ShaderModule.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

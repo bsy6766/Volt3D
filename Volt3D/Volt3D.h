@@ -29,6 +29,7 @@
 #include "Utils/Timer.h"
 
 // Vulkan
+#include "Vulkan/CommandBuffer.h"
 #include "Vulkan/CommandPool.h"
 #include "Vulkan/Context.h"
 #include "Vulkan/DebugReportCallback.h"
@@ -42,7 +43,7 @@
 #include "Vulkan/Queue.h"
 #include "Vulkan/RenderPass.h"
 #include "Vulkan/Semaphore.h"
-#include "Vulkan/Shader.h"
+#include "Vulkan/ShaderModule.h"
 #include "Vulkan/Surface.h"
 #include "Vulkan/SwapChain.h"
 #include "Vulkan/Utils.h"

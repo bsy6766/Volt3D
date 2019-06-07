@@ -17,7 +17,7 @@
 #include "PhysicalDevice.h"
 #include "Device.h"
 #include "SwapChain.h"
-#include "Shader.h"
+#include "ShaderModule.h"
 #include "RenderPass.h"
 #include "Pipeline.h"
 #include "FrameBuffer.h"
