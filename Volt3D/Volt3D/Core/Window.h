@@ -17,8 +17,6 @@
 
 namespace v3d
 {
-	class Engine;
-
 	namespace vulkan { class Instance; class Surface; }
 	namespace glfw
 	{
@@ -45,7 +43,7 @@ namespace v3d
 
 			// GLFW
 			bool initGLFW();
-			bool initWindow(const std::string_view windowTitle, const v3d::Engine* engine);
+			bool initWindow(const std::string_view windowTitle);
 			void initGLFWHints();
 			void releaseGLFW();
 

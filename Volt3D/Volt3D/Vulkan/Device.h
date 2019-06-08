@@ -58,7 +58,7 @@ namespace v3d
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 			vk::UniqueFramebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
 			vk::UniqueCommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
-			std::vector<vk::UniqueCommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
+			std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
 			vk::UniqueFence createFence(const vk::FenceCreateInfo& createInfo) const;
 			vk::ResultValue<uint32_t> acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const;

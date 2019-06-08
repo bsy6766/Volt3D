@@ -58,7 +58,7 @@ bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& dev
 			nullptr
 		);
 
-		vk::CommandBuffer& cb = commandBuffers[i].get();
+		const vk::CommandBuffer& cb = commandBuffers[i];
 		cb.begin(beginInfo);
 
 		vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
@@ -93,7 +93,7 @@ void v3d::vulkan::CommandPool::clearCommandBuffers()
 	commandBuffers.clear();
 }
 
-const vk::UniqueCommandBuffer& v3d::vulkan::CommandPool::getBufferAt(const uint32_t index) const
+const vk::CommandBuffer& v3d::vulkan::CommandPool::getBufferAt(const uint32_t index) const
 {
 	assert(index < commandBuffers.size());
 	return commandBuffers[index];
@@ -104,7 +104,7 @@ std::size_t v3d::vulkan::CommandPool::getBufferSize() const
 	return commandBuffers.size();
 }
 
-const vk::UniqueCommandBuffer* v3d::vulkan::CommandPool::getBufferData() const
+const vk::CommandBuffer* v3d::vulkan::CommandPool::getBufferData() const
 {
 	return commandBuffers.data();
 }

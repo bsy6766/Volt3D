@@ -44,7 +44,7 @@ bool v3d::glfw::Window::initGLFW()
 	}
 }
 
-bool v3d::glfw::Window::initWindow(const std::string_view windowTitle, const v3d::Engine* engine)
+bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
 {
 	initGLFWHints();
 
@@ -54,7 +54,7 @@ bool v3d::glfw::Window::initWindow(const std::string_view windowTitle, const v3d
 	if (!window) return false;
 
 	//glfwMakeContextCurrent(window);
-	glfwSetWindowUserPointer(window, &engine);
+	glfwSetWindowUserPointer(window, this);
 	
 	v3d::glfw::initCallbacks(window);
 

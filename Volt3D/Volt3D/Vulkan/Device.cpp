@@ -97,9 +97,9 @@ vk::UniqueCommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPo
 	return device->createCommandPoolUnique(createInfo);
 }
 
-std::vector<vk::UniqueCommandBuffer> v3d::vulkan::Device::allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const
+std::vector<vk::CommandBuffer> v3d::vulkan::Device::allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const
 {
-	return device->allocateCommandBuffersUnique(allocInfo);
+	return device->allocateCommandBuffers(allocInfo);
 }
 
 vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const
@@ -139,11 +139,5 @@ void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
 
 void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const
 {
-	std::vector<vk::CommandBuffer> commandBuffers;
-	for (auto& cb : commandPool.commandBuffers)
-	{
-		commandBuffers.push_back(cb.get());
-	}
-	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), reinterpret_cast<const vk::CommandBuffer*>(commandPool.getBufferData()));
-	//device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandBuffers.data());
+	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandPool.getBufferData());
 }

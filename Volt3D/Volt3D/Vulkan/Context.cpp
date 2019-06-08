@@ -261,7 +261,7 @@ void v3d::vulkan::Context::render()
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame]->get() };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(result.value).get() };
+	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(result.value) };
 	vk::SubmitInfo submitInfo
 	(
 		1,

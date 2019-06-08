@@ -73,7 +73,7 @@ bool v3d::Engine::initWindow(const std::string_view windowTitle)
 	window = new (std::nothrow) v3d::glfw::Window();
 	if (!window) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
-	if (!window->initWindow(windowTitle, this)) { logger.critical("Failed to create GLFW window"); return false; }
+	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
 	return true;
 }
 
