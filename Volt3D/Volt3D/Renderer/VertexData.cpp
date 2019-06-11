@@ -17,3 +17,8 @@ std::size_t v3d::VertexData::getDataSize() const
 {
 	return sizeof(v3d::vulkan::Vertex) * vertexData.size();
 }
+
+std::vector<v3d::vulkan::Vertex>& v3d::VertexData::getVertexData()
+{
+	return vertexData;
+}

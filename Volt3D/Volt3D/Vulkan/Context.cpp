@@ -28,6 +28,10 @@
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
+#include "Buffer.h"
+#include "DeviceMemory.h"
+#include "Renderer/VertexData.h"
+
 v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
 	: instance(nullptr)
 	, validationLayerEnabled(false)
@@ -49,6 +53,9 @@ v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
 	, current_frame(0)
 	, window(window)
 	, frameBufferSize(window.getFrameBufferSize())
+
+	, triBuffer(nullptr)
+	, deviceMemory(nullptr)
 {}
 
 v3d::vulkan::Context::~Context()
@@ -81,6 +88,23 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initSemaphore()) return false;
 	if (!initFences()) return false;
 	if (!initQueue()) return false;
+
+	v3d::VertexData vertexData;
+	auto& vertices = vertexData.getVertexData();
+	vertices.push_back(v3d::vulkan::Vertex({ 0.0f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }));
+	vertices.push_back(v3d::vulkan::Vertex({ 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f }));
+	vertices.push_back(v3d::vulkan::Vertex({ -0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }));
+
+	triBuffer = new v3d::vulkan::Buffer();
+	triBuffer->init(*device, vertexData);
+
+	deviceMemory = new v3d::vulkan::DeviceMemory();
+	deviceMemory->init(*device, *physicalDevice, *triBuffer);
+
+	device->bindBufferMemory(*triBuffer, *deviceMemory);
+
+	void* data;
+	device->mapMemory(*deviceMemory);
 
 	return true;
 }
@@ -356,6 +380,7 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	SAFE_DELETE(triBuffer);
 	for (auto& f : frameFences) { SAFE_DELETE(f); }
 	SAFE_DELETE(graphicsQueue);
 	SAFE_DELETE(presentQueue);

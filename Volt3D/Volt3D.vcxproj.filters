@@ -131,6 +131,9 @@
     <ClCompile Include="Volt3D\Vulkan\Buffer.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\DeviceMemory.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -245,6 +248,9 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Buffer.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\DeviceMemory.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

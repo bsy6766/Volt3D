@@ -14,6 +14,11 @@ v3d::vulkan::Vertex::Vertex()
 	, color(0)
 {}
 
+v3d::vulkan::Vertex::Vertex(const glm::vec3 & pos, const glm::vec3 & color)
+	: pos(pos)
+	, color(color)
+{}
+
 vk::VertexInputBindingDescription v3d::vulkan::Vertex::getInputBindingDescription()
 {
 	return vk::VertexInputBindingDescription(0, sizeof(Vertex), vk::VertexInputRate::eVertex);

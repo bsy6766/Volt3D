@@ -36,6 +36,9 @@ namespace v3d
 		class Fence;
 		class Queue;
 
+		class Buffer;
+		class DeviceMemory;
+
 		/**
 		*	@class Context
 		*	@brief Vulkan context.
@@ -76,6 +79,9 @@ namespace v3d
 			glm::uvec2 frameBufferSize;
 
 			const v3d::glfw::Window& window;
+
+			v3d::vulkan::Buffer* triBuffer;
+			v3d::vulkan::DeviceMemory* deviceMemory;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();

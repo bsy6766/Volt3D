@@ -37,6 +37,7 @@ namespace v3d
 		~VertexData() {};
 
 		std::size_t getDataSize() const;
+		std::vector<v3d::vulkan::Vertex>& getVertexData();
 	};
 }
 

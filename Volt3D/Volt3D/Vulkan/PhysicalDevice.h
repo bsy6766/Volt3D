@@ -21,6 +21,7 @@ namespace v3d
 	{
 		class Instance;
 		class Surface;
+		class Buffer;
 
 		/**
 		*	@class PhysicalDevice
@@ -64,6 +65,7 @@ namespace v3d
 			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
 			uint32_t getGraphicsQueueFamilyIndex() const;
 			uint32_t getPresentQueueFamilyIndex() const;
+			uint32_t getMemoryTypeIndex(const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
 		};
 	}
 }

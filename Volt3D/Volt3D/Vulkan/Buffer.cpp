@@ -26,4 +26,6 @@ bool v3d::vulkan::Buffer::init(const v3d::vulkan::Device& device, const v3d::Ver
 	);
 
 	buffer = device.createBuffer(createInfo);
+
+	return true;
 }

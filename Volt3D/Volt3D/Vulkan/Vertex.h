@@ -35,6 +35,7 @@ namespace v3d
 
 		public:
 			Vertex();
+			Vertex(const glm::vec3& pos, const glm::vec3& color);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Vertex);
 			DEFAULT_MOVE_CONSTRUCTORS(Vertex);
 			~Vertex() {};

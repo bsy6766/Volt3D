@@ -14,6 +14,8 @@
 #include "Semaphore.h"
 #include "Fence.h"
 #include "CommandPool.h"
+#include "Buffer.h"
+#include "DeviceMemory.h"
 #include "Utils.h"
 
 v3d::vulkan::Device::Device()
@@ -145,4 +147,19 @@ void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& com
 vk::UniqueBuffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const
 {
 	return device->createBufferUnique(createInfo);
+}
+
+vk::MemoryRequirements v3d::vulkan::Device::getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const
+{
+	return device->getBufferMemoryRequirements(buffer.get());
+}
+
+vk::UniqueDeviceMemory v3d::vulkan::Device::allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const
+{
+	return device->allocateMemoryUnique(allocInfo);
+}
+
+void v3d::vulkan::Device::bindBufferMemory(const v3d::vulkan::Buffer& buffer, const v3d::vulkan::DeviceMemory& deviceMemory) const
+{
+	device->bindBufferMemory(buffer.get(), deviceMemory.get(), 0);
 }

@@ -41,6 +41,8 @@ namespace v3d
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Buffer);
 			DEFAULT_MOVE_CONSTRUCTORS(Buffer);
 			~Buffer() {};
+
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueBuffer, vk::Buffer, buffer);
 		};
 	}
 }

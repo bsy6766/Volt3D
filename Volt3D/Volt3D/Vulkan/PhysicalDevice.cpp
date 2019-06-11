@@ -187,3 +187,18 @@ uint32_t v3d::vulkan::PhysicalDevice::getPresentQueueFamilyIndex() const
 {
 	return presentQueueFamilyIndex;
 }
+
+uint32_t v3d::vulkan::PhysicalDevice::getMemoryTypeIndex(const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags) const
+{
+	const vk::PhysicalDeviceMemoryProperties memProperties = getMemoryProperties();
+
+	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+	{
+		if ((memoryTypeBits & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags) == memoryPropertyFlags) 
+		{
+			return i;
+		}
+	}
+
+	throw std::runtime_error("failed to find suitable memory type!");
+}
