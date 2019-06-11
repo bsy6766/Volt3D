@@ -193,6 +193,10 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h" />
     <ClInclude Include="Volt3D.h" />
+    <ClInclude Include="Volt3D\Color\Color3B.h" />
+    <ClInclude Include="Volt3D\Color\Color3F.h" />
+    <ClInclude Include="Volt3D\Color\Color4B.h" />
+    <ClInclude Include="Volt3D\Color\Color4F.h" />
     <ClInclude Include="Volt3D\Config\BuildConfig.h" />
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
@@ -231,6 +235,10 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Volt3D\Color\Color3B.cpp" />
+    <ClCompile Include="Volt3D\Color\Color3F.cpp" />
+    <ClCompile Include="Volt3D\Color\Color4B.cpp" />
+    <ClCompile Include="Volt3D\Color\Color4F.cpp" />
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
     <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp" />
     <ClCompile Include="Volt3D\Core\Preference.cpp" />

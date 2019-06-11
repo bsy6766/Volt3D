@@ -8,6 +8,12 @@
 #ifndef VOLT3D_H
 #define VOLT3D_H
 
+// Color
+#include "Color/Color3B.h"
+#include "Color/Color3F.h"
+#include "Color/Color4B.h"
+#include "Color/Color4F.h"
+
 // Config
 #include "Config/BuildConfig.h"
 #include "Config/GLFWCallbackConfig.h"

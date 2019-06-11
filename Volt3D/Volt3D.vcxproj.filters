@@ -30,6 +30,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{b952fc91-bb23-4762-b21c-40644e344420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Color">
+      <UniqueIdentifier>{f45499da-5618-44fa-91fa-cd95946ff31b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -103,6 +106,18 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp">
       <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Color\Color4B.cpp">
+      <Filter>Volt3D\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Color\Color4F.cpp">
+      <Filter>Volt3D\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Color\Color3B.cpp">
+      <Filter>Volt3D\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Color\Color3F.cpp">
+      <Filter>Volt3D\Color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +213,18 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h">
       <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Color\Color3F.h">
+      <Filter>Volt3D\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Color\Color4B.h">
+      <Filter>Volt3D\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Color\Color4F.h">
+      <Filter>Volt3D\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Color\Color3B.h">
+      <Filter>Volt3D\Color</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
