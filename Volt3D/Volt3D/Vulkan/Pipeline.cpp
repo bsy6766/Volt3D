@@ -13,6 +13,7 @@
 #include "ShaderModule.h"
 #include "SwapChain.h"
 #include "RenderPass.h"
+#include "Vertex.h"
 
 v3d::vulkan::Pipeline::Pipeline()
 	: pipelineLayout()
@@ -55,22 +56,14 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main"),
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
 	};
-
-	// @note visit later
-	//vk::VertexInputBindingDescription vertexInputBindingDescription(0, sizeof(coloredCubeData[0]));
-	//vk::VertexInputAttributeDescription vertexInputAttributeDescriptions[2] =
-	//{
-	//  vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32B32A32Sfloat, 0),
-	//  vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32A32Sfloat, 16)
-	//};
-
+	
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
+		1,
+		&v3d::vulkan::Vertex::getInputBindingDescription(),
 		0,
-		nullptr,
-		0,
-		nullptr
+		v3d::vulkan::Vertex::getInputAttributeDescription().data()
 	);
 
 	vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo

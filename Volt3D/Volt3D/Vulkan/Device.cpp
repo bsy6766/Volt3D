@@ -141,3 +141,8 @@ void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& com
 {
 	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandPool.getBufferData());
 }
+
+vk::UniqueBuffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const
+{
+	return device->createBufferUnique(createInfo);
+}

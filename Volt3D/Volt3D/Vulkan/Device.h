@@ -67,6 +67,7 @@ namespace v3d
 			void waitForFences(const v3d::vulkan::Fence& fence) const;
 			void resetFences(const v3d::vulkan::Fence& fence) const;
 			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const;
+			vk::UniqueBuffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
 		};
 	}
 }

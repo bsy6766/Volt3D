@@ -28,6 +28,9 @@
 // Enums
 #include "Enums/WindowMode.h"
 
+// Renderer
+#include "Renderer/VertexData.h"
+
 // Utils
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"
@@ -35,6 +38,7 @@
 #include "Utils/Timer.h"
 
 // Vulkan
+#include "Vulkan/Buffer.h"
 #include "Vulkan/CommandBuffer.h"
 #include "Vulkan/CommandPool.h"
 #include "Vulkan/Context.h"
@@ -53,5 +57,6 @@
 #include "Vulkan/Surface.h"
 #include "Vulkan/SwapChain.h"
 #include "Vulkan/Utils.h"
+#include "Vulkan/Vertex.h"
 
 #endif

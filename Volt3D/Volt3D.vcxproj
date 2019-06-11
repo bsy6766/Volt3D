@@ -205,10 +205,12 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Core\Time.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
     <ClInclude Include="Volt3D\Enums\WindowMode.h" />
+    <ClInclude Include="Volt3D\Renderer\VertexData.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
     <ClInclude Include="Volt3D\Utils\Macros.h" />
     <ClInclude Include="Volt3D\Utils\Timer.h" />
+    <ClInclude Include="Volt3D\Vulkan\Buffer.h" />
     <ClInclude Include="Volt3D\Vulkan\CommandPool.h" />
     <ClInclude Include="Volt3D\Vulkan\Context.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
@@ -226,6 +228,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Surface.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
+    <ClInclude Include="Volt3D\Vulkan\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -244,6 +247,8 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
     <ClCompile Include="Volt3D\Core\Time.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />
+    <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Buffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\CommandPool.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
@@ -261,6 +266,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\frag.spv" />
