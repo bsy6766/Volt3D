@@ -60,6 +60,7 @@ namespace v3d
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 			vk::UniqueFramebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
 			vk::UniqueCommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
+			vk::CommandBuffer allocateCommandBuffer(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
 			vk::UniqueFence createFence(const vk::FenceCreateInfo& createInfo) const;
@@ -68,11 +69,14 @@ namespace v3d
 			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
 			void waitForFences(const v3d::vulkan::Fence& fence) const;
 			void resetFences(const v3d::vulkan::Fence& fence) const;
+			void freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const vk::CommandBuffer& commandBuffer) const;
 			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const;
 			vk::UniqueBuffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
 			vk::MemoryRequirements getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const;
 			vk::UniqueDeviceMemory allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const;
-			void bindBufferMemory(const v3d::vulkan::Buffer& buffer, const v3d::vulkan::DeviceMemory& deviceMemory) const;
+			void bindBufferMemory(const v3d::vulkan::Buffer& buffer, const v3d::vulkan::DeviceMemory& vbDeviceMemory) const;
+			void* mapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory, const std::size_t size) const;
+			void unMapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory) const;
 		};
 	}
 }

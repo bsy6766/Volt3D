@@ -28,7 +28,7 @@ namespace v3d
 		friend class Context;
 
 	private:
-		std::vector<v3d::vulkan::Vertex> vertexData;
+		std::vector<v3d::vulkan::Vertex> vertices;
 
 	public:
 		VertexData();
@@ -36,8 +36,10 @@ namespace v3d
 		DEFAULT_MOVE_CONSTRUCTORS(VertexData);
 		~VertexData() {};
 
+		std::size_t getSize() const;
 		std::size_t getDataSize() const;
 		std::vector<v3d::vulkan::Vertex>& getVertexData();
+		const v3d::vulkan::Vertex* getData() const;
 	};
 }
 

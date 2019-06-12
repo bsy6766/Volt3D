@@ -34,7 +34,7 @@ namespace v3d
 		private:
 			vk::UniqueBuffer buffer;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData);
+			bool init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData, const vk::BufferUsageFlags usageFlag);
 
 		public:
 			Buffer();

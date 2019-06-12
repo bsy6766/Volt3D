@@ -270,10 +270,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Vertex.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\frag.spv" />
-    <None Include="Shaders\vert.spv" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -10,15 +10,25 @@
 #include "VertexData.h"
 
 v3d::VertexData::VertexData()
-	: vertexData()
+	: vertices()
 {}
+
+std::size_t v3d::VertexData::getSize() const
+{
+	return vertices.size();
+}
 
 std::size_t v3d::VertexData::getDataSize() const
 {
-	return sizeof(v3d::vulkan::Vertex) * vertexData.size();
+	return sizeof(v3d::vulkan::Vertex) * vertices.size();
 }
 
 std::vector<v3d::vulkan::Vertex>& v3d::VertexData::getVertexData()
 {
-	return vertexData;
+	return vertices;
+}
+
+const v3d::vulkan::Vertex* v3d::VertexData::getData() const
+{
+	return vertices.data();
 }

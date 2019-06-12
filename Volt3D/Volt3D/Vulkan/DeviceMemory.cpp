@@ -14,19 +14,19 @@
 #include "Buffer.h"
 
 v3d::vulkan::DeviceMemory::DeviceMemory()
-	: deviceMemory()
+	: vbDeviceMemory()
 {}
 
-bool v3d::vulkan::DeviceMemory::init(const v3d::vulkan::Device& device, const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Buffer& buffer)
+bool v3d::vulkan::DeviceMemory::init(const v3d::vulkan::Device& device, const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags)
 {
-	auto memRequirment = device.getMemoryRequirement(buffer);
+	const vk::MemoryRequirements memRequirment = device.getMemoryRequirement(buffer);
 	const vk::MemoryAllocateInfo allocInfo
 	(
 		memRequirment.size,
-		physicalDevice.getMemoryTypeIndex(memRequirment.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent)
+		physicalDevice.getMemoryTypeIndex(memRequirment.memoryTypeBits, memoryPropertyFlags)
 	);
 
-	deviceMemory = device.allocateBuffer(allocInfo);
+	vbDeviceMemory = device.allocateBuffer(allocInfo);
 
 	return true;
 }

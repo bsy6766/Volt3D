@@ -15,6 +15,8 @@
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
 
+#include "Renderer/VertexData.h"
+
 namespace v3d
 {
 	namespace glfw { class Window; }
@@ -80,8 +82,11 @@ namespace v3d
 
 			const v3d::glfw::Window& window;
 
-			v3d::vulkan::Buffer* triBuffer;
-			v3d::vulkan::DeviceMemory* deviceMemory;
+			v3d::vulkan::Buffer* vertexBuffer;
+			v3d::vulkan::Buffer* stagingBuffer;
+			v3d::vulkan::DeviceMemory* vbDeviceMemory;
+			v3d::vulkan::DeviceMemory* sbDeviceMemory;
+			v3d::VertexData vertexData;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();
@@ -99,6 +104,8 @@ namespace v3d
 			bool initQueue();
 			bool recreateSwapChain();
 			void release();
+			
+			void createBuffer();
 
 			void render();
 			void waitIdle();

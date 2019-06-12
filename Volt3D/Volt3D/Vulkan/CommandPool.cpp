@@ -15,6 +15,8 @@
 #include "Pipeline.h"
 #include "RenderPass.h"
 #include "FrameBuffer.h"
+#include "Buffer.h"
+#include "Renderer/VertexData.h"
 
 v3d::vulkan::CommandPool::CommandPool()
 	: commandPool()
@@ -36,7 +38,7 @@ bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalD
 	return true;
 }
 
-bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline)
+bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer)
 {
 	const auto& frameBuffers = frameBuffer.getFrameBuffers();
 	const std::size_t fbSize = frameBuffers.size();
@@ -50,7 +52,13 @@ bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& dev
 
 	commandBuffers = device.allocateCommandBuffers(allocInfo);
 
-	for (std::size_t i = 0; i < fbSize; i++)
+	return true;
+}
+
+void v3d::vulkan::CommandPool::record(const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& buffer, const v3d::VertexData& vertexData)
+{
+	const auto& frameBuffers = frameBuffer.getFrameBuffers();
+	for (std::size_t i = 0; i < commandBuffers.size(); i++)
 	{
 		vk::CommandBufferBeginInfo beginInfo
 		(
@@ -80,12 +88,12 @@ bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& dev
 		cb.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
 		cb.setViewport(0, pipeline.getViewport());
 		cb.setScissor(0, pipeline.getScissor());
-		cb.draw(3, 1, 0, 0);
+		vk::DeviceSize offset = 0;
+		cb.bindVertexBuffers(0, buffer.get(), offset);
+		cb.draw(static_cast<uint32_t>(vertexData.getSize()), 1, 0, 0);
 		cb.endRenderPass();
 		cb.end();
 	}
-
-	return true;
 }
 
 void v3d::vulkan::CommandPool::clearCommandBuffers()

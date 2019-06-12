@@ -16,13 +16,13 @@ v3d::vulkan::Buffer::Buffer()
 	: buffer(nullptr)
 {}
 
-bool v3d::vulkan::Buffer::init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData)
+bool v3d::vulkan::Buffer::init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData, const vk::BufferUsageFlags usageFlag)
 {
 	vk::BufferCreateInfo createInfo
 	(
 		vk::BufferCreateFlags(),
 		vertexData.getDataSize(),
-		vk::BufferUsageFlagBits::eVertexBuffer
+		usageFlag
 	);
 
 	buffer = device.createBuffer(createInfo);

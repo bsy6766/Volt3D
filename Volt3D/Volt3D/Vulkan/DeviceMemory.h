@@ -33,9 +33,9 @@ namespace v3d
 			friend class Context;
 
 		private:
-			vk::UniqueDeviceMemory deviceMemory;
+			vk::UniqueDeviceMemory vbDeviceMemory;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Buffer& buffer);
+			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags);
 
 		public:
 			DeviceMemory();
@@ -43,7 +43,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(DeviceMemory);
 			~DeviceMemory() {}
 
-			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueDeviceMemory, vk::DeviceMemory, deviceMemory);
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueDeviceMemory, vk::DeviceMemory, vbDeviceMemory);
 		};
 	}
 }

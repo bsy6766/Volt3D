@@ -254,12 +254,4 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\vert.spv">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\frag.spv">
-      <Filter>Shaders</Filter>
-    </None>
-  </ItemGroup>
 </Project>

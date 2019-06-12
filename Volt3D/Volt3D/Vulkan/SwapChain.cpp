@@ -117,7 +117,7 @@ vk::Extent2D v3d::vulkan::SwapChain::selectExtent(const vk::SurfaceCapabilitiesK
 
 vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode(const std::vector<vk::PresentModeKHR>& presentModes) const
 {
-	return vk::PresentModeKHR::eFifo;
+	return vk::PresentModeKHR::eMailbox;
 }
 
 const vk::Format& v3d::vulkan::SwapChain::getFormat() const

@@ -16,6 +16,8 @@
 
 namespace v3d
 {
+	class VertexData;
+
 	namespace vulkan
 	{
 		class PhysicalDevice;
@@ -24,6 +26,7 @@ namespace v3d
 		class Pipeline;
 		class RenderPass;
 		class FrameBuffer;
+		class Buffer;
 
 		/**
 		*	@class CommandPool
@@ -43,7 +46,8 @@ namespace v3d
 			std::vector<vk::CommandBuffer> commandBuffers;
 
 			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device);
-			bool initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline);
+			bool initCommandBuffers(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer);
+			void record(const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& buffer, const v3d::VertexData& vertexData);
 			void clearCommandBuffers();
 
 		public:
