@@ -10,18 +10,17 @@
 #include "Buffer.h"
 
 #include "Device.h"
-#include "Renderer/VertexData.h"
 
 v3d::vulkan::Buffer::Buffer()
 	: buffer(nullptr)
 {}
 
-bool v3d::vulkan::Buffer::init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData, const vk::BufferUsageFlags usageFlag)
+bool v3d::vulkan::Buffer::init(const v3d::vulkan::Device& device, const uint64_t size, const vk::BufferUsageFlags usageFlag)
 {
 	vk::BufferCreateInfo createInfo
 	(
 		vk::BufferCreateFlags(),
-		vertexData.getDataSize(),
+		size,
 		usageFlag
 	);
 

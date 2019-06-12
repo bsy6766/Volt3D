@@ -55,7 +55,7 @@ bool v3d::vulkan::CommandPool::initCommandBuffers(const v3d::vulkan::Device& dev
 	return true;
 }
 
-void v3d::vulkan::CommandPool::record(const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& buffer, const v3d::VertexData& vertexData)
+void v3d::vulkan::CommandPool::record(const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& buffer, const uint32_t vertexSize)
 {
 	const auto& frameBuffers = frameBuffer.getFrameBuffers();
 	for (std::size_t i = 0; i < commandBuffers.size(); i++)
@@ -90,7 +90,7 @@ void v3d::vulkan::CommandPool::record(const v3d::vulkan::FrameBuffer& frameBuffe
 		cb.setScissor(0, pipeline.getScissor());
 		vk::DeviceSize offset = 0;
 		cb.bindVertexBuffers(0, buffer.get(), offset);
-		cb.draw(static_cast<uint32_t>(vertexData.getSize()), 1, 0, 0);
+		cb.draw(vertexSize, 1, 0, 0);
 		cb.endRenderPass();
 		cb.end();
 	}

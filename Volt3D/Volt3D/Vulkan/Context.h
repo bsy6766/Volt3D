@@ -15,6 +15,7 @@
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
 
+#include "Vertex.h"
 #include "Renderer/VertexData.h"
 
 namespace v3d
@@ -83,10 +84,11 @@ namespace v3d
 			const v3d::glfw::Window& window;
 
 			v3d::vulkan::Buffer* vertexBuffer;
-			v3d::vulkan::Buffer* stagingBuffer;
+			v3d::vulkan::Buffer* indexBuffer;
 			v3d::vulkan::DeviceMemory* vbDeviceMemory;
-			v3d::vulkan::DeviceMemory* sbDeviceMemory;
-			v3d::VertexData vertexData;
+			v3d::vulkan::DeviceMemory* ibDeviceMemory;
+			v3d::VertexData<v3d::vulkan::Vertex> vertexData;
+			v3d::VertexData<uint16_t> indexData;
 
 			bool initInstance(const v3d::glfw::Window& view);
 			bool initDebugReport();

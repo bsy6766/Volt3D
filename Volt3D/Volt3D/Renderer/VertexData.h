@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "Utils/Macros.h"
-#include "Vulkan/Vertex.h"
 
 namespace v3d
 {
@@ -23,12 +22,13 @@ namespace v3d
 	*
 	*	@since 1.0
 	*/
+	template<class T>
 	class VOLT3D_DLL VertexData
 	{
 		friend class Context;
 
 	private:
-		std::vector<v3d::vulkan::Vertex> vertices;
+		std::vector<T> vertices;
 
 	public:
 		VertexData();
@@ -38,8 +38,8 @@ namespace v3d
 
 		std::size_t getSize() const;
 		std::size_t getDataSize() const;
-		std::vector<v3d::vulkan::Vertex>& getVertexData();
-		const v3d::vulkan::Vertex* getData() const;
+		std::vector<T>& getVertexData();
+		const T* getData() const;
 	};
 }
 

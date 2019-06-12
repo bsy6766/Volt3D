@@ -17,8 +17,6 @@
 
 namespace v3d
 {
-	class VertexData;
-
 	namespace vulkan
 	{
 		class Device;
@@ -34,7 +32,7 @@ namespace v3d
 		private:
 			vk::UniqueBuffer buffer;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::VertexData& vertexData, const vk::BufferUsageFlags usageFlag);
+			bool init(const v3d::vulkan::Device& device, const uint64_t size, const vk::BufferUsageFlags usageFlag);
 
 		public:
 			Buffer();
