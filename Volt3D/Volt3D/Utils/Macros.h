@@ -34,4 +34,7 @@ inline explicit operator const _UNIQUE_& () const noexcept { return _HANDLE_; }	
 inline const _UNIQUE_& getHandle() const { return _HANDLE_; }					\
 inline const _CPP_& get() const { return _HANDLE_.get(); }
 
+#define NO_THROW_NEW(_CLASS_)	\
+new (std::nothrow) _CLASS_();
+
 #endif

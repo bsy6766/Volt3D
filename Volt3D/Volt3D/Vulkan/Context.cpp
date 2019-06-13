@@ -323,18 +323,21 @@ bool v3d::vulkan::Context::recreateSwapChain()
 
 void v3d::vulkan::Context::createBuffer()
 {
-	vertexBuffer = new v3d::vulkan::Buffer();
+	vertexBuffer = NO_THROW_NEW(Buffer);
 	vertexBuffer->init(*device, vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
 
-	vbDeviceMemory = new v3d::vulkan::DeviceMemory();
+	vbDeviceMemory = NO_THROW_NEW(DeviceMemory);
 	vbDeviceMemory->init(*device, *physicalDevice, *vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
 	device->bindBufferMemory(*vertexBuffer, *vbDeviceMemory);
 
-	indexBuffer = new v3d::vulkan::Buffer();
+	indexBuffer = NO_THROW_NEW(Buffer);
 	indexBuffer->init(*device, indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
 
-	ib
+	ibDeviceMemory = NO_THROW_NEW(DeviceMemory);
+	ibDeviceMemory->init(*device, *physicalDevice, *vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+	device->bindBufferMemory(*vertexBuffer, *vbDeviceMemory);
 }
 
 void v3d::vulkan::Context::render()
