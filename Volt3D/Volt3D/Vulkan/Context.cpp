@@ -97,65 +97,45 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initRenderPass()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
+
+	{
+		vertexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+		vbDeviceMemory = createDeviceMemory(*vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+		v3d::vulkan::Buffer* vertexStagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
+		v3d::vulkan::DeviceMemory* vsbDeviceMemory = createDeviceMemory(*vertexStagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+
+		void* data = device->mapMemory(*vsbDeviceMemory, vertexData.getDataSize());
+		memcpy(data, vertexData.getData(), vertexData.getDataSize());
+		device->unMapMemory(*vsbDeviceMemory);
+
+		copyBuffer(*vertexStagingBuffer, *vertexBuffer, vertexData.getDataSize());
+
+		delete vertexStagingBuffer;
+		delete vsbDeviceMemory;
+	}
+
+	{
+		indexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+		ibDeviceMemory = createDeviceMemory(*indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+		v3d::vulkan::Buffer* indexStagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
+		v3d::vulkan::DeviceMemory* isbDeviceMemory = createDeviceMemory(*indexStagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+
+		void* data = device->mapMemory(*isbDeviceMemory, indexData.getDataSize());
+		memcpy(data, indexData.getData(), indexData.getDataSize());
+		device->unMapMemory(*isbDeviceMemory);
+
+		copyBuffer(*indexStagingBuffer, *vertexBuffer, indexData.getDataSize());
+
+		delete indexStagingBuffer;
+		delete isbDeviceMemory;
+	}
+
 	if (!initCommandPool()) return false;
 	if (!initSemaphore()) return false;
 	if (!initFences()) return false;
 	if (!initQueue()) return false;
-
-	createBuffer();
-
-	v3d::vulkan::Buffer* stagingBuffer = new v3d::vulkan::Buffer();
-	stagingBuffer->init(*device, vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc);
-
-	v3d::vulkan::DeviceMemory* sbDeviceMemory = new v3d::vulkan::DeviceMemory();
-	sbDeviceMemory->init(*device, *physicalDevice, *stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-
-	void* data = device->mapMemory(*sbDeviceMemory, vertexData.getDataSize());
-	memcpy(data, vertexData.getData(), vertexData.getDataSize());
-	device->unMapMemory(*sbDeviceMemory);
-
-	device->bindBufferMemory(*stagingBuffer, *sbDeviceMemory);
-
-
-	vk::CommandBufferAllocateInfo allocInfo
-	(
-		commandPool->get(),
-		vk::CommandBufferLevel::ePrimary,
-		1
-	);
-	vk::CommandBuffer cb = device->allocateCommandBuffer(allocInfo);
-
-	vk::CommandBufferBeginInfo beginInfo
-	(
-		vk::CommandBufferUsageFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit),
-		nullptr
-	);
-
-	cb.begin(beginInfo);
-
-	vk::BufferCopy copyRegion(0, 0, vertexData.getDataSize());
-
-	cb.copyBuffer(stagingBuffer->get(), vertexBuffer->get(), 1, &copyRegion);
-	cb.end();
-
-	vk::SubmitInfo submitInfo
-	(
-		0,
-		nullptr,
-		nullptr,
-		1,
-		&cb
-	);
-
-	graphicsQueue->submit(submitInfo);
-	graphicsQueue->waitIdle();
-
-	device->freeCommandBuffer(*commandPool, cb);
-
-	commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
-
-	delete stagingBuffer;
-	delete sbDeviceMemory;
 
 	return true;
 }
@@ -247,6 +227,9 @@ bool v3d::vulkan::Context::initCommandPool()
 	if (commandPool == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::CommandPool>(); return false; }
 	if (!commandPool->init(*physicalDevice, *device)) return false;
 	if (!commandPool->initCommandBuffers(*device, *frameBuffer)) return false;
+
+	//commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
+	commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
 	
 	return true;
 }
@@ -321,23 +304,57 @@ bool v3d::vulkan::Context::recreateSwapChain()
 	return true;
 }
 
-void v3d::vulkan::Context::createBuffer()
+v3d::vulkan::Buffer* v3d::vulkan::Context::createBuffer(const vk::BufferUsageFlags usageFlags)
 {
-	vertexBuffer = NO_THROW_NEW(Buffer);
-	vertexBuffer->init(*device, vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+	auto newBuffer = NO_THROW_NEW(Buffer);
+	newBuffer->init(*device, vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+	return newBuffer;
+}
 
-	vbDeviceMemory = NO_THROW_NEW(DeviceMemory);
-	vbDeviceMemory->init(*device, *physicalDevice, *vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+v3d::vulkan::DeviceMemory* v3d::vulkan::Context::createDeviceMemory(const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const
+{
+	auto newDeviceMemory = NO_THROW_NEW(DeviceMemory);
+	newDeviceMemory->init(*device, *physicalDevice, buffer, memoryPropertyFlags);
+	device->bindBufferMemory(buffer, *newDeviceMemory);
+	return newDeviceMemory;
+}
 
-	device->bindBufferMemory(*vertexBuffer, *vbDeviceMemory);
+void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d::vulkan::Buffer& dst, const vk::DeviceSize size)
+{
+	vk::CommandBufferAllocateInfo allocInfo
+	(
+		commandPool->get(),
+		vk::CommandBufferLevel::ePrimary,
+		1
+	);
+	vk::CommandBuffer cb = device->allocateCommandBuffer(allocInfo);
 
-	indexBuffer = NO_THROW_NEW(Buffer);
-	indexBuffer->init(*device, indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
+	vk::CommandBufferBeginInfo beginInfo
+	(
+		vk::CommandBufferUsageFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit),
+		nullptr
+	);
 
-	ibDeviceMemory = NO_THROW_NEW(DeviceMemory);
-	ibDeviceMemory->init(*device, *physicalDevice, *vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+	cb.begin(beginInfo);
 
-	device->bindBufferMemory(*vertexBuffer, *vbDeviceMemory);
+	vk::BufferCopy copyRegion(0, 0, vertexData.getDataSize());
+
+	cb.copyBuffer(src.get(), dst.get(), 1, &copyRegion);
+	cb.end();
+
+	vk::SubmitInfo submitInfo
+	(
+		0,
+		nullptr,
+		nullptr,
+		1,
+		&cb
+	);
+
+	graphicsQueue->submit(submitInfo);
+	graphicsQueue->waitIdle();
+
+	device->freeCommandBuffer(*commandPool, cb);
 }
 
 void v3d::vulkan::Context::render()

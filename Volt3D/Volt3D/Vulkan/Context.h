@@ -107,7 +107,9 @@ namespace v3d
 			bool recreateSwapChain();
 			void release();
 			
-			void createBuffer();
+			v3d::vulkan::Buffer* createBuffer(const vk::BufferUsageFlags usageFlags);
+			v3d::vulkan::DeviceMemory* createDeviceMemory(const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
+			void copyBuffer(const v3d::vulkan::Buffer& src, const v3d::vulkan::Buffer& dst, const vk::DeviceSize size);
 
 			void render();
 			void waitIdle();
