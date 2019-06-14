@@ -29,12 +29,9 @@ namespace v3d
 		class DebugUtilsMessenger;
 		class PhysicalDevice;
 		class Device;
-		class Surface;
 		class SwapChain;
 		class RenderPass;
 		class Pipeline;
-		class FrameBuffer;
-		class CommandPool;
 		class Semaphore;
 		class Fence;
 		class Queue;
@@ -64,14 +61,14 @@ namespace v3d
 			bool validationLayerEnabled;
 			v3d::vulkan::DebugReportCallback* debugReportCallback;
 			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
-			v3d::vulkan::Surface* surface;
+			vk::SurfaceKHR surface;
 			v3d::vulkan::PhysicalDevice* physicalDevice;
 			v3d::vulkan::Device* device;
 			v3d::vulkan::SwapChain* swapChain;
 			v3d::vulkan::RenderPass* renderPass;
 			v3d::vulkan::Pipeline* pipeline;
-			v3d::vulkan::FrameBuffer* frameBuffer;
-			v3d::vulkan::CommandPool* commandPool;
+			std::vector<vk::Framebuffer> framebuffers;
+			vk::CommandPool commandPool;
 			std::vector<v3d::vulkan::Semaphore*> imageAvailableSemaphores;
 			std::vector<v3d::vulkan::Semaphore*> renderFinishedSemaphores;
 			std::vector<v3d::vulkan::Fence*> frameFences;
@@ -92,10 +89,10 @@ namespace v3d
 			v3d::VertexData<v3d::vulkan::Vertex> vertexData;
 			v3d::VertexData<uint16_t> indexData;
 
-			bool initInstance(const v3d::glfw::Window& view);
+			bool initInstance(const v3d::glfw::Window& window);
 			bool initDebugReport();
 			bool initDebugUtilsMessenger();
-			bool initSurface(const v3d::glfw::Window& view);
+			bool initSurface(const v3d::glfw::Window& window);
 			bool initPhysicalDevice();
 			bool initDevice();
 			bool initSwapChain();
@@ -125,14 +122,13 @@ namespace v3d
 			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
 
 			const v3d::vulkan::Instance& getInstance() const;
-			const v3d::vulkan::Surface& getSurface() const;
+			const vk::SurfaceKHR& getSurface() const;
 			const v3d::vulkan::PhysicalDevice& getPhysicalDevice() const;
 			const v3d::vulkan::Device& getDevice() const;
 			const v3d::vulkan::SwapChain& getSwapChain() const;
 			const v3d::vulkan::RenderPass& getRenderPass() const;
 			const v3d::vulkan::Pipeline& getPipeline() const;
-			const v3d::vulkan::FrameBuffer& getFrameBuffer() const;
-			const v3d::vulkan::CommandPool& getCommandPool() const;
+			const vk::CommandPool& getCommandPool() const;
 		};
 	}
 }

@@ -13,15 +13,12 @@
 #include "Instance.h"
 #include "DebugReportCallback.h"
 #include "DebugUtilsMessenger.h"
-#include "Surface.h"
 #include "PhysicalDevice.h"
 #include "Device.h"
 #include "SwapChain.h"
 #include "ShaderModule.h"
 #include "RenderPass.h"
 #include "Pipeline.h"
-#include "FrameBuffer.h"
-#include "CommandPool.h"
 #include "Semaphore.h"
 #include "Fence.h"
 #include "Queue.h"
@@ -44,7 +41,7 @@ v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
 	, swapChain(nullptr)
 	, renderPass(nullptr)
 	, pipeline(nullptr)
-	, frameBuffer(nullptr)
+	, framebuffers()
 	, commandPool(nullptr)
 	, imageAvailableSemaphores()
 	, renderFinishedSemaphores()
@@ -107,34 +104,34 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 		vertexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
 		vbDeviceMemory = createDeviceMemory(*vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		v3d::vulkan::Buffer* vertexStagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
-		v3d::vulkan::DeviceMemory* vsbDeviceMemory = createDeviceMemory(*vertexStagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+		v3d::vulkan::Buffer* stagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
+		v3d::vulkan::DeviceMemory* stagingDeviceMemory = createDeviceMemory(*stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-		void* data = device->mapMemory(*vsbDeviceMemory, vertexData.getDataSize());
+		void* data = device->mapMemory(*stagingDeviceMemory, vertexData.getDataSize());
 		memcpy(data, vertexData.getData(), vertexData.getDataSize());
-		device->unMapMemory(*vsbDeviceMemory);
+		device->unMapMemory(*stagingDeviceMemory);
 
-		copyBuffer(*vertexStagingBuffer, *vertexBuffer, vertexData.getDataSize());
+		copyBuffer(*stagingBuffer, *vertexBuffer, vertexData.getDataSize());
 
-		delete vertexStagingBuffer;
-		delete vsbDeviceMemory;
+		delete stagingBuffer;
+		delete stagingDeviceMemory;
 	}
 
 	{
 		indexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
 		ibDeviceMemory = createDeviceMemory(*indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		v3d::vulkan::Buffer* indexStagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
-		v3d::vulkan::DeviceMemory* isbDeviceMemory = createDeviceMemory(*indexStagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+		v3d::vulkan::Buffer* stagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
+		v3d::vulkan::DeviceMemory* stagingDeviceMemory = createDeviceMemory(*stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-		void* data = device->mapMemory(*isbDeviceMemory, indexData.getDataSize());
+		void* data = device->mapMemory(*stagingDeviceMemory, indexData.getDataSize());
 		memcpy(data, indexData.getData(), indexData.getDataSize());
-		device->unMapMemory(*isbDeviceMemory);
+		device->unMapMemory(*stagingDeviceMemory);
 
-		copyBuffer(*indexStagingBuffer, *vertexBuffer, indexData.getDataSize());
+		copyBuffer(*stagingBuffer, *indexBuffer, indexData.getDataSize());
 
-		delete indexStagingBuffer;
-		delete isbDeviceMemory;
+		delete stagingBuffer;
+		delete stagingDeviceMemory;
 	}
 
 	if (!initCommandBuffer()) return false;
@@ -168,9 +165,9 @@ bool v3d::vulkan::Context::initDebugUtilsMessenger()
 
 bool v3d::vulkan::Context::initSurface(const v3d::glfw::Window& window)
 {
-	surface = new(std::nothrow) v3d::vulkan::Surface();
-	if (!surface) v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Surface>();
-	if (!surface->init(window, *instance)) return false;
+	VkSurfaceKHR cVkSurfaceKHR;
+	if (!window.createWindowSurface(*instance, cVkSurfaceKHR)) return false;
+	surface = vk::SurfaceKHR(cVkSurfaceKHR);
 	return true;
 }
 
@@ -178,7 +175,7 @@ bool v3d::vulkan::Context::initPhysicalDevice()
 {
 	physicalDevice = new (std::nothrow) v3d::vulkan::PhysicalDevice();
 	if (!physicalDevice) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::PhysicalDevice>(); return false; }
-	if (!physicalDevice->init(*instance, *surface)) return false;
+	if (!physicalDevice->init(*instance, surface)) return false;
 
 	return true;
 }
@@ -195,7 +192,7 @@ bool v3d::vulkan::Context::initSwapChain()
 {
 	swapChain = new (std::nothrow) v3d::vulkan::SwapChain();
 	if (swapChain == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::SwapChain>(); return false; }
-	if (!swapChain->init(*physicalDevice, *device, *surface, window)) return false;
+	if (!swapChain->init(*physicalDevice, *device, surface, window)) return false;
 	return true;
 }
 
@@ -217,17 +214,43 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 
 bool v3d::vulkan::Context::initFrameBuffer()
 {
-	frameBuffer = new (std::nothrow) v3d::vulkan::FrameBuffer();
-	if (frameBuffer == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::FrameBuffer>(); return false; }
-	if (!frameBuffer->init(*swapChain, *renderPass, *device)) return false;
+	const auto& imageViews = swapChain->getImageViews();
+	const std::size_t size = imageViews.size();
+	const auto& extent = swapChain->getExtent2D();
+
+	framebuffers.resize(size);
+
+	for (std::size_t i = 0; i < size; i++)
+	{
+		vk::FramebufferCreateInfo createInfo
+		(
+			vk::FramebufferCreateFlags(),
+			renderPass->get(),
+			1,
+			&imageViews[i].get(),
+			extent.width,
+			extent.height,
+			1
+		);
+
+		framebuffers[i] = device->createFrameBuffer(createInfo);
+	}
+
 	return true;
 }
 
 bool v3d::vulkan::Context::initCommandPool()
 {
-	commandPool = new (std::nothrow) v3d::vulkan::CommandPool();
-	if (commandPool == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::CommandPool>(); return false; }
-	if (!commandPool->init(*physicalDevice, *device)) return false;
+	const uint32_t graphicsFamilyIndex = physicalDevice->getGraphicsQueueFamilyIndex();
+
+	vk::CommandPoolCreateInfo createInfo
+	(
+		vk::CommandPoolCreateFlags(),
+		graphicsFamilyIndex
+	);
+
+	commandPool = device->createCommandPool(createInfo);
+
 	return true;
 }
 
@@ -280,12 +303,11 @@ bool v3d::vulkan::Context::initQueue()
 
 bool v3d::vulkan::Context::initCommandBuffer()
 {
-	const auto& frameBuffers = frameBuffer->getFrameBuffers();
-	const std::size_t fbSize = frameBuffers.size();
+	const std::size_t fbSize = framebuffers.size();
 
 	vk::CommandBufferAllocateInfo allocInfo
 	(
-		commandPool->get(),
+		commandPool,
 		vk::CommandBufferLevel::ePrimary,
 		static_cast<uint32_t>(fbSize)
 	);
@@ -296,7 +318,8 @@ bool v3d::vulkan::Context::initCommandBuffer()
 	{
 		auto newCB = new v3d::vulkan::CommandBuffer(cbs[i]);
 		commandBuffers.push_back(newCB);
-		newCB->record(frameBuffer->getFrameBuffer(i), *renderPass, *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
+		newCB->record(framebuffers[i], renderPass->get(), *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
+		//newCB->record(framebuffers[i]->get(), renderPass->get(), *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
 	}
 
 	return true;
@@ -306,11 +329,11 @@ bool v3d::vulkan::Context::recreateSwapChain()
 {
 	device->waitIdle();
 
-	SAFE_DELETE(frameBuffer);
+	framebuffers.clear();
 	SAFE_DELETE(pipeline);
 	SAFE_DELETE(renderPass);
 	SAFE_DELETE(swapChain);
-	device->freeCommandBuffers(*commandPool, commandBuffers);
+	device->freeCommandBuffers(commandPool, commandBuffers);
 	for (auto& cb : commandBuffers) SAFE_DELETE(cb);
 	commandBuffers.clear();
 
@@ -344,7 +367,7 @@ void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d:
 {
 	vk::CommandBufferAllocateInfo allocInfo
 	(
-		commandPool->get(),
+		commandPool,
 		vk::CommandBufferLevel::ePrimary,
 		1
 	);
@@ -358,7 +381,7 @@ void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d:
 
 	cb.begin(beginInfo);
 
-	vk::BufferCopy copyRegion(0, 0, vertexData.getDataSize());
+	vk::BufferCopy copyRegion(0, 0, size);
 
 	cb.copyBuffer(src.get(), dst.get(), 1, &copyRegion);
 	cb.end();
@@ -375,7 +398,7 @@ void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d:
 	graphicsQueue->submit(submitInfo);
 	graphicsQueue->waitIdle();
 
-	device->freeCommandBuffer(*commandPool, cb);
+	device->freeCommandBuffer(commandPool, cb);
 }
 
 void v3d::vulkan::Context::render()
@@ -392,7 +415,7 @@ void v3d::vulkan::Context::render()
 	{ 
 		throw std::runtime_error("failed to acquire swap chain image!"); 
 	}
-	assert(result.value < frameBuffer->size());
+	assert(result.value < framebuffers.size());
 
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame]->get() };
@@ -448,9 +471,9 @@ const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
 	return *instance;
 }
 
-const v3d::vulkan::Surface& v3d::vulkan::Context::getSurface() const
+const vk::SurfaceKHR& v3d::vulkan::Context::getSurface() const
 {
-	return *surface;
+	return surface;
 }
 
 const v3d::vulkan::PhysicalDevice& v3d::vulkan::Context::getPhysicalDevice() const
@@ -478,14 +501,9 @@ const v3d::vulkan::Pipeline& v3d::vulkan::Context::getPipeline() const
 	return *pipeline;
 }
 
-const v3d::vulkan::FrameBuffer& v3d::vulkan::Context::getFrameBuffer() const
+const vk::CommandPool& v3d::vulkan::Context::getCommandPool() const
 {
-	return *frameBuffer;
-}
-
-const v3d::vulkan::CommandPool& v3d::vulkan::Context::getCommandPool() const
-{
-	return *commandPool;
+	return commandPool;
 }
 
 void v3d::vulkan::Context::release()
@@ -494,7 +512,7 @@ void v3d::vulkan::Context::release()
 	logger.info("Releasing Context...");
 	for (auto& cb : commandBuffers)
 	{
-		device->freeCommandBuffer(*commandPool, cb->getHandle());
+		device->freeCommandBuffer(commandPool, cb->getHandle());
 		SAFE_DELETE(cb);
 	}
 	SAFE_DELETE(vbDeviceMemory);
@@ -508,14 +526,14 @@ void v3d::vulkan::Context::release()
 	imageAvailableSemaphores.clear();
 	for (auto& s : renderFinishedSemaphores) { SAFE_DELETE(s); }
 	renderFinishedSemaphores.clear();
-	SAFE_DELETE(commandPool);
-	SAFE_DELETE(frameBuffer);
+	device->get().destroyCommandPool(commandPool);
+	for (auto& f : framebuffers) { device->get().destroyFramebuffer(f); }
 	SAFE_DELETE(pipeline);
 	SAFE_DELETE(renderPass);
 	SAFE_DELETE(swapChain);
 	SAFE_DELETE(device);
 	SAFE_DELETE(physicalDevice);
-	SAFE_DELETE(surface);
+	instance->get().destroySurfaceKHR(surface);
 	SAFE_DELETE(debugUtilsMessenger);
 	SAFE_DELETE(debugReportCallback);
 	SAFE_DELETE(instance);

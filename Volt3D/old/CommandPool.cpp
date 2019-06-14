@@ -12,11 +12,11 @@
 #include "PhysicalDevice.h"
 #include "Device.h"
 
-v3d::vulkan::CommandPool::CommandPool()
+vk::CommandPool::CommandPool()
 	: commandPool()
 {}
 
-bool v3d::vulkan::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device)
+bool vk::CommandPool::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device)
 {
 	uint32_t graphicsFamilyIndex = physicalDevice.getGraphicsQueueFamilyIndex();
 

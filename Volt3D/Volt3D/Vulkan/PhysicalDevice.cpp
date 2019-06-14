@@ -10,7 +10,6 @@
 #include "PhysicalDevice.h"
 
 #include "Instance.h"
-#include "Surface.h"
 
 v3d::vulkan::PhysicalDevice::PhysicalDevice()
 	: physicalDevice(physicalDevice)
@@ -18,7 +17,7 @@ v3d::vulkan::PhysicalDevice::PhysicalDevice()
 	, presentQueueFamilyIndex(0)
 {}
 
-bool v3d::vulkan::PhysicalDevice::init(const v3d::vulkan::Instance& instance, const v3d::vulkan::Surface& surface)
+bool v3d::vulkan::PhysicalDevice::init(const v3d::vulkan::Instance& instance, const vk::SurfaceKHR& surface)
 {
 	std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 	bool foundPhyscialDevice = false;
@@ -49,7 +48,7 @@ bool v3d::vulkan::PhysicalDevice::init(const v3d::vulkan::Instance& instance, co
 			gIndex.emplace(i);
 		}
 
-		vk::Bool32 supportSurface = physicalDevice.getSurfaceSupportKHR(i, surface.get());
+		vk::Bool32 supportSurface = physicalDevice.getSurfaceSupportKHR(i, surface);
 		if (queueFamilyProperty.queueCount > 0 && supportSurface)
 		{
 			pIndex.emplace(i);
@@ -133,24 +132,24 @@ std::vector<vk::QueueFamilyProperties> v3d::vulkan::PhysicalDevice::getQueueFami
 	return physicalDevice.getQueueFamilyProperties();
 }
 
-vk::SurfaceCapabilitiesKHR v3d::vulkan::PhysicalDevice::getSurfaceCapabilitiesKHR(const Surface& surface) const
+vk::SurfaceCapabilitiesKHR v3d::vulkan::PhysicalDevice::getSurfaceCapabilitiesKHR(const vk::SurfaceKHR& surface) const
 {
-	return physicalDevice.getSurfaceCapabilitiesKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
+	return physicalDevice.getSurfaceCapabilitiesKHR(surface);
 }
 
-vk::Bool32 v3d::vulkan::PhysicalDevice::getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const
+vk::Bool32 v3d::vulkan::PhysicalDevice::getSurfaceSupportKHR(const uint32_t index, const vk::SurfaceKHR& surface) const
 {
-	return physicalDevice.getSurfaceSupportKHR(index, reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
+	return physicalDevice.getSurfaceSupportKHR(index, surface);
 }
 
-std::vector<vk::SurfaceFormatKHR> v3d::vulkan::PhysicalDevice::getSurfaceFormatsKHR(const Surface& surface) const
+std::vector<vk::SurfaceFormatKHR> v3d::vulkan::PhysicalDevice::getSurfaceFormatsKHR(const vk::SurfaceKHR& surface) const
 {
-	return physicalDevice.getSurfaceFormatsKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
+	return physicalDevice.getSurfaceFormatsKHR(surface);
 }
 
-std::vector<vk::PresentModeKHR> v3d::vulkan::PhysicalDevice::getSurfacePresentModesKHR(const Surface& surface) const
+std::vector<vk::PresentModeKHR> v3d::vulkan::PhysicalDevice::getSurfacePresentModesKHR(const vk::SurfaceKHR& surface) const
 {
-	return physicalDevice.getSurfacePresentModesKHR(reinterpret_cast<const vk::UniqueSurfaceKHR&>(surface).get());
+	return physicalDevice.getSurfacePresentModesKHR(surface);
 }
 
 vk::PhysicalDeviceProperties v3d::vulkan::PhysicalDevice::getProperties() const

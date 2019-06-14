@@ -13,9 +13,7 @@
 #include "SwapChain.h"
 #include "Pipeline.h"
 #include "RenderPass.h"
-#include "FrameBuffer.h"
 #include "Buffer.h"
-#include "CommandPool.h"
 #include "Renderer/VertexData.h"
 
 v3d::vulkan::CommandBuffer::CommandBuffer()
@@ -26,11 +24,11 @@ v3d::vulkan::CommandBuffer::CommandBuffer(const vk::CommandBuffer & commandBuffe
 	: commandBuffer(commandBuffer)
 {}
 
-bool v3d::vulkan::CommandBuffer::init(const v3d::vulkan::Device& device, const v3d::vulkan::CommandPool& commandPool)
+bool v3d::vulkan::CommandBuffer::init(const v3d::vulkan::Device& device, const vk::CommandPool& commandPool)
 {
 	vk::CommandBufferAllocateInfo allocInfo
 	(
-		commandPool.get(),
+		commandPool,
 		vk::CommandBufferLevel::ePrimary,
 		1
 	);
@@ -40,7 +38,7 @@ bool v3d::vulkan::CommandBuffer::init(const v3d::vulkan::Device& device, const v
 	return true;
 }
 
-void v3d::vulkan::CommandBuffer::record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const
+void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const
 {
 	vk::CommandBufferBeginInfo beginInfo
 	(
@@ -54,8 +52,8 @@ void v3d::vulkan::CommandBuffer::record(const vk::UniqueFramebuffer& frameBuffer
 
 	vk::RenderPassBeginInfo renderPassInfo
 	(
-		renderPass.get(),
-		frameBuffer.get(),
+		renderPass,
+		frameBuffer,
 		vk::Rect2D
 		(
 			vk::Offset2D(),
@@ -76,7 +74,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::UniqueFramebuffer& frameBuffer
 	commandBuffer.end();
 }
 
-void v3d::vulkan::CommandBuffer::record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const
+void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const
 {
 	vk::CommandBufferBeginInfo beginInfo
 	(
@@ -90,8 +88,8 @@ void v3d::vulkan::CommandBuffer::record(const vk::UniqueFramebuffer& frameBuffer
 
 	vk::RenderPassBeginInfo renderPassInfo
 	(
-		renderPass.get(),
-		frameBuffer.get(),
+		renderPass,
+		frameBuffer,
 		vk::Rect2D
 		(
 			vk::Offset2D(),

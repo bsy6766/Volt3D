@@ -20,7 +20,6 @@ namespace v3d
 	namespace vulkan
 	{
 		class Instance;
-		class Surface;
 		class Buffer;
 
 		/**
@@ -40,7 +39,7 @@ namespace v3d
 			uint32_t graphicsQueueFamilyIndex;
 			uint32_t presentQueueFamilyIndex;
 
-			bool init(const v3d::vulkan::Instance& instance, const v3d::vulkan::Surface& surface);
+			bool init(const v3d::vulkan::Instance& instance, const vk::SurfaceKHR& surface);
 			
 			bool isSuitable(const vk::PhysicalDevice& physicalDevice);
 
@@ -54,10 +53,10 @@ namespace v3d
 			
 			vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
 			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
-			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const Surface& surface) const;
-			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const Surface& surface) const;
-			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const Surface& surface) const;
-			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const Surface& surface) const;
+			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const vk::SurfaceKHR& surface) const;
+			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const vk::SurfaceKHR& surface) const;
+			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR(const vk::SurfaceKHR& surface) const;
+			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR(const vk::SurfaceKHR& surface) const;
 			vk::PhysicalDeviceProperties getProperties() const;
 			vk::PhysicalDeviceFeatures getFeatures() const;
 			vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;

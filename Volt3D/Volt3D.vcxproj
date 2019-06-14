@@ -212,14 +212,12 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Utils\Timer.h" />
     <ClInclude Include="Volt3D\Vulkan\Buffer.h" />
     <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h" />
-    <ClInclude Include="Volt3D\Vulkan\CommandPool.h" />
     <ClInclude Include="Volt3D\Vulkan\Context.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h" />
     <ClInclude Include="Volt3D\Vulkan\Device.h" />
     <ClInclude Include="Volt3D\Vulkan\DeviceMemory.h" />
     <ClInclude Include="Volt3D\Vulkan\Fence.h" />
-    <ClInclude Include="Volt3D\Vulkan\FrameBuffer.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
@@ -227,7 +225,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Semaphore.h" />
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h" />
-    <ClInclude Include="Volt3D\Vulkan\Surface.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
     <ClInclude Include="Volt3D\Vulkan\Vertex.h" />
@@ -252,14 +249,12 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Buffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\CommandPool.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Device.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DeviceMemory.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Fence.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\FrameBuffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp" />
@@ -267,7 +262,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Semaphore.cpp" />
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Surface.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Vertex.cpp" />

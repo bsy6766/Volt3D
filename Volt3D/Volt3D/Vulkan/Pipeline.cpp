@@ -209,6 +209,6 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 	);
 
 	pipeline = device.createPipelineUnique(graphicsPipelineCreateInfo);
-
+	
 	return true;
 }

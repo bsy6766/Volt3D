@@ -21,6 +21,5 @@ bool v3d::vulkan::Surface::init(const v3d::glfw::Window& window, const v3d::vulk
 	VkSurfaceKHR cVkSurfaceKHR;
 	if (!window.createWindowSurface(instance, cVkSurfaceKHR)) return false;
 	surface = std::move(vk::UniqueSurfaceKHR(cVkSurfaceKHR, instance.get()));
-
 	return true;
 }

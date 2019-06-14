@@ -38,7 +38,7 @@ namespace v3d
 		private:
 			vk::CommandBuffer commandBuffer;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::CommandPool& commandPool);
+			bool init(const v3d::vulkan::Device& device, const vk::CommandPool& commandPool);
 
 		public:
 			CommandBuffer();
@@ -49,8 +49,8 @@ namespace v3d
 
 			CLASS_TO_VK_HANDLE(vk::CommandBuffer, commandBuffer);
 
-			void record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const;
-			void record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const;
+			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const;
+			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const;
 		};
 	}
 }

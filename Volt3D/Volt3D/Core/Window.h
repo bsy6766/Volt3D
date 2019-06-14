@@ -17,7 +17,7 @@
 
 namespace v3d
 {
-	namespace vulkan { class Instance; class Surface; }
+	namespace vulkan { class Instance; class Context; }
 	namespace glfw
 	{
 		/**
@@ -32,7 +32,7 @@ namespace v3d
 		{
 			friend class Engine;
 			friend class vulkan::Instance;
-			friend class vulkan::Surface;
+			friend class vulkan::Context;
 
 		private:
 			Window();

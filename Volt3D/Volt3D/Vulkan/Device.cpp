@@ -13,7 +13,6 @@
 #include "SwapChain.h"
 #include "Semaphore.h"
 #include "Fence.h"
-#include "CommandPool.h"
 #include "CommandBuffer.h"
 #include "Buffer.h"
 #include "DeviceMemory.h"
@@ -90,14 +89,14 @@ vk::UniquePipeline v3d::vulkan::Device::createPipelineUnique(const vk::GraphicsP
 	return device->createGraphicsPipelineUnique(nullptr, createInfo);
 }
 
-vk::UniqueFramebuffer v3d::vulkan::Device::createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const
+vk::Framebuffer v3d::vulkan::Device::createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const
 {
-	return device->createFramebufferUnique(createInfo);
+	return device->createFramebuffer(createInfo);
 }
 
-vk::UniqueCommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const
+vk::CommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const
 {
-	return device->createCommandPoolUnique(createInfo);
+	return device->createCommandPool(createInfo);
 }
 
 vk::CommandBuffer v3d::vulkan::Device::allocateCommandBuffer(const vk::CommandBufferAllocateInfo& allocInfo) const
@@ -145,16 +144,16 @@ void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
 	device->resetFences(1, &fence.get());
 }
 
-void v3d::vulkan::Device::freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const
+void v3d::vulkan::Device::freeCommandBuffer(const vk::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const
 {
-	device->freeCommandBuffers(commandPool.get(), commandBuffer.getHandle());
+	device->freeCommandBuffers(commandPool, commandBuffer.getHandle());
 }
 
-void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const
+void v3d::vulkan::Device::freeCommandBuffers(const vk::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const
 {
 	std::vector<vk::CommandBuffer> cbs;
 	for (auto& cb : commandBuffers) cbs.push_back(cb->getHandle());
-	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandBuffers.size()), cbs.data());
+	device->freeCommandBuffers(commandPool, static_cast<uint32_t>(commandBuffers.size()), cbs.data());
 }
 
 vk::UniqueBuffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const

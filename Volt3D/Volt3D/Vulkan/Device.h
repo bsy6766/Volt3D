@@ -59,8 +59,8 @@ namespace v3d
 			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
 			vk::UniquePipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
-			vk::UniqueFramebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
-			vk::UniqueCommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
+			vk::Framebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
+			vk::CommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
 			vk::CommandBuffer allocateCommandBuffer(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
@@ -70,8 +70,8 @@ namespace v3d
 			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
 			void waitForFences(const v3d::vulkan::Fence& fence) const;
 			void resetFences(const v3d::vulkan::Fence& fence) const;
-			void freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const;
-			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const;
+			void freeCommandBuffer(const vk::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const;
+			void freeCommandBuffers(const vk::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const;
 			vk::UniqueBuffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
 			vk::MemoryRequirements getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const;
 			vk::UniqueDeviceMemory allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const;

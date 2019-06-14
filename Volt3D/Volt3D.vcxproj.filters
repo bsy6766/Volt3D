@@ -65,9 +65,6 @@
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Surface.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -87,12 +84,6 @@
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\FrameBuffer.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\CommandPool.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Semaphore.cpp">
@@ -184,9 +175,6 @@
     <ClInclude Include="Volt3D\Config\BuildConfig.h">
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Surface.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -207,12 +195,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Preference.h">
       <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\FrameBuffer.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\CommandPool.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Semaphore.h">
       <Filter>Volt3D\Vulkan</Filter>

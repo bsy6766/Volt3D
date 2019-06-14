@@ -10,16 +10,12 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include <vector>
-
 #include "Utils/Macros.h"
 
 namespace v3d
 {
 	namespace vulkan
 	{
-		class SwapChain;
-		class RenderPass;
 		class Device;
 
 		/**
@@ -35,9 +31,9 @@ namespace v3d
 			friend class Context;
 
 		private:
-			std::vector<vk::UniqueFramebuffer> frameBuffers;
+			vk::UniqueFramebuffer framebuffer;
 
-			bool init(const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::Device& device);
+			bool init(const vk::ImageView& imageView, const vk::Extent2D& extent, const vk::RenderPass& renderPass, const v3d::vulkan::Device& device);
 
 		public:
 			FrameBuffer();
@@ -45,9 +41,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(FrameBuffer);
 			~FrameBuffer() {}
 
-			const std::vector<vk::UniqueFramebuffer>& getFrameBuffers() const;
-			std::size_t size() const;
-			const vk::UniqueFramebuffer& getFrameBuffer(const std::size_t index) const;
+			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueFramebuffer, vk::Framebuffer, framebuffer);
 		};
 	}
 }
