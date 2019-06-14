@@ -14,8 +14,6 @@
 #include "Semaphore.h"
 #include "Fence.h"
 #include "CommandBuffer.h"
-#include "Buffer.h"
-#include "DeviceMemory.h"
 #include "Utils.h"
 
 v3d::vulkan::Device::Device()
@@ -94,6 +92,11 @@ vk::Framebuffer v3d::vulkan::Device::createFrameBuffer(const vk::FramebufferCrea
 	return device->createFramebuffer(createInfo);
 }
 
+vk::RenderPass v3d::vulkan::Device::createRenderPass(const vk::RenderPassCreateInfo& createInfo) const
+{
+	return device->createRenderPass(createInfo);
+}
+
 vk::CommandPool v3d::vulkan::Device::createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const
 {
 	return device->createCommandPool(createInfo);
@@ -156,32 +159,32 @@ void v3d::vulkan::Device::freeCommandBuffers(const vk::CommandPool& commandPool,
 	device->freeCommandBuffers(commandPool, static_cast<uint32_t>(commandBuffers.size()), cbs.data());
 }
 
-vk::UniqueBuffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const
+vk::Buffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const
 {
-	return device->createBufferUnique(createInfo);
+	return device->createBuffer(createInfo);
 }
 
-vk::MemoryRequirements v3d::vulkan::Device::getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const
+vk::MemoryRequirements v3d::vulkan::Device::getMemoryRequirement(const vk::Buffer& buffer) const
 {
-	return device->getBufferMemoryRequirements(buffer.get());
+	return device->getBufferMemoryRequirements(buffer);
 }
 
-vk::UniqueDeviceMemory v3d::vulkan::Device::allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const
+vk::DeviceMemory v3d::vulkan::Device::allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const
 {
-	return device->allocateMemoryUnique(allocInfo);
+	return device->allocateMemory(allocInfo);
 }
 
-void v3d::vulkan::Device::bindBufferMemory(const v3d::vulkan::Buffer& buffer, const v3d::vulkan::DeviceMemory& vbDeviceMemory) const
+void v3d::vulkan::Device::bindBufferMemory(const vk::Buffer& buffer, const vk::DeviceMemory& vbDeviceMemory) const
 {
-	device->bindBufferMemory(buffer.get(), vbDeviceMemory.get(), 0);
+	device->bindBufferMemory(buffer, vbDeviceMemory, 0);
 }
 
-void* v3d::vulkan::Device::mapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory, const std::size_t size) const
+void* v3d::vulkan::Device::mapMemory(const vk::DeviceMemory& deviceMemory, const std::size_t size) const
 {
-	return device->mapMemory(vbDeviceMemory.get(), 0, static_cast<uint64_t>(size));
+	return device->mapMemory(deviceMemory, 0, static_cast<uint64_t>(size));
 }
 
-void v3d::vulkan::Device::unMapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory) const
+void v3d::vulkan::Device::unMapMemory(const vk::DeviceMemory& deviceMemory) const
 {
-	device->unmapMemory(vbDeviceMemory.get());
+	device->unmapMemory(deviceMemory);
 }

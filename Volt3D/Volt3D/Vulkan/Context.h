@@ -30,16 +30,12 @@ namespace v3d
 		class PhysicalDevice;
 		class Device;
 		class SwapChain;
-		class RenderPass;
 		class Pipeline;
 		class Semaphore;
 		class Fence;
 		class Queue;
 		class CommandBuffer;
-
-		class Buffer;
-		class DeviceMemory;
-
+		
 		/**
 		*	@class Context
 		*	@brief Vulkan context.
@@ -65,7 +61,7 @@ namespace v3d
 			v3d::vulkan::PhysicalDevice* physicalDevice;
 			v3d::vulkan::Device* device;
 			v3d::vulkan::SwapChain* swapChain;
-			v3d::vulkan::RenderPass* renderPass;
+			vk::RenderPass renderPass;
 			v3d::vulkan::Pipeline* pipeline;
 			std::vector<vk::Framebuffer> framebuffers;
 			vk::CommandPool commandPool;
@@ -82,10 +78,10 @@ namespace v3d
 
 			const v3d::glfw::Window& window;
 
-			v3d::vulkan::Buffer* vertexBuffer;
-			v3d::vulkan::Buffer* indexBuffer;
-			v3d::vulkan::DeviceMemory* vbDeviceMemory;
-			v3d::vulkan::DeviceMemory* ibDeviceMemory;
+			vk::Buffer vertexBuffer;
+			vk::Buffer indexBuffer;
+			vk::DeviceMemory vbDeviceMemory;
+			vk::DeviceMemory ibDeviceMemory;
 			v3d::VertexData<v3d::vulkan::Vertex> vertexData;
 			v3d::VertexData<uint16_t> indexData;
 
@@ -107,9 +103,9 @@ namespace v3d
 			bool recreateSwapChain();
 			void release();
 			
-			v3d::vulkan::Buffer* createBuffer(const vk::BufferUsageFlags usageFlags);
-			v3d::vulkan::DeviceMemory* createDeviceMemory(const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
-			void copyBuffer(const v3d::vulkan::Buffer& src, const v3d::vulkan::Buffer& dst, const vk::DeviceSize size);
+			vk::Buffer createBuffer(const uint64_t size, const vk::BufferUsageFlags usageFlags) const;
+			vk::DeviceMemory createDeviceMemory(const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
+			void copyBuffer(const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size);
 
 			void render();
 			void waitIdle();
@@ -122,13 +118,6 @@ namespace v3d
 			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
 
 			const v3d::vulkan::Instance& getInstance() const;
-			const vk::SurfaceKHR& getSurface() const;
-			const v3d::vulkan::PhysicalDevice& getPhysicalDevice() const;
-			const v3d::vulkan::Device& getDevice() const;
-			const v3d::vulkan::SwapChain& getSwapChain() const;
-			const v3d::vulkan::RenderPass& getRenderPass() const;
-			const v3d::vulkan::Pipeline& getPipeline() const;
-			const vk::CommandPool& getCommandPool() const;
 		};
 	}
 }

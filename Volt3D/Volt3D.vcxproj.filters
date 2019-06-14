@@ -77,9 +77,6 @@
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\RenderPass.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Core\Preference.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
@@ -117,12 +114,6 @@
       <Filter>Volt3D\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Vertex.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Buffer.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\DeviceMemory.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp">
@@ -187,9 +178,6 @@
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\RenderPass.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipeline.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -230,12 +218,6 @@
       <Filter>Volt3D\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Vertex.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Buffer.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\DeviceMemory.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h">

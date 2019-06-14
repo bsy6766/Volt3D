@@ -17,7 +17,6 @@
 #include "Device.h"
 #include "SwapChain.h"
 #include "ShaderModule.h"
-#include "RenderPass.h"
 #include "Pipeline.h"
 #include "Semaphore.h"
 #include "Fence.h"
@@ -26,8 +25,6 @@
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
-#include "Buffer.h"
-#include "DeviceMemory.h"
 #include "Renderer/VertexData.cpp"
 
 v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
@@ -101,37 +98,37 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initQueue()) return false;
 
 	{
-		vertexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
-		vbDeviceMemory = createDeviceMemory(*vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+		vertexBuffer = createBuffer(vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+		vbDeviceMemory = createDeviceMemory(vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		v3d::vulkan::Buffer* stagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
-		v3d::vulkan::DeviceMemory* stagingDeviceMemory = createDeviceMemory(*stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+		vk::Buffer stagingBuffer = createBuffer(vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc);
+		vk::DeviceMemory stagingDeviceMemory = createDeviceMemory(stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-		void* data = device->mapMemory(*stagingDeviceMemory, vertexData.getDataSize());
+		void* data = device->mapMemory(stagingDeviceMemory, vertexData.getDataSize());
 		memcpy(data, vertexData.getData(), vertexData.getDataSize());
-		device->unMapMemory(*stagingDeviceMemory);
+		device->unMapMemory(stagingDeviceMemory);
 
-		copyBuffer(*stagingBuffer, *vertexBuffer, vertexData.getDataSize());
+		copyBuffer(stagingBuffer, vertexBuffer, vertexData.getDataSize());
 
-		delete stagingBuffer;
-		delete stagingDeviceMemory;
+		device->get().destroyBuffer(stagingBuffer);
+		device->get().freeMemory(stagingDeviceMemory);
 	}
 
 	{
-		indexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
-		ibDeviceMemory = createDeviceMemory(*indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
+		indexBuffer = createBuffer(indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
+		ibDeviceMemory = createDeviceMemory(indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		v3d::vulkan::Buffer* stagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
-		v3d::vulkan::DeviceMemory* stagingDeviceMemory = createDeviceMemory(*stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+		vk::Buffer stagingBuffer = createBuffer(indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc);
+		vk::DeviceMemory stagingDeviceMemory = createDeviceMemory(stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-		void* data = device->mapMemory(*stagingDeviceMemory, indexData.getDataSize());
+		void* data = device->mapMemory(stagingDeviceMemory, indexData.getDataSize());
 		memcpy(data, indexData.getData(), indexData.getDataSize());
-		device->unMapMemory(*stagingDeviceMemory);
+		device->unMapMemory(stagingDeviceMemory);
 
-		copyBuffer(*stagingBuffer, *indexBuffer, indexData.getDataSize());
+		copyBuffer(stagingBuffer, indexBuffer, indexData.getDataSize());
 
-		delete stagingBuffer;
-		delete stagingDeviceMemory;
+		device->get().destroyBuffer(stagingBuffer);
+		device->get().freeMemory(stagingDeviceMemory);
 	}
 
 	if (!initCommandBuffer()) return false;
@@ -198,9 +195,43 @@ bool v3d::vulkan::Context::initSwapChain()
 
 bool v3d::vulkan::Context::initRenderPass()
 {
-	renderPass = new (std::nothrow) v3d::vulkan::RenderPass();
-	if (renderPass == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::RenderPass>(); return false; }
-	if (!renderPass->init(*device, *swapChain)) return false;
+	vk::AttachmentDescription attachmentDescriptions
+	(
+		vk::AttachmentDescriptionFlags(),
+		swapChain->getFormat(),
+		vk::SampleCountFlagBits::e1,
+		vk::AttachmentLoadOp::eClear,
+		vk::AttachmentStoreOp::eStore,
+		vk::AttachmentLoadOp::eDontCare,
+		vk::AttachmentStoreOp::eDontCare,
+		vk::ImageLayout::eUndefined,
+		vk::ImageLayout::ePresentSrcKHR
+	);
+
+	vk::AttachmentReference colorAttachment(0, vk::ImageLayout::eColorAttachmentOptimal);
+
+	// @note visit later
+	//vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+
+	vk::SubpassDescription subpassDescription
+	(
+		vk::SubpassDescriptionFlags(),
+		vk::PipelineBindPoint::eGraphics,
+		0, nullptr,
+		1, &colorAttachment//,
+		//nullptr, 
+		//(depthFormat != vk::Format::eUndefined) ? &depthAttachment : nullptr
+	);
+
+	vk::RenderPassCreateInfo createInfo
+	(
+		vk::RenderPassCreateFlags(),
+		1, &attachmentDescriptions,
+		1, &subpassDescription
+	);
+
+	renderPass = device->createRenderPass(createInfo);
+
 	return true;
 }
 
@@ -208,7 +239,7 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 {
 	pipeline = new (std::nothrow) v3d::vulkan::Pipeline();
 	if (pipeline == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Pipeline>(); return false; }
-	if (!pipeline->init(*device, *swapChain, *renderPass)) return false;
+	if (!pipeline->init(*device, *swapChain, renderPass)) return false;
 	return true;
 }
 
@@ -225,7 +256,7 @@ bool v3d::vulkan::Context::initFrameBuffer()
 		vk::FramebufferCreateInfo createInfo
 		(
 			vk::FramebufferCreateFlags(),
-			renderPass->get(),
+			renderPass,
 			1,
 			&imageViews[i].get(),
 			extent.width,
@@ -318,7 +349,7 @@ bool v3d::vulkan::Context::initCommandBuffer()
 	{
 		auto newCB = new v3d::vulkan::CommandBuffer(cbs[i]);
 		commandBuffers.push_back(newCB);
-		newCB->record(framebuffers[i], renderPass->get(), *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
+		newCB->record(framebuffers[i], renderPass, *swapChain, *pipeline, vertexBuffer, indexBuffer, static_cast<uint32_t>(indexData.getSize()));
 		//newCB->record(framebuffers[i]->get(), renderPass->get(), *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
 	}
 
@@ -348,22 +379,33 @@ bool v3d::vulkan::Context::recreateSwapChain()
 	return true;
 }
 
-v3d::vulkan::Buffer* v3d::vulkan::Context::createBuffer(const vk::BufferUsageFlags usageFlags)
+vk::Buffer v3d::vulkan::Context::createBuffer(const uint64_t size, const vk::BufferUsageFlags usageFlags) const
 {
-	auto newBuffer = NO_THROW_NEW(v3d::vulkan::Buffer);
-	newBuffer->init(*device, vertexData.getDataSize(), usageFlags);
-	return newBuffer;
+	vk::BufferCreateInfo createInfo
+	(
+		vk::BufferCreateFlags(),
+		size,
+		usageFlags
+	);
+
+	return device->createBuffer(createInfo);
 }
 
-v3d::vulkan::DeviceMemory* v3d::vulkan::Context::createDeviceMemory(const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const
+vk::DeviceMemory v3d::vulkan::Context::createDeviceMemory(const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const
 {
-	auto newDeviceMemory = NO_THROW_NEW(v3d::vulkan::DeviceMemory);
-	newDeviceMemory->init(*device, *physicalDevice, buffer, memoryPropertyFlags);
-	device->bindBufferMemory(buffer, *newDeviceMemory);
-	return newDeviceMemory;
+	const vk::MemoryRequirements memRequirment = device->getMemoryRequirement(buffer);
+	const vk::MemoryAllocateInfo allocInfo
+	(
+		memRequirment.size,
+		physicalDevice->getMemoryTypeIndex(memRequirment.memoryTypeBits, memoryPropertyFlags)
+	);
+
+	vk::DeviceMemory deviceMemory =  device->allocateBuffer(allocInfo);
+	device->bindBufferMemory(buffer, deviceMemory);
+	return deviceMemory;
 }
 
-void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d::vulkan::Buffer& dst, const vk::DeviceSize size)
+void v3d::vulkan::Context::copyBuffer(const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size)
 {
 	vk::CommandBufferAllocateInfo allocInfo
 	(
@@ -383,7 +425,7 @@ void v3d::vulkan::Context::copyBuffer(const v3d::vulkan::Buffer& src, const v3d:
 
 	vk::BufferCopy copyRegion(0, 0, size);
 
-	cb.copyBuffer(src.get(), dst.get(), 1, &copyRegion);
+	cb.copyBuffer(src, dst, 1, &copyRegion);
 	cb.end();
 
 	vk::SubmitInfo submitInfo
@@ -471,41 +513,6 @@ const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
 	return *instance;
 }
 
-const vk::SurfaceKHR& v3d::vulkan::Context::getSurface() const
-{
-	return surface;
-}
-
-const v3d::vulkan::PhysicalDevice& v3d::vulkan::Context::getPhysicalDevice() const
-{
-	return *physicalDevice;
-}
-
-const v3d::vulkan::Device& v3d::vulkan::Context::getDevice() const
-{
-	return *device;
-}
-
-const v3d::vulkan::SwapChain& v3d::vulkan::Context::getSwapChain() const
-{
-	return *swapChain;
-}
-
-const v3d::vulkan::RenderPass& v3d::vulkan::Context::getRenderPass() const
-{
-	return *renderPass;
-}
-
-const v3d::vulkan::Pipeline& v3d::vulkan::Context::getPipeline() const
-{
-	return *pipeline;
-}
-
-const vk::CommandPool& v3d::vulkan::Context::getCommandPool() const
-{
-	return commandPool;
-}
-
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
@@ -515,10 +522,10 @@ void v3d::vulkan::Context::release()
 		device->freeCommandBuffer(commandPool, cb->getHandle());
 		SAFE_DELETE(cb);
 	}
-	SAFE_DELETE(vbDeviceMemory);
-	SAFE_DELETE(vertexBuffer);
-	SAFE_DELETE(ibDeviceMemory);
-	SAFE_DELETE(indexBuffer);
+	device->get().destroyBuffer(vertexBuffer);
+	device->get().freeMemory(vbDeviceMemory);
+	device->get().destroyBuffer(indexBuffer);
+	device->get().freeMemory(ibDeviceMemory);
 	for (auto& f : frameFences) { SAFE_DELETE(f); }
 	SAFE_DELETE(graphicsQueue);
 	SAFE_DELETE(presentQueue);
@@ -529,7 +536,7 @@ void v3d::vulkan::Context::release()
 	device->get().destroyCommandPool(commandPool);
 	for (auto& f : framebuffers) { device->get().destroyFramebuffer(f); }
 	SAFE_DELETE(pipeline);
-	SAFE_DELETE(renderPass);
+	device->get().destroyRenderPass(renderPass);
 	SAFE_DELETE(swapChain);
 	SAFE_DELETE(device);
 	SAFE_DELETE(physicalDevice);

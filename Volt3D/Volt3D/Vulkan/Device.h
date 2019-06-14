@@ -25,8 +25,6 @@ namespace v3d
 		class Fence;
 		class CommandPool;
 		class CommandBuffer;
-		class Buffer;
-		class DeviceMemory;
 
 		/**
 		*	@class Device
@@ -60,6 +58,7 @@ namespace v3d
 			vk::UniquePipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 			vk::Framebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
+			vk::RenderPass createRenderPass(const vk::RenderPassCreateInfo& createInfo) const;
 			vk::CommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
 			vk::CommandBuffer allocateCommandBuffer(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
@@ -72,12 +71,12 @@ namespace v3d
 			void resetFences(const v3d::vulkan::Fence& fence) const;
 			void freeCommandBuffer(const vk::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const;
 			void freeCommandBuffers(const vk::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const;
-			vk::UniqueBuffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
-			vk::MemoryRequirements getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const;
-			vk::UniqueDeviceMemory allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const;
-			void bindBufferMemory(const v3d::vulkan::Buffer& buffer, const v3d::vulkan::DeviceMemory& vbDeviceMemory) const;
-			void* mapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory, const std::size_t size) const;
-			void unMapMemory(const v3d::vulkan::DeviceMemory& vbDeviceMemory) const;
+			vk::Buffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
+			vk::MemoryRequirements getMemoryRequirement(const vk::Buffer& buffer) const;
+			vk::DeviceMemory allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const;
+			void bindBufferMemory(const vk::Buffer& buffer, const vk::DeviceMemory& vbDeviceMemory) const;
+			void* mapMemory(const vk::DeviceMemory& deviceMemory, const std::size_t size) const;
+			void unMapMemory(const vk::DeviceMemory& deviceMemory) const;
 		};
 	}
 }

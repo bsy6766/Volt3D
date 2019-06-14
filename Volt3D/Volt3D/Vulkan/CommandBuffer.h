@@ -21,9 +21,7 @@ namespace v3d
 		class Device;
 		class SwapChain;
 		class Pipeline;
-		class RenderPass;
 		class CommandPool;
-		class Buffer;
 
 		/**
 		*	@class CommandBuffer
@@ -49,8 +47,8 @@ namespace v3d
 
 			CLASS_TO_VK_HANDLE(vk::CommandBuffer, commandBuffer);
 
-			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const;
-			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const;
+			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const;
+			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const vk::Buffer& indexBuffer, const uint32_t indexSize) const;
 		};
 	}
 }

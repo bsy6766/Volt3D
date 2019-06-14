@@ -18,7 +18,6 @@ namespace v3d
 	{
 		class Device;
 		class SwapChain;
-		class RenderPass;
 
 		/**
 		*	@class Pipeline
@@ -38,7 +37,7 @@ namespace v3d
 			vk::Viewport viewport;
 			vk::Rect2D scissor;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass);
+			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass);
 
 		public:
 			Pipeline();

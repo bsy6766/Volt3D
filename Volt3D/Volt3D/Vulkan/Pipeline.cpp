@@ -12,7 +12,6 @@
 #include "Device.h"
 #include "ShaderModule.h"
 #include "SwapChain.h"
-#include "RenderPass.h"
 #include "Vertex.h"
 
 v3d::vulkan::Pipeline::Pipeline()
@@ -32,15 +31,13 @@ vk::Rect2D v3d::vulkan::Pipeline::getScissor() const
 	return scissor;
 }
 
-bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::RenderPass& renderPass)
+bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass)
 {
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
 		vk::PipelineLayoutCreateFlags(),
-		0,
-		nullptr,
-		0,
-		nullptr
+		0, nullptr,
+		0, nullptr
 	);
 
 	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
@@ -61,10 +58,8 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
-		1,
-		&v3d::vulkan::Vertex::getInputBindingDescription(),
-		2,
-		vertexInputAttribDescriptions.data()
+		1, &v3d::vulkan::Vertex::getInputBindingDescription(),
+		2, vertexInputAttribDescriptions.data()
 	);
 
 	vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo
@@ -77,27 +72,19 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 
 	viewport = vk::Viewport
 	(
-		0.0f,
-		0.0f,
+		0.0f, 0.0f,
 		static_cast<float>(extent.width),
 		static_cast<float>(extent.height),
-		0.0f,
-		1.0f
+		0.0f, 1.0f
 	);
 
-	scissor = vk::Rect2D
-	(
-		vk::Offset2D(0, 0),
-		extent
-	);
+	scissor = vk::Rect2D(vk::Offset2D(0, 0), extent);
 
 	vk::PipelineViewportStateCreateInfo pipelineViewportStateCreateInfo
 	(
 		vk::PipelineViewportStateCreateFlags(),
-		1,
-		&viewport,
-		1,
-		&scissor
+		1, &viewport,
+		1, &scissor
 	);
 
 	vk::PipelineRasterizationStateCreateInfo pipelineRasterizationStateCreateInfo
@@ -186,8 +173,7 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 	vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo
 	(
 		vk::PipelineDynamicStateCreateFlags(),
-		2,
-		dynamicStates
+		2, dynamicStates
 	);
 
 	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
@@ -205,10 +191,10 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
 		&pipelineDynamicStateCreateInfo,            // pDynamicState
 		pipelineLayout.get(),                       // layout
-		renderPass.get()                            // renderPass
+		renderPass									// renderPass
 	);
 
 	pipeline = device.createPipelineUnique(graphicsPipelineCreateInfo);
-	
+
 	return true;
 }
