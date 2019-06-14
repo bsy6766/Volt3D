@@ -53,3 +53,8 @@ std::size_t v3d::vulkan::FrameBuffer::size() const
 {
 	return frameBuffers.size();
 }
+
+const vk::UniqueFramebuffer& v3d::vulkan::FrameBuffer::getFrameBuffer(const std::size_t index) const
+{
+	return frameBuffers.at(index);
+}

@@ -14,6 +14,7 @@
 #include "Semaphore.h"
 #include "Fence.h"
 #include "CommandPool.h"
+#include "CommandBuffer.h"
 #include "Buffer.h"
 #include "DeviceMemory.h"
 #include "Utils.h"
@@ -144,14 +145,16 @@ void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
 	device->resetFences(1, &fence.get());
 }
 
-void v3d::vulkan::Device::freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const vk::CommandBuffer& commandBuffer) const
+void v3d::vulkan::Device::freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const
 {
-	device->freeCommandBuffers(commandPool.get(), commandBuffer);
+	device->freeCommandBuffers(commandPool.get(), commandBuffer.getHandle());
 }
 
-void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const
+void v3d::vulkan::Device::freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const
 {
-	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandPool.getBufferSize()), commandPool.getBufferData());
+	std::vector<vk::CommandBuffer> cbs;
+	for (auto& cb : commandBuffers) cbs.push_back(cb->getHandle());
+	device->freeCommandBuffers(commandPool.get(), static_cast<uint32_t>(commandBuffers.size()), cbs.data());
 }
 
 vk::UniqueBuffer v3d::vulkan::Device::createBuffer(const vk::BufferCreateInfo& createInfo) const

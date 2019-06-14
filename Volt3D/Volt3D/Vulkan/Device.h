@@ -24,6 +24,7 @@ namespace v3d
 		class Semaphore;
 		class Fence;
 		class CommandPool;
+		class CommandBuffer;
 		class Buffer;
 		class DeviceMemory;
 
@@ -69,8 +70,8 @@ namespace v3d
 			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
 			void waitForFences(const v3d::vulkan::Fence& fence) const;
 			void resetFences(const v3d::vulkan::Fence& fence) const;
-			void freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const vk::CommandBuffer& commandBuffer) const;
-			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool) const;
+			void freeCommandBuffer(const v3d::vulkan::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const;
+			void freeCommandBuffers(const v3d::vulkan::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const;
 			vk::UniqueBuffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
 			vk::MemoryRequirements getMemoryRequirement(const v3d::vulkan::Buffer& buffer) const;
 			vk::UniqueDeviceMemory allocateBuffer(const vk::MemoryAllocateInfo& allocInfo) const;

@@ -38,6 +38,7 @@ namespace v3d
 		class Semaphore;
 		class Fence;
 		class Queue;
+		class CommandBuffer;
 
 		class Buffer;
 		class DeviceMemory;
@@ -76,6 +77,7 @@ namespace v3d
 			std::vector<v3d::vulkan::Fence*> frameFences;
 			v3d::vulkan::Queue* graphicsQueue;
 			v3d::vulkan::Queue* presentQueue;
+			std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
 
 			const int MAX_FRAMES_IN_FLIGHT = 2;
 			int current_frame;
@@ -104,6 +106,7 @@ namespace v3d
 			bool initSemaphore();
 			bool initFences();
 			bool initQueue();
+			bool initCommandBuffer();
 			bool recreateSwapChain();
 			void release();
 			

@@ -47,6 +47,7 @@ namespace v3d
 
 			const std::vector<vk::UniqueFramebuffer>& getFrameBuffers() const;
 			std::size_t size() const;
+			const vk::UniqueFramebuffer& getFrameBuffer(const std::size_t index) const;
 		};
 	}
 }

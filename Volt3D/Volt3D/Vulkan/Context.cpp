@@ -25,6 +25,7 @@
 #include "Semaphore.h"
 #include "Fence.h"
 #include "Queue.h"
+#include "CommandBuffer.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -97,6 +98,10 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initRenderPass()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
+	if (!initSemaphore()) return false;
+	if (!initFences()) return false;
+	if (!initQueue()) return false;
 
 	{
 		vertexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
@@ -116,7 +121,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	}
 
 	{
-		indexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+		indexBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer);
 		ibDeviceMemory = createDeviceMemory(*indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
 		v3d::vulkan::Buffer* indexStagingBuffer = createBuffer(vk::BufferUsageFlagBits::eTransferSrc);
@@ -132,10 +137,7 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 		delete isbDeviceMemory;
 	}
 
-	if (!initCommandPool()) return false;
-	if (!initSemaphore()) return false;
-	if (!initFences()) return false;
-	if (!initQueue()) return false;
+	if (!initCommandBuffer()) return false;
 
 	return true;
 }
@@ -226,11 +228,6 @@ bool v3d::vulkan::Context::initCommandPool()
 	commandPool = new (std::nothrow) v3d::vulkan::CommandPool();
 	if (commandPool == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::CommandPool>(); return false; }
 	if (!commandPool->init(*physicalDevice, *device)) return false;
-	if (!commandPool->initCommandBuffers(*device, *frameBuffer)) return false;
-
-	//commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
-	commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
-	
 	return true;
 }
 
@@ -281,6 +278,30 @@ bool v3d::vulkan::Context::initQueue()
 	return true;
 }
 
+bool v3d::vulkan::Context::initCommandBuffer()
+{
+	const auto& frameBuffers = frameBuffer->getFrameBuffers();
+	const std::size_t fbSize = frameBuffers.size();
+
+	vk::CommandBufferAllocateInfo allocInfo
+	(
+		commandPool->get(),
+		vk::CommandBufferLevel::ePrimary,
+		static_cast<uint32_t>(fbSize)
+	);
+
+	const std::vector<vk::CommandBuffer> cbs = device->allocateCommandBuffers(allocInfo);
+
+	for (std::size_t i = 0; i < fbSize; i++)
+	{
+		auto newCB = new v3d::vulkan::CommandBuffer(cbs[i]);
+		commandBuffers.push_back(newCB);
+		newCB->record(frameBuffer->getFrameBuffer(i), *renderPass, *swapChain, *pipeline, *vertexBuffer, *indexBuffer, static_cast<uint32_t>(indexData.getSize()));
+	}
+
+	return true;
+}
+
 bool v3d::vulkan::Context::recreateSwapChain()
 {
 	device->waitIdle();
@@ -289,15 +310,15 @@ bool v3d::vulkan::Context::recreateSwapChain()
 	SAFE_DELETE(pipeline);
 	SAFE_DELETE(renderPass);
 	SAFE_DELETE(swapChain);
-	device->freeCommandBuffers(*commandPool);
-	//commandPool->clearCommandBuffers();
+	device->freeCommandBuffers(*commandPool, commandBuffers);
+	for (auto& cb : commandBuffers) SAFE_DELETE(cb);
+	commandBuffers.clear();
 
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
-	if (!commandPool->initCommandBuffers(*device, *frameBuffer)) return false;
-	commandPool->record(*frameBuffer, *renderPass, *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
+	if (!initCommandBuffer()) return false;
 
 	v3d::Logger::getInstance().info("Recreated swapchain");
 
@@ -306,14 +327,14 @@ bool v3d::vulkan::Context::recreateSwapChain()
 
 v3d::vulkan::Buffer* v3d::vulkan::Context::createBuffer(const vk::BufferUsageFlags usageFlags)
 {
-	auto newBuffer = NO_THROW_NEW(Buffer);
-	newBuffer->init(*device, vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer);
+	auto newBuffer = NO_THROW_NEW(v3d::vulkan::Buffer);
+	newBuffer->init(*device, vertexData.getDataSize(), usageFlags);
 	return newBuffer;
 }
 
 v3d::vulkan::DeviceMemory* v3d::vulkan::Context::createDeviceMemory(const v3d::vulkan::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const
 {
-	auto newDeviceMemory = NO_THROW_NEW(DeviceMemory);
+	auto newDeviceMemory = NO_THROW_NEW(v3d::vulkan::DeviceMemory);
 	newDeviceMemory->init(*device, *physicalDevice, buffer, memoryPropertyFlags);
 	device->bindBufferMemory(buffer, *newDeviceMemory);
 	return newDeviceMemory;
@@ -376,7 +397,7 @@ void v3d::vulkan::Context::render()
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame]->get() };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame]->get() };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	vk::CommandBuffer commandBuffers[] = { commandPool->getBufferAt(result.value) };
+	vk::CommandBuffer commandBuffers[] = { this->commandBuffers.at(result.value)->getHandle() };
 	vk::SubmitInfo submitInfo
 	(
 		1,
@@ -471,6 +492,11 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info("Releasing Context...");
+	for (auto& cb : commandBuffers)
+	{
+		device->freeCommandBuffer(*commandPool, cb->getHandle());
+		SAFE_DELETE(cb);
+	}
 	SAFE_DELETE(vbDeviceMemory);
 	SAFE_DELETE(vertexBuffer);
 	SAFE_DELETE(ibDeviceMemory);

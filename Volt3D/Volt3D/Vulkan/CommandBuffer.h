@@ -22,8 +22,8 @@ namespace v3d
 		class SwapChain;
 		class Pipeline;
 		class RenderPass;
-		class FrameBuffer;
 		class CommandPool;
+		class Buffer;
 
 		/**
 		*	@class CommandBuffer
@@ -36,17 +36,21 @@ namespace v3d
 		class VOLT3D_DLL CommandBuffer
 		{
 		private:
-			vk::UniqueCommandBuffer commandBuffer;
+			vk::CommandBuffer commandBuffer;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::FrameBuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::CommandPool& commandPool);
+			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::CommandPool& commandPool);
 
 		public:
 			CommandBuffer();
+			CommandBuffer(const vk::CommandBuffer& commandBuffer);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(CommandBuffer);
 			DEFAULT_MOVE_CONSTRUCTORS(CommandBuffer);
 			~CommandBuffer() {}
 
-			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueCommandBuffer, vk::CommandBuffer, commandBuffer);
+			CLASS_TO_VK_HANDLE(vk::CommandBuffer, commandBuffer);
+
+			void record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const uint32_t vertexSize) const;
+			void record(const vk::UniqueFramebuffer& frameBuffer, const v3d::vulkan::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const v3d::vulkan::Buffer& vertexBuffer, const v3d::vulkan::Buffer& indexBuffer, const uint32_t indexSize) const;
 		};
 	}
 }
