@@ -18,7 +18,6 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class Device;
 		class SwapChain;
 		class Pipeline;
 		class CommandPool;
@@ -36,7 +35,7 @@ namespace v3d
 		private:
 			vk::CommandBuffer commandBuffer;
 
-			bool init(const v3d::vulkan::Device& device, const vk::CommandPool& commandPool);
+			bool init(const vk::Device& device, const vk::CommandPool& commandPool);
 
 		public:
 			CommandBuffer();

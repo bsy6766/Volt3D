@@ -68,9 +68,6 @@
     <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Device.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -161,9 +158,6 @@
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Device.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h">

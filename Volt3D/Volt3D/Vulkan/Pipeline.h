@@ -16,7 +16,6 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class Device;
 		class SwapChain;
 
 		/**
@@ -36,7 +35,7 @@ namespace v3d
 			vk::Viewport viewport;
 			vk::Rect2D scissor;
 
-			bool init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass);
+			bool init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass);
 
 		public:
 			Pipeline();

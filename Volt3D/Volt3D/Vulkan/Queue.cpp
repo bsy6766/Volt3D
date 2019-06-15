@@ -10,13 +10,12 @@
 #include "Queue.h"
 
 #include "PhysicalDevice.h"
-#include "Device.h"
 
 v3d::vulkan::Queue::Queue()
 	: queue()
 {}
 
-bool v3d::vulkan::Queue::init(const v3d::vulkan::Device & device, const uint32_t familyIndex)
+bool v3d::vulkan::Queue::init(const vk::Device& device, const uint32_t familyIndex)
 {
 	queue = device.getQueue(familyIndex, 0);
 	return true;

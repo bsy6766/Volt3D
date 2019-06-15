@@ -122,9 +122,9 @@ bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalD
 	return true;
 }
 
-vk::UniqueDevice v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
+vk::Device v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const
 {
-	return physicalDevice.createDeviceUnique(createInfo);
+	return physicalDevice.createDevice(createInfo);
 }
 
 std::vector<vk::QueueFamilyProperties> v3d::vulkan::PhysicalDevice::getQueueFamilyProperties() const

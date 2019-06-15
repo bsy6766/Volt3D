@@ -10,7 +10,6 @@
 #include "SwapChain.h"
 
 #include "PhysicalDevice.h"
-#include "Device.h"
 #include "Core/Window.h"
 
 v3d::vulkan::SwapChain::SwapChain()
@@ -19,7 +18,7 @@ v3d::vulkan::SwapChain::SwapChain()
 	, extent()
 {}
 
-bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window)
+bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window)
 {
 	// surface format
 	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);

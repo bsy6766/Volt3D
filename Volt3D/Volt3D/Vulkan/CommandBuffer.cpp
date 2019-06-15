@@ -9,7 +9,6 @@
 
 #include "CommandBuffer.h"
 
-#include "Device.h"
 #include "SwapChain.h"
 #include "Pipeline.h"
 #include "Renderer/VertexData.h"
@@ -22,7 +21,7 @@ v3d::vulkan::CommandBuffer::CommandBuffer(const vk::CommandBuffer & commandBuffe
 	: commandBuffer(commandBuffer)
 {}
 
-bool v3d::vulkan::CommandBuffer::init(const v3d::vulkan::Device& device, const vk::CommandPool& commandPool)
+bool v3d::vulkan::CommandBuffer::init(const vk::Device& device, const vk::CommandPool& commandPool)
 {
 	vk::CommandBufferAllocateInfo allocInfo
 	(
@@ -31,7 +30,7 @@ bool v3d::vulkan::CommandBuffer::init(const v3d::vulkan::Device& device, const v
 		1
 	);
 
-	commandBuffer = device.allocateCommandBuffer(allocInfo);
+	commandBuffer = device.allocateCommandBuffers(allocInfo).front();
 
 	return true;
 }

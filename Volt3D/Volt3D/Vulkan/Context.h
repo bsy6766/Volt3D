@@ -28,7 +28,6 @@ namespace v3d
 		class DebugReportCallback;
 		class DebugUtilsMessenger;
 		class PhysicalDevice;
-		class Device;
 		class SwapChain;
 		class Pipeline;
 		class Queue;
@@ -57,7 +56,7 @@ namespace v3d
 			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
 			vk::SurfaceKHR surface;
 			v3d::vulkan::PhysicalDevice* physicalDevice;
-			v3d::vulkan::Device* device;
+			vk::Device device;
 			v3d::vulkan::SwapChain* swapChain;
 			std::vector<vk::Image> images;
 			std::vector<vk::ImageView> imageViews;

@@ -16,7 +16,6 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class Device;
 		class Fence;
 
 		/**
@@ -36,7 +35,7 @@ namespace v3d
 
 			vk::Queue queue;
 
-			bool init(const v3d::vulkan::Device& device, const uint32_t familyIndex);
+			bool init(const vk::Device& device, const uint32_t familyIndex);
 
 		public:
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Queue);

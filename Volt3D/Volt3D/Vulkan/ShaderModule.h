@@ -18,8 +18,6 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class Device;
-
 		/**
 		*	@class ShaderModule
 		*	@brief Wrapper for Vulkan's shader module
@@ -40,7 +38,7 @@ namespace v3d
 
 			std::vector<char> readFile(std::string_view fileName);
 
-			bool init(std::string_view fileName, const v3d::vulkan::Device& device);
+			bool init(std::string_view fileName, const vk::Device& device);
 
 		public:
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(ShaderModule);

@@ -9,7 +9,6 @@
 
 #include "Pipeline.h"
 
-#include "Device.h"
 #include "ShaderModule.h"
 #include "SwapChain.h"
 #include "Vertex.h"
@@ -30,7 +29,7 @@ vk::Rect2D v3d::vulkan::Pipeline::getScissor() const
 	return scissor;
 }
 
-bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass)
+bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass)
 {
 	vk::DescriptorSetLayoutBinding uboLayoutBinding
 	(
@@ -55,7 +54,7 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		0, nullptr
 	);
 
-	vk::PipelineLayout pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
+	vk::PipelineLayout pipelineLayout = device.createPipelineLayout(layoutCreateInfo);
 
 	v3d::vulkan::ShaderModule vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
@@ -209,10 +208,10 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		renderPass									// renderPass
 	);
 
-	pipeline = device.createPipelineUnique(graphicsPipelineCreateInfo);
+	pipeline = device.createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
 
-	device.get().destroyDescriptorSetLayout(descriptorLayout);
-	device.get().destroyPipelineLayout(pipelineLayout);
+	device.destroyDescriptorSetLayout(descriptorLayout);
+	device.destroyPipelineLayout(pipelineLayout);
 
 	return true;
 }

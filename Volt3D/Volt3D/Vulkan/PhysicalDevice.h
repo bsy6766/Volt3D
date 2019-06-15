@@ -50,7 +50,7 @@ namespace v3d
 
 			CLASS_TO_VK_HANDLE(vk::PhysicalDevice, physicalDevice);
 			
-			vk::UniqueDevice createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
+			vk::Device createDeviceUnique(vk::DeviceCreateInfo& createInfo) const;
 			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
 			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR(const vk::SurfaceKHR& surface) const;
 			vk::Bool32 getSurfaceSupportKHR(const uint32_t index, const vk::SurfaceKHR& surface) const;
