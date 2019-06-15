@@ -32,7 +32,6 @@ namespace v3d
 			friend class Context;
 
 		private:
-			vk::UniquePipelineLayout pipelineLayout;
 			vk::UniquePipeline pipeline;
 			vk::Viewport viewport;
 			vk::Rect2D scissor;

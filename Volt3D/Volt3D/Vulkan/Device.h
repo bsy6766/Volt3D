@@ -55,7 +55,7 @@ namespace v3d
 			vk::UniqueShaderModule createShaderModuleUnique(std::vector<char> buffer) const;
 			std::vector<vk::Image> getSwapchainImagesKHR(const v3d::vulkan::SwapChain& swapChain) const;
 			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
-			vk::UniquePipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
+			vk::PipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 			vk::Framebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
 			vk::RenderPass createRenderPass(const vk::RenderPassCreateInfo& createInfo) const;
@@ -77,6 +77,7 @@ namespace v3d
 			void bindBufferMemory(const vk::Buffer& buffer, const vk::DeviceMemory& vbDeviceMemory) const;
 			void* mapMemory(const vk::DeviceMemory& deviceMemory, const std::size_t size) const;
 			void unMapMemory(const vk::DeviceMemory& deviceMemory) const;
+			vk::DescriptorSetLayout createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo& createInfo) const;
 		};
 	}
 }

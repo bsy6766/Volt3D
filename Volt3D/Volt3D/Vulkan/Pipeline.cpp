@@ -15,8 +15,7 @@
 #include "Vertex.h"
 
 v3d::vulkan::Pipeline::Pipeline()
-	: pipelineLayout()
-	, pipeline()
+	: pipeline()
 	, viewport()
 	, scissor()
 {}
@@ -33,14 +32,30 @@ vk::Rect2D v3d::vulkan::Pipeline::getScissor() const
 
 bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass)
 {
+	vk::DescriptorSetLayoutBinding uboLayoutBinding
+	(
+		0,
+		vk::DescriptorType::eUniformBuffer,
+		1,
+		vk::ShaderStageFlagBits::eVertex
+	);
+
+	vk::DescriptorSetLayoutCreateInfo layoutInfo
+	(
+		vk::DescriptorSetLayoutCreateFlags(),
+		1, &uboLayoutBinding
+	);
+
+	vk::DescriptorSetLayout descriptorLayout = device.createDescriptorSetLayout(layoutInfo);
+
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
 		vk::PipelineLayoutCreateFlags(),
-		0, nullptr,
+		1, &descriptorLayout,
 		0, nullptr
 	);
 
-	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
+	vk::PipelineLayout pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
 
 	v3d::vulkan::ShaderModule vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
@@ -190,11 +205,14 @@ bool v3d::vulkan::Pipeline::init(const v3d::vulkan::Device& device, const v3d::v
 		nullptr,							        // pDepthStencilState
 		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
 		&pipelineDynamicStateCreateInfo,            // pDynamicState
-		pipelineLayout.get(),                       // layout
+		pipelineLayout,							    // layout
 		renderPass									// renderPass
 	);
 
 	pipeline = device.createPipelineUnique(graphicsPipelineCreateInfo);
+
+	device.get().destroyDescriptorSetLayout(descriptorLayout);
+	device.get().destroyPipelineLayout(pipelineLayout);
 
 	return true;
 }

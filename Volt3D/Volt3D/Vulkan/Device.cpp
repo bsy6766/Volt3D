@@ -77,9 +77,9 @@ vk::UniqueImageView v3d::vulkan::Device::createImageViewUnique(const vk::ImageVi
 	return device->createImageViewUnique(createInfo);
 }
 
-vk::UniquePipelineLayout v3d::vulkan::Device::createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const
+vk::PipelineLayout v3d::vulkan::Device::createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const
 {
-	return device->createPipelineLayoutUnique(createInfo);
+	return device->createPipelineLayout(createInfo);
 }
 
 vk::UniquePipeline v3d::vulkan::Device::createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const
@@ -187,4 +187,9 @@ void* v3d::vulkan::Device::mapMemory(const vk::DeviceMemory& deviceMemory, const
 void v3d::vulkan::Device::unMapMemory(const vk::DeviceMemory& deviceMemory) const
 {
 	device->unmapMemory(deviceMemory);
+}
+
+vk::DescriptorSetLayout v3d::vulkan::Device::createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo& createInfo) const
+{
+	return device->createDescriptorSetLayout(createInfo);
 }

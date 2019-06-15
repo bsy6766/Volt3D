@@ -20,7 +20,6 @@ namespace v3d
 	namespace vulkan
 	{
 		class Instance;
-		class Buffer;
 
 		/**
 		*	@class PhysicalDevice
