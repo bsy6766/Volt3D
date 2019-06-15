@@ -31,8 +31,6 @@ namespace v3d
 		class Device;
 		class SwapChain;
 		class Pipeline;
-		class Semaphore;
-		class Fence;
 		class Queue;
 		class CommandBuffer;
 		
@@ -61,16 +59,19 @@ namespace v3d
 			v3d::vulkan::PhysicalDevice* physicalDevice;
 			v3d::vulkan::Device* device;
 			v3d::vulkan::SwapChain* swapChain;
+			std::vector<vk::Image> images;
+			std::vector<vk::ImageView> imageViews;
 			vk::RenderPass renderPass;
 			v3d::vulkan::Pipeline* pipeline;
 			std::vector<vk::Framebuffer> framebuffers;
 			vk::CommandPool commandPool;
-			std::vector<v3d::vulkan::Semaphore*> imageAvailableSemaphores;
-			std::vector<v3d::vulkan::Semaphore*> renderFinishedSemaphores;
-			std::vector<v3d::vulkan::Fence*> frameFences;
+			std::vector<vk::Semaphore> imageAvailableSemaphores;
+			std::vector<vk::Semaphore> renderFinishedSemaphores;
+			std::vector<vk::Fence> frameFences;
 			v3d::vulkan::Queue* graphicsQueue;
 			v3d::vulkan::Queue* presentQueue;
 			std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
+			vk::DescriptorPool descriptorPool;
 
 			const int MAX_FRAMES_IN_FLIGHT = 2;
 			int current_frame;
@@ -78,12 +79,16 @@ namespace v3d
 
 			const v3d::glfw::Window& window;
 
+			// vertex & index buffer
 			vk::Buffer vertexBuffer;
 			vk::Buffer indexBuffer;
 			vk::DeviceMemory vbDeviceMemory;
 			vk::DeviceMemory ibDeviceMemory;
 			v3d::VertexData<v3d::vulkan::Vertex> vertexData;
 			v3d::VertexData<uint16_t> indexData;
+
+			std::vector<vk::Buffer> uniformBuffers;
+			std::vector<vk::DeviceMemory> ubDeviceMemories;
 
 			bool initInstance(const v3d::glfw::Window& window);
 			bool initDebugReport();
@@ -92,6 +97,7 @@ namespace v3d
 			bool initPhysicalDevice();
 			bool initDevice();
 			bool initSwapChain();
+			bool initSwapChainImages();
 			bool initRenderPass();
 			bool initGraphicsPipeline();
 			bool initFrameBuffer();
@@ -100,12 +106,19 @@ namespace v3d
 			bool initFences();
 			bool initQueue();
 			bool initCommandBuffer();
+			bool initDescriptorPool();
 			bool recreateSwapChain();
 			void release();
+			void releaseSwapChain();
 			
 			vk::Buffer createBuffer(const uint64_t size, const vk::BufferUsageFlags usageFlags) const;
 			vk::DeviceMemory createDeviceMemory(const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
 			void copyBuffer(const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size);
+			void createVertexBuffer();
+			void createIndexBuffer();
+
+			void createUniformBuffer();
+			void updateUniformBuffer(const uint32_t imageIndex);
 
 			void render();
 			void waitIdle();

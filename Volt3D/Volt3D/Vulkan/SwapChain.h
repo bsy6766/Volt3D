@@ -37,8 +37,6 @@ namespace v3d
 			vk::UniqueSwapchainKHR swapChain;
 			vk::SurfaceFormatKHR surfaceFormat;
 			vk::Extent2D extent;
-			std::vector<vk::Image> swapChainImages;
-			std::vector<vk::UniqueImageView> imageViews;
 
 			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const v3d::vulkan::Device& device, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window);
 
@@ -56,8 +54,6 @@ namespace v3d
 
 			const vk::Format& getFormat() const;
 			const vk::Extent2D& getExtent2D() const;
-			const std::size_t getImageViewsSize() const;
-			const std::vector<vk::UniqueImageView>& getImageViews() const;
 		};
 	}
 }

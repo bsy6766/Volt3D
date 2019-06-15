@@ -83,17 +83,11 @@
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Semaphore.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Queue.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Time.cpp">
       <Filter>Volt3D\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Fence.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp">
       <Filter>Volt3D\Vulkan</Filter>
@@ -184,9 +178,6 @@
     <ClInclude Include="Volt3D\Core\Preference.h">
       <Filter>Volt3D\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Semaphore.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Queue.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -195,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Timer.h">
       <Filter>Volt3D\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Fence.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h">
       <Filter>Volt3D\Vulkan</Filter>

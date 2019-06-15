@@ -21,7 +21,6 @@ namespace v3d
 		class Surface;
 		class PhysicalDevice;
 		class SwapChain;
-		class Semaphore;
 		class Fence;
 		class CommandPool;
 		class CommandBuffer;
@@ -54,7 +53,7 @@ namespace v3d
 			vk::UniqueSwapchainKHR createSwapchainKHRUnique(const vk::SwapchainCreateInfoKHR& createInfo) const;
 			vk::UniqueShaderModule createShaderModuleUnique(std::vector<char> buffer) const;
 			std::vector<vk::Image> getSwapchainImagesKHR(const v3d::vulkan::SwapChain& swapChain) const;
-			vk::UniqueImageView createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const;
+			vk::ImageView createImageView(const vk::ImageViewCreateInfo& createInfo) const;
 			vk::PipelineLayout createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const;
 			vk::UniquePipeline createPipelineUnique(const vk::GraphicsPipelineCreateInfo& createInfo) const;
 			vk::Framebuffer createFrameBuffer(const vk::FramebufferCreateInfo& createInfo) const;
@@ -62,13 +61,13 @@ namespace v3d
 			vk::CommandPool createCommandPool(const vk::CommandPoolCreateInfo& createInfo) const;
 			vk::CommandBuffer allocateCommandBuffer(const vk::CommandBufferAllocateInfo& allocInfo) const;
 			std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& allocInfo) const;
-			vk::UniqueSemaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
-			vk::UniqueFence createFence(const vk::FenceCreateInfo& createInfo) const;
-			vk::ResultValue<uint32_t> acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const;
+			vk::Semaphore createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const;
+			vk::Fence createFence(const vk::FenceCreateInfo& createInfo) const;
+			vk::ResultValue<uint32_t> acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const vk::Semaphore& semaphore) const;
 			void waitIdle() const;
 			vk::Queue getQueue(const uint32_t familyIndex, const uint32_t queueIndex = 0) const;
-			void waitForFences(const v3d::vulkan::Fence& fence) const;
-			void resetFences(const v3d::vulkan::Fence& fence) const;
+			void waitForFences(const vk::Fence& fence) const;
+			void resetFences(const vk::Fence& fence) const;
 			void freeCommandBuffer(const vk::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const;
 			void freeCommandBuffers(const vk::CommandPool& commandPool, const std::vector<v3d::vulkan::CommandBuffer*>& commandBuffers) const;
 			vk::Buffer createBuffer(const vk::BufferCreateInfo& createInfo) const;
@@ -78,6 +77,7 @@ namespace v3d
 			void* mapMemory(const vk::DeviceMemory& deviceMemory, const std::size_t size) const;
 			void unMapMemory(const vk::DeviceMemory& deviceMemory) const;
 			vk::DescriptorSetLayout createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo& createInfo) const;
+			vk::DescriptorPool createDescriptorPool(const vk::DescriptorPoolCreateInfo createInfo) const;
 		};
 	}
 }

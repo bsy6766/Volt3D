@@ -11,7 +11,6 @@
 
 #include "PhysicalDevice.h"
 #include "Device.h"
-#include "Fence.h"
 
 v3d::vulkan::Queue::Queue()
 	: queue()
@@ -28,9 +27,9 @@ void v3d::vulkan::Queue::submit(const vk::SubmitInfo& submitInfo) const
 	queue.submit(submitInfo, nullptr);
 }
 
-void v3d::vulkan::Queue::submit(const vk::SubmitInfo& submitInfo, const v3d::vulkan::Fence& fence) const
+void v3d::vulkan::Queue::submit(const vk::SubmitInfo& submitInfo, const vk::Fence& fence) const
 {
-	queue.submit(submitInfo, fence.get());
+	queue.submit(submitInfo, fence);
 }
 
 vk::Result v3d::vulkan::Queue::present(const vk::PresentInfoKHR& presentInfo) const

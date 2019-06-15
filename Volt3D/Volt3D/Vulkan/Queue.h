@@ -46,7 +46,7 @@ namespace v3d
 			CLASS_TO_VK_HANDLE(vk::Queue, queue);
 
 			void submit(const vk::SubmitInfo& submitInfo) const;
-			void submit(const vk::SubmitInfo& submitInfo, const v3d::vulkan::Fence& fence) const;
+			void submit(const vk::SubmitInfo& submitInfo, const vk::Fence& fence) const;
 			vk::Result present(const vk::PresentInfoKHR& presentInfo) const;
 			void waitIdle() const;
 		};

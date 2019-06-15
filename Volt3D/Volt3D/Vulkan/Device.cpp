@@ -11,8 +11,6 @@
 
 #include "PhysicalDevice.h"
 #include "SwapChain.h"
-#include "Semaphore.h"
-#include "Fence.h"
 #include "CommandBuffer.h"
 #include "Utils.h"
 
@@ -72,9 +70,9 @@ std::vector<vk::Image> v3d::vulkan::Device::getSwapchainImagesKHR(const v3d::vul
 	return device->getSwapchainImagesKHR(swapChain.get());
 }
 
-vk::UniqueImageView v3d::vulkan::Device::createImageViewUnique(const vk::ImageViewCreateInfo& createInfo) const
+vk::ImageView v3d::vulkan::Device::createImageView(const vk::ImageViewCreateInfo& createInfo) const
 {
-	return device->createImageViewUnique(createInfo);
+	return device->createImageView(createInfo);
 }
 
 vk::PipelineLayout v3d::vulkan::Device::createPipelineLayoutUnique(const vk::PipelineLayoutCreateInfo& createInfo) const
@@ -112,19 +110,19 @@ std::vector<vk::CommandBuffer> v3d::vulkan::Device::allocateCommandBuffers(const
 	return device->allocateCommandBuffers(allocInfo);
 }
 
-vk::UniqueSemaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const
+vk::Semaphore v3d::vulkan::Device::createSemaphore(const vk::SemaphoreCreateInfo& createInfo) const
 {
-	return device->createSemaphoreUnique(createInfo);
+	return device->createSemaphore(createInfo);
 }
 
-vk::UniqueFence v3d::vulkan::Device::createFence(const vk::FenceCreateInfo& createInfo) const
+vk::Fence v3d::vulkan::Device::createFence(const vk::FenceCreateInfo& createInfo) const
 {
-	return device->createFenceUnique(createInfo);
+	return device->createFence(createInfo);
 }
 
-vk::ResultValue<uint32_t> v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const v3d::vulkan::Semaphore& semaphore) const
+vk::ResultValue<uint32_t> v3d::vulkan::Device::acquireNextImage(const v3d::vulkan::SwapChain& swapChain, const uint64_t timeout, const vk::Semaphore& semaphore) const
 {
-	return device->acquireNextImageKHR(swapChain.get(), timeout, semaphore.get(), nullptr);
+	return device->acquireNextImageKHR(swapChain.get(), timeout, semaphore, nullptr);
 }
 
 void v3d::vulkan::Device::waitIdle() const
@@ -137,14 +135,14 @@ vk::Queue v3d::vulkan::Device::getQueue(const uint32_t familyIndex, const uint32
 	return device->getQueue(familyIndex, queueIndex);
 }
 
-void v3d::vulkan::Device::waitForFences(const v3d::vulkan::Fence& fence) const
+void v3d::vulkan::Device::waitForFences(const vk::Fence& fence) const
 {
-	device->waitForFences(1, &fence.get(), true, std::numeric_limits<uint64_t>::max());
+	device->waitForFences(1, &fence, true, std::numeric_limits<uint64_t>::max());
 }
 
-void v3d::vulkan::Device::resetFences(const v3d::vulkan::Fence& fence) const
+void v3d::vulkan::Device::resetFences(const vk::Fence& fence) const
 {
-	device->resetFences(1, &fence.get());
+	device->resetFences(1, &fence);
 }
 
 void v3d::vulkan::Device::freeCommandBuffer(const vk::CommandPool& commandPool, const v3d::vulkan::CommandBuffer& commandBuffer) const
@@ -192,4 +190,9 @@ void v3d::vulkan::Device::unMapMemory(const vk::DeviceMemory& deviceMemory) cons
 vk::DescriptorSetLayout v3d::vulkan::Device::createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo& createInfo) const
 {
 	return device->createDescriptorSetLayout(createInfo);
+}
+
+vk::DescriptorPool v3d::vulkan::Device::createDescriptorPool(const vk::DescriptorPoolCreateInfo createInfo) const
+{
+	return device->createDescriptorPool(createInfo);
 }

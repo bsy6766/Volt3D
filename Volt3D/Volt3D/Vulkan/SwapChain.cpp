@@ -75,17 +75,6 @@ bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDev
 
 	swapChain = std::move(device.createSwapchainKHRUnique(createInfo));
 
-	swapChainImages = device.getSwapchainImagesKHR(*this);
-
-	imageViews.reserve(swapChainImages.size());
-	vk::ComponentMapping componentMapping(vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA);
-	vk::ImageSubresourceRange subResourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-	for (auto image : swapChainImages)
-	{
-		vk::ImageViewCreateInfo imageViewCreateInfo(vk::ImageViewCreateFlags(), image, vk::ImageViewType::e2D, surfaceFormat.format, componentMapping, subResourceRange);
-		imageViews.push_back(std::move(device.createImageViewUnique(imageViewCreateInfo)));
-	}
-
 	return true;
 }
 
@@ -127,14 +116,4 @@ const vk::Format& v3d::vulkan::SwapChain::getFormat() const
 const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const
 {
 	return extent;
-}
-
-const std::size_t v3d::vulkan::SwapChain::getImageViewsSize() const
-{
-	return imageViews.size();
-}
-
-const std::vector<vk::UniqueImageView>& v3d::vulkan::SwapChain::getImageViews() const
-{
-	return imageViews;
 }
