@@ -31,11 +31,12 @@ namespace v3d
 			friend class Context;
 
 		private:
+			vk::UniquePipelineLayout pipelineLayout;
 			vk::UniquePipeline pipeline;
 			vk::Viewport viewport;
 			vk::Rect2D scissor;
 
-			bool init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass);
+			bool init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout);
 
 		public:
 			Pipeline();
@@ -45,8 +46,9 @@ namespace v3d
 
 			UNIQUE_TO_CPP_VK_HANDLE(vk::UniquePipeline, vk::Pipeline, pipeline);
 
-			vk::Viewport getViewport() const;
-			vk::Rect2D getScissor() const;
+			const vk::Viewport& getViewport() const;
+			const vk::Rect2D& getScissor() const;
+			const vk::UniquePipelineLayout& getLayout() const;
 		};
 	}
 }

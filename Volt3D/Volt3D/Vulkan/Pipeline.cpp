@@ -19,42 +19,31 @@ v3d::vulkan::Pipeline::Pipeline()
 	, scissor()
 {}
 
-vk::Viewport v3d::vulkan::Pipeline::getViewport() const
+const vk::Viewport& v3d::vulkan::Pipeline::getViewport() const
 {
 	return viewport;
 }
 
-vk::Rect2D v3d::vulkan::Pipeline::getScissor() const
+const vk::Rect2D& v3d::vulkan::Pipeline::getScissor() const
 {
 	return scissor;
 }
 
-bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass)
+const vk::UniquePipelineLayout& v3d::vulkan::Pipeline::getLayout() const
 {
-	vk::DescriptorSetLayoutBinding uboLayoutBinding
-	(
-		0,
-		vk::DescriptorType::eUniformBuffer,
-		1,
-		vk::ShaderStageFlagBits::eVertex
-	);
+	return pipelineLayout;
+}
 
-	vk::DescriptorSetLayoutCreateInfo layoutInfo
-	(
-		vk::DescriptorSetLayoutCreateFlags(),
-		1, &uboLayoutBinding
-	);
-
-	vk::DescriptorSetLayout descriptorLayout = device.createDescriptorSetLayout(layoutInfo);
-
+bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
+{
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
 		vk::PipelineLayoutCreateFlags(),
-		1, &descriptorLayout,
+		1, &descriptorSetLayout,
 		0, nullptr
 	);
 
-	vk::PipelineLayout pipelineLayout = device.createPipelineLayout(layoutCreateInfo);
+	 pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
 
 	v3d::vulkan::ShaderModule vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
@@ -108,7 +97,7 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		false,                                        // rasterizerDiscardEnable
 		vk::PolygonMode::eFill,                       // polygonMode
 		vk::CullModeFlagBits::eBack,                  // cullMode
-		vk::FrontFace::eClockwise,                    // frontFace
+		vk::FrontFace::eCounterClockwise,                    // frontFace
 		false,                                        // depthBiasEnable
 		0.0f,                                         // depthBiasConstantFactor
 		0.0f,                                         // depthBiasClamp
@@ -204,14 +193,11 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		nullptr,							        // pDepthStencilState
 		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
 		&pipelineDynamicStateCreateInfo,            // pDynamicState
-		pipelineLayout,							    // layout
+		pipelineLayout.get(),							    // layout
 		renderPass									// renderPass
 	);
 
 	pipeline = device.createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
-
-	device.destroyDescriptorSetLayout(descriptorLayout);
-	device.destroyPipelineLayout(pipelineLayout);
-
+	
 	return true;
 }

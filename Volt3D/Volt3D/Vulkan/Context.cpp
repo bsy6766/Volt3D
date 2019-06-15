@@ -42,7 +42,9 @@ v3d::vulkan::Context::Context(const v3d::glfw::Window& window)
 	, frameFences()
 	, graphicsQueue(nullptr)
 	, presentQueue(nullptr)
+	, descriptorLayout(nullptr)
 	, descriptorPool(nullptr)
+	, descriptorSets()
 	, current_frame(0)
 	, window(window)
 	, frameBufferSize(window.getFrameBufferSize())
@@ -86,22 +88,23 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 	if (!initSurface(window)) return false;
 	if (!initPhysicalDevice()) return false;
 	if (!initDevice()) return false;
+	if (!initQueue()) return false;
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
+	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
-	if (!initSemaphore()) return false;
-	if (!initFences()) return false;
-	if (!initQueue()) return false;
-
 	createVertexBuffer();
 	createIndexBuffer();
 	createUniformBuffer();
+	if (!initDescriptorPool()) return false;
+	if (!initDescriptorSet()) return false;
+	if (!initSemaphore()) return false;
+	if (!initFences()) return false;
 
 	if (!initCommandBuffer()) return false;
-	if (!initDescriptorPool()) return false;
 
 	return true;
 }
@@ -253,7 +256,7 @@ bool v3d::vulkan::Context::initGraphicsPipeline()
 {
 	pipeline = new (std::nothrow) v3d::vulkan::Pipeline();
 	if (pipeline == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Pipeline>(); return false; }
-	if (!pipeline->init(device, *swapChain, renderPass)) return false;
+	if (!pipeline->init(device, *swapChain, renderPass, descriptorLayout)) return false;
 	return true;
 }
 
@@ -348,9 +351,30 @@ bool v3d::vulkan::Context::initCommandBuffer()
 	{
 		auto newCB = new v3d::vulkan::CommandBuffer(cbs[i]);
 		commandBuffers.push_back(newCB);
-		newCB->record(framebuffers[i], renderPass, *swapChain, *pipeline, vertexBuffer, indexBuffer, static_cast<uint32_t>(indexData.getSize()));
+		newCB->record(framebuffers[i], renderPass, *swapChain, *pipeline, vertexBuffer, indexBuffer, static_cast<uint32_t>(indexData.getSize()), descriptorSets[i]);
 		//newCB->record(framebuffers[i]->get(), renderPass->get(), *swapChain, *pipeline, *vertexBuffer, static_cast<uint32_t>(vertexData.getSize()));
 	}
+
+	return true;
+}
+
+bool v3d::vulkan::Context::initDescriptorLayout()
+{
+	vk::DescriptorSetLayoutBinding uboLayoutBinding
+	(
+		0,
+		vk::DescriptorType::eUniformBuffer,
+		1,
+		vk::ShaderStageFlagBits::eVertex
+	);
+
+	vk::DescriptorSetLayoutCreateInfo layoutInfo
+	(
+		vk::DescriptorSetLayoutCreateFlags(),
+		1, &uboLayoutBinding
+	);
+
+	descriptorLayout = device.createDescriptorSetLayout(layoutInfo);
 
 	return true;
 }
@@ -376,6 +400,46 @@ bool v3d::vulkan::Context::initDescriptorPool()
 	return true;
 }
 
+bool v3d::vulkan::Context::initDescriptorSet()
+{
+	const std::size_t size = images.size();
+
+	std::vector<vk::DescriptorSetLayout> layouts(size, descriptorLayout);
+	vk::DescriptorSetAllocateInfo allocInfo
+	(
+		descriptorPool,
+		static_cast<uint32_t>(size),
+		layouts.data()
+	);
+
+	descriptorSets = device.allocateDescriptorSets(allocInfo);
+
+	for (std::size_t i = 0; i < size; i++)
+	{
+		vk::DescriptorBufferInfo bufferInfo
+		(
+			uniformBuffers[i],
+			vk::DeviceSize(0),
+			vk::DeviceSize(sizeof(glm::mat4) * 3)
+		);
+
+		vk::WriteDescriptorSet descriptorWrite
+		(
+			descriptorSets[i],
+			0, 0,
+			static_cast<uint32_t>(1),
+			vk::DescriptorType::eUniformBuffer,
+			nullptr,
+			&bufferInfo,
+			nullptr
+		);
+
+		device.updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
+	}
+
+	return true;
+}
+
 bool v3d::vulkan::Context::recreateSwapChain()
 {
 	device.waitIdle();
@@ -385,11 +449,14 @@ bool v3d::vulkan::Context::recreateSwapChain()
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
+	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
-	if (!initCommandBuffer()) return false;
-	if (!initDescriptorPool()) return false;
+	if (!initCommandPool()) return false;
 	createUniformBuffer();
+	if (!initDescriptorPool()) return false;
+	if (!initDescriptorSet()) return false;
+	if (!initCommandBuffer()) return false;
 
 	v3d::Logger::getInstance().info("Recreated swapchain");
 
@@ -509,21 +576,26 @@ void v3d::vulkan::Context::createUniformBuffer()
 		uniformBuffers.at(i) = createBuffer(bufferSize, vk::BufferUsageFlagBits::eUniformBuffer);
 		ubDeviceMemories.at(i) = createDeviceMemory(uniformBuffers.at(i), vk::MemoryPropertyFlagBits::eHostCoherent);
 	}
-
-
 }
 
 void v3d::vulkan::Context::updateUniformBuffer(const uint32_t imageIndex)
 {
-	static struct UniformBufferObject
-	{
-		glm::mat4 m, v, p;
-	} ubo;
-	ubo.m = ubo.v = ubo.p = glm::mat4(1);
-	//ubo.m = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	static struct UniformBufferObject { glm::mat4 m, v, p; } ubo;
+	
+	ubo.m = glm::scale(glm::mat4(1), glm::vec3(0.5, 0.5, 1));
+	//ubo.m = glm::rotate(glm::mat4(1.0f), delta * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -2.0f));
 	//ubo.v = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//ubo.p = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
-	//ubo.proj[1][1] *= -1;
+	ubo.v = glm::mat4(1.0f);
+	const auto& extent = swapChain->getExtent2D();
+
+	const float fovy = 70.0f;
+	const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
+	const float nears = 0.1f;
+	const float fars = 1000.0f;
+
+	ubo.p = glm::perspective(glm::radians(fovy), aspect, nears, fars);
+	ubo.p = glm::mat4(1);
+	ubo.p[1][1] *= -1; 
 
 	void* data = device.mapMemory(ubDeviceMemories[imageIndex], 0, sizeof(ubo));
 	memcpy(data, &ubo, sizeof(ubo));
@@ -637,6 +709,7 @@ void v3d::vulkan::Context::releaseSwapChain()
 	}
 	uniformBuffers.clear();
 	ubDeviceMemories.clear();
+	device.destroyDescriptorSetLayout(descriptorLayout);
 	device.destroyDescriptorPool(descriptorPool);
 	for (auto& cb : commandBuffers) { device.freeCommandBuffers(commandPool, cb->getHandle()); SAFE_DELETE(cb); }
 	commandBuffers.clear();

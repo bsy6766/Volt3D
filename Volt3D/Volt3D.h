@@ -42,7 +42,6 @@
 #include "Vulkan/Context.h"
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
-#include "Vulkan/Device.h"
 #include "Vulkan/Instance.h"
 #include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Pipeline.h"

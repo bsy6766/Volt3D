@@ -70,7 +70,9 @@ namespace v3d
 			v3d::vulkan::Queue* graphicsQueue;
 			v3d::vulkan::Queue* presentQueue;
 			std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
+			vk::DescriptorSetLayout descriptorLayout;
 			vk::DescriptorPool descriptorPool;
+			std::vector<vk::DescriptorSet> descriptorSets;
 
 			const int MAX_FRAMES_IN_FLIGHT = 2;
 			int current_frame;
@@ -105,7 +107,9 @@ namespace v3d
 			bool initFences();
 			bool initQueue();
 			bool initCommandBuffer();
+			bool initDescriptorLayout();
 			bool initDescriptorPool();
+			bool initDescriptorSet();
 			bool recreateSwapChain();
 			void release();
 			void releaseSwapChain();
