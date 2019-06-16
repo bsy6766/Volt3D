@@ -29,8 +29,8 @@
 
 namespace v3d
 {
-	// Foward declaration
 	class GameController;
+	namespace glfw { class Window; }
 
 	/**
 	*	@class InputManager
@@ -46,7 +46,7 @@ namespace v3d
 	class VOLT3D_DLL InputManager
 	{
 		friend class Engine;
-		friend class GLView;
+		friend class v3d::glfw::Window;
 		friend class Redirector;
 
 	private:

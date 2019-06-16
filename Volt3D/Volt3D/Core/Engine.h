@@ -14,6 +14,7 @@
 
 namespace v3d
 {
+	class InputManager;
 	namespace glfw { class Window; class Time; }
 	namespace vulkan { class Context; }
 
@@ -28,8 +29,10 @@ namespace v3d
 		v3d::glfw::Window* window;
 		v3d::glfw::Time* time;
 		v3d::vulkan::Context* context;
+		v3d::InputManager* inputManager;
 
 		bool loadPreference();
+		bool initInputManager();
 		bool initWindow(const std::string_view windowTitle);
 		bool initTime();
 		bool initContext();

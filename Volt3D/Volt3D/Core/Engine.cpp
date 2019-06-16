@@ -16,14 +16,16 @@
 #include "utils/FileSystem.h"
 #include "utils/Logger.h"
 
-#include "Window.h"
 #include "Time.h"
 #include "Vulkan/Context.h"
+#include "Window.h"
+#include "Input/InputManager.h"
 
 v3d::Engine::Engine()
 	: window(nullptr)
 	, time(nullptr)
 	, context(nullptr)
+	, inputManager(nullptr)
 {
 	v3d::Logger::getInstance().init(FileSystem::getWorkingDirectoryW(), L"log.txt");
 	v3d::Logger::getInstance().initConsole();
@@ -39,6 +41,7 @@ bool v3d::Engine::init(const std::string_view windowTitle)
 	auto& logger = Logger::getInstance();
 
 	if (!loadPreference()) return false;
+	if (!initInputManager()) return false;
 	if (!initWindow(windowTitle)) return false;
 	if (!initTime()) return false;
 	if (!initContext()) return false;
@@ -67,10 +70,17 @@ bool v3d::Engine::loadPreference()
 	return true;
 }
 
+bool v3d::Engine::initInputManager()
+{
+	inputManager = NO_THROW_NEW(v3d::InputManager);
+	CHECK_INSTANCE_NULLPTR_AND_LOG(v3d::InputManager, inputManager);
+	return true;
+}
+
 bool v3d::Engine::initWindow(const std::string_view windowTitle)
 {
 	auto& logger = Logger::getInstance();
-	window = new (std::nothrow) v3d::glfw::Window();
+	window = new (std::nothrow) v3d::glfw::Window(*inputManager);
 	if (!window) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
 	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
@@ -134,10 +144,12 @@ void v3d::Engine::preUpdate(const float delta)
 
 void v3d::Engine::update(const float delta)
 {
+	if (inputManager->isKeyPressed(v3d::KeyCode::eA, true)) v3d::Logger::getInstance().info("A pressed!");
 }
 
 void v3d::Engine::postUpdate(const float delta)
 {
+	inputManager->postUpdate();
 }
 
 void v3d::Engine::render()

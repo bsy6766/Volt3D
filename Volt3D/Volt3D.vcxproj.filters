@@ -59,9 +59,6 @@
     <ClCompile Include="Volt3D\Core\Engine.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp">
-      <Filter>Volt3D\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Context.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -186,9 +183,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Logger.h">
       <Filter>Volt3D\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\GLFWCallbacks.h">
-      <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Window.h">
       <Filter>Volt3D\Core</Filter>
