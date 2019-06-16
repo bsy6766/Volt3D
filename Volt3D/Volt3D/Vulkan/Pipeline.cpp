@@ -97,7 +97,7 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		false,                                        // rasterizerDiscardEnable
 		vk::PolygonMode::eFill,                       // polygonMode
 		vk::CullModeFlagBits::eBack,                  // cullMode
-		vk::FrontFace::eCounterClockwise,                    // frontFace
+		vk::FrontFace::eClockwise,                    // frontFace
 		false,                                        // depthBiasEnable
 		0.0f,                                         // depthBiasConstantFactor
 		0.0f,                                         // depthBiasClamp

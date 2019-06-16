@@ -582,20 +582,23 @@ void v3d::vulkan::Context::updateUniformBuffer(const uint32_t imageIndex)
 {
 	static struct UniformBufferObject { glm::mat4 m, v, p; } ubo;
 	
-	ubo.m = glm::scale(glm::mat4(1), glm::vec3(0.5, 0.5, 1));
-	//ubo.m = glm::rotate(glm::mat4(1.0f), delta * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -2.0f));
-	//ubo.v = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.v = glm::mat4(1.0f);
-	const auto& extent = swapChain->getExtent2D();
+	ubo.m = glm::translate(glm::scale(glm::mat4(1), glm::vec3(0.5, 0.5, 1)), glm::vec3(5, 0.0, 0.0));
+
+	static struct Camera
+	{
+		glm::vec3 pos;
+		glm::vec3 rot;
+	} cam;
+
+	cam.pos = glm::vec3(0, 2, -10);
+	ubo.v = glm::translate(glm::mat4(1), glm::vec3(cam.pos.x, cam.pos.y, cam.pos.z));
 
 	const float fovy = 70.0f;
+	const auto& extent = swapChain->getExtent2D();
 	const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
 	const float nears = 0.1f;
 	const float fars = 1000.0f;
-
 	ubo.p = glm::perspective(glm::radians(fovy), aspect, nears, fars);
-	ubo.p = glm::mat4(1);
-	ubo.p[1][1] *= -1; 
 
 	void* data = device.mapMemory(ubDeviceMemories[imageIndex], 0, sizeof(ubo));
 	memcpy(data, &ubo, sizeof(ubo));
