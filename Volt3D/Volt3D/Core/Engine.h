@@ -8,6 +8,8 @@
 #ifndef V3D_ENGINE_H
 #define V3D_ENGINE_H
 
+#include <string_view>
+
 #include "Utils/Macros.h"
 
 namespace v3d

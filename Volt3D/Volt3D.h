@@ -28,6 +28,9 @@
 // Enums
 #include "Enums/WindowMode.h"
 
+// Input
+#include "Input/InputEnums.h"
+
 // Renderer
 #include "Renderer/VertexData.h"
 
