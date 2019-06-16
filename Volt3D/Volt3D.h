@@ -30,7 +30,11 @@
 #include "Enums/WindowMode.h"
 
 // Input
-#include "Input/InputEnums.h"
+#include "Input/InputManager.h"
+#include "Input/InputState.h"
+#include "Input/KeyCode.h"
+#include "Input/KeyModifierBits.h"
+#include "Input/MouseButton.h"
 
 // Node
 #include "Node/BaseNode.h"

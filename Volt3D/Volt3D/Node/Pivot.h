@@ -1,5 +1,12 @@
-#ifndef V3DPIVOT_H
-#define V3DPIVOT_H
+/**
+*	@file Pivot.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef V3D_PIVOT_H
+#define V3D_PIVOT_H
 
 #include <string>
 
@@ -32,7 +39,7 @@ namespace v3d
 		eRightBottom,
 	};
 
-	inline std::string to_string(v3d::Pivot value)
+	inline std::string pivotToString(v3d::Pivot value)
 	{
 		switch (value)
 		{

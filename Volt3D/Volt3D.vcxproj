@@ -206,7 +206,11 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Core\Time.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
     <ClInclude Include="Volt3D\Enums\WindowMode.h" />
-    <ClInclude Include="Volt3D\Input\InputEnums.h" />
+    <ClInclude Include="Volt3D\Input\InputManager.h" />
+    <ClInclude Include="Volt3D\Input\InputState.h" />
+    <ClInclude Include="Volt3D\Input\KeyCode.h" />
+    <ClInclude Include="Volt3D\Input\KeyModifierBits.h" />
+    <ClInclude Include="Volt3D\Input\MouseButton.h" />
     <ClInclude Include="Volt3D\Node\BaseNode.h" />
     <ClInclude Include="Volt3D\Node\NodeType.h" />
     <ClInclude Include="Volt3D\Node\Pivot.h" />
@@ -263,6 +267,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
     <ClCompile Include="Volt3D\Core\Time.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />
+    <ClCompile Include="Volt3D\Input\InputManager.cpp" />
     <ClCompile Include="Volt3D\Node\BaseNode.cpp" />
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />
     <ClCompile Include="Volt3D\Node\ZOrder.cpp" />

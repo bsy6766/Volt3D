@@ -170,6 +170,9 @@
     <ClCompile Include="Volt3D\Shape\Rect.cpp">
       <Filter>Volt3D\Shape</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Input\InputManager.cpp">
+      <Filter>Volt3D\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -268,9 +271,6 @@
     <ClInclude Include="Volt3D\Core\Application.h">
       <Filter>Volt3D\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Input\InputEnums.h">
-      <Filter>Volt3D\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Node\BaseNode.h">
       <Filter>Volt3D\Node</Filter>
     </ClInclude>
@@ -330,6 +330,21 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Utility.h">
       <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\InputManager.h">
+      <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\KeyCode.h">
+      <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\MouseButton.h">
+      <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\InputState.h">
+      <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\KeyModifierBits.h">
+      <Filter>Volt3D\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

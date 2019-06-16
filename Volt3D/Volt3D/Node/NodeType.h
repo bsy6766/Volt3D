@@ -1,5 +1,12 @@
-#ifndef V3DNODE_TYPE_H
-#define V3DNODE_TYPE_H
+/**
+*	@file NodeType.h
+*
+*	@author Seung Youp Baek
+*	@copyright Copyright (c) 2019 Seung Youp Baek
+*/
+
+#ifndef V3D_NODE_TYPE_H
+#define V3D_NODE_TYPE_H
 
 namespace v3d
 {
@@ -23,7 +30,7 @@ namespace v3d
 	};
 
 
-	inline std::string to_string(v3d::NodeType value)
+	inline std::string NodeTypeToString(v3d::NodeType value)
 	{
 		switch (value)
 		{
