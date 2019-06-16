@@ -24,7 +24,7 @@ namespace v3d
 	*/
 	class VOLT3D_DLL Engine
 	{
-	private:
+	protected:
 		v3d::glfw::Window* window;
 		v3d::glfw::Time* time;
 		v3d::vulkan::Context* context;
@@ -39,7 +39,7 @@ namespace v3d
 		void update(const float delta);
 		void postUpdate(const float delta);
 		void render();
-
+		
 	public:
 		Engine();
 		~Engine();

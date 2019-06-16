@@ -19,6 +19,7 @@
 #include "Config/GLFWCallbackConfig.h"
 
 // Core
+#include "Core/Application.h"
 #include "Core/Engine.h"
 #include "Core/GLFWCallbacks.h"
 #include "Core/Preference.h"

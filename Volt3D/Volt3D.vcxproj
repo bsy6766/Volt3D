@@ -199,6 +199,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Color\Color4F.h" />
     <ClInclude Include="Volt3D\Config\BuildConfig.h" />
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
+    <ClInclude Include="Volt3D\Core\Application.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
     <ClInclude Include="Volt3D\Core\GLFWCallbacks.h" />
     <ClInclude Include="Volt3D\Core\Preference.h" />
@@ -235,6 +236,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Color\Color3F.cpp" />
     <ClCompile Include="Volt3D\Color\Color4B.cpp" />
     <ClCompile Include="Volt3D\Color\Color4F.cpp" />
+    <ClCompile Include="Volt3D\Core\Application.cpp" />
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
     <ClCompile Include="Volt3D\Core\GLFWCallbacks.cpp" />
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
