@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <nlohmann/json.hpp>
 
 // Graphics API
@@ -38,3 +39,4 @@
 #include <limits>
 #include <cassert>
 #include <algorithm>
+#include <iterator>

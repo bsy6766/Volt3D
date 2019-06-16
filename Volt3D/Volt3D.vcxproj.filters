@@ -36,6 +36,15 @@
     <Filter Include="Volt3D\Renderer">
       <UniqueIdentifier>{60497325-9a4c-4ec1-893e-adf81d5636dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Input">
+      <UniqueIdentifier>{9e7bc695-c523-49d6-beb2-be5ab5778934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Node">
+      <UniqueIdentifier>{8fddd200-8939-418f-a6f4-2761c0fcd4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Shape">
+      <UniqueIdentifier>{b9ff3a0d-1747-41e8-a129-4e6b2ee026d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -112,6 +121,54 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Application.cpp">
       <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Node\BaseNode.cpp">
+      <Filter>Volt3D\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Node\TransformNode.cpp">
+      <Filter>Volt3D\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Node\ZOrder.cpp">
+      <Filter>Volt3D\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Segment.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Segment2D.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Sphere.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Triangle.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Triangle2D.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\AABB.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Circle.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\OBB.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\OrientedRect.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Plane.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Quad.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Quad2D.cpp">
+      <Filter>Volt3D\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shape\Rect.cpp">
+      <Filter>Volt3D\Shape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +267,69 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Application.h">
       <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Input\InputEnums.h">
+      <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Node\BaseNode.h">
+      <Filter>Volt3D\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Node\TransformNode.h">
+      <Filter>Volt3D\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Node\ZOrder.h">
+      <Filter>Volt3D\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Node\NodeType.h">
+      <Filter>Volt3D\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Node\Pivot.h">
+      <Filter>Volt3D\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Rect.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Segment.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Segment2D.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Sphere.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Triangle.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Triangle2D.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\AABB.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Circle.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\OBB.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\OrientedRect.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Plane.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Quad.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shape\Quad2D.h">
+      <Filter>Volt3D\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Utils\String.h">
+      <Filter>Volt3D\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Utils\Utility.h">
+      <Filter>Volt3D\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

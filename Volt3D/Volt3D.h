@@ -32,14 +32,38 @@
 // Input
 #include "Input/InputEnums.h"
 
+// Node
+#include "Node/BaseNode.h"
+#include "Node/NodeType.h"
+#include "Node/Pivot.h"
+#include "Node/TransformNode.h"
+#include "Node/ZOrder.h"
+
 // Renderer
 #include "Renderer/VertexData.h"
+
+// Shape
+#include "Shape/AABB.h"
+#include "Shape/Circle.h"
+#include "Shape/OBB.h"
+#include "Shape/OrientedRect.h"
+#include "Shape/Plane.h"
+#include "Shape/Quad.h"
+#include "Shape/Quad2D.h"
+#include "Shape/Rect.h"
+#include "Shape/Segment.h"
+#include "Shape/Segment2D.h"
+#include "Shape/Sphere.h"
+#include "Shape/Triangle.h"
+#include "Shape/Triangle2D.h"
 
 // Utils
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"
 #include "Utils/Macros.h"
+#include "Utils/String.h"
 #include "Utils/Timer.h"
+#include "Utils/Utility.h"
 
 // Vulkan
 #include "Vulkan/CommandBuffer.h"
