@@ -200,8 +200,11 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Config\BuildConfig.h" />
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Application.h" />
+    <ClInclude Include="Volt3D\Core\Camera.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
+    <ClInclude Include="Volt3D\Core\Frustum.h" />
     <ClInclude Include="Volt3D\Core\Preference.h" />
+    <ClInclude Include="Volt3D\Core\ProjectionType.h" />
     <ClInclude Include="Volt3D\Core\Time.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
     <ClInclude Include="Volt3D\Enums\WindowMode.h" />
@@ -261,7 +264,9 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Color\Color4B.cpp" />
     <ClCompile Include="Volt3D\Color\Color4F.cpp" />
     <ClCompile Include="Volt3D\Core\Application.cpp" />
+    <ClCompile Include="Volt3D\Core\Camera.cpp" />
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
+    <ClCompile Include="Volt3D\Core\Frustum.cpp" />
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
     <ClCompile Include="Volt3D\Core\Time.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />

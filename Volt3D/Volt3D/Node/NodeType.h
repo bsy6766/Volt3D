@@ -29,8 +29,7 @@ namespace v3d
 		eScene,
 	};
 
-
-	inline std::string NodeTypeToString(v3d::NodeType value)
+	inline std::string nodeTypeToString(v3d::NodeType value)
 	{
 		switch (value)
 		{

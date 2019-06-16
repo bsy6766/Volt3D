@@ -170,6 +170,12 @@
     <ClCompile Include="Volt3D\Input\InputManager.cpp">
       <Filter>Volt3D\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Core\Camera.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Core\Frustum.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -339,6 +345,15 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Input\KeyModifierBits.h">
       <Filter>Volt3D\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Camera.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\ProjectionType.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Frustum.h">
+      <Filter>Volt3D\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
