@@ -28,7 +28,7 @@ namespace spdlog
 
 namespace v3d
 {
-	class Logger
+	class VOLT3D_DLL Logger
 	{
 	private:
 		std::shared_ptr<spdlog::logger> logger;

@@ -11,13 +11,15 @@
 #include <filesystem>
 #include <string>
 
+#include "Utils/Macros.h"
+
 namespace v3d
 {
 	/**
 	*	@class FileSystem
 	*	@brief A simple wrapper for the C++17 fileSystem.
 	*/
-	class FileSystem
+	class VOLT3D_DLL FileSystem
 	{
 	public:
 		FileSystem() = default;
