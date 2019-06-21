@@ -45,6 +45,9 @@
     <Filter Include="Volt3D\Shape">
       <UniqueIdentifier>{b9ff3a0d-1747-41e8-a129-4e6b2ee026d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Scene">
+      <UniqueIdentifier>{55ab3348-fc80-4a25-98c6-1d566420a590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -174,6 +177,12 @@
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Frustum.cpp">
+      <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Scene\Scene.cpp">
+      <Filter>Volt3D\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Core\Director.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -353,6 +362,15 @@
       <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Frustum.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Scene\Scene.h">
+      <Filter>Volt3D\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\Director.h">
+      <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\CursorMode.h">
       <Filter>Volt3D\Core</Filter>
     </ClInclude>
   </ItemGroup>

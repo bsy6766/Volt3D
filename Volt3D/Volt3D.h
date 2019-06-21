@@ -21,6 +21,8 @@
 // Core
 #include "Core/Application.h"
 #include "Core/Camera.h"
+#include "Core/CursorMode.h"
+#include "Core/Director.h"
 #include "Core/Engine.h"
 #include "Core/Frustum.h"
 #include "Core/Preference.h"
@@ -47,6 +49,9 @@
 
 // Renderer
 #include "Renderer/VertexData.h"
+
+// Scene
+#include "Scene/Scene.h"
 
 // Shape
 #include "Shape/AABB.h"

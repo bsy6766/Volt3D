@@ -201,6 +201,8 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Application.h" />
     <ClInclude Include="Volt3D\Core\Camera.h" />
+    <ClInclude Include="Volt3D\Core\CursorMode.h" />
+    <ClInclude Include="Volt3D\Core\Director.h" />
     <ClInclude Include="Volt3D\Core\Engine.h" />
     <ClInclude Include="Volt3D\Core\Frustum.h" />
     <ClInclude Include="Volt3D\Core\Preference.h" />
@@ -219,6 +221,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Node\TransformNode.h" />
     <ClInclude Include="Volt3D\Node\ZOrder.h" />
     <ClInclude Include="Volt3D\Renderer\VertexData.h" />
+    <ClInclude Include="Volt3D\Scene\Scene.h" />
     <ClInclude Include="Volt3D\Shape\AABB.h" />
     <ClInclude Include="Volt3D\Shape\Circle.h" />
     <ClInclude Include="Volt3D\Shape\OBB.h" />
@@ -265,6 +268,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Color\Color4F.cpp" />
     <ClCompile Include="Volt3D\Core\Application.cpp" />
     <ClCompile Include="Volt3D\Core\Camera.cpp" />
+    <ClCompile Include="Volt3D\Core\Director.cpp" />
     <ClCompile Include="Volt3D\Core\Engine.cpp" />
     <ClCompile Include="Volt3D\Core\Frustum.cpp" />
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
@@ -275,6 +279,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />
     <ClCompile Include="Volt3D\Node\ZOrder.cpp" />
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
+    <ClCompile Include="Volt3D\Scene\Scene.cpp" />
     <ClCompile Include="Volt3D\Shape\AABB.cpp" />
     <ClCompile Include="Volt3D\Shape\Circle.cpp" />
     <ClCompile Include="Volt3D\Shape\OBB.cpp" />
