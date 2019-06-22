@@ -7,10 +7,10 @@
 #include "Utils/FileSystem.h"
 #include "Config/BuildConfig.h"
 
-#include <libpng\png.h>
+#include <libpng/png.h>
 
 v3d::Image::Image()
-	: type(v3d::Image::Type::PNG)
+	: type(v3d::ImageType::eUndefined)
 	, width(0)
 	, height(0)
 	, filePath("")
@@ -20,85 +20,28 @@ v3d::Image::Image()
 
 v3d::Image::~Image()
 {
-	if (data)
-	{
-		delete[] data;
-	}
+	if (data) delete[] data;
 }
 
 v3d::Image * v3d::Image::createPNG(const std::string & filePath)
 {
-	// Create new image instance
 	v3d::Image* newImage = new (std::nothrow) v3d::Image();
-
-	// Check
-	if (newImage)
-	{
-		// Init as PNG
-		if (newImage->initPNG(filePath))
-		{
-			// Done.
-			return newImage;
-		}
-		else
-		{
-			// Delete instance
-			delete newImage;
-		}
-	}
-	else
-	{
-		// report
-		v3d::Error::Report::reportStdBadAlloc(v3d::Error::Code::Source::IMAGE);
-	}
-
-	// Failed
-	return nullptr;
+	if (newImage == nullptr) return nullptr;
+	else if (newImage->initPNG(filePath)) return newImage;
+	else return nullptr;
 }
 
 v3d::Image * v3d::Image::createPNG(const std::string & filePath, const int width, const int height, unsigned char * data)
 {
-	// Create new image instance
 	v3d::Image* newImage = new (std::nothrow) v3d::Image();
-
-	// Check
-	if (newImage)
-	{
-		// Init as PNG with data
-		if (newImage->initPNGWithData(filePath, width, height, data))
-		{
-			// Done.
-			return newImage;
-		}
-		else
-		{
-			// Delete instance
-			delete newImage;
-		}
-	}
-	else
-	{
-		// report
-		v3d::Error::Report::reportStdBadAlloc(v3d::Error::Code::Source::IMAGE);
-	}
-
-	// Failed
-	return nullptr;
+	if (newImage == nullptr) return nullptr;
+	else if (newImage->initPNGWithData(filePath, width, height, data)) return newImage;
+	else return nullptr;
 }
 
 bool v3d::Image::initPNG(const std::string & filePath)
 {
-	// check path
-	if (filePath.empty())
-	{
-#if (V3D_TARGET_BUILD == V3D_DEBUG_BUILD)
-		// report
-		v3d::Error::Report::report(v3d::Error::Code::generate(false, v3d::Error::Code::Source::IMAGE, v3d::Error::Code::IMAGE_FILE_PATH_IS_EMPTY));
-#endif
-
-		// Failed
-		return false;
-	}
+	if (filePath.empty()) return false;
 
 	// get file system
 	v3d::FileSystem& fs = v3d::Engine::getInstance().getFileSystem();
@@ -109,11 +52,6 @@ bool v3d::Image::initPNG(const std::string & filePath)
 	// Check
 	if (fp == nullptr)
 	{
-#if (V3D_TARGET_BUILD == V3D_DEBUG_BUILD)
-		// report
-		v3d::Error::Report::report(v3d::Error::Code::generate(false, v3d::Error::Code::Source::IMAGE, v3d::Error::Code::FAILED_TO_OPEN_IMAGE_FILE));
-#endif
-
 		// Failed
 		return false;
 	}
@@ -223,7 +161,7 @@ bool v3d::Image::initPNG(const std::string & filePath)
 	info = nullptr;
 
 	// Set type to png
-	type = v3d::Image::Type::PNG;
+	type = v3d::ImageType::ePNG;
 
 	// Done.
 	return true;
@@ -265,7 +203,7 @@ bool v3d::Image::initPNGWithData(const std::string & filePath, const int width, 
 	this->data = new uint8_t[size];
 	memcpy(this->data, data, size);
 
-	type = v3d::Image::Type::PNG;
+	type = v3d::ImageType::ePNG;
 
 	return true;
 }

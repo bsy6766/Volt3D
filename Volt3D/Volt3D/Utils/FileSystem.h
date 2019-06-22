@@ -31,9 +31,12 @@ namespace v3d
 		static bool isDirectory(const wchar_t* path) { return std::filesystem::is_directory(path); }
 		static bool isEmpty(const wchar_t* path) { return std::filesystem::is_empty(path); }
 		static bool createDirectory(const wchar_t* path) { return std::filesystem::create_directory(path); }
-		static bool renameFile(const wchar_t* path, const wchar_t* newFileName) { if (isFile(path)) { std::filesystem::rename(path, std::filesystem::path(getParentDir(path)).append(newFileName));  return true; } else return false; }
+		static bool renameFile(const wchar_t* path, const wchar_t* newFileName) { if (isFile(path)) { std::filesystem::rename(path, std::filesystem::path(getParentDirW(path)).append(newFileName));  return true; } else return false; }
 		static bool remove(const wchar_t* path) { return std::filesystem::remove(path); }
-		static std::wstring getParentDir(const wchar_t* path) { return std::filesystem::path(path).parent_path().wstring(); }
+		static std::string getParentDir(const char* path) { return std::filesystem::path(path).parent_path().string(); }
+		static std::wstring getParentDirW(const wchar_t* path) { return std::filesystem::path(path).parent_path().wstring(); }
+		static std::string getFileName(const char* path) { return std::filesystem::path(path).filename().string(); }
+		static std::wstring getFileNameW(const wchar_t* path) { return std::filesystem::path(path).filename().wstring(); }
 	};
 
 }

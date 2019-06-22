@@ -18,6 +18,7 @@ namespace v3d
 	*/
 	enum class ImageType : unsigned int
 	{
+		eUndefined = 0, 
 		ePNG,
 	};
 
@@ -25,6 +26,7 @@ namespace v3d
 	{
 		switch (value)
 		{
+		case v3d::ImageType::eUndefined: return "Undefined";
 		case v3d::ImageType::ePNG: return "PNG";
 		default: return "Invalid image type";
 		}
