@@ -3,14 +3,11 @@
 #include "TransformNode.h"
 
 #include "Utils/Logger.h"
-
 #include "Config/BuildConfig.h"
+#include "Action/Action.h"
 
-//#include "Volt3D/Error/ErrorReport.h"
-//
 //#include "Volt3D/Shape/Rect.h"
 //#include "Volt3D/Shape/Segment.h"
-//
 //#include "Volt3D/Utility/String.h"
 
 #if V3D_DRAW_BOUNDING_BOX
@@ -1003,7 +1000,6 @@ void v3d::TransformNode::updateModelMatrix()
 	}
 }
 
-/*
 void v3d::TransformNode::updateActions(const float delta)
 {
 	// Don't update if action is paused or actions are empty.
@@ -1037,7 +1033,6 @@ void v3d::TransformNode::updateActions(const float delta)
 		}
 	}
 }
-*/
 
 void v3d::TransformNode::updateChildren(const float delta)
 {
@@ -1484,13 +1479,14 @@ void v3d::TransformNode::setOnMouseMoveCallback(const std::function<void(v3d::Tr
 	onMouseMove = func;
 }
 
-/*
-void v3d::TransformNode::runAction(v3d::Action * action)
+bool v3d::TransformNode::runAction(std::shared_ptr<v3d::Action> action)
 {
+	if (action == nullptr) return false;
 	if (action)
 	{
 		actions.push_back(std::shared_ptr<v3d::Action>(action));
 		actions.back()->setTarget(this);
+		return true;
 	}
 }
 
@@ -1529,7 +1525,6 @@ void v3d::TransformNode::restartAllActions()
 		}
 	}
 }
-*/
 
 void v3d::TransformNode::onRender(v3d::Renderer& renderer)
 {

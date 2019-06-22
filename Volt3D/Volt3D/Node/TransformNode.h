@@ -8,24 +8,14 @@
 #include <functional>
 
 #include "BaseNode.h"
-
 #include "ZOrder.h"
-
-//#include "Volt3D/Action/Action.h"
-
-#include "Shape/AABB.h"
-
 #include "NodeType.h"
 #include "Pivot.h"
-
-//#include "Volt3D/Enums/ProjectionType.h"
-//#include "Volt3D/Config/DebugConfig.h"
-
+#include "Shape/AABB.h"
 #include "Utils/Macros.h"
 
 namespace v3d
 {
-	// foward declaration
 	class Camera;
 	class Segment;
 	class Action;
@@ -77,11 +67,9 @@ namespace v3d
 		// updates model matrix if it's true
 		bool needToUpdateModelMat;
 
-		// Calls sortChildren() if it's true
-		bool needToSortChildren;
-
-		// Sorts children 
+		// Sorts children by z order
 		void sortChildren();
+		bool needToSortChildren;
 
 		// set content size
 		void setContentSize2D(const glm::vec2& contentSize);
@@ -804,7 +792,7 @@ namespace v3d
 		*	This is called once every frame.
 		*	@param delta Elapsed time for current frame.
 		*/
-		//void updateActions(const float delta);
+		void updateActions(const float delta);
 
 		/**
 		*	Update children.
@@ -881,41 +869,33 @@ namespace v3d
 		void markDirty();
 		
 		/**
-		*	Queue action and run.
+		*	Run the action.
+		*	If this node has other actions running, the action will be queued.
 		*	@param action An action to run.
+		*	@return true if success. Else, false.
 		*/
-		//void runAction(v3d::Action* action);
+		bool runAction(std::shared_ptr<v3d::Action> action);
 
-		/**
-		*	Pause all actions.
-		*/
-		//void pauseAllActions();
+		/** Pause all actions. */
+		void pauseAllActions();
 
-		/**
-		*	Resume all actions.
-		*/
-		//void resumeAllActions();
+		/** Resume all actions. */
+		void resumeAllActions();
 
-		/**
-		*	Restart all actions.
-		*/
-		//void restartAllActions();
+		/** Restart all actions. */
+		void restartAllActions();
 		
-		/**
-		*	Clear all actions in this node.
-		*/
-		//void clearAllActions();
+		/**	Clear all actions in this node. */
+		void clearAllActions();
 
 		/**
 		*	Get total action count.
 		*	@return Total number of actio
 		*/
-		//std::size_t getTotalActionsCount() const;
+		std::size_t getTotalActionsCount() const;
 
-		/**
-		*	Check if this node is running action.
-		*/
-		//bool isRunningAction() const;
+		/** Check if this node is running action. */
+		bool isRunningAction() const;
 
 		/**
 		*	Render this transform node.
@@ -924,9 +904,7 @@ namespace v3d
 		*/
 		virtual void onRender(v3d::Renderer& renderer);
 
-		/**
-		*	Log TransformNode information.
-		*/
+		/** Log TransformNode information. */
 		virtual void print(const bool printBase) const override;
 
 		/**

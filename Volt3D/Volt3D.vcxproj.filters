@@ -48,6 +48,9 @@
     <Filter Include="Volt3D\Scene">
       <UniqueIdentifier>{55ab3348-fc80-4a25-98c6-1d566420a590}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Action">
+      <UniqueIdentifier>{316f60f1-2855-4d95-998f-0184d92e4f57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Core\Director.cpp">
       <Filter>Volt3D\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Action\Action.cpp">
+      <Filter>Volt3D\Action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +378,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\CursorMode.h">
       <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Action\Action.h">
+      <Filter>Volt3D\Action</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
