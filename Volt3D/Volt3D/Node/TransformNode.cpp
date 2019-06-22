@@ -1482,12 +1482,9 @@ void v3d::TransformNode::setOnMouseMoveCallback(const std::function<void(v3d::Tr
 bool v3d::TransformNode::runAction(std::shared_ptr<v3d::Action> action)
 {
 	if (action == nullptr) return false;
-	if (action)
-	{
-		actions.push_back(std::shared_ptr<v3d::Action>(action));
-		actions.back()->setTarget(this);
-		return true;
-	}
+	actions.push_back(action);
+	actions.back()->setTarget(this);
+	return true;
 }
 
 void v3d::TransformNode::clearAllActions()

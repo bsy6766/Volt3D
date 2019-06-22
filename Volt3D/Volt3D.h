@@ -8,6 +8,9 @@
 #ifndef VOLT3D_H
 #define VOLT3D_H
 
+// Action
+#include "Action/Action.h"
+
 // Color
 #include "Color/Color3B.h"
 #include "Color/Color3F.h"

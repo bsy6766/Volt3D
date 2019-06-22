@@ -29,7 +29,7 @@ namespace v3d
 		{
 		case v3d::InputState::ePressed: return "Pressed";
 		case v3d::InputState::eReleased: return "Released";
-		default: return "Invalid pivot";
+		default: return "Invalid input state";
 		}
 	}
 }

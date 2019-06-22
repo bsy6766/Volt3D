@@ -143,7 +143,9 @@ xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) 
     </Link>
     <PreBuildEvent>
       <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.* $(OutPutPath) /I /Y
-xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y</Command>
+xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Externals\libpng\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -125,15 +125,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Externals\libpng16\include;$(SolutionDir)Externals\zlib\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.106.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16d.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.106.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>python $(SolutionDir)BuildScripts\header_generator.py
@@ -177,7 +177,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Externals\libpng16\include;$(SolutionDir)Externals\zlib\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -186,8 +186,8 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.106.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.106.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -236,6 +236,8 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Shape\Sphere.h" />
     <ClInclude Include="Volt3D\Shape\Triangle.h" />
     <ClInclude Include="Volt3D\Shape\Triangle2D.h" />
+    <ClInclude Include="Volt3D\Spritesheet\Image.h" />
+    <ClInclude Include="Volt3D\Spritesheet\ImageType.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
     <ClInclude Include="Volt3D\Utils\Macros.h" />
@@ -295,6 +297,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Shape\Sphere.cpp" />
     <ClCompile Include="Volt3D\Shape\Triangle.cpp" />
     <ClCompile Include="Volt3D\Shape\Triangle2D.cpp" />
+    <ClCompile Include="Volt3D\Spritesheet\Image.cpp" />
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
