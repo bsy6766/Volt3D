@@ -34,6 +34,8 @@
 #include "Enums/WindowMode.h"
 
 // Input
+#include "Input/GamepadAxis.h"
+#include "Input/GamepadButton.h"
 #include "Input/InputManager.h"
 #include "Input/InputState.h"
 #include "Input/KeyCode.h"

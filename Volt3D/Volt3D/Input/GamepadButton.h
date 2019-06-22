@@ -42,22 +42,22 @@ namespace v3d
 		{
 			switch (value)
 			{
-			case v3d::Gamepad::Button:eA: return "A";
-			case v3d::Gamepad::Button:eB: return "B";
-			case v3d::Gamepad::Button:eX: return "X";
-			case v3d::Gamepad::Button:eY: return "Y";
-			case v3d::Gamepad::Button:eBack: return "Back";
-			case v3d::Gamepad::Button:eNone: return "None";
-			case v3d::Gamepad::Button:eStart: return "Start";
-			case v3d::Gamepad::Button:eL3: return "L3";
-			case v3d::Gamepad::Button:eR3: return "R3";
-			case v3d::Gamepad::Button:eLS: return "LS";
-			case v3d::Gamepad::Button:eRS: return "RS";
-			case v3d::Gamepad::Button:eDpadUp: return "DpadUp";
-			case v3d::Gamepad::Button:eDpadDown: return "DpadDown";
-			case v3d::Gamepad::Button:eDpadLeft: return "DpadLeft";
-			case v3d::Gamepad::Button:eDpadRight: return "DpadRight";
-			case v3d::Gamepad::Button:eEnumLast: return "EnumLast";
+			case v3d::Gamepad::Button::eA: return "A";
+			case v3d::Gamepad::Button::eB: return "B";
+			case v3d::Gamepad::Button::eX: return "X";
+			case v3d::Gamepad::Button::eY: return "Y";
+			case v3d::Gamepad::Button::eBack: return "Back";
+			case v3d::Gamepad::Button::eNone: return "None";
+			case v3d::Gamepad::Button::eStart: return "Start";
+			case v3d::Gamepad::Button::eL3: return "L3";
+			case v3d::Gamepad::Button::eR3: return "R3";
+			case v3d::Gamepad::Button::eLS: return "LS";
+			case v3d::Gamepad::Button::eRS: return "RS";
+			case v3d::Gamepad::Button::eDpadUp: return "DpadUp";
+			case v3d::Gamepad::Button::eDpadDown: return "DpadDown";
+			case v3d::Gamepad::Button::eDpadLeft: return "DpadLeft";
+			case v3d::Gamepad::Button::eDpadRight: return "DpadRight";
+			case v3d::Gamepad::Button::eEnumLast: return "EnumLast";
 			default: return "Invalid gamepad button";
 			}
 		}
