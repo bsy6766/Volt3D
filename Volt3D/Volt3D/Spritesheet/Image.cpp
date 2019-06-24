@@ -42,22 +42,12 @@ v3d::Image * v3d::Image::createPNG(const std::string & filePath, const int width
 bool v3d::Image::initPNG(const std::string & filePath)
 {
 	if (filePath.empty()) return false;
-
-	// get file system
-	v3d::FileSystem& fs = v3d::Engine::getInstance().getFileSystem();
-
+	
 	// Read as file
-	std::FILE *fp = fs.openFile(filePath);
+	FILE* fp = fopen(filePath.c_str(), "rb");
+	if (fp == nullptr) return false;
 
-	// Check
-	if (fp == nullptr)
-	{
-		// Failed
-		return false;
-	}
-
-	// save file name and path
-	this->fileName = v3d::FileSystem::getFileNameFromPath(filePath);
+	this->fileName = v3d::FileSystem::getFileName(filePath.c_str());
 	this->filePath = filePath;
 	
 	// Init libpng
@@ -65,7 +55,6 @@ bool v3d::Image::initPNG(const std::string & filePath)
 	if (!png)
 	{
 		fclose(fp);
-
 		return false;
 	}
 
@@ -76,7 +65,6 @@ bool v3d::Image::initPNG(const std::string & filePath)
 		png = nullptr;
 
 		fclose(fp);
-
 		return false;
 	}
 
@@ -87,17 +75,13 @@ bool v3d::Image::initPNG(const std::string & filePath)
 		info = nullptr;
 
 		fclose(fp);
-
 		return false;
 	}
 
 	png_init_io(png, fp);
-
 	png_read_info(png, info);
 
-	// get width
 	width = png_get_image_width(png, info);
-	// get height
 	height = png_get_image_height(png, info);
 
 	auto color_type = png_get_color_type(png, info);
@@ -170,36 +154,19 @@ bool v3d::Image::initPNG(const std::string & filePath)
 bool v3d::Image::initPNGWithData(const std::string & filePath, const int width, const int height, unsigned char * data)
 {
 	// check path
-	if (filePath.empty())
-	{
-#if V3D_LOG_WARNING
-		v3d::Logger::getInstance().warn("[Image] File path is empty.");
-#endif
-		return false;
-	}
+	if (filePath.empty()) return false;
+	if (data == 0) return false;
+	if (width == 0 || height == 0) return false;
 
-	if (data == 0)
-	{
-#if V3D_LOG_WARNING
-		v3d::Logger::getInstance().warn("[Image] Data is empty.");
-#endif
-		return false;
-	}
+	auto name = v3d::FileSystem::getFileName(filePath.c_str());
+	if (name.empty()) return false;
 
-	if (width == 0 || height == 0)
-	{
-#if V3D_LOG_WARNING
-		v3d::Logger::getInstance().warn("[Image] Size is 0.");
-#endif
-		return false;
-	}
-
-	this->fileName = v3d::FileSystem::getFileNameFromPath(filePath);
+	this->fileName = name;
 	this->filePath = filePath;
 	this->width = width;
 	this->height = height;
 
-	std::size_t size = width * height * 4;
+	const std::size_t size = width * height * 4;
 	this->data = new uint8_t[size];
 	memcpy(this->data, data, size);
 
@@ -218,43 +185,23 @@ bool v3d::Image::write(const std::string & filePath)
 	// Check path
 	if (filePath.empty()) return false;
 	
-	// Check if path is regular file
+	std::string parentDir = v3d::FileSystem::getParentDir(filePath.c_str());
 
-	// Get parent directory. In this case, folder
-	std::string folder = v3d::FileSystem::getParentDirectory(filePath);
-
-	if (folder.empty())
-	{
-		folder = filePath;
-	}
-
-	if (!v3d::FileSystem::exists(folder))
-	{
-		// path doesn't exsits
-		v3d::FileSystem::createFolder(folder);
-	}
+	if (parentDir.empty()) parentDir = filePath;
+	if (!v3d::FileSystem::exists(parentDir.c_str())) v3d::FileSystem::createDirectory(parentDir.c_str());
 
 	// @todo: Check if filpath already contains png extension.
 
 	// read file
 	FILE *fp = fopen((filePath + ".png").c_str(), "wb");
-
-	if (fp == nullptr)
-	{
-#if V3D_LOG_WARNING
-		v3d::Logger::getInstance().warn("[Image] Can't write file");
-#endif
-		return false;
-	}
+	if (fp == nullptr) return false;
 
 	// init libpng
-
 	png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
 	if (!png)
 	{
 		fclose(fp);
-
 		return false;
 	}
 
@@ -266,7 +213,6 @@ bool v3d::Image::write(const std::string & filePath)
 		png = nullptr;
 
 		fclose(fp);
-
 		return false;
 	}
 
@@ -276,7 +222,6 @@ bool v3d::Image::write(const std::string & filePath)
 		png = nullptr;
 
 		fclose(fp);
-
 		return false;
 	}
 
@@ -299,20 +244,12 @@ bool v3d::Image::write(const std::string & filePath)
 		row_pointers[i] = (png_bytep)data + (i * width * 4);
 	}
 	
-	// writ png
 	png_write_image(png, row_pointers);
-
-	// free
 	free(row_pointers);
 	row_pointers = nullptr;
-
-	// end png
 	png_write_end(png, info);
-
-	// release
 	png_destroy_write_struct(&png, &info);
 
-	// close file
 	fclose(fp);
 
 	return true;

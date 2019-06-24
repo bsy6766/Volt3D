@@ -73,6 +73,10 @@
 #include "Shape/Triangle.h"
 #include "Shape/Triangle2D.h"
 
+// Spritesheet
+#include "Spritesheet/Image.h"
+#include "Spritesheet/ImageType.h"
+
 // Utils
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"

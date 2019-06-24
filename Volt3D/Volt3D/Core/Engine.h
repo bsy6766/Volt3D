@@ -32,9 +32,7 @@ namespace v3d
 		v3d::InputManager* inputManager;
 
 		bool loadPreference();
-		bool initInputManager();
 		bool initWindow(const std::string_view windowTitle);
-		bool initTime();
 		bool initContext();
 		void release();
 

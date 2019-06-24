@@ -38,13 +38,12 @@ v3d::Engine::~Engine()
 
 bool v3d::Engine::init(const std::string_view windowTitle)
 {
-	auto& logger = Logger::getInstance();
-
 	if (!loadPreference()) return false;
-	if (!initInputManager()) return false;
 	if (!initWindow(windowTitle)) return false;
-	if (!initTime()) return false;
 	if (!initContext()) return false;
+
+	time = new v3d::glfw::Time();
+	inputManager = new v3d::InputManager();
 
 	return true;
 }
@@ -65,39 +64,23 @@ bool v3d::Engine::loadPreference()
 	}
 
 	std::wstring pathStr(documentsPath);
-	//v3d::Logger::getInstance().info(L"My Documents: " + pathStr);
+	v3d::Logger::getInstance().info(L"My Documents: " + pathStr);
 
-	return true;
-}
-
-bool v3d::Engine::initInputManager()
-{
-	inputManager = NO_THROW_NEW(v3d::InputManager);
-	CHECK_INSTANCE_NULLPTR_AND_LOG(v3d::InputManager, inputManager);
 	return true;
 }
 
 bool v3d::Engine::initWindow(const std::string_view windowTitle)
 {
 	auto& logger = Logger::getInstance();
-	window = new (std::nothrow) v3d::glfw::Window(*inputManager);
-	if (!window) { logger.bad_alloc<v3d::glfw::Window>(); return false; }
+	window = new v3d::glfw::Window(*inputManager);
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
 	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
 	return true;
 }
 
-bool v3d::Engine::initTime()
-{
-	time = new (std::nothrow) v3d::glfw::Time();
-	if (!time) { v3d::Logger::getInstance().bad_alloc<v3d::glfw::Time>(); return false; }
-	return true;
-}
-
 bool v3d::Engine::initContext()
 {
-	context = new (std::nothrow) v3d::vulkan::Context(*window);
-	if(context == nullptr ) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Context>(); return false; }
+	context = new v3d::vulkan::Context(*window);
 	if( !context->init( *window, true ) ) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
 	return true;
 }
@@ -106,7 +89,6 @@ void v3d::Engine::release()
 {
 	// release vulkan first
 	if( context ) { delete context; context = nullptr; }
-	// release glfw
 	if (window) { delete window; window = nullptr; }
 }
 

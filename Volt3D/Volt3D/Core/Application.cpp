@@ -24,7 +24,6 @@ void v3d::Application::start()
 {
 	v3d::Engine engine = v3d::Engine();
 	start(engine);
-	std::cout << "Start!\n";
 }
 
 void v3d::Application::start(v3d::Engine& engine)

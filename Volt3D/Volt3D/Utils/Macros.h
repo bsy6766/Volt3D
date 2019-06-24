@@ -34,12 +34,6 @@ inline explicit operator const _UNIQUE_& () const noexcept { return _HANDLE_; }	
 inline const _UNIQUE_& getHandle() const { return _HANDLE_; }					\
 inline const _CPP_& get() const { return _HANDLE_.get(); }
 
-#define NO_THROW_NEW(_CLASS_)	\
-new (std::nothrow) _CLASS_();
-
-#define CHECK_INSTANCE_NULLPTR_AND_LOG(_CLASS_, _INSTANCE_)									\
-if(_INSTANCE_ == nullptr) { v3d::Logger::getInstance().bad_alloc<_CLASS_>(); return false; }
-
 #define GET_DEFULT_NODE_TYPE(_NODETYPE_)									\
 v3d::NodeType getDefaultNodeType() const override { return _NODETYPE_; } 
 

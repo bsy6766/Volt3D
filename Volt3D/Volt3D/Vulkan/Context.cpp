@@ -111,24 +111,21 @@ bool v3d::vulkan::Context::init(const v3d::glfw::Window& window, const bool enab
 
 bool v3d::vulkan::Context::initInstance(const v3d::glfw::Window& window)
 {
-	instance = new (std::nothrow) v3d::vulkan::Instance();
-	if (!instance) { v3d::Logger::getInstance().bad_alloc<Instance>(); return false; }
+	instance = new v3d::vulkan::Instance();
 	if (!instance->init(window, validationLayerEnabled)) return false;
 	return true;
 }
 
 bool v3d::vulkan::Context::initDebugReport()
 {
-	debugReportCallback = new (std::nothrow) v3d::vulkan::DebugReportCallback();
-	if (debugReportCallback == nullptr) { v3d::Logger::getInstance().bad_alloc<DebugReportCallback>(); return false; }
+	debugReportCallback = new v3d::vulkan::DebugReportCallback();
 	if (!debugReportCallback->init(*instance)) return false;
 	return true;
 }
 
 bool v3d::vulkan::Context::initDebugUtilsMessenger()
 {
-	debugUtilsMessenger = new (std::nothrow) v3d::vulkan::DebugUtilsMessenger();
-	if (debugUtilsMessenger == nullptr) { v3d::Logger::getInstance().bad_alloc<DebugUtilsMessenger>(); return false; }
+	debugUtilsMessenger = new v3d::vulkan::DebugUtilsMessenger();
 	if (!debugUtilsMessenger->init(*instance)) return false;
 	return true;
 }
@@ -143,8 +140,7 @@ bool v3d::vulkan::Context::initSurface(const v3d::glfw::Window& window)
 
 bool v3d::vulkan::Context::initPhysicalDevice()
 {
-	physicalDevice = new (std::nothrow) v3d::vulkan::PhysicalDevice();
-	if (!physicalDevice) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::PhysicalDevice>(); return false; }
+	physicalDevice = new v3d::vulkan::PhysicalDevice();
 	if (!physicalDevice->init(*instance, surface)) return false;
 	return true;
 }
@@ -188,8 +184,7 @@ bool v3d::vulkan::Context::initDevice()
 
 bool v3d::vulkan::Context::initSwapChain()
 {
-	swapChain = new (std::nothrow) v3d::vulkan::SwapChain();
-	if (swapChain == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::SwapChain>(); return false; }
+	swapChain = new v3d::vulkan::SwapChain();
 	if (!swapChain->init(*physicalDevice, device, surface, window)) return false;
 	return true;
 }
@@ -254,8 +249,7 @@ bool v3d::vulkan::Context::initRenderPass()
 
 bool v3d::vulkan::Context::initGraphicsPipeline()
 {
-	pipeline = new (std::nothrow) v3d::vulkan::Pipeline();
-	if (pipeline == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Pipeline>(); return false; }
+	pipeline = new v3d::vulkan::Pipeline();
 	if (!pipeline->init(device, *swapChain, renderPass, descriptorLayout)) return false;
 	return true;
 }
@@ -324,12 +318,10 @@ bool v3d::vulkan::Context::initFences()
 
 bool v3d::vulkan::Context::initQueue()
 {
-	graphicsQueue = new (std::nothrow) v3d::vulkan::Queue();
-	if (graphicsQueue == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Queue>(); return false; }
+	graphicsQueue = new v3d::vulkan::Queue();
 	if (!graphicsQueue->init(device, physicalDevice->getGraphicsQueueFamilyIndex())) return false;
 
-	presentQueue = new (std::nothrow) v3d::vulkan::Queue();
-	if (presentQueue == nullptr) { v3d::Logger::getInstance().bad_alloc<v3d::vulkan::Queue>(); return false; }
+	presentQueue = new v3d::vulkan::Queue();
 	if (!presentQueue->init(device, physicalDevice->getPresentQueueFamilyIndex())) return false;
 	return true;
 }
