@@ -77,7 +77,7 @@ bool v3d::Director::initCameras(const int resW, const int resH)
 	if (default3DCamera == nullptr) return false;
 
 	// store
-	defaultCamera = (std::move(std::unique_ptr<v3d::Camera>(default3DCamera)));
+	defaultCamera = std::unique_ptr<v3d::Camera>(default3DCamera);
 
 #if V3D_DEBUG_CAMERA
 	if (!initDebugCamera(resWf, resHf)) return false;

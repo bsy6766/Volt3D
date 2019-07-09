@@ -9,10 +9,6 @@
 
 #include "Engine.h"
 
-#include <WinBase.h>	// GetUserName
-#include <Lmcons.h>		// UNLEN
-#include <ShlObj.h>		// SHGetFolderPath
-
 #include "utils/FileSystem.h"
 #include "utils/Logger.h"
 
@@ -20,12 +16,14 @@
 #include "Vulkan/Context.h"
 #include "Window.h"
 #include "Input/InputManager.h"
+#include "Director.h"
 
 v3d::Engine::Engine()
 	: window(nullptr)
 	, time(nullptr)
 	, context(nullptr)
 	, inputManager(nullptr)
+	, director(nullptr)
 {
 	v3d::Logger::getInstance().init(FileSystem::getWorkingDirectoryW(), L"log.txt");
 	v3d::Logger::getInstance().initConsole();
@@ -36,40 +34,30 @@ v3d::Engine::~Engine()
 	release();
 }
 
-bool v3d::Engine::init(const std::string_view windowTitle)
+bool v3d::Engine::init(const char* windowTitle, const std::wstring& folderName)
 {
-	if (!loadPreference()) return false;
-	if (!initWindow(windowTitle)) return false;
-	if (!initContext()) return false;
+	if (!loadPreference(folderName)) return false;
 
 	time = new v3d::glfw::Time();
 	inputManager = new v3d::InputManager();
 
+	if (!initWindow(windowTitle)) return false;
+	if (!initContext()) return false;
+
+	director = new v3d::Director(*inputManager);
+
 	return true;
 }
 
-bool v3d::Engine::loadPreference()
+bool v3d::Engine::loadPreference(const std::wstring& folderName)
 {
-	// buffer
-	wchar_t documentsPath[MAX_PATH];
 
-	// Get ducments path
-	auto result = SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, documentsPath);
 
-	// Check result
-	if (result != S_OK)
-	{
-		v3d::Logger::getInstance().critical("Failed to get My Documents folder path");
-		return false;
-	}
-
-	std::wstring pathStr(documentsPath);
-	v3d::Logger::getInstance().info(L"My Documents: " + pathStr);
 
 	return true;
 }
 
-bool v3d::Engine::initWindow(const std::string_view windowTitle)
+bool v3d::Engine::initWindow(const char* windowTitle)
 {
 	auto& logger = Logger::getInstance();
 	window = new v3d::glfw::Window(*inputManager);
@@ -88,8 +76,11 @@ bool v3d::Engine::initContext()
 void v3d::Engine::release()
 {
 	// release vulkan first
-	if( context ) { delete context; context = nullptr; }
-	if (window) { delete window; window = nullptr; }
+	SAFE_DELETE(context);
+	SAFE_DELETE(window);
+	SAFE_DELETE(time);
+	SAFE_DELETE(director);
+	SAFE_DELETE(inputManager);
 }
 
 void v3d::Engine::run()
@@ -127,6 +118,7 @@ void v3d::Engine::preUpdate(const float delta)
 void v3d::Engine::update(const float delta)
 {
 	if (inputManager->isKeyPressed(v3d::KeyCode::eA, true)) v3d::Logger::getInstance().info("A pressed!");
+	if (director) director->update(delta);
 }
 
 void v3d::Engine::postUpdate(const float delta)

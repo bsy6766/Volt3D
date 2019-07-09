@@ -45,13 +45,13 @@ bool v3d::glfw::Window::initGLFW()
 	}
 }
 
-bool v3d::glfw::Window::initWindow(const std::string_view windowTitle)
+bool v3d::glfw::Window::initWindow(const char* windowTitle)
 {
 	initGLFWHints();
 
 	setVsync(vsync);
 
-	window = glfwCreateWindow(1280, 720, std::string(windowTitle).c_str(), nullptr, nullptr);
+	window = glfwCreateWindow(1280, 720, windowTitle, nullptr, nullptr);
 	if (!window) return false;
 
 	//glfwMakeContextCurrent(window);

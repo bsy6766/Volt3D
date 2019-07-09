@@ -24,7 +24,7 @@ namespace v3d
 
 	public:
 		Application() = delete;
-		Application(std::string_view name);
+		Application(const char* windowTitle);
 		~Application();
 
 		void start();

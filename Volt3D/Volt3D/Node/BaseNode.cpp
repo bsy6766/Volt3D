@@ -6,7 +6,7 @@
 
 unsigned int v3d::BaseNode::idCounter = 0;
 
-v3d::BaseNode::BaseNode(const std::string & name)
+v3d::BaseNode::BaseNode(std::string_view name)
 	: name(name)
 	, id(++BaseNode::idCounter)
 	, active(true)

@@ -19,7 +19,7 @@ namespace v3d
 		static unsigned int idCounter;
 
 	protected:
-		BaseNode(const std::string& name);
+		BaseNode(std::string_view name);
 
 		std::string name;
 		unsigned int id;

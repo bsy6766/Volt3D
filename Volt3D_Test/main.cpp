@@ -4,7 +4,7 @@
 
 int main()
 {
-	v3d::Application app("Volt3D_Test");
+	v3d::Application app(u8"Volt3D Å×½ºÆ®");
 	app.start();
 	return 0;
 }

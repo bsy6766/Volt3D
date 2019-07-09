@@ -14,8 +14,8 @@
 #include "Engine.h"
 #include "Utils/Logger.h"
 
-v3d::Application::Application(std::string_view name)
-	: name("")
+v3d::Application::Application(const char* windowTitle)
+	: name(windowTitle)
 {}
 
 v3d::Application::~Application() {}
@@ -30,7 +30,7 @@ void v3d::Application::start(v3d::Engine& engine)
 {
 	try
 	{
-		if (engine.init(name))
+		if (engine.init(name.c_str()))
 		{
 			engine.run();
 		}

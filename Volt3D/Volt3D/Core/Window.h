@@ -50,7 +50,7 @@ namespace v3d
 
 			// GLFW
 			bool initGLFW();
-			bool initWindow(const std::string_view windowTitle);
+			bool initWindow(const char* windowTitle);
 			void initGLFWHints();
 			void releaseGLFW();
 

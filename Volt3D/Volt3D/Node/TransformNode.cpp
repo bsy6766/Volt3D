@@ -16,7 +16,7 @@
 #include "Volt3D/RenderCommand/PrimitiveCommand.h"
 #endif
 
-v3d::TransformNode::TransformNode(const std::string & name, const v3d::NodeType type)
+v3d::TransformNode::TransformNode(std::string_view name, const v3d::NodeType type)
 	: v3d::BaseNode(name)
 	, nodeType(type)
 	, visible(true)
@@ -724,7 +724,7 @@ bool v3d::TransformNode::addChild(v3d::TransformNode * child, const v3d::ZOrder&
 	return true;
 }
 
-bool v3d::TransformNode::removeChild(const std::string & name, const bool releaseChild)
+bool v3d::TransformNode::removeChild(std::string_view name, const bool releaseChild)
 {
 	for (auto child_it = std::begin(children); child_it != std::end(children); ++child_it)
 	{
@@ -870,7 +870,7 @@ void v3d::TransformNode::setContentSize3D(const glm::vec3 & contentSize)
 	markDirty();
 }
 
-v3d::TransformNode * v3d::TransformNode::getChild(const std::string & name)
+v3d::TransformNode * v3d::TransformNode::getChild(std::string_view name)
 {
 	for (auto child : children)
 	{

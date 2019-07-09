@@ -15,7 +15,7 @@
 //
 //#include "Volt3D/Utility/String.h"
 
-v3d::Camera::Camera(const std::string & name)
+v3d::Camera::Camera(std::string_view name)
 	: v3d::TransformNode(name, v3d::NodeType::e3D)
 	, fovy(0)
 	, fovx(0)
@@ -34,7 +34,7 @@ v3d::Camera::~Camera()
 	//frustum.reset();
 }
 
-v3d::Camera* v3d::Camera::create(const std::string& name, const v3d::ProjectionType projectionType, const float fovy, const float nears, const float fars, const float screenWidth, const float screenHeight)
+v3d::Camera* v3d::Camera::create(std::string_view name, const v3d::ProjectionType projectionType, const float fovy, const float nears, const float fars, const float screenWidth, const float screenHeight)
 {
 	// Craete new camera instance with name
 	v3d::Camera* newCamera = new (std::nothrow) v3d::Camera(name);

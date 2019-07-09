@@ -30,8 +30,9 @@ namespace v3d
 	private:
 		Preference();
 
-		bool init(std::string_view folderName);
-		bool load(std::string_view folderName);
+		std::wstring path;
+
+		bool init(const std::wstring& folderName);
 
 	public:
 		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Preference);
@@ -43,6 +44,11 @@ namespace v3d
 		{
 			return std::optional<T>();
 		}
+
+		bool reset();
+		bool load();
+
+		std::wstring getPath() const { return path; }
 	};
 }
 

@@ -78,7 +78,7 @@ namespace v3d
 		// ===================== ctor =======================
 
 		// Constructor with name and type. 
-		TransformNode(const std::string& name, const v3d::NodeType type);
+		TransformNode(std::string_view name, const v3d::NodeType type);
 		// ==================================================
 
 		// Type of node
@@ -725,7 +725,7 @@ namespace v3d
 		/**
 		*	Remove child by name. Searches the name and remvoes from children.
 		*/
-		bool removeChild(const std::string& name, const bool releaseChild = false);
+		bool removeChild(std::string_view name, const bool releaseChild = false);
 
 		/**
 		*	Remove child by id. Searches the id and remvoes from children.
@@ -767,7 +767,7 @@ namespace v3d
 		*	@param name Name.
 		*	@return First child that matches the name. nullptr if doesn't exists
 		*/
-		v3d::TransformNode* getChild(const std::string& name);
+		v3d::TransformNode* getChild(std::string_view name);
 
 		/**
 		*	Get all children of this node.

@@ -8,7 +8,7 @@
 #ifndef VOLT3D_CAMERA_H
 #define VOLT3D_CAMERA_H
 
-#include <string>
+#include <string_view>
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -38,7 +38,7 @@ namespace v3d
 
 	private:
 		// Constructor with name
-		Camera(const std::string& name);
+		Camera(std::string_view name);
 		
 		// =================== Attribute ====================
 		float fovy;					// Field of view Y
@@ -92,7 +92,7 @@ namespace v3d
 		*	@param screenHeight Screen height
 		*	@return A new camera instance if success. Else, nullptr.
 		*/
-		static v3d::Camera* create(const std::string& name, const v3d::ProjectionType projectionType, const float fovy, const float nears, const float fars, const float screenWidth, const float screenHeight);
+		static v3d::Camera* create(std::string_view name, const v3d::ProjectionType projectionType, const float fovy, const float nears, const float fars, const float screenWidth, const float screenHeight);
 				
 		// Get projection matrix (Perspective or orthographic)
 		glm::mat4 getProjectionMatrix() const;
