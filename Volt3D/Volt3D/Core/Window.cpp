@@ -45,13 +45,16 @@ bool v3d::glfw::Window::initGLFW()
 	}
 }
 
-bool v3d::glfw::Window::initWindow(const char* windowTitle)
+bool v3d::glfw::Window::initWindow(const char* windowTitle, const int width, const int height, const v3d::WindowMode windowMode)
 {
+	if (windowTitle == nullptr) return false;
+	if (width == 0 || height == 0) return false;
+
 	initGLFWHints();
 
 	setVsync(vsync);
 
-	window = glfwCreateWindow(1280, 720, windowTitle, nullptr, nullptr);
+	window = glfwCreateWindow(width, height, windowTitle, nullptr, nullptr);
 	if (!window) return false;
 
 	//glfwMakeContextCurrent(window);

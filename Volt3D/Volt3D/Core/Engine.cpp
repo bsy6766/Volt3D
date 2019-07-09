@@ -17,6 +17,8 @@
 #include "Window.h"
 #include "Input/InputManager.h"
 #include "Director.h"
+#include "Preference.h"
+#include "WindowMode.h"
 
 v3d::Engine::Engine()
 	: window(nullptr)
@@ -24,6 +26,7 @@ v3d::Engine::Engine()
 	, context(nullptr)
 	, inputManager(nullptr)
 	, director(nullptr)
+	, preference(nullptr)
 {
 	v3d::Logger::getInstance().init(FileSystem::getWorkingDirectoryW(), L"log.txt");
 	v3d::Logger::getInstance().initConsole();
@@ -51,10 +54,9 @@ bool v3d::Engine::init(const char* windowTitle, const std::wstring& folderName)
 
 bool v3d::Engine::loadPreference(const std::wstring& folderName)
 {
+	preference = new v3d::Preference();
 
-
-
-	return true;
+	return preference->init(folderName);
 }
 
 bool v3d::Engine::initWindow(const char* windowTitle)
@@ -62,7 +64,7 @@ bool v3d::Engine::initWindow(const char* windowTitle)
 	auto& logger = Logger::getInstance();
 	window = new v3d::glfw::Window(*inputManager);
 	if (!window->initGLFW()) { logger.critical("Failed to initialize GLFW"); return false; }
-	if (!window->initWindow(windowTitle)) { logger.critical("Failed to create GLFW window"); return false; }
+	if (!window->initWindow(windowTitle, preference->getInt("display_resolution_width"), preference->getInt("display_resolution_height"), toWindowModeEnum(preference->getInt("display_window_mode")))) { logger.critical("Failed to create GLFW window"); return false; }
 	return true;
 }
 
@@ -81,6 +83,8 @@ void v3d::Engine::release()
 	SAFE_DELETE(time);
 	SAFE_DELETE(director);
 	SAFE_DELETE(inputManager);
+	if (preference) preference->save();
+	SAFE_DELETE(preference);
 }
 
 void v3d::Engine::run()

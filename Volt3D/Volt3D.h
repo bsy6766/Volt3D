@@ -32,9 +32,7 @@
 #include "Core/ProjectionType.h"
 #include "Core/Time.h"
 #include "Core/Window.h"
-
-// Enums
-#include "Enums/WindowMode.h"
+#include "Core/WindowMode.h"
 
 // Input
 #include "Input/GamepadAxis.h"

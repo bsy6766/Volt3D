@@ -133,7 +133,7 @@ xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) 
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -167,7 +167,11 @@ xcopy $(SolutionDir)Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPath) /I /
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppDelegate.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AppDelegate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

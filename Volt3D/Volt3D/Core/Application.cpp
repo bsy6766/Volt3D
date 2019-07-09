@@ -14,23 +14,34 @@
 #include "Engine.h"
 #include "Utils/Logger.h"
 
-v3d::Application::Application(const char* windowTitle)
-	: name(windowTitle)
+v3d::Application::Application()
+	: name(L"Volt3D App")
+	, sharedInstance(this)
+	//, engine(new v3d::Engine())
 {}
 
-v3d::Application::~Application() {}
+v3d::Application::Application(const wchar_t* appName)
+	: name(appName)
+	, sharedInstance(this)
+	//, engine(new v3d::Engine())
+{}
 
-void v3d::Application::start()
+v3d::Application::~Application() 
 {
-	v3d::Engine engine = v3d::Engine();
-	start(engine);
+	//SAFE_DELETE(engine);
 }
 
-void v3d::Application::start(v3d::Engine& engine)
+void v3d::Application::start(const char* windowTitle)
+{
+	v3d::Engine engine = v3d::Engine();
+	start(engine, windowTitle);
+}
+
+void v3d::Application::start(v3d::Engine& engine, const char* windowTitle)
 {
 	try
 	{
-		if (engine.init(name.c_str()))
+		if (engine.init(windowTitle, name))
 		{
 			engine.run();
 		}
@@ -50,9 +61,4 @@ void v3d::Application::start(v3d::Engine& engine)
 		v3d::Logger::getInstance().critical("unknown error");
 		exit(-1);
 	}
-}
-
-std::string v3d::Application::getName() const
-{
-	return name;
 }

@@ -17,9 +17,6 @@
     <Filter Include="Volt3D\Utils">
       <UniqueIdentifier>{b7c0c04f-6f05-4907-a4ae-5152c0a30987}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Volt3D\Enums">
-      <UniqueIdentifier>{fb519464-f5d0-4119-8820-b1184b18fd52}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Volt3D\Config">
       <UniqueIdentifier>{43f3de8d-dd6d-44c7-a608-2005a7ce0f76}</UniqueIdentifier>
     </Filter>
@@ -220,9 +217,6 @@
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h">
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Enums\WindowMode.h">
-      <Filter>Volt3D\Enums</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Context.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -393,6 +387,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Spritesheet\ImageType.h">
       <Filter>Volt3D\Spritesheet</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Core\WindowMode.h">
+      <Filter>Volt3D\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

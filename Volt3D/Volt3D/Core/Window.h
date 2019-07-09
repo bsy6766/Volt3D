@@ -16,6 +16,7 @@
 #include "Config/GLFWCallbackConfig.h"
 
 #include "utils/Macros.h"
+#include "WindowMode.h"
 
 struct GLFWwindow;
 
@@ -50,7 +51,7 @@ namespace v3d
 
 			// GLFW
 			bool initGLFW();
-			bool initWindow(const char* windowTitle);
+			bool initWindow(const char* windowTitle, const int width, const int height, const v3d::WindowMode windowMode);
 			void initGLFWHints();
 			void releaseGLFW();
 

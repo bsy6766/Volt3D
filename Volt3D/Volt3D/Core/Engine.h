@@ -16,6 +16,7 @@ namespace v3d
 {
 	class InputManager;
 	class Director;
+	class Preference;
 	namespace glfw { class Window; class Time; }
 	namespace vulkan { class Context; }
 
@@ -32,6 +33,7 @@ namespace v3d
 		v3d::vulkan::Context* context;
 		v3d::InputManager* inputManager;
 		v3d::Director* director;
+		v3d::Preference* preference;
 
 		bool loadPreference(const std::wstring& folderName);
 		bool initWindow(const char* windowTitle);

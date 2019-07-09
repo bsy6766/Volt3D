@@ -11,6 +11,8 @@
 #include <string>
 #include <optional>
 
+#include <nlohmann/json.hpp>
+
 #include "Utils/Macros.h"
 
 namespace v3d
@@ -31,24 +33,24 @@ namespace v3d
 		Preference();
 
 		std::wstring path;
+		nlohmann::json data;
 
 		bool init(const std::wstring& folderName);
+		bool readJson();
 
 	public:
 		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Preference);
 		DEFAULT_MOVE_CONSTRUCTORS(Preference);
 		~Preference();
 
-		template<class T>
-		std::optional<T> get(std::string_view key) const
-		{
-			return std::optional<T>();
-		}
+		int getInt(const char* key);
 
 		bool reset();
 		bool load();
+		bool save();
 
 		std::wstring getPath() const { return path; }
+		const nlohmann::json& getData() const { return data; }
 	};
 }
 

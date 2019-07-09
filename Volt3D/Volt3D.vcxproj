@@ -210,7 +210,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Core\ProjectionType.h" />
     <ClInclude Include="Volt3D\Core\Time.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
-    <ClInclude Include="Volt3D\Enums\WindowMode.h" />
+    <ClInclude Include="Volt3D\Core\WindowMode.h" />
     <ClInclude Include="Volt3D\Input\InputManager.h" />
     <ClInclude Include="Volt3D\Input\InputState.h" />
     <ClInclude Include="Volt3D\Input\KeyCode.h" />
