@@ -2,9 +2,12 @@
 
 #include <Volt3D.h>
 
+#include "AppDelegate.h"
+
 int main()
 {
-	v3d::Application app(L"Volt3D Test");
-	app.start(u8"Volt3D Test");
+	AppDelegate app;
+	app.init( L"Volt3D_Test", u8"Volt3D_Test" );
+	app.run();
 	return 0;
 }

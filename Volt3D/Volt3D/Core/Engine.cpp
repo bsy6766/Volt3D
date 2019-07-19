@@ -43,10 +43,8 @@ bool v3d::Engine::init(const char* windowTitle, const std::wstring& folderName)
 
 	time = new v3d::glfw::Time();
 	inputManager = new v3d::InputManager();
-
 	if (!initWindow(windowTitle)) return false;
 	if (!initContext()) return false;
-
 	director = new v3d::Director(*inputManager);
 
 	return true;
@@ -146,4 +144,9 @@ v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
 {
 	// @todo: Handle error
 	return *context;
+}
+
+v3d::Director& v3d::Engine::getDirector() const
+{
+	return *director;
 }

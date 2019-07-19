@@ -5,10 +5,11 @@
 
 class AppDelegate : public v3d::Application
 {
-private:
 public:
-	AppDelegate(const wchar_t* appName);
+	AppDelegate();
 	~AppDelegate();
+
+	virtual bool init( const wchar_t* appName, const char* windowTitle ) override;
 };
 
 #endif

@@ -168,10 +168,12 @@ xcopy $(SolutionDir)Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPath) /I /
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppDelegate.cpp" />
+    <ClCompile Include="HelloVulkan.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppDelegate.h" />
+    <ClInclude Include="HelloVulkan.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

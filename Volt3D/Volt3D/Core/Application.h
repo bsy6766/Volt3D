@@ -19,27 +19,33 @@ namespace v3d
 
 	class VOLT3D_DLL Application
 	{
+	private:
+
+
 	protected:
-		v3d::Application* sharedInstance;
+		Application();
+
 		std::wstring name;
-		//v3d::Engine* engine;
+		v3d::Engine* engine;
 
 	public:
-		Application();
-		Application(const wchar_t* appName);
-		~Application();
+		virtual ~Application();
 
-		//static v3d::Application& getInstance()
-		//{
-		//	static v3d::Application instance;
-		//	return instance;
-		//}
-		
-		void start(const char* windowTitle);
-		void start(v3d::Engine& engine, const char* windowTitle);
+		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Application );
+		DEFAULT_MOVE_CONSTRUCTORS( Application );
+
+		static v3d::Application& getInstance()
+		{
+			static v3d::Application instance;
+			return instance;
+		}
+
+		virtual bool init( const wchar_t* appName, const char* windowTitle );
+		virtual bool release();
+		virtual void run();
 
 		std::wstring getName() const { return name; }
-		//v3d::Engine* getEngine() const { return engine; }
+		v3d::Engine* getEngine() const { return engine; }
 	};
 }
 

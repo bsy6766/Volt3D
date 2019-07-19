@@ -14,51 +14,52 @@
 #include "Engine.h"
 #include "Utils/Logger.h"
 
+using json = nlohmann::json;
+
 v3d::Application::Application()
-	: name(L"Volt3D App")
-	, sharedInstance(this)
-	//, engine(new v3d::Engine())
+	: name()
+	, engine(nullptr)
 {}
 
-v3d::Application::Application(const wchar_t* appName)
-	: name(appName)
-	, sharedInstance(this)
-	//, engine(new v3d::Engine())
-{}
-
-v3d::Application::~Application() 
+v3d::Application::~Application()
 {
-	//SAFE_DELETE(engine);
+	release();
 }
 
-void v3d::Application::start(const char* windowTitle)
+bool v3d::Application::init( const wchar_t* appName, const char* windowTitle )
 {
-	v3d::Engine engine = v3d::Engine();
-	start(engine, windowTitle);
+	if (engine) return false;
+	engine = new v3d::Engine();
+	engine->init( windowTitle, std::wstring( appName ) );
+	name = appName;
+	return true;
 }
 
-void v3d::Application::start(v3d::Engine& engine, const char* windowTitle)
+bool v3d::Application::release()
+{
+	SAFE_DELETE( engine );
+	return true;
+}
+
+void v3d::Application::run()
 {
 	try
 	{
-		if (engine.init(windowTitle, name))
-		{
-			engine.run();
-		}
+		engine->run();
 	}
 	catch (vk::SystemError err)
 	{
-		v3d::Logger::getInstance().critical("vk::SystemError: " + std::string(err.what()));
-		exit(-1);
+		v3d::Logger::getInstance().critical( "vk::SystemError: " + std::string( err.what() ) );
+		exit( -1 );
 	}
 	catch (std::runtime_error err)
 	{
-		v3d::Logger::getInstance().critical("std::runtime_error: " + std::string(err.what()));
-		exit(-1);
+		v3d::Logger::getInstance().critical( "std::runtime_error: " + std::string( err.what() ) );
+		exit( -1 );
 	}
 	catch (...)
 	{
-		v3d::Logger::getInstance().critical("unknown error");
-		exit(-1);
+		v3d::Logger::getInstance().critical( "unknown error" );
+		exit( -1 );
 	}
 }

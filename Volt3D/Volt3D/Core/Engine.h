@@ -55,6 +55,7 @@ namespace v3d
 
 		v3d::glfw::Window& getView() const;
 		v3d::vulkan::Context& getVulkanContext() const;
+		v3d::Director& getDirector() const;
 	};
 }
 

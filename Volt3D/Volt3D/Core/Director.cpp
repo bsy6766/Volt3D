@@ -96,7 +96,9 @@ void v3d::Director::runScene(v3d::Scene * newScene)
 {
 	// Check new scene
 	if (newScene == nullptr) return;
-
+	runningScene = std::shared_ptr<v3d::Scene>( newScene );
+	runningScene->onInit();
+	runningScene->onEnter();
 	/*
 	// Check running scene
 	if (runningScene == nullptr)
@@ -166,6 +168,8 @@ void v3d::Director::update(const float delta)
 #if V3D_DEBUG_CAMERA
 	if (debugCamera) debugCamera->update(input, delta);
 #endif
+
+	if (runningScene) runningScene->onUpdate( delta );
 	/*
 	// Check if need to replace scene before update
 	if (needToReplaceScene)
