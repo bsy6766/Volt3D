@@ -35,16 +35,19 @@ bool v3d::vulkan::CommandBuffer::init(const vk::Device& device, const vk::Comman
 	return true;
 }
 
-void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const
+void v3d::vulkan::CommandBuffer::begin( const vk::CommandBufferUsageFlags usageFlags )
 {
 	vk::CommandBufferBeginInfo beginInfo
 	(
-		vk::CommandBufferUsageFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse),
+		vk::CommandBufferUsageFlags( usageFlags ),
 		nullptr
 	);
 
-	commandBuffer.begin(beginInfo);
+	commandBuffer.begin( beginInfo );
+}
 
+void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const
+{
 	vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
 
 	vk::RenderPassBeginInfo renderPassInfo
@@ -68,19 +71,10 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	commandBuffer.bindVertexBuffers(0, vertexBuffer, offset);
 	commandBuffer.draw(vertexSize, 1, 0, 0);
 	commandBuffer.endRenderPass();
-	commandBuffer.end();
 }
 
 void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const vk::Buffer& indexBuffer, const uint32_t indexSize, const vk::DescriptorSet& descriptorSet) const
 {
-	vk::CommandBufferBeginInfo beginInfo
-	(
-		vk::CommandBufferUsageFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse),
-		nullptr
-	);
-
-	commandBuffer.begin(beginInfo);
-
 	vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
 
 	vk::RenderPassBeginInfo renderPassInfo
@@ -106,5 +100,15 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.getLayout().get(), 0, 1, &descriptorSet, 0, nullptr);
 	commandBuffer.drawIndexed(indexSize, 1, 0, 0, 0);
 	commandBuffer.endRenderPass();
+}
+
+void v3d::vulkan::CommandBuffer::end()
+{
 	commandBuffer.end();
+}
+
+void v3d::vulkan::CommandBuffer::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size )
+{
+	const vk::BufferCopy copyRegion( 0, 0, size );
+	commandBuffer.copyBuffer( src, dst, 1, &copyRegion );
 }

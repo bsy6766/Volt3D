@@ -75,13 +75,13 @@ namespace v3d
 		~Director();
 
 		// Get running scene
-		std::shared_ptr<v3d::Scene> getRunningScene();
+		std::shared_ptr<v3d::Scene> getRunningScene() const;
 		
 		/**
 		*	Run scene.
-		*	@param newScene A new scene to run. If newScene is transition scene, transition will run first.
+		*	@param scene A scene to run. If newScene is transition scene, transition will run first.
 		*/
-		void runScene(v3d::Scene* newScene);
+		void runScene( std::shared_ptr<v3d::Scene> scene );
 
 		/**
 		*	Get default camera

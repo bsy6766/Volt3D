@@ -33,8 +33,8 @@ namespace v3d
 		// Type of image
 		v3d::ImageType type;
 
-		unsigned int width;
-		unsigned int height;
+		std::size_t width;
+		std::size_t height;
 
 		std::string filePath;
 		std::string fileName;
@@ -75,17 +75,26 @@ namespace v3d
 		/** flip image vertically. */
 		void flipImage();
 
-		/** get texture file path. */
-		std::string getFilePath() const;
+		/** get image file path. */
+		std::string getFilePath() const { return filePath; }
+
+		/** get image file name */
+		std::string getFileName() const { return fileName; }
 
 		/** get width. */
-		unsigned int getWidth() const;
+		std::size_t getWidth() const { return width; }
 
 		/** get height. */
-		unsigned int getHeight() const;
+		std::size_t getHeight() const { return height; }
+
+		/** get channel (RGBA for png) */
+		std::size_t getChannels() const { return 4; }
+
+		/** get size **/
+		std::size_t getSize() const { return width* height * 4; }
 
 		/** get data. */
-		unsigned char* getData() const;
+		unsigned char* getData() const { return data; }
 		
 		/** Log iamge. For debug. */
 		void print() const;

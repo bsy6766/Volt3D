@@ -48,7 +48,6 @@ v3d::Director::~Director()
 		runningScene->onExit();
 		runningScene->onExitFinished();
 		runningScene->onRelease();
-		runningScene.reset();
 	}
 
 	if (nextScene)
@@ -56,7 +55,6 @@ v3d::Director::~Director()
 		nextScene->onExit();
 		nextScene->onExitFinished();
 		nextScene->onRelease();
-		nextScene.reset();
 	}
 }
 
@@ -87,18 +85,33 @@ bool v3d::Director::initCameras(const int resW, const int resH)
 	return true;
 }
 
-std::shared_ptr<v3d::Scene> v3d::Director::getRunningScene()
+std::shared_ptr<v3d::Scene> v3d::Director::getRunningScene() const
 {
 	return runningScene;
 }
 
-void v3d::Director::runScene(v3d::Scene * newScene)
+void v3d::Director::runScene(std::shared_ptr<v3d::Scene> scene)
 {
 	// Check new scene
-	if (newScene == nullptr) return;
-	runningScene = std::shared_ptr<v3d::Scene>( newScene );
-	runningScene->onInit();
-	runningScene->onEnter();
+	if (scene == nullptr) return;
+
+	if (runningScene)
+	{
+		runningScene->onExit();
+		runningScene->onExitFinished();
+		runningScene = nullptr;
+
+		runningScene = scene;
+		runningScene->onEnter();
+		runningScene->onEnterFinished();
+	}
+	else
+	{
+		runningScene = scene;
+		runningScene->onEnter();
+		runningScene->onEnterFinished();
+	}
+
 	/*
 	// Check running scene
 	if (runningScene == nullptr)

@@ -33,8 +33,6 @@ namespace v3d
 		class VOLT3D_DLL CommandBuffer
 		{
 		private:
-			vk::CommandBuffer commandBuffer;
-
 			bool init(const vk::Device& device, const vk::CommandPool& commandPool);
 
 		public:
@@ -44,8 +42,11 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(CommandBuffer);
 			~CommandBuffer() {}
 
+			vk::CommandBuffer commandBuffer;
+
 			CLASS_TO_VK_HANDLE(vk::CommandBuffer, commandBuffer);
 
+			void begin( const vk::CommandBufferUsageFlags usageFlags );
 			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const;
 			void record
 			(	const vk::Framebuffer& frameBuffer, 
@@ -57,6 +58,8 @@ namespace v3d
 				const uint32_t indexSize,
 				const vk::DescriptorSet& descriptorSet
 			) const;
+			void end();
+			void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
 		};
 	}
 }

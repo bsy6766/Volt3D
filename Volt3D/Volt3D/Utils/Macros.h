@@ -34,6 +34,9 @@ inline explicit operator const _UNIQUE_& () const noexcept { return _HANDLE_; }	
 inline const _UNIQUE_& getHandle() const { return _HANDLE_; }					\
 inline const _CPP_& get() const { return _HANDLE_.get(); }
 
+#define CREATE_SCENE(_CLASS_)	\
+static _CLASS_* create() { _CLASS_* newScene = new (std::nothrow) _CLASS_(); if(newScene && newScene->onInit()) return newScene; else return nullptr;}
+
 #define GET_DEFULT_NODE_TYPE(_NODETYPE_)									\
 v3d::NodeType getDefaultNodeType() const override { return _NODETYPE_; } 
 

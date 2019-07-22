@@ -92,9 +92,6 @@
     <IntDir>$(ProjectName).obj\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -138,7 +135,8 @@
     <PostBuildEvent>
       <Command>python $(SolutionDir)BuildScripts\header_generator.py
 python $(SolutionDir)BuildScripts\export_includes.py
-python $(SolutionDir)BuildScripts\count_build_number.py</Command>
+python $(SolutionDir)BuildScripts\count_build_number.py
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

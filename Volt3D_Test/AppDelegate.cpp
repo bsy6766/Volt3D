@@ -13,6 +13,6 @@ bool AppDelegate::init( const wchar_t* appName, const char* windowTitle )
 {
 	if (!v3d::Application::init( appName, windowTitle )) return false;
 	auto& dir = engine->getDirector();
-	dir.runScene( new HelloVulkan() );
+	dir.runScene( std::move(std::shared_ptr<HelloVulkan>(HelloVulkan::create())) );
 	return true;
 }

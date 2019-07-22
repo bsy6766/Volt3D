@@ -117,9 +117,10 @@ bool v3d::vulkan::PhysicalDevice::isSuitable(const vk::PhysicalDevice& physicalD
 
 		return true;
 	}
+
 	logger.critical("Failed to find discrete GPU");
 
-	return true;
+	return false;
 }
 
 vk::Device v3d::vulkan::PhysicalDevice::createDeviceUnique(vk::DeviceCreateInfo& createInfo) const

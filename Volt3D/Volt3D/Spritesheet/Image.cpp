@@ -127,12 +127,12 @@ bool v3d::Image::initPNG(const std::string & filePath)
 	png_read_image(png, row_pointers);
 
 	// initialize data
-	std::size_t colSize = width * 4; // 4 = RGBA
+	std::size_t colSize = width * 4u; // 4 = RGBA
 	data = new unsigned char[colSize * height];
 
 	// copy
 	std::size_t index = 0;
-	for (unsigned int y = 0; y < height; y++)
+	for (std::size_t y = 0; y < height; y++)
 	{
 		index = y * colSize;
 		memcpy(data + index, row_pointers[y], colSize);
@@ -166,7 +166,7 @@ bool v3d::Image::initPNGWithData(const std::string & filePath, const int width, 
 	this->width = width;
 	this->height = height;
 
-	const std::size_t size = width * height * 4;
+	const std::size_t size = width * height * 4u;
 	this->data = new uint8_t[size];
 	memcpy(this->data, data, size);
 
@@ -228,8 +228,13 @@ bool v3d::Image::write(const std::string & filePath)
 	png_init_io(png, fp);
 
 	// Output is 8bit depth, RGBA format.
-	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	png_uint_32 w = 0;
+	png_uint_32 h = 0;
+	png_set_IHDR(png, info, w, h, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	png_write_info(png, info);
+
+	width = std::size_t( w );
+	height = std::size_t( h );
 
 	// To remove the alpha channel for PNG_COLOR_TYPE_RGB format,
 	// Use png_set_filler().
@@ -257,7 +262,7 @@ bool v3d::Image::write(const std::string & filePath)
 
 void v3d::Image::flipImage()
 {
-	unsigned long rowSize = width * 4; //RGBA
+	unsigned long rowSize = width * 4u; //RGBA
 	unsigned char* rowBuffer = new unsigned char[rowSize];
 	unsigned halfRows = height / 2;
 
@@ -271,26 +276,6 @@ void v3d::Image::flipImage()
 	}
 
 	delete[] rowBuffer;
-}
-
-std::string v3d::Image::getFilePath() const
-{
-	return filePath;
-}
-
-unsigned int v3d::Image::getWidth() const
-{
-	return width;
-}
-
-unsigned int v3d::Image::getHeight() const
-{
-	return height;
-}
-
-unsigned char * v3d::Image::getData() const
-{
-	return data;
 }
 
 void v3d::Image::print() const

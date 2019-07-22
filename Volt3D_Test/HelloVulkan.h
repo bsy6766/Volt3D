@@ -10,7 +10,9 @@ public:
 	HelloVulkan();
 	~HelloVulkan();
 
-	virtual bool onInit() override { return true; }
+	CREATE_SCENE( HelloVulkan );
+
+	virtual bool onInit() override;
 	virtual void onRelease() override { v3d::Logger::getInstance().trace( "onRelease" ); }
 	virtual void onEnter() override { v3d::Logger::getInstance().trace( "onEnter" ); }
 	virtual void onEnterFinished() override { v3d::Logger::getInstance().trace( "onEnterFinished" ); }

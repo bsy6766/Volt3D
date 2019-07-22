@@ -32,7 +32,7 @@ namespace v3d
 		class Pipeline;
 		class Queue;
 		class CommandBuffer;
-		
+
 		/**
 		*	@class Context
 		*	@brief Vulkan context.
@@ -46,7 +46,7 @@ namespace v3d
 			friend class Engine;
 
 		private:
-			Context(const v3d::glfw::Window& window);
+			Context( const v3d::glfw::Window& window );
 
 			// Context instance
 			v3d::vulkan::Instance* instance;
@@ -91,10 +91,15 @@ namespace v3d
 			std::vector<vk::Buffer> uniformBuffers;
 			std::vector<vk::DeviceMemory> ubDeviceMemories;
 
-			bool initInstance(const v3d::glfw::Window& window);
+			vk::Image textureImage;
+			vk::ImageView textureImageView;
+			vk::Sampler textureSampler;
+			vk::DeviceMemory textureDeviceMemory;
+
+			bool initInstance( const v3d::glfw::Window& window );
 			bool initDebugReport();
 			bool initDebugUtilsMessenger();
-			bool initSurface(const v3d::glfw::Window& window);
+			bool initSurface( const v3d::glfw::Window& window );
 			bool initPhysicalDevice();
 			bool initDevice();
 			bool initSwapChain();
@@ -113,25 +118,35 @@ namespace v3d
 			bool recreateSwapChain();
 			void release();
 			void releaseSwapChain();
-			
-			vk::Buffer createBuffer(const uint64_t size, const vk::BufferUsageFlags usageFlags) const;
-			vk::DeviceMemory createDeviceMemory(const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags) const;
-			void copyBuffer(const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size);
+
+			v3d::vulkan::CommandBuffer createCommandBuffer( const vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary );
+
+			vk::Buffer createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const;
+			vk::DeviceMemory createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
+			void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
 			void createVertexBuffer();
 			void createIndexBuffer();
 
 			void createUniformBuffer();
-			void updateUniformBuffer(const uint32_t imageIndex);
+			void updateUniformBuffer( const uint32_t imageIndex );
+
+			void createTextureImage();
+			void createTextureImageView();
+			void createTextureSampler();
+			void createImage( const std::size_t w, const std::size_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory );
+			void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
+			void copyBufferToImage( vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
+			vk::ImageView createImageView( vk::Image& image, const vk::Format& format );
 
 			void render();
 			void waitIdle();
 
 		public:
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Context);
-			DEFAULT_MOVE_CONSTRUCTORS(Context);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Context );
+			DEFAULT_MOVE_CONSTRUCTORS( Context );
 			~Context();
 
-			bool init(const v3d::glfw::Window& window, const bool enableValidationLayer);
+			bool init( const v3d::glfw::Window& window, const bool enableValidationLayer );
 
 			const v3d::vulkan::Instance& getInstance() const;
 		};
