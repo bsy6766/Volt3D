@@ -219,6 +219,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClInclude Include="Volt3D\Node\Pivot.h" />
     <ClInclude Include="Volt3D\Node\TransformNode.h" />
     <ClInclude Include="Volt3D\Node\ZOrder.h" />
+    <ClInclude Include="Volt3D\Renderer\Vertex.h" />
     <ClInclude Include="Volt3D\Renderer\VertexData.h" />
     <ClInclude Include="Volt3D\Scene\Scene.h" />
     <ClInclude Include="Volt3D\Shape\AABB.h" />
@@ -253,7 +254,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
-    <ClInclude Include="Volt3D\Vulkan\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -280,6 +280,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClCompile Include="Volt3D\Node\BaseNode.cpp" />
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />
     <ClCompile Include="Volt3D\Node\ZOrder.cpp" />
+    <ClCompile Include="Volt3D\Renderer\Vertex.cpp" />
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
     <ClCompile Include="Volt3D\Scene\Scene.cpp" />
     <ClCompile Include="Volt3D\Shape\AABB.cpp" />
@@ -307,7 +308,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Vertex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

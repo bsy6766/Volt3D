@@ -51,6 +51,7 @@
 #include "Node/ZOrder.h"
 
 // Renderer
+#include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 
 // Scene
@@ -95,6 +96,5 @@
 #include "Vulkan/ShaderModule.h"
 #include "Vulkan/SwapChain.h"
 #include "Vulkan/Utils.h"
-#include "Vulkan/Vertex.h"
 
 #endif

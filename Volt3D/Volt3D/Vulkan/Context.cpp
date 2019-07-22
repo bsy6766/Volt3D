@@ -80,10 +80,10 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 
 	// temp
 	auto& vertices = vertexData.getVertexData();
-	vertices.push_back( v3d::vulkan::Vertex( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::vulkan::Vertex( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::vulkan::Vertex( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } ) );
-	vertices.push_back( v3d::vulkan::Vertex( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } ) );
 
 	auto& indices = indexData.getVertexData();
 	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
@@ -368,12 +368,21 @@ bool v3d::vulkan::Context::initDescriptorLayout()
 		vk::ShaderStageFlagBits::eVertex
 	);
 
-	//vk::Descriptor
+	vk::DescriptorSetLayoutBinding samplerBinding
+	(
+		1,
+		vk::DescriptorType::eCombinedImageSampler,
+		1,
+		vk::ShaderStageFlagBits::eFragment
+	);
+
+	vk::DescriptorSetLayoutBinding bindings[2] = { uboLayoutBinding, samplerBinding };
 
 	vk::DescriptorSetLayoutCreateInfo layoutInfo
 	(
 		vk::DescriptorSetLayoutCreateFlags(),
-		1, &uboLayoutBinding
+		2, 
+		bindings
 	);
 
 	descriptorLayout = device.createDescriptorSetLayout( layoutInfo );
@@ -383,18 +392,26 @@ bool v3d::vulkan::Context::initDescriptorLayout()
 
 bool v3d::vulkan::Context::initDescriptorPool()
 {
-	vk::DescriptorPoolSize poolSize
+	vk::DescriptorPoolSize uboPoolSize
 	(
 		vk::DescriptorType::eUniformBuffer,
 		static_cast<uint32_t>(images.size())
 	);
 
+	vk::DescriptorPoolSize samplerPoolSize
+	(
+		vk::DescriptorType::eCombinedImageSampler,
+		static_cast<uint32_t>(images.size())
+	);
+
+	vk::DescriptorPoolSize poolSizes[2] = { uboPoolSize, samplerPoolSize };
+
 	vk::DescriptorPoolCreateInfo poolInfo
 	(
 		vk::DescriptorPoolCreateFlags(),
 		static_cast<uint32_t>(images.size()),
-		1,
-		&poolSize
+		2,
+		poolSizes
 	);
 
 	descriptorPool = device.createDescriptorPool( poolInfo );
@@ -425,18 +442,38 @@ bool v3d::vulkan::Context::initDescriptorSet()
 			vk::DeviceSize( sizeof( glm::mat4 ) * 3 )
 		);
 
-		vk::WriteDescriptorSet descriptorWrite
+		vk::DescriptorImageInfo imageInfo
+		(
+			textureSampler,
+			textureImageView,
+			vk::ImageLayout::eShaderReadOnlyOptimal
+		);
+
+		vk::WriteDescriptorSet uboDescriptorWrite
 		(
 			descriptorSets[i],
 			0, 0,
-			static_cast<uint32_t>(1),
+			1,
 			vk::DescriptorType::eUniformBuffer,
 			nullptr,
 			&bufferInfo,
 			nullptr
 		);
 
-		device.updateDescriptorSets( 1, &descriptorWrite, 0, nullptr );
+		vk::WriteDescriptorSet samplerDescriptorWrite
+		(
+			descriptorSets[i],
+			1, 0,
+			1,
+			vk::DescriptorType::eCombinedImageSampler,
+			&imageInfo,
+			nullptr,
+			nullptr
+		);
+
+		const vk::WriteDescriptorSet descriptorWrites[2] = { uboDescriptorWrite, samplerDescriptorWrite };
+
+		device.updateDescriptorSets( 2, descriptorWrites, 0, nullptr );
 	}
 
 	return true;

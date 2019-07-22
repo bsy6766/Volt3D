@@ -15,7 +15,7 @@
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
 
-#include "Vertex.h"
+#include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 
 namespace v3d
@@ -85,7 +85,7 @@ namespace v3d
 			vk::Buffer indexBuffer;
 			vk::DeviceMemory vbDeviceMemory;
 			vk::DeviceMemory ibDeviceMemory;
-			v3d::VertexData<v3d::vulkan::Vertex> vertexData;
+			v3d::VertexData<v3d::V3_C4> vertexData;
 			v3d::VertexData<uint16_t> indexData;
 
 			std::vector<vk::Buffer> uniformBuffers;

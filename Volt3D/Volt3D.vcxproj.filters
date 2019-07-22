@@ -116,9 +116,6 @@
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp">
       <Filter>Volt3D\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Vertex.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -193,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Spritesheet\Image.cpp">
       <Filter>Volt3D\Spritesheet</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Renderer\Vertex.cpp">
+      <Filter>Volt3D\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -276,9 +276,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Renderer\VertexData.h">
       <Filter>Volt3D\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Vertex.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h">
       <Filter>Volt3D\Vulkan</Filter>
@@ -390,6 +387,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\WindowMode.h">
       <Filter>Volt3D\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Renderer\Vertex.h">
+      <Filter>Volt3D\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

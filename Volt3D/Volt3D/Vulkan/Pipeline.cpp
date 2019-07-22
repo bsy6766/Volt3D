@@ -11,7 +11,7 @@
 
 #include "ShaderModule.h"
 #include "SwapChain.h"
-#include "Vertex.h"
+#include "Renderer/Vertex.h"
 
 v3d::vulkan::Pipeline::Pipeline()
 	: pipeline()
@@ -57,11 +57,11 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
 	};
 	
-	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions = v3d::vulkan::Vertex::getInputAttributeDescription();
+	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions = v3d::V3_C4::getInputAttributeDescription();
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
-		1, &v3d::vulkan::Vertex::getInputBindingDescription(),
+		1, &v3d::V3_C4::getInputBindingDescription(),
 		2, vertexInputAttribDescriptions.data()
 	);
 
