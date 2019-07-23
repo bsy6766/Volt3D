@@ -45,30 +45,20 @@ namespace v3d
 		static std::vector<vk::VertexInputAttributeDescription> getInputAttributeDescription();
 	};
 
-	/**
-	*	@class Vertex
-	*	@brief Vertex
-	*
-	*	@since 1.0
-	*/
-	//class VOLT3D_DLL Vertex
-	//{
-	//	friend class Context;
+	class VOLT3D_DLL V3_C4_T2
+	{
+	public:
+		glm::vec3 vertex;
+		glm::vec4 color;
+		glm::vec2 texCoord;
 
-	//private:
-	//	glm::vec3 pos;
-	//	glm::vec3 color;
+		V3_C4_T2();
+		V3_C4_T2( const glm::vec3& vertex, const glm::vec4& color, const glm::vec2& texCoord );
+		~V3_C4_T2() {};
 
-	//public:
-	//	Vertex();
-	//	Vertex( const glm::vec3& pos, const glm::vec3& color );
-	//	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Vertex );
-	//	DEFAULT_MOVE_CONSTRUCTORS( Vertex );
-	//	~Vertex() {};
-
-	//	static vk::VertexInputBindingDescription getInputBindingDescription();
-	//	static std::vector<vk::VertexInputAttributeDescription> getInputAttributeDescription();
-	//};
+		static vk::VertexInputBindingDescription getInputBindingDescription();
+		static std::vector<vk::VertexInputAttributeDescription> getInputAttributeDescription();
+	};
 }
 
 #endif

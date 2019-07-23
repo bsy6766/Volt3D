@@ -57,12 +57,12 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
 	};
 	
-	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions = v3d::V3_C4::getInputAttributeDescription();
+	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
-		1, &v3d::V3_C4::getInputBindingDescription(),
-		2, vertexInputAttribDescriptions.data()
+		1, &v3d::V3_C4_T2::getInputBindingDescription(),
+		3, vertexInputAttribDescriptions.data()
 	);
 
 	vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo

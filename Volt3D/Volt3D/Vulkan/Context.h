@@ -85,7 +85,7 @@ namespace v3d
 			vk::Buffer indexBuffer;
 			vk::DeviceMemory vbDeviceMemory;
 			vk::DeviceMemory ibDeviceMemory;
-			v3d::VertexData<v3d::V3_C4> vertexData;
+			v3d::VertexData<v3d::V3_C4_T2> vertexData;
 			v3d::VertexData<uint16_t> indexData;
 
 			std::vector<vk::Buffer> uniformBuffers;
@@ -137,6 +137,7 @@ namespace v3d
 			void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
 			void copyBufferToImage( vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
 			vk::ImageView createImageView( vk::Image& image, const vk::Format& format );
+			void oneTimeSubmit( v3d::vulkan::CommandBuffer& cb );
 
 			void render();
 			void waitIdle();

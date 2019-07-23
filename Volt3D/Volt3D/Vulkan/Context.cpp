@@ -80,10 +80,24 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 
 	// temp
 	auto& vertices = vertexData.getVertexData();
-	vertices.push_back( v3d::V3_C4( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } ) );
+
+	//vertices.push_back( v3d::V3_C4_T2( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } ) );
+
+	const glm::vec4 white( 1 );
+	const glm::vec4 red( 1, 0, 0, 1 );
+	const glm::vec4 green( 0, 1, 0, 1 );
+	const glm::vec4 blue( 0, 0, 1, 1 );
+	vertices.push_back( v3d::V3_C4_T2( { -0.5f, 0.5f, 0.0f }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -0.5f, -0.5f, 0.0f }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { 0.5f, 0.5f, 0.0f }, white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { 0.5f, -0.5f, 0.0f }, white, { 1.0f, 0.0f } ) );
 
 	auto& indices = indexData.getVertexData();
 	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
@@ -540,18 +554,7 @@ void v3d::vulkan::Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& 
 	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
 	cb.copyBuffer( src, dst, size );
 	cb.end();
-
-	vk::SubmitInfo submitInfo
-	(
-		0,
-		nullptr,
-		nullptr,
-		1,
-		&cb.getHandle()
-	);
-
-	graphicsQueue->submit( submitInfo );
-	graphicsQueue->waitIdle();
+	oneTimeSubmit( cb );
 
 	device.freeCommandBuffers( commandPool, cb.getHandle() );
 }
@@ -612,6 +615,7 @@ void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
 	static struct UniformBufferObject { glm::mat4 m, v, p; } ubo;
 
 	ubo.m = glm::translate( glm::scale( glm::mat4( 1 ), glm::vec3( 0.5, 0.5, 1 ) ), glm::vec3( 5, 0.0, 0.0 ) );
+	ubo.m = glm::scale( glm::mat4( 1 ), glm::vec3( 5, 5, 1 ) );
 
 	static struct Camera
 	{
@@ -762,6 +766,7 @@ void v3d::vulkan::Context::transitionImageLayout( vk::Image& image, const vk::Fo
 	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
 	cb.commandBuffer.pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
 	cb.end();
+	oneTimeSubmit( cb );
 }
 
 void v3d::vulkan::Context::copyBufferToImage( vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height )
@@ -785,6 +790,7 @@ void v3d::vulkan::Context::copyBufferToImage( vk::Buffer& buffer, vk::Image& dst
 	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
 	cb.commandBuffer.copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
 	cb.end();
+	oneTimeSubmit( cb );
 }
 
 vk::ImageView v3d::vulkan::Context::createImageView( vk::Image& image, const vk::Format& format )
@@ -800,6 +806,16 @@ vk::ImageView v3d::vulkan::Context::createImageView( vk::Image& image, const vk:
 	);
 
 	return device.createImageView( createInfo, nullptr );
+}
+
+void v3d::vulkan::Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
+{
+	vk::SubmitInfo submitInfo;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &cb.commandBuffer;
+
+	graphicsQueue->submit( submitInfo );
+	graphicsQueue->waitIdle();
 }
 
 void v3d::vulkan::Context::render()

@@ -7,12 +7,15 @@ layout(binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout(location = 0) in vec3 VERT_POS;
-layout(location = 1) in vec3 VERT_COLOR;
+layout(location = 1) in vec4 VERT_COLOR;
+layout(location = 2) in vec2 VERT_TEXCOORD;
 
-layout(location = 0) out vec3 frag_color;
+layout(location = 0) out vec4 frag_color;
+layout(location = 1) out vec2 frag_texcoord;
 
 void main() 
 {
     gl_Position = ubo.proj * ubo.view * ubo.model * vec4(VERT_POS, 1.0);
     frag_color = VERT_COLOR;
+    frag_texcoord = VERT_TEXCOORD;
 }
