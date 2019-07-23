@@ -21,10 +21,7 @@ v3d::Application::Application()
 	, engine(nullptr)
 {}
 
-v3d::Application::~Application()
-{
-	release();
-}
+v3d::Application::~Application() {}
 
 bool v3d::Application::init( const wchar_t* appName, const char* windowTitle )
 {
@@ -32,12 +29,6 @@ bool v3d::Application::init( const wchar_t* appName, const char* windowTitle )
 	engine = new v3d::Engine();
 	engine->init( windowTitle, std::wstring( appName ) );
 	name = appName;
-	return true;
-}
-
-bool v3d::Application::release()
-{
-	SAFE_DELETE( engine );
 	return true;
 }
 
@@ -62,4 +53,6 @@ void v3d::Application::run()
 		v3d::Logger::getInstance().critical( "unknown error" );
 		exit( -1 );
 	}
+
+	SAFE_DELETE( engine );
 }

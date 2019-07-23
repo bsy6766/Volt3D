@@ -41,7 +41,6 @@ namespace v3d
 		}
 
 		virtual bool init( const wchar_t* appName, const char* windowTitle );
-		virtual bool release();
 		virtual void run();
 
 		std::wstring getName() const { return name; }

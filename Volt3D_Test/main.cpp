@@ -6,7 +6,7 @@
 
 int main()
 {
-	AppDelegate app;
+	v3d::Application& app = AppDelegate::getInstance();
 	app.init( L"Volt3D_Test", u8"Volt3D_Test" );
 	app.run();
 	return 0;

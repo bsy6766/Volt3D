@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Window.h"
 #include "Camera.h"
+#include "Application.h"
 #include "Utils/Logger.h"
 
 #include "Scene/Scene.h"
@@ -25,7 +26,7 @@
 //#include "Volt3D/Error/ErrorReport.h"
 
 #if V3D_DEBUG_CAMERA
-#include "Volt3D/Debugging/DebugCamera.h"
+#include "Debug/DebugCamera.h"
 #endif
 
 v3d::Director::Director(v3d::InputManager & inputManager)
@@ -37,7 +38,7 @@ v3d::Director::Director(v3d::InputManager & inputManager)
 	, defaultCamera(nullptr)
 #if V3D_DEBUG_CAMERA
 	, debugCamera(nullptr)
-	, prevCursorMode(v3d::CursorMode::DISABLED)
+	, prevCursorMode(v3d::CursorMode::eDisabled)
 #endif
 {}
 
@@ -70,18 +71,9 @@ bool v3d::Director::initCameras(const int resW, const int resH)
 
 	// Create default 3D camera
 	v3d::Camera* default3DCamera = v3d::Camera::create("Volt3D_Default_3D_Camera", v3d::ProjectionType::ePerspective, 70.0f, 0.01f, 1000.0f, resWf, resHf);
-
-	// check
 	if (default3DCamera == nullptr) return false;
-
-	// store
 	defaultCamera = std::unique_ptr<v3d::Camera>(default3DCamera);
 
-#if V3D_DEBUG_CAMERA
-	if (!initDebugCamera(resWf, resHf)) return false;
-#endif
-
-	// Done.
 	return true;
 }
 
@@ -179,7 +171,7 @@ void v3d::Director::update(const float delta)
 	if (defaultCamera) defaultCamera->onUpdate(delta);
 
 #if V3D_DEBUG_CAMERA
-	if (debugCamera) debugCamera->update(input, delta);
+	if (debugCamera) debugCamera->onUpdate(delta);
 #endif
 
 	if (runningScene) runningScene->onUpdate( delta );
@@ -363,27 +355,13 @@ void v3d::Director::updateUIMouseInput()
 
 void v3d::Director::onResolutionChange(const int width, const int height)
 {
-	// Check is there is running scene
-	if (runningScene)
-	{
-		// It does. Mark entire scene dirty.
-		runningScene->markDirty();
-	}
-
-	// Update camera
+	if (runningScene) runningScene->markDirty();
 	if (defaultCamera) defaultCamera->updateScreenSizeAndAspect(static_cast<float>(width), static_cast<float>(height));
 }
 
 void v3d::Director::render(v3d::Renderer& renderer)
 {
-	// Check
-	if (runningScene)
-	{
-		// has running scene and renderer is not nullptr
-
-		// Render running scene.
-		runningScene->onRender(renderer);
-	}
+	if (runningScene) runningScene->onRender( renderer );
 }
 
 void v3d::Director::processRenderer(v3d::Renderer& renderer)
@@ -418,61 +396,49 @@ void v3d::Director::processRenderer(v3d::Renderer& renderer)
 
 #if V3D_DEBUG_CAMERA
 
-bool v3d::Director::initDebugCamera(const float resW, const float resH)
+bool v3d::Director::attachDebugCamera( std::shared_ptr<v3d::DebugCamera> debugCamera )
 {
-	// create
-	v3d::DebugCamera* newDC = v3d::DebugCamera::create();
+	if (debugCamera) { this->debugCamera = debugCamera; return true; }
+	else return false;
+}
 
-	// check
-	if (newDC == nullptr) return false;
-
-	// init
-	if (!newDC->init(resW, resH)) return false;
-
-	// set
-	debugCamera = std::move(std::unique_ptr<v3d::DebugCamera>(newDC));
-
-	// deactivate
-	debugCamera->setActive(false);
-
-	return true;
+void v3d::Director::detachDebugCamera()
+{
+	debugCamera = nullptr;
 }
 
 void v3d::Director::toggleDebugCamera()
 {
-	// check
-	if (debugCamera) ((debugCamera->isActive() ? disableDebugCamera() : enableDebugCamera()));
+	(debugCamera && debugCamera->isActive()) ? disableDebugCamera() : enableDebugCamera();
 }
 
-void v3d::Director::enableDebugCamera()
+bool v3d::Director::enableDebugCamera()
 {
-	// check
 	if (debugCamera && !debugCamera->isActive())
 	{
-		// activate
 		debugCamera->setActive(true);
+		auto& window = v3d::Application::getInstance().getEngine()->getWindow();
 
-		// get glview
-		auto& glView = v3d::Engine::getInstance().getGLView();
-
-		// save current cursor mode
-		prevCursorMode = glView.getCursorMode();
-		// set cursor mode as hidden
-		glView.setCursorMode(v3d::CursorMode::DISABLED);
+		prevCursorMode = window.getCursorMode();
+		window.setCursorMode(v3d::CursorMode::eDisabled);
+		
+		return true;
 	}
+
+	return false;
 }
 
-void v3d::Director::disableDebugCamera()
+bool v3d::Director::disableDebugCamera()
 {
-	// check
 	if (debugCamera && debugCamera->isActive())
 	{
-		// deactivate
 		debugCamera->setActive(false);
+		v3d::Application::getInstance().getEngine()->getWindow().setCursorMode(prevCursorMode);
 
-		// restore old cursor mode
-		v3d::Engine::getInstance().getGLView().setCursorMode(prevCursorMode);
+		return true;
 	}
+
+	return false;
 }
 
 #endif

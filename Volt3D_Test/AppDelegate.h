@@ -5,9 +5,15 @@
 
 class AppDelegate : public v3d::Application
 {
-public:
+private:
 	AppDelegate();
 	~AppDelegate();
+
+public:
+	static v3d::Application& getInstance()
+	{
+		return v3d::Application::getInstance();
+	}
 
 	virtual bool init( const wchar_t* appName, const char* windowTitle ) override;
 };

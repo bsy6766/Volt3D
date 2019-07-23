@@ -35,7 +35,10 @@ namespace v3d
 		std::shared_ptr<spdlog::logger> console;
 
 		Logger() : logger(nullptr), console(nullptr) {}
-		~Logger() { logger->flush(); if (console) console->flush(); }
+		~Logger() { 
+			logger->flush(); 
+			if (console) console->flush();
+		}
 
 	public:
 		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Logger);

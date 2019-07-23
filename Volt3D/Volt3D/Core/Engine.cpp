@@ -134,7 +134,7 @@ void v3d::Engine::render()
 	context->render();
 }
 
-v3d::glfw::Window& v3d::Engine::getView() const
+v3d::glfw::Window& v3d::Engine::getWindow() const
 {
 	// @todo: Handle error
 	return *window;
@@ -149,4 +149,9 @@ v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
 v3d::Director& v3d::Engine::getDirector() const
 {
 	return *director;
+}
+
+v3d::InputManager& v3d::Engine::getInputManager() const
+{
+	return *inputManager;
 }

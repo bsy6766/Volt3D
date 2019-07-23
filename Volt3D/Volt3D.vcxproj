@@ -197,6 +197,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClInclude Include="Volt3D\Color\Color4B.h" />
     <ClInclude Include="Volt3D\Color\Color4F.h" />
     <ClInclude Include="Volt3D\Config\BuildConfig.h" />
+    <ClInclude Include="Volt3D\Config\DebugConfig.h" />
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h" />
     <ClInclude Include="Volt3D\Core\Application.h" />
     <ClInclude Include="Volt3D\Core\Camera.h" />
@@ -209,6 +210,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClInclude Include="Volt3D\Core\Time.h" />
     <ClInclude Include="Volt3D\Core\Window.h" />
     <ClInclude Include="Volt3D\Core\WindowMode.h" />
+    <ClInclude Include="Volt3D\Debug\DebugCamera.h" />
     <ClInclude Include="Volt3D\Input\InputManager.h" />
     <ClInclude Include="Volt3D\Input\InputState.h" />
     <ClInclude Include="Volt3D\Input\KeyCode.h" />
@@ -276,6 +278,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
     <ClCompile Include="Volt3D\Core\Preference.cpp" />
     <ClCompile Include="Volt3D\Core\Time.cpp" />
     <ClCompile Include="Volt3D\Core\Window.cpp" />
+    <ClCompile Include="Volt3D\Debug\DebugCamera.cpp" />
     <ClCompile Include="Volt3D\Input\InputManager.cpp" />
     <ClCompile Include="Volt3D\Node\BaseNode.cpp" />
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />

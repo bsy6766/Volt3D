@@ -17,6 +17,7 @@
 
 #include "utils/Macros.h"
 #include "WindowMode.h"
+#include "CursorMode.h"
 
 struct GLFWwindow;
 
@@ -49,6 +50,9 @@ namespace v3d
 
 			bool vsync;
 
+			v3d::WindowMode windowMode;
+			v3d::CursorMode cursorMode;
+
 			// GLFW
 			bool initGLFW();
 			bool initWindow(const char* windowTitle, const int width, const int height, const v3d::WindowMode windowMode);
@@ -61,7 +65,6 @@ namespace v3d
 
 			// listener from GLFW callback
 			void onCursorPos(const int x, const int y);
-
 
 			void initCallbacks(GLFWwindow* window);
 
@@ -131,15 +134,59 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS(Window);
 			~Window();
 
+			/**
+			*	Check if window is running.
+			*	@return true if window is running. Else, false.
+			*/
 			bool isRunning();
 			void pollGLFWEvent();
+
+			/**
+			*	Close window.
+			*	This will terminate the application after current loop is finished.
+			*	@return true if successfully attempted to close the window. Else, false.
+			*/
 			bool closeWindow();
 
 			void setVsync(const bool enabled);
+
+			/**
+			*	Check if vsync is enabled.
+			*	@return true if vsync is enabled. Else, false.
+			*/
 			bool isVsyncEnabled() const;
 
+			/**
+			*	Check if window is iconified (minimized)
+			*	@return true if window is iconified. Else, false.
+			*/
 			bool isIconified() const;
+
+			/**
+			*	Get frame buffer size.
+			*	@return A frame buffer size.
+			*/
 			glm::uvec2 getFrameBufferSize() const;
+
+			/**
+			*	Get window size.
+			*	@return A current window size.
+			*/
+			glm::uvec2 getWindowSize() const;
+
+			/**
+			*	Set cursor mode.
+			*	@see v3d::CursorMode for details.
+			*	@param newCursorMode A new cursor mode to set.
+			*/
+			void setCursorMode( const v3d::CursorMode newCursorMode ) { cursorMode = newCursorMode; }
+			
+			/**
+			*	Get cursor mode.
+			*	@see v3d::CursorMode for details.
+			*	@return Current cursor mode of this window.
+			*/
+			v3d::CursorMode getCursorMode() const { return cursorMode; }
 		};
 	}
 }

@@ -51,6 +51,9 @@
     <Filter Include="Volt3D\Spritesheet">
       <UniqueIdentifier>{5b5b44ba-305a-4b66-bc50-e6691ffe04fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Debug">
+      <UniqueIdentifier>{675853ce-73ef-40f4-b7d5-170ed8399842}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -193,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Renderer\Vertex.cpp">
       <Filter>Volt3D\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Debug\DebugCamera.cpp">
+      <Filter>Volt3D\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -390,6 +396,12 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Renderer\Vertex.h">
       <Filter>Volt3D\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Debug\DebugCamera.h">
+      <Filter>Volt3D\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Config\DebugConfig.h">
+      <Filter>Volt3D\Config</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

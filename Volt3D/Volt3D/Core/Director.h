@@ -8,6 +8,7 @@
 #include "CursorMode.h"
 #include "ProjectionType.h"
 #include "Utils/Macros.h"
+#include "Config/DebugConfig.h"
 
 namespace v3d
 {
@@ -52,7 +53,7 @@ namespace v3d
 
 		v3d::InputManager& input;
 
-		// Default camera
+		// Main camera
 		std::unique_ptr<v3d::Camera> defaultCamera;
 
 		// flag
@@ -104,14 +105,16 @@ namespace v3d
 
 		// ===================== Debug Camera =====================
 #if V3D_DEBUG_CAMERA
+		// @todo Now DebugCamera inherits Camera. Revamp camera system in Director.
 	private:
-		std::unique_ptr<v3d::DebugCamera> debugCamera;
+		std::shared_ptr<v3d::DebugCamera> debugCamera;
 		v3d::CursorMode prevCursorMode;
-		bool initDebugCamera(const float resW, const float resH);
 	public:
+		bool attachDebugCamera( std::shared_ptr<v3d::DebugCamera> debugCamera );
+		void detachDebugCamera();
 		void toggleDebugCamera();
-		void enableDebugCamera();
-		void disableDebugCamera();
+		bool enableDebugCamera();
+		bool disableDebugCamera();
 #endif
 		// ========================================================
 	};

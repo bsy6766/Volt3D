@@ -32,11 +32,11 @@ namespace v3d
 	*/
 	class VOLT3D_DLL Camera : public v3d::TransformNode
 	{
-	private:
+	protected:
 		// Projection Type
 		v3d::ProjectionType projectionType;
 
-	private:
+	protected:
 		// Constructor with name
 		Camera(std::string_view name);
 		

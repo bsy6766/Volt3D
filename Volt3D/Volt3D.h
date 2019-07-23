@@ -19,6 +19,7 @@
 
 // Config
 #include "Config/BuildConfig.h"
+#include "Config/DebugConfig.h"
 #include "Config/GLFWCallbackConfig.h"
 
 // Core
@@ -33,6 +34,9 @@
 #include "Core/Time.h"
 #include "Core/Window.h"
 #include "Core/WindowMode.h"
+
+// Debug
+#include "Debug/DebugCamera.h"
 
 // Input
 #include "Input/GamepadAxis.h"

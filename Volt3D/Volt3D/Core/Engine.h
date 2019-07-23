@@ -53,9 +53,10 @@ namespace v3d
 		void run();
 		void end();
 
-		v3d::glfw::Window& getView() const;
+		v3d::glfw::Window& getWindow() const;
 		v3d::vulkan::Context& getVulkanContext() const;
 		v3d::Director& getDirector() const;
+		v3d::InputManager& getInputManager() const;
 	};
 }
 
