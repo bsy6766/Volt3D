@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -105,8 +105,10 @@
       <AdditionalLibraryDirectories>$(OutPutPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D.* $(OutPutPath) /I /Y /D
-xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\glfw3.dll $(OutPutPath) /I /Y /D</Command>
+      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D.* $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Externals\GLFW\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Externals\libpng\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

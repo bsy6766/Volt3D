@@ -35,6 +35,8 @@ namespace v3d
 			vk::UniquePipeline pipeline;
 			vk::Viewport viewport;
 			vk::Rect2D scissor;
+			std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions;
+			vk::VertexInputBindingDescription vertexInputBindingDescription;
 
 			bool init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout);
 

@@ -18,6 +18,8 @@
 #include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 
+#include "Spritesheet/Image.h"
+
 namespace v3d
 {
 	namespace glfw { class Window; }
@@ -95,6 +97,7 @@ namespace v3d
 			vk::ImageView textureImageView;
 			vk::Sampler textureSampler;
 			vk::DeviceMemory textureDeviceMemory;
+			v3d::Image* lena = nullptr;
 
 			bool initInstance( const v3d::glfw::Window& window );
 			bool initDebugReport();

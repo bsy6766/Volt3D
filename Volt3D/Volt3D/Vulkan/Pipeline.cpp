@@ -43,7 +43,7 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		0, nullptr
 	);
 
-	 pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
+	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
 
 	v3d::vulkan::ShaderModule vertShader;
 	if (!vertShader.init("Shaders/vert.spv", device)) return false;
@@ -57,11 +57,12 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
 	};
 	
-	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
+	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
+	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
-		1, &v3d::V3_C4_T2::getInputBindingDescription(),
+		1, &vertexInputBindingDescription,
 		3, vertexInputAttribDescriptions.data()
 	);
 

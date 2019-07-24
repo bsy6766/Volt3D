@@ -175,6 +175,21 @@ namespace v3d
 			glm::uvec2 getWindowSize() const;
 
 			/**
+			*	Get window title.
+			*	@todo Support this
+			*	@note This doesn't use GLFW's function due to lack of support. Uses Win32 API.
+			*	@return A title of window in UTF8 char array.
+			*/
+			//const char* getWindowTitle() const;
+
+			/**
+			*	Set window title.
+			*	@see GLFW's window documentation for detaisl.
+			*	@param newTitle A new window title to set.
+			*/
+			void setWindowTitle( const char* newTitle );
+
+			/**
 			*	Set cursor mode.
 			*	@see v3d::CursorMode for details.
 			*	@param newCursorMode A new cursor mode to set.

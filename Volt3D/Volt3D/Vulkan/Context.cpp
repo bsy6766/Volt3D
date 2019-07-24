@@ -640,25 +640,23 @@ void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
 
 void v3d::vulkan::Context::createTextureImage()
 {
-	v3d::Image* img = v3d::Image::createPNG( "Textures/lena.png" );
+	lena = v3d::Image::createPNG( "Textures/lena.png" );
 
-	vk::Buffer stagingBuffer = createBuffer( img->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	vk::Buffer stagingBuffer = createBuffer( lena->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingBufferMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingBufferMemory, 0, img->getSize() );
-	memcpy( data, img->getData(), img->getSize() );
+	void* data = device.mapMemory( stagingBufferMemory, 0, lena->getSize() );
+	memcpy( data, lena->getData(), lena->getSize() );
 	device.unmapMemory( stagingBufferMemory );
 
-	createImage( img->getWidth(), img->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, textureImage, textureDeviceMemory );
+	createImage( lena->getWidth(), lena->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, textureImage, textureDeviceMemory );
 
 	transitionImageLayout( textureImage, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
-	copyBufferToImage( stagingBuffer, textureImage, uint32_t( img->getWidth() ), uint32_t( img->getHeight() ) );
+	copyBufferToImage( stagingBuffer, textureImage, uint32_t( lena->getWidth() ), uint32_t( lena->getHeight() ) );
 	transitionImageLayout( textureImage, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
 
 	device.destroyBuffer( stagingBuffer );
 	device.freeMemory( stagingBufferMemory );
-
-	delete img;
 }
 
 void v3d::vulkan::Context::createTextureImageView()
@@ -894,6 +892,7 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
+	SAFE_DELETE( lena );
 	device.destroySampler( textureSampler );
 	device.destroyImageView( textureImageView );
 	device.destroyImage( textureImage );

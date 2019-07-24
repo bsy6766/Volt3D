@@ -112,6 +112,11 @@ void v3d::glfw::Window::releaseGLFW()
 	glfwTerminate();
 }
 
+void v3d::glfw::Window::onCursorPos( const int x, const int y )
+{
+	input.updateMousePosition( x, y );
+}
+
 void v3d::glfw::Window::setVsync( const bool enabled )
 {
 	vsync = enabled;
@@ -141,6 +146,23 @@ glm::uvec2 v3d::glfw::Window::getWindowSize() const
 	glfwGetWindowSize( window, &w, &h );
 	return glm::uvec2( w, h );
 }
+
+void v3d::glfw::Window::setWindowTitle( const char* newTitle )
+{
+	glfwSetWindowTitle( window, newTitle );
+}
+
+/*
+const char* v3d::glfw::Window::getWindowTitle() const
+{
+	auto hwnd = glfwGetWin32Window( window );
+	char title[1024] = {};
+	int size = GetWindowTextA( hwnd, title, 1024 );
+	auto str = std::string( title );
+
+	return str.c_str();
+}
+*/
 
 std::size_t v3d::glfw::Window::getGLFWVKExtensions( std::vector<const char*>& extensions ) const
 {
@@ -346,10 +368,3 @@ void v3d::glfw::Window::glfwJoystickCallback( int jid, int events )
 
 }
 #endif
-
-
-
-void v3d::glfw::Window::onCursorPos( const int x, const int y )
-{
-	input.updateMousePosition( x, y );
-}
