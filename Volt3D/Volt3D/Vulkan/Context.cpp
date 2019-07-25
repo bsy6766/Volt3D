@@ -77,6 +77,22 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	logger.trace( "Context version: " + std::to_string( major ) + "." + std::to_string( minor ) + "." + std::to_string( patch ) );
 
 	validationLayerEnabled = enableValidationLayer;
+	
+	if (!initInstance( window )) return false;
+	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
+	if (!initSurface( window )) return false;
+	if (!initPhysicalDevice()) return false;
+	if (!initDevice()) return false;
+	if (!initQueue()) return false;
+	if (!initSwapChain()) return false;
+	if (!initSwapChainImages()) return false;
+	if (!initRenderPass()) return false;
+	if (!initDescriptorLayout()) return false;
+	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
+	createTextureImage();
+	createTextureImageView();
 
 	// temp
 	auto& vertices = vertexData.getVertexData();
@@ -94,30 +110,16 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	const glm::vec4 red( 1, 0, 0, 1 );
 	const glm::vec4 green( 0, 1, 0, 1 );
 	const glm::vec4 blue( 0, 0, 1, 1 );
-	vertices.push_back( v3d::V3_C4_T2( { -0.5f, 0.5f, 0.0f }, white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -0.5f, -0.5f, 0.0f }, white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { 0.5f, 0.5f, 0.0f }, white, { 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { 0.5f, -0.5f, 0.0f }, white, { 1.0f, 0.0f } ) );
+	const float halfWidth = float( lena->getWidth() ) * 0.5f;
+	const float halfHeight = float( lena->getHeight() ) * 0.5f;
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
 
 	auto& indices = indexData.getVertexData();
 	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
-	// temp
 
-	if (!initInstance( window )) return false;
-	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
-	if (!initSurface( window )) return false;
-	if (!initPhysicalDevice()) return false;
-	if (!initDevice()) return false;
-	if (!initQueue()) return false;
-	if (!initSwapChain()) return false;
-	if (!initSwapChainImages()) return false;
-	if (!initRenderPass()) return false;
-	if (!initDescriptorLayout()) return false;
-	if (!initGraphicsPipeline()) return false;
-	if (!initFrameBuffer()) return false;
-	if (!initCommandPool()) return false;
-	createTextureImage();
-	createTextureImageView();
 	createVertexBuffer();
 	createIndexBuffer();
 	createUniformBuffer();
@@ -614,8 +616,13 @@ void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
 {
 	static struct UniformBufferObject { glm::mat4 m, v, p; } ubo;
 
-	ubo.m = glm::translate( glm::scale( glm::mat4( 1 ), glm::vec3( 0.5, 0.5, 1 ) ), glm::vec3( 5, 0.0, 0.0 ) );
-	ubo.m = glm::scale( glm::mat4( 1 ), glm::vec3( 5, 5, 1 ) );
+	glm::vec2 screenSize = glm::vec2( 1280, 720 );
+	float fovy = 70.0f;
+	glm::mat4 screenSpaceMatrix = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.0f, -((screenSize.y * 0.5f) / tanf( glm::radians( fovy * 0.5f ) )) ) );
+
+	ubo.m = glm::translate( glm::mat4( 1 ), glm::vec3( 5, 0.0, 0.0 ) );
+	//ubo.m = glm::scale( glm::mat4( 1 ), glm::vec3( 5, 5, 1 ) );
+	ubo.m = screenSpaceMatrix;
 
 	static struct Camera
 	{
@@ -626,7 +633,7 @@ void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
 	cam.pos = glm::vec3( 0, 2, -10 );
 	ubo.v = glm::translate( glm::mat4( 1 ), glm::vec3( cam.pos.x, cam.pos.y, cam.pos.z ) );
 
-	const float fovy = 70.0f;
+	//const float fovy = 70.0f;
 	const auto& extent = swapChain->getExtent2D();
 	const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
 	const float nears = 0.1f;
