@@ -13,7 +13,7 @@
 #include "Instance.h"
 #include "DebugReportCallback.h"
 #include "DebugUtilsMessenger.h"
-#include "PhysicalDevice.h"
+#include "Devices.h"
 #include "SwapChain.h"
 #include "ShaderModule.h"
 #include "Pipeline.h"
@@ -30,9 +30,10 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 	, validationLayerEnabled( false )
 	, debugReportCallback( nullptr )
 	, debugUtilsMessenger( nullptr )
-	, surface( nullptr )
-	, physicalDevice( nullptr )
-	, device( nullptr )
+	, surface()
+	, devices( nullptr )
+	, physicalDevice()
+	, logicalDevice()
 	, swapChain( nullptr )
 	, renderPass( nullptr )
 	, pipeline( nullptr )
@@ -79,8 +80,9 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	if (!initInstance( window )) return false;
 	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
 	if (!initSurface( window )) return false;
-	if (!initPhysicalDevice()) return false;
-	if (!initDevice()) return false;
+	//if (!initPhysicalDevice()) return false;
+	//if (!initDevice()) return false;
+	if (!initDevices()) return false;
 	if (!initQueue()) return false;
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
@@ -157,60 +159,26 @@ bool v3d::vulkan::Context::initSurface( const v3d::glfw::Window& window )
 	return true;
 }
 
-bool v3d::vulkan::Context::initPhysicalDevice()
+bool v3d::vulkan::Context::initDevices()
 {
-	physicalDevice = new v3d::vulkan::PhysicalDevice();
-	if (!physicalDevice->init( *instance, surface )) return false;
-	return true;
-}
-
-bool v3d::vulkan::Context::initDevice()
-{
-	auto graphicsQueueFamilyIndex = physicalDevice->getGraphicsQueueFamilyIndex();
-
-	const float queuePriority = 1.0f;
-	vk::DeviceQueueCreateInfo deviceQueueCreateInfo = vk::DeviceQueueCreateInfo
-	(
-		{},
-		graphicsQueueFamilyIndex,
-		1,
-		&queuePriority
-	);
-
-	std::vector<vk::ExtensionProperties> extensions = physicalDevice->EnumerateDeviceExtensionProperties();
-
-#ifdef BUILD_DEBUG
-	v3d::Logger::getInstance().logExtensions( extensions );
-#endif
-	std::vector<const char*> requiredExtension = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-	if (!vulkan::utils::checkExtensionProperties( extensions, requiredExtension )) return false;
-
-	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo
-	(
-		{},
-		1,
-		&deviceQueueCreateInfo,
-		0,
-		nullptr,
-		uint32_t( requiredExtension.size() ),
-		requiredExtension.data()
-	);
-
-	device = physicalDevice->createDeviceUnique( createInfo );
-
+	devices = new v3d::vulkan::Devices();
+	if (!devices->initPhysicalDevice( instance->enumeratePhysicalDevices() )) return false;
+	if (!devices->initLogicalDevice( surface )) return false;
+	physicalDevice = devices->physicalDevice;
+	logicalDevice = devices->logicalDevice;
 	return true;
 }
 
 bool v3d::vulkan::Context::initSwapChain()
 {
 	swapChain = new v3d::vulkan::SwapChain();
-	if (!swapChain->init( *physicalDevice, device, surface, window )) return false;
+	if (!swapChain->init( physicalDevice, logicalDevice, surface, window )) return false;
 	return true;
 }
 
 bool v3d::vulkan::Context::initSwapChainImages()
 {
-	images = device.getSwapchainImagesKHR( swapChain->get() );
+	images = logicalDevice.getSwapchainImagesKHR( swapChain->get() );
 
 	imageViews.reserve( images.size() );
 	vk::ComponentMapping componentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
@@ -260,7 +228,7 @@ bool v3d::vulkan::Context::initRenderPass()
 		1, &subpassDescription
 	);
 
-	renderPass = device.createRenderPass( createInfo );
+	renderPass = logicalDevice.createRenderPass( createInfo );
 
 	return true;
 }
@@ -268,7 +236,7 @@ bool v3d::vulkan::Context::initRenderPass()
 bool v3d::vulkan::Context::initGraphicsPipeline()
 {
 	pipeline = new v3d::vulkan::Pipeline();
-	if (!pipeline->init( device, *swapChain, renderPass, descriptorLayout )) return false;
+	if (!pipeline->init( logicalDevice, *swapChain, renderPass, descriptorLayout )) return false;
 	return true;
 }
 
@@ -292,7 +260,7 @@ bool v3d::vulkan::Context::initFrameBuffer()
 			1
 		);
 
-		framebuffers[i] = device.createFramebuffer( createInfo );
+		framebuffers[i] = logicalDevice.createFramebuffer( createInfo );
 	}
 
 	return true;
@@ -300,7 +268,7 @@ bool v3d::vulkan::Context::initFrameBuffer()
 
 bool v3d::vulkan::Context::initCommandPool()
 {
-	const uint32_t graphicsFamilyIndex = physicalDevice->getGraphicsQueueFamilyIndex();
+	const uint32_t graphicsFamilyIndex = devices->getGraphicsQueueFamilyIndex();
 
 	vk::CommandPoolCreateInfo createInfo
 	(
@@ -308,7 +276,7 @@ bool v3d::vulkan::Context::initCommandPool()
 		graphicsFamilyIndex
 	);
 
-	commandPool = device.createCommandPool( createInfo );
+	commandPool = logicalDevice.createCommandPool( createInfo );
 
 	return true;
 }
@@ -317,8 +285,8 @@ bool v3d::vulkan::Context::initSemaphore()
 {
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		imageAvailableSemaphores.push_back( device.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
-		renderFinishedSemaphores.push_back( device.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
+		imageAvailableSemaphores.push_back( logicalDevice.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
+		renderFinishedSemaphores.push_back( logicalDevice.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
 	}
 
 	return true;
@@ -328,7 +296,7 @@ bool v3d::vulkan::Context::initFences()
 {
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		frameFences.push_back( device.createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) ) );
+		frameFences.push_back( logicalDevice.createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) ) );
 	}
 
 	return true;
@@ -336,10 +304,8 @@ bool v3d::vulkan::Context::initFences()
 
 bool v3d::vulkan::Context::initQueue()
 {
-	graphicsQueue = device.getQueue( physicalDevice->getGraphicsQueueFamilyIndex(), 0 );
-	presentQueue = device.getQueue( physicalDevice->getPresentQueueFamilyIndex(), 0 );
-	//if (!graphicsQueue->init( device, physicalDevice->getGraphicsQueueFamilyIndex() )) return false;
-	//if (!presentQueue->init( device, physicalDevice->getPresentQueueFamilyIndex() )) return false;
+	graphicsQueue = logicalDevice.getQueue( devices->getGraphicsQueueFamilyIndex(), 0 );
+	presentQueue = logicalDevice.getQueue( devices->getPresentQueueFamilyIndex(), 0 );
 	return true;
 }
 
@@ -354,7 +320,7 @@ bool v3d::vulkan::Context::initCommandBuffer()
 		static_cast<uint32_t>(fbSize)
 	);
 
-	const std::vector<vk::CommandBuffer> cbs = device.allocateCommandBuffers( allocInfo );
+	const std::vector<vk::CommandBuffer> cbs = logicalDevice.allocateCommandBuffers( allocInfo );
 
 	for (std::size_t i = 0; i < fbSize; i++)
 	{
@@ -414,7 +380,7 @@ bool v3d::vulkan::Context::initDescriptorLayout()
 		bindings
 	);
 
-	descriptorLayout = device.createDescriptorSetLayout( layoutInfo );
+	descriptorLayout = logicalDevice.createDescriptorSetLayout( layoutInfo );
 
 	return true;
 }
@@ -450,7 +416,7 @@ bool v3d::vulkan::Context::initDescriptorPool()
 		poolSizes
 	);
 
-	descriptorPool = device.createDescriptorPool( poolInfo );
+	descriptorPool = logicalDevice.createDescriptorPool( poolInfo );
 
 	return true;
 }
@@ -467,7 +433,7 @@ bool v3d::vulkan::Context::initDescriptorSet()
 		layouts.data()
 	);
 
-	descriptorSets = device.allocateDescriptorSets( allocInfo );
+	descriptorSets = logicalDevice.allocateDescriptorSets( allocInfo );
 
 	for (std::size_t i = 0; i < size; i++)
 	{
@@ -548,7 +514,7 @@ bool v3d::vulkan::Context::initDescriptorSet()
 		const uint32_t uboSize = 3;
 		const vk::WriteDescriptorSet descriptorWrites[uboSize] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite, RGBWSamplerDescriptorWrite };
 
-		device.updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
+		logicalDevice.updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
 	}
 
 	return true;
@@ -556,7 +522,7 @@ bool v3d::vulkan::Context::initDescriptorSet()
 
 bool v3d::vulkan::Context::recreateSwapChain()
 {
-	device.waitIdle();
+	logicalDevice.waitIdle();
 
 	releaseSwapChain();
 
@@ -581,7 +547,7 @@ bool v3d::vulkan::Context::recreateSwapChain()
 v3d::vulkan::CommandBuffer v3d::vulkan::Context::createCommandBuffer( const vk::CommandBufferLevel level )
 {
 	const vk::CommandBufferAllocateInfo allocInfo( commandPool, level, 1 );
-	return v3d::vulkan::CommandBuffer( device.allocateCommandBuffers( allocInfo ).front() );
+	return v3d::vulkan::CommandBuffer( logicalDevice.allocateCommandBuffers( allocInfo ).front() );
 }
 
 vk::Buffer v3d::vulkan::Context::createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const
@@ -593,20 +559,20 @@ vk::Buffer v3d::vulkan::Context::createBuffer( const uint64_t size, const vk::Bu
 		usageFlags
 	);
 
-	return device.createBuffer( createInfo );
+	return logicalDevice.createBuffer( createInfo );
 }
 
 vk::DeviceMemory v3d::vulkan::Context::createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const
 {
-	const vk::MemoryRequirements memRequirements = device.getBufferMemoryRequirements( buffer );
+	const vk::MemoryRequirements memRequirements = logicalDevice.getBufferMemoryRequirements( buffer );
 	const vk::MemoryAllocateInfo allocInfo
 	(
 		memRequirements.size,
-		physicalDevice->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
+		devices->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
 	);
 
-	vk::DeviceMemory deviceMemory = device.allocateMemory( allocInfo );
-	device.bindBufferMemory( buffer, deviceMemory, vk::DeviceSize( 0 ) );
+	vk::DeviceMemory deviceMemory = logicalDevice.allocateMemory( allocInfo );
+	logicalDevice.bindBufferMemory( buffer, deviceMemory, vk::DeviceSize( 0 ) );
 	return deviceMemory;
 }
 
@@ -618,7 +584,7 @@ void v3d::vulkan::Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& 
 	cb.end();
 	oneTimeSubmit( cb );
 
-	device.freeCommandBuffers( commandPool, cb.getHandle() );
+	logicalDevice.freeCommandBuffers( commandPool, cb.getHandle() );
 }
 
 void v3d::vulkan::Context::createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void* vbData )
@@ -629,14 +595,14 @@ void v3d::vulkan::Context::createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMe
 	vk::Buffer stagingBuffer = createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingDeviceMemory, 0, vbDataSize );
+	void* data = logicalDevice.mapMemory( stagingDeviceMemory, 0, vbDataSize );
 	memcpy( data, vbData, vbDataSize );
-	device.unmapMemory( stagingDeviceMemory );
+	logicalDevice.unmapMemory( stagingDeviceMemory );
 
 	copyBuffer( stagingBuffer, vBuffer, vbDataSize );
 
-	device.destroyBuffer( stagingBuffer );
-	device.freeMemory( stagingDeviceMemory );
+	logicalDevice.destroyBuffer( stagingBuffer );
+	logicalDevice.freeMemory( stagingDeviceMemory );
 }
 
 void v3d::vulkan::Context::createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData )
@@ -647,14 +613,14 @@ void v3d::vulkan::Context::createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMem
 	vk::Buffer stagingBuffer = createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingDeviceMemory, 0, ibDataSize );
+	void* data = logicalDevice.mapMemory( stagingDeviceMemory, 0, ibDataSize );
 	memcpy( data, ibData, ibDataSize );
-	device.unmapMemory( stagingDeviceMemory );
+	logicalDevice.unmapMemory( stagingDeviceMemory );
 
 	copyBuffer( stagingBuffer, iBuffer, ibDataSize );
 
-	device.destroyBuffer( stagingBuffer );
-	device.freeMemory( stagingDeviceMemory );
+	logicalDevice.destroyBuffer( stagingBuffer );
+	logicalDevice.freeMemory( stagingDeviceMemory );
 }
 
 void v3d::vulkan::Context::createUniformBuffer( UBO& ubo, const std::size_t uboDataSize )
@@ -699,9 +665,9 @@ void v3d::vulkan::Context::updateMVPUBO( const uint32_t imageIndex )
 	const float fars = 1000.0f;
 	ubo.p = glm::perspective( glm::radians( fovy ), aspect, nears, fars );
 
-	void* data = device.mapMemory( mvpUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
+	void* data = logicalDevice.mapMemory( mvpUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
 	memcpy( data, &ubo, sizeof( ubo ) );
-	device.unmapMemory( mvpUBO.deviceMemories[imageIndex] );
+	logicalDevice.unmapMemory( mvpUBO.deviceMemories[imageIndex] );
 }
 
 void v3d::vulkan::Context::updateDissolveUBO( const uint32_t imageIndex )
@@ -716,9 +682,9 @@ void v3d::vulkan::Context::updateDissolveUBO( const uint32_t imageIndex )
 	else if(ubo.v < 0.0f) flip = true;
 	ubo.v = glm::clamp( ubo.v, 0.0f, 1.0f );
 
-	void* data = device.mapMemory( dissolveUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
+	void* data = logicalDevice.mapMemory( dissolveUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
 	memcpy( data, &ubo, sizeof( ubo ) );
-	device.unmapMemory( dissolveUBO.deviceMemories[imageIndex] );
+	logicalDevice.unmapMemory( dissolveUBO.deviceMemories[imageIndex] );
 }
 
 void v3d::vulkan::Context::createTexture( const char* path, v3d::vulkan::Context::Texture& texture )
@@ -734,9 +700,9 @@ void v3d::vulkan::Context::createTextureImage( const char* path, v3d::vulkan::Co
 	vk::Buffer stagingBuffer = createBuffer( texture.imageSource->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingBufferMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingBufferMemory, 0, texture.imageSource->getSize() );
+	void* data = logicalDevice.mapMemory( stagingBufferMemory, 0, texture.imageSource->getSize() );
 	memcpy( data, texture.imageSource->getData(), texture.imageSource->getSize() );
-	device.unmapMemory( stagingBufferMemory );
+	logicalDevice.unmapMemory( stagingBufferMemory );
 
 	createImage( texture.imageSource->getWidth(), texture.imageSource->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture.image, texture.deviceMemory );
 
@@ -744,8 +710,8 @@ void v3d::vulkan::Context::createTextureImage( const char* path, v3d::vulkan::Co
 	copyBufferToImage( stagingBuffer, texture.image, uint32_t( texture.imageSource->getWidth() ), uint32_t( texture.imageSource->getHeight() ) );
 	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
 
-	device.destroyBuffer( stagingBuffer );
-	device.freeMemory( stagingBufferMemory );
+	logicalDevice.destroyBuffer( stagingBuffer );
+	logicalDevice.freeMemory( stagingBufferMemory );
 }
 
 void v3d::vulkan::Context::createTextureImageView( v3d::vulkan::Context::Texture& texture )
@@ -772,7 +738,7 @@ void v3d::vulkan::Context::createTextureImageView( v3d::vulkan::Context::Texture
 		false
 	);
 
-	texture.sampler = device.createSampler( createInfo, nullptr );
+	texture.sampler = logicalDevice.createSampler( createInfo, nullptr );
 }
 
 void v3d::vulkan::Context::createImage( const std::size_t w, const std::size_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory )
@@ -790,17 +756,17 @@ void v3d::vulkan::Context::createImage( const std::size_t w, const std::size_t h
 		usageFlags
 	);
 
-	image = device.createImage( createInfo );
-	vk::MemoryRequirements memRequirements = device.getImageMemoryRequirements( image );
+	image = logicalDevice.createImage( createInfo );
+	vk::MemoryRequirements memRequirements = logicalDevice.getImageMemoryRequirements( image );
 
 	vk::MemoryAllocateInfo allocInfo
 	(
 		memRequirements.size,
-		physicalDevice->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
+		devices->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
 	);
 
-	deviceMemory = device.allocateMemory( allocInfo );
-	device.bindImageMemory( image, deviceMemory, 0 );
+	deviceMemory = logicalDevice.allocateMemory( allocInfo );
+	logicalDevice.bindImageMemory( image, deviceMemory, 0 );
 }
 
 void v3d::vulkan::Context::transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout )
@@ -892,7 +858,7 @@ vk::ImageView v3d::vulkan::Context::createImageView( vk::Image& image, const vk:
 		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
 	);
 
-	return device.createImageView( createInfo, nullptr );
+	return logicalDevice.createImageView( createInfo, nullptr );
 }
 
 void v3d::vulkan::Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
@@ -907,9 +873,9 @@ void v3d::vulkan::Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
 
 void v3d::vulkan::Context::render()
 {
-	device.waitForFences( 1, &frameFences[current_frame], true, std::numeric_limits<uint64_t>::max() );
+	logicalDevice.waitForFences( 1, &frameFences[current_frame], true, std::numeric_limits<uint64_t>::max() );
 
-	const vk::ResultValue<uint32_t> result = device.acquireNextImageKHR( swapChain->get(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
+	const vk::ResultValue<uint32_t> result = logicalDevice.acquireNextImageKHR( swapChain->get(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
 	if (result.result == vk::Result::eErrorOutOfDateKHR)
 	{
 		recreateSwapChain();
@@ -939,7 +905,7 @@ void v3d::vulkan::Context::render()
 		signalSemaphores
 	);
 
-	device.resetFences( frameFences[current_frame] );
+	logicalDevice.resetFences( frameFences[current_frame] );
 
 	graphicsQueue.submit( submitInfo, frameFences[current_frame] );
 
@@ -978,7 +944,7 @@ void v3d::vulkan::Context::render()
 
 void v3d::vulkan::Context::waitIdle()
 {
-	device.waitIdle();
+	logicalDevice.waitIdle();
 }
 
 const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
@@ -991,28 +957,28 @@ void v3d::vulkan::Context::release()
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
 	SAFE_DELETE( lena.imageSource );
-	device.destroySampler( lena.sampler );
-	device.destroyImageView( lena.imageView );
-	device.destroyImage( lena.image );
-	device.freeMemory( lena.deviceMemory );
+	logicalDevice.destroySampler( lena.sampler );
+	logicalDevice.destroyImageView( lena.imageView );
+	logicalDevice.destroyImage( lena.image );
+	logicalDevice.freeMemory( lena.deviceMemory );
 	SAFE_DELETE( RGBW.imageSource );
-	device.destroySampler( RGBW.sampler );
-	device.destroyImageView( RGBW.imageView );
-	device.destroyImage( RGBW.image );
-	device.freeMemory( RGBW.deviceMemory );
-	device.destroyBuffer( lenaBuffer.vertexBuffer );
-	device.freeMemory( lenaBuffer.vbDeviceMemory );
-	device.destroyBuffer( lenaBuffer.indexBuffer );
-	device.freeMemory( lenaBuffer.ibDeviceMemory );
-	for (auto& f : frameFences) { device.destroyFence( f ); }
+	logicalDevice.destroySampler( RGBW.sampler );
+	logicalDevice.destroyImageView( RGBW.imageView );
+	logicalDevice.destroyImage( RGBW.image );
+	logicalDevice.freeMemory( RGBW.deviceMemory );
+	logicalDevice.destroyBuffer( lenaBuffer.vertexBuffer );
+	logicalDevice.freeMemory( lenaBuffer.vbDeviceMemory );
+	logicalDevice.destroyBuffer( lenaBuffer.indexBuffer );
+	logicalDevice.freeMemory( lenaBuffer.ibDeviceMemory );
+	for (auto& f : frameFences) { logicalDevice.destroyFence( f ); }
 	frameFences.clear();
-	for (auto& s : imageAvailableSemaphores) { device.destroySemaphore( s ); }
+	for (auto& s : imageAvailableSemaphores) { logicalDevice.destroySemaphore( s ); }
 	imageAvailableSemaphores.clear();
-	for (auto& s : renderFinishedSemaphores) { device.destroySemaphore( s ); }
+	for (auto& s : renderFinishedSemaphores) { logicalDevice.destroySemaphore( s ); }
 	renderFinishedSemaphores.clear();
 	releaseSwapChain();
-	device.destroy();
-	SAFE_DELETE( physicalDevice );
+	logicalDevice.destroy();
+	SAFE_DELETE( devices );
 	instance->get().destroySurfaceKHR( surface );
 	SAFE_DELETE( debugUtilsMessenger );
 	SAFE_DELETE( debugReportCallback );
@@ -1024,25 +990,25 @@ void v3d::vulkan::Context::releaseSwapChain()
 {
 	for (std::size_t i = 0; i < images.size(); i++)
 	{
-		device.destroyBuffer( mvpUBO.buffers.at( i ) );
-		device.freeMemory( mvpUBO.deviceMemories.at( i ) );
-		//device.destroyBuffer( dissolveUBO.buffers.at( i ) );
-		//device.freeMemory( dissolveUBO.deviceMemories.at( i ) );
+		logicalDevice.destroyBuffer( mvpUBO.buffers.at( i ) );
+		logicalDevice.freeMemory( mvpUBO.deviceMemories.at( i ) );
+		//logicalDevice.destroyBuffer( dissolveUBO.buffers.at( i ) );
+		//logicalDevice.freeMemory( dissolveUBO.deviceMemories.at( i ) );
 	}
 	mvpUBO.buffers.clear();
 	mvpUBO.deviceMemories.clear();
 	//dissolveUBO.buffers.clear();
 	//dissolveUBO.deviceMemories.clear();
-	device.destroyDescriptorSetLayout( descriptorLayout );
-	device.destroyDescriptorPool( descriptorPool );
-	for (auto& cb : commandBuffers) { device.freeCommandBuffers( commandPool, cb->getHandle() ); SAFE_DELETE( cb ); }
+	logicalDevice.destroyDescriptorSetLayout( descriptorLayout );
+	logicalDevice.destroyDescriptorPool( descriptorPool );
+	for (auto& cb : commandBuffers) { logicalDevice.freeCommandBuffers( commandPool, cb->getHandle() ); SAFE_DELETE( cb ); }
 	commandBuffers.clear();
-	device.destroyCommandPool( commandPool );
-	for (auto& f : framebuffers) { device.destroyFramebuffer( f ); }
+	logicalDevice.destroyCommandPool( commandPool );
+	for (auto& f : framebuffers) { logicalDevice.destroyFramebuffer( f ); }
 	framebuffers.clear();
 	SAFE_DELETE( pipeline );
-	device.destroyRenderPass( renderPass );
-	for (auto& imageView : imageViews) { device.destroyImageView( imageView ); }
+	logicalDevice.destroyRenderPass( renderPass );
+	for (auto& imageView : imageViews) { logicalDevice.destroyImageView( imageView ); }
 	imageViews.clear();
 	images.clear();
 	SAFE_DELETE( swapChain );

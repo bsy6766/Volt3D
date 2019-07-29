@@ -80,9 +80,6 @@
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -197,6 +194,9 @@
     <ClCompile Include="Volt3D\Debug\DebugCamera.cpp">
       <Filter>Volt3D\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Devices.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -237,9 +237,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Config\BuildConfig.h">
       <Filter>Volt3D\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h">
       <Filter>Volt3D\Vulkan</Filter>
@@ -396,6 +393,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Config\DebugConfig.h">
       <Filter>Volt3D\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Devices.h">
+      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

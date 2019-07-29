@@ -256,7 +256,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h" />
     <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
-    <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h" />
+    <ClInclude Include="Volt3D\Vulkan\Devices.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
@@ -310,7 +310,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Devices.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />

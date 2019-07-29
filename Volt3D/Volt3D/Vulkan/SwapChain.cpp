@@ -9,7 +9,6 @@
 
 #include "SwapChain.h"
 
-#include "PhysicalDevice.h"
 #include "Core/Window.h"
 
 v3d::vulkan::SwapChain::SwapChain()
@@ -18,21 +17,21 @@ v3d::vulkan::SwapChain::SwapChain()
 	, extent()
 {}
 
-bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window)
+bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window )
 {
 	// surface format
-	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
+	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR( surface );
 	if (surfaceFormats.empty()) return false;
-	surfaceFormat = selectSurfaceFormat(surfaceFormats);
+	surfaceFormat = selectSurfaceFormat( surfaceFormats );
 
 	// extent2D
-	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-	extent = selectExtent(surfaceCapabilities, window);
+	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
+	extent = selectExtent( surfaceCapabilities, window );
 
-	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
+	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR( surface );
 	if (presentModes.empty()) return false;
-	const vk::PresentModeKHR swapchainPresentMode = selectPresentMode(presentModes);
-	
+	const vk::PresentModeKHR swapchainPresentMode = selectPresentMode( presentModes );
+
 	vk::SurfaceTransformFlagBitsKHR preTransform = (surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity) ? vk::SurfaceTransformFlagBitsKHR::eIdentity : surfaceCapabilities.currentTransform;
 
 	vk::CompositeAlphaFlagBitsKHR compositeAlpha =
@@ -72,16 +71,16 @@ bool v3d::vulkan::SwapChain::init(const v3d::vulkan::PhysicalDevice& physicalDev
 	}
 	*/
 
-	swapChain = std::move(device.createSwapchainKHRUnique(createInfo));
+	swapChain = logicalDevice.createSwapchainKHRUnique( createInfo );
 
 	return true;
 }
 
-vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats) const
+vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const
 {
 	if (surfaceFormats.size() == 1 && surfaceFormats.front().format == vk::Format::eUndefined) return { vk::Format::eB8G8R8A8Unorm , vk::ColorSpaceKHR::eSrgbNonlinear };
-	
-	for(const auto& surfaceFormat : surfaceFormats)
+
+	for (const auto& surfaceFormat : surfaceFormats)
 	{
 		if (surfaceFormat.format == vk::Format::eB8G8R8A8Unorm && surfaceFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) return surfaceFormat;
 	}
@@ -89,7 +88,7 @@ vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat(const std::vect
 	return surfaceFormats.front();
 }
 
-vk::Extent2D v3d::vulkan::SwapChain::selectExtent(const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window) const
+vk::Extent2D v3d::vulkan::SwapChain::selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window ) const
 {
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() || surfaceCapabilities.currentExtent.height == std::numeric_limits<uint32_t>::max())
 	{
@@ -102,7 +101,7 @@ vk::Extent2D v3d::vulkan::SwapChain::selectExtent(const vk::SurfaceCapabilitiesK
 	}
 }
 
-vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode(const std::vector<vk::PresentModeKHR>& presentModes) const
+vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const
 {
 	return vk::PresentModeKHR::eMailbox;
 }

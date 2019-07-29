@@ -29,7 +29,7 @@ namespace v3d
 		class Instance;
 		class DebugReportCallback;
 		class DebugUtilsMessenger;
-		class PhysicalDevice;
+		class Devices;
 		class SwapChain;
 		class Pipeline;
 		class Queue;
@@ -56,12 +56,17 @@ namespace v3d
 			bool validationLayerEnabled;
 			v3d::vulkan::DebugReportCallback* debugReportCallback;
 			v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
+
 			vk::SurfaceKHR surface;
-			v3d::vulkan::PhysicalDevice* physicalDevice;
-			vk::Device device;
+
+			v3d::vulkan::Devices* devices;
+			vk::PhysicalDevice physicalDevice;
+			vk::Device logicalDevice;
+
 			v3d::vulkan::SwapChain* swapChain;
 			std::vector<vk::Image> images;
 			std::vector<vk::ImageView> imageViews;
+
 			vk::RenderPass renderPass;
 			v3d::vulkan::Pipeline* pipeline;
 			std::vector<vk::Framebuffer> framebuffers;
@@ -72,6 +77,7 @@ namespace v3d
 			vk::Queue graphicsQueue;
 			vk::Queue presentQueue;
 			std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
+
 			vk::DescriptorSetLayout descriptorLayout;
 			vk::DescriptorPool descriptorPool;
 			std::vector<vk::DescriptorSet> descriptorSets;
@@ -122,8 +128,7 @@ namespace v3d
 			bool initDebugReport();
 			bool initDebugUtilsMessenger();
 			bool initSurface( const v3d::glfw::Window& window );
-			bool initPhysicalDevice();
-			bool initDevice();
+			bool initDevices();
 			bool initSwapChain();
 			bool initSwapChainImages();
 			bool initRenderPass();

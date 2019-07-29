@@ -34,7 +34,7 @@ const vk::UniquePipelineLayout& v3d::vulkan::Pipeline::getLayout() const
 	return pipelineLayout;
 }
 
-bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
+bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
 {
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
@@ -43,13 +43,13 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		0, nullptr
 	);
 
-	pipelineLayout = device.createPipelineLayoutUnique(layoutCreateInfo);
+	pipelineLayout = logicalDevice.createPipelineLayoutUnique(layoutCreateInfo);
 
 	v3d::vulkan::ShaderModule vertShader;
-	if (!vertShader.init("Shaders/vert.spv", device)) return false;
+	if (!vertShader.init("Shaders/vert.spv", logicalDevice )) return false;
 
 	v3d::vulkan::ShaderModule fragShader;
-	if (!fragShader.init("Shaders/frag.spv", device)) return false;
+	if (!fragShader.init("Shaders/frag.spv", logicalDevice )) return false;
 
 	vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
 	{
@@ -198,7 +198,7 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 		renderPass									// renderPass
 	);
 
-	pipeline = device.createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
+	pipeline = logicalDevice.createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
 	
 	return true;
 }

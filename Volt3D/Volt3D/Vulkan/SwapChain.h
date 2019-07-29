@@ -37,7 +37,7 @@ namespace v3d
 			vk::SurfaceFormatKHR surfaceFormat;
 			vk::Extent2D extent;
 
-			bool init(const v3d::vulkan::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window);
+			bool init(const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window);
 
 			vk::SurfaceFormatKHR selectSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats) const;
 			vk::Extent2D selectExtent(const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window) const;

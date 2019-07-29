@@ -38,7 +38,7 @@ namespace v3d
 			std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions;
 			vk::VertexInputBindingDescription vertexInputBindingDescription;
 
-			bool init(const vk::Device& device, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout);
+			bool init(const vk::Device& logicalDevice, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout);
 
 		public:
 			Pipeline();
