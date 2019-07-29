@@ -51,10 +51,7 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 	, window( window )
 	, frameBufferSize( window.getFrameBufferSize() )
 
-	, vertexBuffer( nullptr )
-	, vbDeviceMemory( nullptr )
-	, indexBuffer( nullptr )
-	, ibDeviceMemory( nullptr )
+	, lenaBuffer()
 
 	, textureImage( nullptr )
 	, textureImageView( nullptr )
@@ -95,33 +92,29 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	createTextureImageView();
 
 	// temp
-	auto& vertices = vertexData.getVertexData();
-	//vertices.push_back( v3d::V3_C4( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } ) );
-
-	//vertices.push_back( v3d::V3_C4_T2( { -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } ) );
-
 	const glm::vec4 white( 1 );
 	const glm::vec4 red( 1, 0, 0, 1 );
 	const glm::vec4 green( 0, 1, 0, 1 );
 	const glm::vec4 blue( 0, 0, 1, 1 );
+
 	const float halfWidth = float( lena->getWidth() ) * 0.5f;
 	const float halfHeight = float( lena->getHeight() ) * 0.5f;
+
+	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 0.0f } ) );
 
-	auto& indices = indexData.getVertexData();
-	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
+	auto& indices = lenaBuffer.indexData.getVertexData();
+	indices = std::vector<uint16_t>( { 0,1,2,3,2,1,  4,5,6,7,6,5 } );
 
-	createVertexBuffer();
-	createIndexBuffer();
+	createVertexBuffer( lenaBuffer.vertexBuffer, lenaBuffer.vbDeviceMemory, lenaBuffer.vertexData.getDataSize(), lenaBuffer.vertexData.getData() );
+	createIndexBuffer( lenaBuffer.indexBuffer, lenaBuffer.ibDeviceMemory, lenaBuffer.indexData.getDataSize(), lenaBuffer.indexData.getData() );
 	createUniformBuffer();
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
@@ -367,7 +360,7 @@ bool v3d::vulkan::Context::initCommandBuffer()
 		auto newCB = new v3d::vulkan::CommandBuffer( cbs[i] );
 		commandBuffers.push_back( newCB );
 		newCB->begin( vk::CommandBufferUsageFlagBits::eSimultaneousUse );
-		newCB->record( framebuffers[i], renderPass, *swapChain, *pipeline, vertexBuffer, indexBuffer, static_cast<uint32_t>(indexData.getSize()), descriptorSets[i] );
+		newCB->record( framebuffers[i], renderPass, *swapChain, *pipeline, lenaBuffer.vertexBuffer, lenaBuffer.indexBuffer, static_cast<uint32_t>(lenaBuffer.indexData.getSize()), descriptorSets[i] );
 		newCB->end();
 	}
 
@@ -561,37 +554,37 @@ void v3d::vulkan::Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& 
 	device.freeCommandBuffers( commandPool, cb.getHandle() );
 }
 
-void v3d::vulkan::Context::createVertexBuffer()
+void v3d::vulkan::Context::createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void* vbData )
 {
-	vertexBuffer = createBuffer( vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer );
-	vbDeviceMemory = createDeviceMemory( vertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	vBuffer = createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer );
+	vbDeviceMemory = createDeviceMemory( vBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-	vk::Buffer stagingBuffer = createBuffer( vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	vk::Buffer stagingBuffer = createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingDeviceMemory, 0, vertexData.getDataSize() );
-	memcpy( data, vertexData.getData(), vertexData.getDataSize() );
+	void* data = device.mapMemory( stagingDeviceMemory, 0, vbDataSize );
+	memcpy( data, vbData, vbDataSize );
 	device.unmapMemory( stagingDeviceMemory );
 
-	copyBuffer( stagingBuffer, vertexBuffer, vertexData.getDataSize() );
+	copyBuffer( stagingBuffer, vBuffer, vbDataSize );
 
 	device.destroyBuffer( stagingBuffer );
 	device.freeMemory( stagingDeviceMemory );
 }
 
-void v3d::vulkan::Context::createIndexBuffer()
+void v3d::vulkan::Context::createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData )
 {
-	indexBuffer = createBuffer( indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer );
-	ibDeviceMemory = createDeviceMemory( indexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	iBuffer = createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer );
+	ibDeviceMemory = createDeviceMemory( iBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-	vk::Buffer stagingBuffer = createBuffer( indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	vk::Buffer stagingBuffer = createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingDeviceMemory, 0, indexData.getDataSize() );
-	memcpy( data, indexData.getData(), indexData.getDataSize() );
+	void* data = device.mapMemory( stagingDeviceMemory, 0, ibDataSize );
+	memcpy( data, ibData, ibDataSize );
 	device.unmapMemory( stagingDeviceMemory );
 
-	copyBuffer( stagingBuffer, indexBuffer, indexData.getDataSize() );
+	copyBuffer( stagingBuffer, iBuffer, ibDataSize );
 
 	device.destroyBuffer( stagingBuffer );
 	device.freeMemory( stagingDeviceMemory );
@@ -904,10 +897,10 @@ void v3d::vulkan::Context::release()
 	device.destroyImageView( textureImageView );
 	device.destroyImage( textureImage );
 	device.freeMemory( textureDeviceMemory );
-	device.destroyBuffer( vertexBuffer );
-	device.freeMemory( vbDeviceMemory );
-	device.destroyBuffer( indexBuffer );
-	device.freeMemory( ibDeviceMemory );
+	device.destroyBuffer( lenaBuffer.vertexBuffer );
+	device.freeMemory( lenaBuffer.vbDeviceMemory );
+	device.destroyBuffer( lenaBuffer.indexBuffer );
+	device.freeMemory( lenaBuffer.ibDeviceMemory );
 	for (auto& f : frameFences) { device.destroyFence( f ); }
 	frameFences.clear();
 	SAFE_DELETE( graphicsQueue );

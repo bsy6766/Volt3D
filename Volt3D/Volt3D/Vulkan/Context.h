@@ -83,12 +83,18 @@ namespace v3d
 			const v3d::glfw::Window& window;
 
 			// vertex & index buffer
-			vk::Buffer vertexBuffer;
-			vk::Buffer indexBuffer;
-			vk::DeviceMemory vbDeviceMemory;
-			vk::DeviceMemory ibDeviceMemory;
-			v3d::VertexData<v3d::V3_C4_T2> vertexData;
-			v3d::VertexData<uint16_t> indexData;
+			struct BufferData
+			{
+			public:
+				vk::Buffer vertexBuffer;
+				vk::Buffer indexBuffer;
+				vk::DeviceMemory vbDeviceMemory;
+				vk::DeviceMemory ibDeviceMemory;
+				v3d::VertexData<v3d::V3_C4_T2> vertexData;
+				v3d::VertexData<uint16_t> indexData;
+			};
+
+			BufferData lenaBuffer;
 
 			std::vector<vk::Buffer> uniformBuffers;
 			std::vector<vk::DeviceMemory> ubDeviceMemories;
@@ -127,15 +133,14 @@ namespace v3d
 			vk::Buffer createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const;
 			vk::DeviceMemory createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
 			void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
-			void createVertexBuffer();
-			void createIndexBuffer();
+			void createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void * vbData );
+			void createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData );
 
 			void createUniformBuffer();
 			void updateUniformBuffer( const uint32_t imageIndex );
 
 			void createTextureImage();
 			void createTextureImageView();
-			void createTextureSampler();
 			void createImage( const std::size_t w, const std::size_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory );
 			void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
 			void copyBufferToImage( vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
