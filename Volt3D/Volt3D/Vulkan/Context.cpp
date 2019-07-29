@@ -671,11 +671,11 @@ void v3d::vulkan::Context::createTextureImage( const char* path, v3d::vulkan::Co
 {
 	texture.imageSource = v3d::Image::createPNG( path );
 
-	vk::Buffer stagingBuffer = devices->createBuffer( texture.imageSource->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	vk::Buffer stagingBuffer = devices->createBuffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingBufferMemory = devices->createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = logicalDevice.mapMemory( stagingBufferMemory, 0, texture.imageSource->getSize() );
-	memcpy( data, texture.imageSource->getData(), texture.imageSource->getSize() );
+	void* data = logicalDevice.mapMemory( stagingBufferMemory, 0, texture.imageSource->getDataSize() );
+	memcpy( data, texture.imageSource->getData(), texture.imageSource->getDataSize() );
 	logicalDevice.unmapMemory( stagingBufferMemory );
 
 	createImage( texture.imageSource->getWidth(), texture.imageSource->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture.image, texture.deviceMemory );

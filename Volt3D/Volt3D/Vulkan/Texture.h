@@ -15,10 +15,11 @@
 namespace v3d
 {
 	class Image;
-	class Devices;
 	
 	namespace vulkan
 	{
+		class Devices;
+
 		class Texture
 		{
 		private:
