@@ -133,30 +133,30 @@ bool v3d::vulkan::Pipeline::init(const vk::Device& device, const v3d::vulkan::Sw
 	);
 
 	// Blending off
-	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
-	(
-		false,                      // blendEnable
-		vk::BlendFactor::eZero,     // srcColorBlendFactor
-		vk::BlendFactor::eZero,     // dstColorBlendFactor
-		vk::BlendOp::eAdd,          // colorBlendOp
-		vk::BlendFactor::eZero,     // srcAlphaBlendFactor
-		vk::BlendFactor::eZero,     // dstAlphaBlendFactor
-		vk::BlendOp::eAdd,          // alphaBlendOp
-		colorComponentFlags         // colorWriteMask
-	);
-
-	// typical blending
 	//vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
 	//(
-	//	true,									// blendEnable
-	//	vk::BlendFactor::eSrcAlpha,				// srcColorBlendFactor
-	//	vk::BlendFactor::eOneMinusSrcAlpha,     // dstColorBlendFactor
-	//	vk::BlendOp::eAdd,						// colorBlendOp
-	//	vk::BlendFactor::eOne,					// srcAlphaBlendFactor
-	//	vk::BlendFactor::eZero,					// dstAlphaBlendFactor
-	//	vk::BlendOp::eAdd,						// alphaBlendOp
-	//	colorComponentFlags						// colorWriteMask
+	//	false,                      // blendEnable
+	//	vk::BlendFactor::eZero,     // srcColorBlendFactor
+	//	vk::BlendFactor::eZero,     // dstColorBlendFactor
+	//	vk::BlendOp::eAdd,          // colorBlendOp
+	//	vk::BlendFactor::eZero,     // srcAlphaBlendFactor
+	//	vk::BlendFactor::eZero,     // dstAlphaBlendFactor
+	//	vk::BlendOp::eAdd,          // alphaBlendOp
+	//	colorComponentFlags         // colorWriteMask
 	//);
+
+	// typical blending
+	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
+	(
+		true,									// blendEnable
+		vk::BlendFactor::eSrcAlpha,				// srcColorBlendFactor
+		vk::BlendFactor::eOneMinusSrcAlpha,     // dstColorBlendFactor
+		vk::BlendOp::eAdd,						// colorBlendOp
+		vk::BlendFactor::eOne,					// srcAlphaBlendFactor
+		vk::BlendFactor::eZero,					// dstAlphaBlendFactor
+		vk::BlendOp::eAdd,						// alphaBlendOp
+		colorComponentFlags						// colorWriteMask
+	);
 
 	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo
 	(

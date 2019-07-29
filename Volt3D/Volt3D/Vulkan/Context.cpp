@@ -17,7 +17,6 @@
 #include "SwapChain.h"
 #include "ShaderModule.h"
 #include "Pipeline.h"
-#include "Queue.h"
 #include "CommandBuffer.h"
 #include "Utils.h"
 #include "Config/BuildConfig.h"
@@ -42,8 +41,8 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 	, imageAvailableSemaphores()
 	, renderFinishedSemaphores()
 	, frameFences()
-	, graphicsQueue( nullptr )
-	, presentQueue( nullptr )
+	, graphicsQueue()
+	, presentQueue()
 	, descriptorLayout( nullptr )
 	, descriptorPool( nullptr )
 	, descriptorSets()
@@ -53,9 +52,11 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 
 	, lenaBuffer()
 
-	, textureImage( nullptr )
-	, textureImageView( nullptr )
-	, textureDeviceMemory( nullptr )
+	, lena()
+	, RGBW()
+
+	, mvpUBO()
+	, dissolveUBO()
 {}
 
 v3d::vulkan::Context::~Context()
@@ -88,8 +89,8 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
-	createTextureImage();
-	createTextureImageView();
+	createTexture( "Textures/lena.png", lena );
+	createTexture( "Textures/heightmap.png", RGBW );
 
 	// temp
 	const glm::vec4 white( 1 );
@@ -97,25 +98,26 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	const glm::vec4 green( 0, 1, 0, 1 );
 	const glm::vec4 blue( 0, 0, 1, 1 );
 
-	const float halfWidth = float( lena->getWidth() ) * 0.5f;
-	const float halfHeight = float( lena->getHeight() ) * 0.5f;
+	const float halfWidth = float( lena.imageSource->getWidth() ) * 0.5f;
+	const float halfHeight = float( lena.imageSource->getHeight() ) * 0.5f;
 
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 0.0f } ) );
 
 	auto& indices = lenaBuffer.indexData.getVertexData();
-	indices = std::vector<uint16_t>( { 0,1,2,3,2,1,  4,5,6,7,6,5 } );
+	indices = std::vector<uint16_t>( { 0,1,2,3,2,1,  /*4,5,6,7,6,5*/ } );
 
 	createVertexBuffer( lenaBuffer.vertexBuffer, lenaBuffer.vbDeviceMemory, lenaBuffer.vertexData.getDataSize(), lenaBuffer.vertexData.getData() );
 	createIndexBuffer( lenaBuffer.indexBuffer, lenaBuffer.ibDeviceMemory, lenaBuffer.indexData.getDataSize(), lenaBuffer.indexData.getData() );
-	createUniformBuffer();
+	createUniformBuffer( mvpUBO, sizeof( glm::mat4 ) * 3 );
+	//createUniformBuffer( dissolveUBO, sizeof( float ) + sizeof( glm::vec3 ) );
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
 	if (!initSemaphore()) return false;
@@ -326,7 +328,7 @@ bool v3d::vulkan::Context::initFences()
 {
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		frameFences.push_back( device.createFence( vk::FenceCreateInfo( vk::FenceCreateFlags( vk::FenceCreateFlagBits::eSignaled ) ) ) );
+		frameFences.push_back( device.createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) ) );
 	}
 
 	return true;
@@ -334,11 +336,10 @@ bool v3d::vulkan::Context::initFences()
 
 bool v3d::vulkan::Context::initQueue()
 {
-	graphicsQueue = new v3d::vulkan::Queue();
-	if (!graphicsQueue->init( device, physicalDevice->getGraphicsQueueFamilyIndex() )) return false;
-
-	presentQueue = new v3d::vulkan::Queue();
-	if (!presentQueue->init( device, physicalDevice->getPresentQueueFamilyIndex() )) return false;
+	graphicsQueue = device.getQueue( physicalDevice->getGraphicsQueueFamilyIndex(), 0 );
+	presentQueue = device.getQueue( physicalDevice->getPresentQueueFamilyIndex(), 0 );
+	//if (!graphicsQueue->init( device, physicalDevice->getGraphicsQueueFamilyIndex() )) return false;
+	//if (!presentQueue->init( device, physicalDevice->getPresentQueueFamilyIndex() )) return false;
 	return true;
 }
 
@@ -369,7 +370,7 @@ bool v3d::vulkan::Context::initCommandBuffer()
 
 bool v3d::vulkan::Context::initDescriptorLayout()
 {
-	vk::DescriptorSetLayoutBinding uboLayoutBinding
+	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
 	(
 		0,
 		vk::DescriptorType::eUniformBuffer,
@@ -377,7 +378,7 @@ bool v3d::vulkan::Context::initDescriptorLayout()
 		vk::ShaderStageFlagBits::eVertex
 	);
 
-	vk::DescriptorSetLayoutBinding samplerBinding
+	vk::DescriptorSetLayoutBinding lenaSamplerBinding
 	(
 		1,
 		vk::DescriptorType::eCombinedImageSampler,
@@ -385,12 +386,31 @@ bool v3d::vulkan::Context::initDescriptorLayout()
 		vk::ShaderStageFlagBits::eFragment
 	);
 
-	vk::DescriptorSetLayoutBinding bindings[2] = { uboLayoutBinding, samplerBinding };
+	vk::DescriptorSetLayoutBinding RGBWSamplerBinding
+	(
+		2,
+		vk::DescriptorType::eCombinedImageSampler,
+		1,
+		vk::ShaderStageFlagBits::eFragment
+	);
+
+	//vk::DescriptorSetLayoutBinding dissolveUBOLayoutBinding
+	//(
+	//	3,
+	//	vk::DescriptorType::eUniformBuffer,
+	//	1,
+	//	vk::ShaderStageFlagBits::eFragment
+	//);
+
+	//const uint32_t size = 4;
+	//vk::DescriptorSetLayoutBinding bindings[size] = { mvpUBOLayoutBinding, lenaSamplerBinding, RGBWSamplerBinding, dissolveUBOLayoutBinding };
+	const uint32_t size = 3;
+	vk::DescriptorSetLayoutBinding bindings[size] = { mvpUBOLayoutBinding, lenaSamplerBinding, RGBWSamplerBinding };
 
 	vk::DescriptorSetLayoutCreateInfo layoutInfo
 	(
 		vk::DescriptorSetLayoutCreateFlags(),
-		2, 
+		size, 
 		bindings
 	);
 
@@ -407,19 +427,26 @@ bool v3d::vulkan::Context::initDescriptorPool()
 		static_cast<uint32_t>(images.size())
 	);
 
-	vk::DescriptorPoolSize samplerPoolSize
+	vk::DescriptorPoolSize lenaSamplerPoolSize
 	(
 		vk::DescriptorType::eCombinedImageSampler,
 		static_cast<uint32_t>(images.size())
 	);
 
-	vk::DescriptorPoolSize poolSizes[2] = { uboPoolSize, samplerPoolSize };
+	vk::DescriptorPoolSize RGBWSamplerPoolSize
+	(
+		vk::DescriptorType::eCombinedImageSampler,
+		static_cast<uint32_t>(images.size())
+	);
+
+	const uint32_t size = 3;
+	vk::DescriptorPoolSize poolSizes[size] = { uboPoolSize, lenaSamplerPoolSize, RGBWSamplerPoolSize };
 
 	vk::DescriptorPoolCreateInfo poolInfo
 	(
 		vk::DescriptorPoolCreateFlags(),
 		static_cast<uint32_t>(images.size()),
-		2,
+		size,
 		poolSizes
 	);
 
@@ -444,45 +471,84 @@ bool v3d::vulkan::Context::initDescriptorSet()
 
 	for (std::size_t i = 0; i < size; i++)
 	{
-		vk::DescriptorBufferInfo bufferInfo
+		vk::DescriptorBufferInfo mvpUBOInfo
 		(
-			uniformBuffers[i],
+			mvpUBO.buffers[i],
 			vk::DeviceSize( 0 ),
 			vk::DeviceSize( sizeof( glm::mat4 ) * 3 )
 		);
 
-		vk::DescriptorImageInfo imageInfo
+		vk::DescriptorImageInfo lenaImageInfo
 		(
-			textureSampler,
-			textureImageView,
+			lena.sampler,
+			lena.imageView,
 			vk::ImageLayout::eShaderReadOnlyOptimal
 		);
 
-		vk::WriteDescriptorSet uboDescriptorWrite
+		vk::DescriptorImageInfo RGBWImageInfo
+		(
+			RGBW.sampler,
+			RGBW.imageView,
+			vk::ImageLayout::eShaderReadOnlyOptimal
+		);
+
+		//vk::DescriptorBufferInfo dissolveUBOInfo
+		//{
+		//	dissolveUBO.buffers[i],
+		//	vk::DeviceSize( 0 ),
+		//	vk::DeviceSize( sizeof( float ) + sizeof( glm::vec3 ) )
+		//};
+
+		vk::WriteDescriptorSet mvpUBODescriptorWrite
 		(
 			descriptorSets[i],
 			0, 0,
 			1,
 			vk::DescriptorType::eUniformBuffer,
 			nullptr,
-			&bufferInfo,
+			&mvpUBOInfo,
 			nullptr
 		);
 
-		vk::WriteDescriptorSet samplerDescriptorWrite
+		vk::WriteDescriptorSet lenaSamplerDescriptorWrite
 		(
 			descriptorSets[i],
 			1, 0,
 			1,
 			vk::DescriptorType::eCombinedImageSampler,
-			&imageInfo,
+			&lenaImageInfo,
 			nullptr,
 			nullptr
 		);
 
-		const vk::WriteDescriptorSet descriptorWrites[2] = { uboDescriptorWrite, samplerDescriptorWrite };
+		vk::WriteDescriptorSet RGBWSamplerDescriptorWrite
+		(
+			descriptorSets[i],
+			2, 0,
+			1,
+			vk::DescriptorType::eCombinedImageSampler,
+			&RGBWImageInfo,
+			nullptr,
+			nullptr
+		);
 
-		device.updateDescriptorSets( 2, descriptorWrites, 0, nullptr );
+		//vk::WriteDescriptorSet dissolveUBODescriptorWrite
+		//(
+		//	descriptorSets[i],
+		//	3, 0,
+		//	1,
+		//	vk::DescriptorType::eUniformBuffer,
+		//	nullptr,
+		//	&dissolveUBOInfo,
+		//	nullptr
+		//);
+
+		//const uint32_t size = 4;
+		//const vk::WriteDescriptorSet descriptorWrites[size] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite, RGBWSamplerDescriptorWrite, dissolveUBODescriptorWrite };
+		const uint32_t uboSize = 3;
+		const vk::WriteDescriptorSet descriptorWrites[uboSize] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite, RGBWSamplerDescriptorWrite };
+
+		device.updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
 	}
 
 	return true;
@@ -500,8 +566,9 @@ bool v3d::vulkan::Context::recreateSwapChain()
 	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
-	if (!initCommandPool()) return false;
-	createUniformBuffer();
+	if (!initCommandPool()) return false;	
+	createUniformBuffer( mvpUBO, sizeof( glm::mat4 ) * 3 );
+	//createUniformBuffer( dissolveUBO, sizeof( float ) + sizeof( glm::vec3 ) );
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
 	if (!initCommandBuffer()) return false;
@@ -590,22 +657,21 @@ void v3d::vulkan::Context::createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMem
 	device.freeMemory( stagingDeviceMemory );
 }
 
-void v3d::vulkan::Context::createUniformBuffer()
+void v3d::vulkan::Context::createUniformBuffer( UBO& ubo, const std::size_t uboDataSize )
 {
-	const vk::DeviceSize bufferSize = sizeof( glm::mat4 ) * 3;
 	const std::size_t size = imageViews.size();
 
-	uniformBuffers.resize( size );
-	ubDeviceMemories.resize( size );
+	ubo.buffers.resize( size );
+	ubo.deviceMemories.resize( size );
 
 	for (std::size_t i = 0; i < size; i++)
 	{
-		uniformBuffers.at( i ) = createBuffer( bufferSize, vk::BufferUsageFlagBits::eUniformBuffer );
-		ubDeviceMemories.at( i ) = createDeviceMemory( uniformBuffers.at( i ), vk::MemoryPropertyFlagBits::eHostCoherent );
+		ubo.buffers.at( i ) = createBuffer( uboDataSize, vk::BufferUsageFlagBits::eUniformBuffer );
+		ubo.deviceMemories.at( i ) = createDeviceMemory( ubo.buffers.at( i ), vk::MemoryPropertyFlagBits::eHostCoherent );
 	}
 }
 
-void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
+void v3d::vulkan::Context::updateMVPUBO( const uint32_t imageIndex )
 {
 	static struct UniformBufferObject { glm::mat4 m, v, p; } ubo;
 
@@ -633,35 +699,58 @@ void v3d::vulkan::Context::updateUniformBuffer( const uint32_t imageIndex )
 	const float fars = 1000.0f;
 	ubo.p = glm::perspective( glm::radians( fovy ), aspect, nears, fars );
 
-	void* data = device.mapMemory( ubDeviceMemories[imageIndex], 0, sizeof( ubo ) );
+	void* data = device.mapMemory( mvpUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
 	memcpy( data, &ubo, sizeof( ubo ) );
-	device.unmapMemory( ubDeviceMemories[imageIndex] );
+	device.unmapMemory( mvpUBO.deviceMemories[imageIndex] );
 }
 
-void v3d::vulkan::Context::createTextureImage()
+void v3d::vulkan::Context::updateDissolveUBO( const uint32_t imageIndex )
 {
-	lena = v3d::Image::createPNG( "Textures/lena.png" );
+	static struct UniformBufferObject { glm::vec3 c; float v = 0.0f; } ubo;
+	static bool flip = true;
 
-	vk::Buffer stagingBuffer = createBuffer( lena->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	ubo.c = glm::vec3( 0,0,1 );
+	const float d = 1.0f / 8000.0f;
+	if (flip) ubo.v += d; else ubo.v -= d;
+	if (ubo.v > 1.0f) flip = false;
+	else if(ubo.v < 0.0f) flip = true;
+	ubo.v = glm::clamp( ubo.v, 0.0f, 1.0f );
+
+	void* data = device.mapMemory( dissolveUBO.deviceMemories[imageIndex], 0, sizeof( ubo ) );
+	memcpy( data, &ubo, sizeof( ubo ) );
+	device.unmapMemory( dissolveUBO.deviceMemories[imageIndex] );
+}
+
+void v3d::vulkan::Context::createTexture( const char* path, v3d::vulkan::Context::Texture& texture )
+{
+	createTextureImage( path, texture );
+	createTextureImageView( texture );
+}
+
+void v3d::vulkan::Context::createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture )
+{
+	texture.imageSource = v3d::Image::createPNG( path );
+
+	vk::Buffer stagingBuffer = createBuffer( texture.imageSource->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
 	vk::DeviceMemory stagingBufferMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = device.mapMemory( stagingBufferMemory, 0, lena->getSize() );
-	memcpy( data, lena->getData(), lena->getSize() );
+	void* data = device.mapMemory( stagingBufferMemory, 0, texture.imageSource->getSize() );
+	memcpy( data, texture.imageSource->getData(), texture.imageSource->getSize() );
 	device.unmapMemory( stagingBufferMemory );
 
-	createImage( lena->getWidth(), lena->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, textureImage, textureDeviceMemory );
+	createImage( texture.imageSource->getWidth(), texture.imageSource->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture.image, texture.deviceMemory );
 
-	transitionImageLayout( textureImage, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
-	copyBufferToImage( stagingBuffer, textureImage, uint32_t( lena->getWidth() ), uint32_t( lena->getHeight() ) );
-	transitionImageLayout( textureImage, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
+	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
+	copyBufferToImage( stagingBuffer, texture.image, uint32_t( texture.imageSource->getWidth() ), uint32_t( texture.imageSource->getHeight() ) );
+	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
 
 	device.destroyBuffer( stagingBuffer );
 	device.freeMemory( stagingBufferMemory );
 }
 
-void v3d::vulkan::Context::createTextureImageView()
+void v3d::vulkan::Context::createTextureImageView( v3d::vulkan::Context::Texture& texture )
 {
-	textureImageView = createImageView( textureImage, vk::Format::eR8G8B8A8Unorm );
+	texture.imageView = createImageView( texture.image, vk::Format::eR8G8B8A8Unorm );
 
 	vk::SamplerCreateInfo createInfo
 	(
@@ -683,7 +772,7 @@ void v3d::vulkan::Context::createTextureImageView()
 		false
 	);
 
-	textureSampler = device.createSampler( createInfo, nullptr );
+	texture.sampler = device.createSampler( createInfo, nullptr );
 }
 
 void v3d::vulkan::Context::createImage( const std::size_t w, const std::size_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory )
@@ -812,8 +901,8 @@ void v3d::vulkan::Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &cb.commandBuffer;
 
-	graphicsQueue->submit( submitInfo );
-	graphicsQueue->waitIdle();
+	graphicsQueue.submit( submitInfo, nullptr );
+	graphicsQueue.waitIdle();
 }
 
 void v3d::vulkan::Context::render()
@@ -832,7 +921,8 @@ void v3d::vulkan::Context::render()
 	}
 	assert( result.value < framebuffers.size() );
 
-	updateUniformBuffer( result.value );
+	updateMVPUBO( result.value );
+	//updateDissolveUBO( result.value );
 
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame] };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame] };
@@ -851,7 +941,7 @@ void v3d::vulkan::Context::render()
 
 	device.resetFences( frameFences[current_frame] );
 
-	graphicsQueue->submit( submitInfo, frameFences[current_frame] );
+	graphicsQueue.submit( submitInfo, frameFences[current_frame] );
 
 	vk::SwapchainKHR swapChains[] = { swapChain->get() };
 	vk::PresentInfoKHR presentInfo
@@ -863,7 +953,15 @@ void v3d::vulkan::Context::render()
 		&result.value
 	);
 
-	const vk::Result presentResult = presentQueue->present( presentInfo );
+	vk::Result presentResult = vk::Result::eSuccess;
+	try	
+	{
+		presentResult = presentQueue.presentKHR( presentInfo );
+	}
+	catch (vk::OutOfDateKHRError& ood)
+	{
+		presentResult = vk::Result::eErrorOutOfDateKHR;
+	}
 
 	if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR || frameBufferSize != window.getFrameBufferSize())
 	{
@@ -892,19 +990,22 @@ void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
-	SAFE_DELETE( lena );
-	device.destroySampler( textureSampler );
-	device.destroyImageView( textureImageView );
-	device.destroyImage( textureImage );
-	device.freeMemory( textureDeviceMemory );
+	SAFE_DELETE( lena.imageSource );
+	device.destroySampler( lena.sampler );
+	device.destroyImageView( lena.imageView );
+	device.destroyImage( lena.image );
+	device.freeMemory( lena.deviceMemory );
+	SAFE_DELETE( RGBW.imageSource );
+	device.destroySampler( RGBW.sampler );
+	device.destroyImageView( RGBW.imageView );
+	device.destroyImage( RGBW.image );
+	device.freeMemory( RGBW.deviceMemory );
 	device.destroyBuffer( lenaBuffer.vertexBuffer );
 	device.freeMemory( lenaBuffer.vbDeviceMemory );
 	device.destroyBuffer( lenaBuffer.indexBuffer );
 	device.freeMemory( lenaBuffer.ibDeviceMemory );
 	for (auto& f : frameFences) { device.destroyFence( f ); }
 	frameFences.clear();
-	SAFE_DELETE( graphicsQueue );
-	SAFE_DELETE( presentQueue );
 	for (auto& s : imageAvailableSemaphores) { device.destroySemaphore( s ); }
 	imageAvailableSemaphores.clear();
 	for (auto& s : renderFinishedSemaphores) { device.destroySemaphore( s ); }
@@ -923,11 +1024,15 @@ void v3d::vulkan::Context::releaseSwapChain()
 {
 	for (std::size_t i = 0; i < images.size(); i++)
 	{
-		device.destroyBuffer( uniformBuffers.at( i ) );
-		device.freeMemory( ubDeviceMemories.at( i ) );
+		device.destroyBuffer( mvpUBO.buffers.at( i ) );
+		device.freeMemory( mvpUBO.deviceMemories.at( i ) );
+		//device.destroyBuffer( dissolveUBO.buffers.at( i ) );
+		//device.freeMemory( dissolveUBO.deviceMemories.at( i ) );
 	}
-	uniformBuffers.clear();
-	ubDeviceMemories.clear();
+	mvpUBO.buffers.clear();
+	mvpUBO.deviceMemories.clear();
+	//dissolveUBO.buffers.clear();
+	//dissolveUBO.deviceMemories.clear();
 	device.destroyDescriptorSetLayout( descriptorLayout );
 	device.destroyDescriptorPool( descriptorPool );
 	for (auto& cb : commandBuffers) { device.freeCommandBuffers( commandPool, cb->getHandle() ); SAFE_DELETE( cb ); }

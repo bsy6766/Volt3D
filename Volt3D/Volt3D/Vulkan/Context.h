@@ -69,8 +69,8 @@ namespace v3d
 			std::vector<vk::Semaphore> imageAvailableSemaphores;
 			std::vector<vk::Semaphore> renderFinishedSemaphores;
 			std::vector<vk::Fence> frameFences;
-			v3d::vulkan::Queue* graphicsQueue;
-			v3d::vulkan::Queue* presentQueue;
+			vk::Queue graphicsQueue;
+			vk::Queue presentQueue;
 			std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
 			vk::DescriptorSetLayout descriptorLayout;
 			vk::DescriptorPool descriptorPool;
@@ -96,14 +96,27 @@ namespace v3d
 
 			BufferData lenaBuffer;
 
-			std::vector<vk::Buffer> uniformBuffers;
-			std::vector<vk::DeviceMemory> ubDeviceMemories;
+			struct UniformBufferObject
+			{
+				std::vector<vk::Buffer> buffers;
+				std::vector<vk::DeviceMemory> deviceMemories;
+			} typedef UBO;
 
-			vk::Image textureImage;
-			vk::ImageView textureImageView;
-			vk::Sampler textureSampler;
-			vk::DeviceMemory textureDeviceMemory;
-			v3d::Image* lena = nullptr;
+			UBO mvpUBO;
+			UBO dissolveUBO;
+
+			struct Texture
+			{
+			public:
+				vk::Image image;
+				vk::ImageView imageView;
+				vk::Sampler sampler;
+				vk::DeviceMemory deviceMemory;
+				v3d::Image* imageSource;
+			};
+
+			Texture lena;
+			Texture RGBW;
 
 			bool initInstance( const v3d::glfw::Window& window );
 			bool initDebugReport();
@@ -136,11 +149,13 @@ namespace v3d
 			void createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void * vbData );
 			void createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData );
 
-			void createUniformBuffer();
-			void updateUniformBuffer( const uint32_t imageIndex );
+			void createUniformBuffer( UBO& ubo, const std::size_t uboDataSize );
+			void updateMVPUBO( const uint32_t imageIndex );
+			void updateDissolveUBO( const uint32_t imageIndex );
 
-			void createTextureImage();
-			void createTextureImageView();
+			void createTexture( const char* path, v3d::vulkan::Context::Texture& texture );
+			void createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture );
+			void createTextureImageView( v3d::vulkan::Context::Texture& texture );
 			void createImage( const std::size_t w, const std::size_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory );
 			void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
 			void copyBufferToImage( vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );

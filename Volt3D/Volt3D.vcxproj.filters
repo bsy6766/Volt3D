@@ -95,9 +95,6 @@
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Queue.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Core\Time.cpp">
       <Filter>Volt3D\Core</Filter>
     </ClCompile>
@@ -255,9 +252,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Preference.h">
       <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Queue.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Core\Time.h">
       <Filter>Volt3D\Core</Filter>

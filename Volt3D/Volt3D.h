@@ -96,7 +96,6 @@
 #include "Vulkan/Instance.h"
 #include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Pipeline.h"
-#include "Vulkan/Queue.h"
 #include "Vulkan/ShaderModule.h"
 #include "Vulkan/SwapChain.h"
 #include "Vulkan/Utils.h"
