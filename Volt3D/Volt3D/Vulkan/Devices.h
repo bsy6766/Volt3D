@@ -34,10 +34,10 @@ namespace v3d
 		private:
 			vk::PhysicalDevice physicalDevice;
 			vk::Device logicalDevice;
-			VkPhysicalDeviceProperties properties;
-			VkPhysicalDeviceFeatures features;
+			vk::PhysicalDeviceProperties properties;
+			vk::PhysicalDeviceFeatures features;
 			//VkPhysicalDeviceFeatures enabledFeatures;
-			VkPhysicalDeviceMemoryProperties memoryProperties;
+			vk::PhysicalDeviceMemoryProperties memoryProperties;
 			std::vector<vk::QueueFamilyProperties> queueFamilyProperties;
 
 			struct QueueFamilyIndex
@@ -53,29 +53,28 @@ namespace v3d
 			bool initLogicalDevice( const vk::SurfaceKHR& surface );
 			bool initQueueFamilyIndices( const vk::SurfaceKHR& surface );
 
-			bool isSuitable( const vk::PhysicalDevice& physicalDevice );
-
 		public:
 			Devices();
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Devices );
 			DEFAULT_MOVE_CONSTRUCTORS( Devices );
 			~Devices() {}
 
-			vk::Device createDeviceUnique( vk::DeviceCreateInfo& createInfo ) const;
-			std::vector<vk::QueueFamilyProperties> getQueueFamilyProperties() const;
 			vk::SurfaceCapabilitiesKHR getSurfaceCapabilitiesKHR( const vk::SurfaceKHR& surface ) const;
 			vk::Bool32 getSurfaceSupportKHR( const uint32_t index, const vk::SurfaceKHR& surface ) const;
 			std::vector<vk::SurfaceFormatKHR> getSurfaceFormatsKHR( const vk::SurfaceKHR& surface ) const;
 			std::vector<vk::PresentModeKHR> getSurfacePresentModesKHR( const vk::SurfaceKHR& surface ) const;
+
 			vk::PhysicalDeviceProperties getProperties() const;
 			vk::PhysicalDeviceFeatures getFeatures() const;
 			vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
 			std::vector<vk::ExtensionProperties> EnumerateDeviceExtensionProperties() const;
 			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
+
 			uint32_t getGraphicsQueueFamilyIndex() const;
 			uint32_t getComputeQueueFamilyIndex() const;
 			uint32_t getTransferQueueFamilyIndex() const;
 			uint32_t getPresentQueueFamilyIndex() const;
+
 			uint32_t getMemoryTypeIndex( const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
 		};
 	}
