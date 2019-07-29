@@ -54,6 +54,9 @@
     <Filter Include="Volt3D\Debug">
       <UniqueIdentifier>{675853ce-73ef-40f4-b7d5-170ed8399842}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Texture">
+      <UniqueIdentifier>{3b241cd4-93f5-404c-8f2d-21ae908721ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

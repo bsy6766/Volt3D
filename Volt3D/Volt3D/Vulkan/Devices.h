@@ -70,6 +70,7 @@ namespace v3d
 			vk::PhysicalDeviceMemoryProperties getMemoryProperties() const;
 			std::vector<vk::ExtensionProperties> EnumerateDeviceExtensionProperties() const;
 			std::vector<vk::LayerProperties> enumerateDeviceLayerProperties() const;
+			vk::PhysicalDeviceLimits getLimits() const;
 
 			uint32_t getGraphicsQueueFamilyIndex() const;
 			uint32_t getComputeQueueFamilyIndex() const;

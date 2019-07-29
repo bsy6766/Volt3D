@@ -87,6 +87,125 @@ bool v3d::vulkan::Devices::initPhysicalDevice( const std::vector<vk::PhysicalDev
 			physicalDevice = curPD;
 
 			properties = physicalDevice.getProperties();
+
+#ifdef BUILD_DEBUG
+			auto& logger = v3d::Logger::getInstance();
+			logger.trace( "maxImageDimension1D: " + std::to_string( properties.limits.maxImageDimension1D ) );
+			logger.trace( "maxImageDimension2D: " + std::to_string( properties.limits.maxImageDimension2D ) );
+			logger.trace( "maxImageDimension3D: " + std::to_string( properties.limits.maxImageDimension3D ) );
+			logger.trace( "maxImageDimensionCube: " + std::to_string( properties.limits.maxImageDimensionCube ) );
+			logger.trace( "maxImageArrayLayers: " + std::to_string( properties.limits.maxImageArrayLayers ) );
+			logger.trace( "maxTexelBufferElements: " + std::to_string( properties.limits.maxTexelBufferElements ) );
+			logger.trace( "maxUniformBufferRange: " + std::to_string( properties.limits.maxUniformBufferRange ) );
+			logger.trace( "maxStorageBufferRange: " + std::to_string( properties.limits.maxStorageBufferRange ) );
+			logger.trace( "maxPushConstantsSize: " + std::to_string( properties.limits.maxPushConstantsSize ) );
+			logger.trace( "maxMemoryAllocationCount: " + std::to_string( properties.limits.maxMemoryAllocationCount ) );
+			logger.trace( "maxSamplerAllocationCount: " + std::to_string( properties.limits.maxSamplerAllocationCount ) );
+			logger.trace( "bufferImageGranularity: " + std::to_string( properties.limits.bufferImageGranularity ) );
+			logger.trace( "sparseAddressSpaceSize: " + std::to_string( properties.limits.sparseAddressSpaceSize ) );
+			logger.trace( "maxBoundDescriptorSets: " + std::to_string( properties.limits.maxBoundDescriptorSets ) );
+			logger.trace( "maxPerStageDescriptorSamplers: " + std::to_string( properties.limits.maxPerStageDescriptorSamplers ) );
+			logger.trace( "maxPerStageDescriptorUniformBuffers: " + std::to_string( properties.limits.maxPerStageDescriptorUniformBuffers ) );
+			logger.trace( "maxPerStageDescriptorStorageBuffers: " + std::to_string( properties.limits.maxPerStageDescriptorStorageBuffers ) );
+			logger.trace( "maxPerStageDescriptorSampledImages: " + std::to_string( properties.limits.maxPerStageDescriptorSampledImages ) );
+			logger.trace( "maxPerStageDescriptorStorageImages: " + std::to_string( properties.limits.maxPerStageDescriptorStorageImages ) );
+			logger.trace( "maxPerStageDescriptorInputAttachments: " + std::to_string( properties.limits.maxPerStageDescriptorInputAttachments ) );
+			logger.trace( "maxPerStageResources: " + std::to_string( properties.limits.maxPerStageResources ) );
+			logger.trace( "maxDescriptorSetSamplers: " + std::to_string( properties.limits.maxDescriptorSetSamplers ) );
+			logger.trace( "maxDescriptorSetUniformBuffers: " + std::to_string( properties.limits.maxDescriptorSetUniformBuffers ) );
+			logger.trace( "maxDescriptorSetUniformBuffersDynamic: " + std::to_string( properties.limits.maxDescriptorSetUniformBuffersDynamic ) );
+			logger.trace( "maxDescriptorSetStorageBuffers: " + std::to_string( properties.limits.maxDescriptorSetStorageBuffers ) );
+			logger.trace( "maxDescriptorSetStorageBuffersDynamic: " + std::to_string( properties.limits.maxDescriptorSetStorageBuffersDynamic ) );
+			logger.trace( "maxDescriptorSetSampledImages: " + std::to_string( properties.limits.maxDescriptorSetSampledImages ) );
+			logger.trace( "maxDescriptorSetStorageImages: " + std::to_string( properties.limits.maxDescriptorSetStorageImages ) );
+			logger.trace( "maxDescriptorSetInputAttachments: " + std::to_string( properties.limits.maxDescriptorSetInputAttachments ) );
+			logger.trace( "maxVertexInputAttributes: " + std::to_string( properties.limits.maxVertexInputAttributes ) );
+			logger.trace( "maxVertexInputBindings: " + std::to_string( properties.limits.maxVertexInputBindings ) );
+			logger.trace( "maxVertexInputAttributeOffset: " + std::to_string( properties.limits.maxVertexInputAttributeOffset ) );
+			logger.trace( "maxVertexInputBindingStride: " + std::to_string( properties.limits.maxVertexInputBindingStride ) );
+			logger.trace( "maxVertexOutputComponents: " + std::to_string( properties.limits.maxVertexOutputComponents ) );
+			logger.trace( "maxTessellationGenerationLevel: " + std::to_string( properties.limits.maxTessellationGenerationLevel ) );
+			logger.trace( "maxTessellationPatchSize: " + std::to_string( properties.limits.maxTessellationPatchSize ) );
+			logger.trace( "maxTessellationControlPerVertexInputComponents: " + std::to_string( properties.limits.maxTessellationControlPerVertexInputComponents ) );
+			logger.trace( "maxTessellationControlPerVertexOutputComponents: " + std::to_string( properties.limits.maxTessellationControlPerVertexOutputComponents ) );
+			logger.trace( "maxTessellationControlPerPatchOutputComponents: " + std::to_string( properties.limits.maxTessellationControlPerPatchOutputComponents ) );
+			logger.trace( "maxTessellationControlTotalOutputComponents: " + std::to_string( properties.limits.maxTessellationControlTotalOutputComponents ) );
+			logger.trace( "maxTessellationEvaluationInputComponents: " + std::to_string( properties.limits.maxTessellationEvaluationInputComponents ) );
+			logger.trace( "maxTessellationEvaluationOutputComponents: " + std::to_string( properties.limits.maxTessellationEvaluationOutputComponents ) );
+			logger.trace( "maxGeometryShaderInvocations: " + std::to_string( properties.limits.maxGeometryShaderInvocations ) );
+			logger.trace( "maxGeometryInputComponents: " + std::to_string( properties.limits.maxGeometryInputComponents ) );
+			logger.trace( "maxGeometryOutputComponents: " + std::to_string( properties.limits.maxGeometryOutputComponents ) );
+			logger.trace( "maxGeometryOutputVertices: " + std::to_string( properties.limits.maxGeometryOutputVertices ) );
+			logger.trace( "maxGeometryTotalOutputComponents: " + std::to_string( properties.limits.maxGeometryTotalOutputComponents ) );
+			logger.trace( "maxFragmentInputComponents: " + std::to_string( properties.limits.maxFragmentInputComponents ) );
+			logger.trace( "maxFragmentOutputAttachments: " + std::to_string( properties.limits.maxFragmentOutputAttachments ) );
+			logger.trace( "maxFragmentDualSrcAttachments: " + std::to_string( properties.limits.maxFragmentDualSrcAttachments ) );
+			logger.trace( "maxFragmentCombinedOutputResources: " + std::to_string( properties.limits.maxFragmentCombinedOutputResources ) );
+			logger.trace( "maxComputeSharedMemorySize: " + std::to_string( properties.limits.maxComputeSharedMemorySize ) );
+			logger.trace( "maxComputeWorkGroupCount[0]: " + std::to_string( properties.limits.maxComputeWorkGroupCount[0] ) );
+			logger.trace( "maxComputeWorkGroupCount[1]: " + std::to_string( properties.limits.maxComputeWorkGroupCount[1] ) );
+			logger.trace( "maxComputeWorkGroupCount[2]: " + std::to_string( properties.limits.maxComputeWorkGroupCount[2] ) );
+			logger.trace( "maxComputeWorkGroupInvocations: " + std::to_string( properties.limits.maxComputeWorkGroupInvocations ) );
+			logger.trace( "maxComputeWorkGroupSize[0]: " + std::to_string( properties.limits.maxComputeWorkGroupSize[0] ) );
+			logger.trace( "maxComputeWorkGroupSize[1]: " + std::to_string( properties.limits.maxComputeWorkGroupSize[1] ) );
+			logger.trace( "maxComputeWorkGroupSize[2]: " + std::to_string( properties.limits.maxComputeWorkGroupSize[2] ) );
+			logger.trace( "subPixelPrecisionBits: " + std::to_string( properties.limits.subPixelPrecisionBits ) );
+			logger.trace( "subTexelPrecisionBits: " + std::to_string( properties.limits.subTexelPrecisionBits ) );
+			logger.trace( "mipmapPrecisionBits: " + std::to_string( properties.limits.mipmapPrecisionBits ) );
+			logger.trace( "maxDrawIndexedIndexValue: " + std::to_string( properties.limits.maxDrawIndexedIndexValue ) );
+			logger.trace( "maxDrawIndirectCount: " + std::to_string( properties.limits.maxDrawIndirectCount ) );
+			logger.trace( "maxSamplerLodBias: " + std::to_string( properties.limits.maxSamplerLodBias ) );
+			logger.trace( "maxSamplerAnisotropy: " + std::to_string( properties.limits.maxSamplerAnisotropy ) );
+			logger.trace( "maxViewports: " + std::to_string( properties.limits.maxViewports ) );
+			logger.trace( "maxViewportDimensions[0]: " + std::to_string( properties.limits.maxViewportDimensions[0] ) );
+			logger.trace( "maxViewportDimensions[1]: " + std::to_string( properties.limits.maxViewportDimensions[1] ) );
+			logger.trace( "viewportBoundsRange[0]: " + std::to_string( properties.limits.viewportBoundsRange[0] ) );
+			logger.trace( "viewportBoundsRange[1]: " + std::to_string( properties.limits.viewportBoundsRange[1] ) );
+			logger.trace( "viewportSubPixelBits: " + std::to_string( properties.limits.viewportSubPixelBits ) );
+			logger.trace( "minMemoryMapAlignment: " + std::to_string( properties.limits.minMemoryMapAlignment ) );
+			logger.trace( "minTexelBufferOffsetAlignment: " + std::to_string( properties.limits.minTexelBufferOffsetAlignment ) );
+			logger.trace( "minUniformBufferOffsetAlignment: " + std::to_string( properties.limits.minUniformBufferOffsetAlignment ) );
+			logger.trace( "minStorageBufferOffsetAlignment: " + std::to_string( properties.limits.minStorageBufferOffsetAlignment ) );
+			logger.trace( "minTexelOffset: " + std::to_string( properties.limits.minTexelOffset ) );
+			logger.trace( "maxTexelOffset: " + std::to_string( properties.limits.maxTexelOffset ) );
+			logger.trace( "minTexelGatherOffset: " + std::to_string( properties.limits.minTexelGatherOffset ) );
+			logger.trace( "maxTexelGatherOffset: " + std::to_string( properties.limits.maxTexelGatherOffset ) );
+			logger.trace( "minInterpolationOffset: " + std::to_string( properties.limits.minInterpolationOffset ) );
+			logger.trace( "maxInterpolationOffset: " + std::to_string( properties.limits.maxInterpolationOffset ) );
+			logger.trace( "subPixelInterpolationOffsetBits: " + std::to_string( properties.limits.subPixelInterpolationOffsetBits ) );
+			logger.trace( "maxFramebufferWidth: " + std::to_string( properties.limits.maxFramebufferWidth ) );
+			logger.trace( "maxFramebufferHeight: " + std::to_string( properties.limits.maxFramebufferHeight ) );
+			logger.trace( "maxFramebufferLayers: " + std::to_string( properties.limits.maxFramebufferLayers ) );
+			logger.trace( "framebufferColorSampleCounts: " + to_string( properties.limits.framebufferColorSampleCounts ) );
+			logger.trace( "framebufferDepthSampleCounts: " + to_string( properties.limits.framebufferDepthSampleCounts ) );
+			logger.trace( "framebufferStencilSampleCounts: " + to_string( properties.limits.framebufferStencilSampleCounts ) );
+			logger.trace( "framebufferNoAttachmentsSampleCounts: " + to_string( properties.limits.framebufferNoAttachmentsSampleCounts ) );
+			logger.trace( "maxColorAttachments: " + std::to_string( properties.limits.maxColorAttachments ) );
+			logger.trace( "sampledImageColorSampleCounts: " + to_string( properties.limits.sampledImageColorSampleCounts ) );
+			logger.trace( "sampledImageIntegerSampleCounts: " + to_string( properties.limits.sampledImageIntegerSampleCounts ) );
+			logger.trace( "sampledImageDepthSampleCounts: " + to_string( properties.limits.sampledImageDepthSampleCounts ) );
+			logger.trace( "sampledImageStencilSampleCounts: " + to_string( properties.limits.sampledImageStencilSampleCounts ) );
+			logger.trace( "storageImageSampleCounts: " + to_string( properties.limits.storageImageSampleCounts ) );
+			logger.trace( "maxSampleMaskWords: " + std::to_string( properties.limits.maxSampleMaskWords ) );
+			logger.trace( "timestampComputeAndGraphics: " + std::to_string( properties.limits.timestampComputeAndGraphics ) );
+			logger.trace( "timestampPeriod: " + std::to_string( properties.limits.timestampPeriod ) );
+			logger.trace( "maxClipDistances: " + std::to_string( properties.limits.maxClipDistances ) );
+			logger.trace( "maxCullDistances: " + std::to_string( properties.limits.maxCullDistances ) );
+			logger.trace( "maxCombinedClipAndCullDistances: " + std::to_string( properties.limits.maxCombinedClipAndCullDistances ) );
+			logger.trace( "discreteQueuePriorities: " + std::to_string( properties.limits.discreteQueuePriorities ) );
+			logger.trace( "pointSizeRange[0]: " + std::to_string( properties.limits.pointSizeRange[0] ) );
+			logger.trace( "pointSizeRange[1]: " + std::to_string( properties.limits.pointSizeRange[1] ) );
+			logger.trace( "lineWidthRange[0]: " + std::to_string( properties.limits.lineWidthRange[0] ) );
+			logger.trace( "lineWidthRange[1]: " + std::to_string( properties.limits.lineWidthRange[1] ) );
+			logger.trace( "pointSizeGranularity: " + std::to_string( properties.limits.pointSizeGranularity ) );
+			logger.trace( "lineWidthGranularity: " + std::to_string( properties.limits.lineWidthGranularity ) );
+			logger.trace( "strictLines: " + std::to_string( properties.limits.strictLines ) );
+			logger.trace( "standardSampleLocations: " + std::to_string( properties.limits.standardSampleLocations ) );
+			logger.trace( "optimalBufferCopyOffsetAlignment: " + std::to_string( properties.limits.optimalBufferCopyOffsetAlignment ) );
+			logger.trace( "optimalBufferCopyRowPitchAlignment: " + std::to_string( properties.limits.optimalBufferCopyRowPitchAlignment ) );
+			logger.trace( "nonCoherentAtomSize: " + std::to_string( properties.limits.nonCoherentAtomSize ) );
+#endif
+
 			features = physicalDevice.getFeatures();
 			memoryProperties = physicalDevice.getMemoryProperties();
 			queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
@@ -201,6 +320,11 @@ std::vector<vk::ExtensionProperties> v3d::vulkan::Devices::EnumerateDeviceExtens
 std::vector<vk::LayerProperties> v3d::vulkan::Devices::enumerateDeviceLayerProperties() const
 {
 	return physicalDevice.enumerateDeviceLayerProperties();
+}
+
+vk::PhysicalDeviceLimits v3d::vulkan::Devices::getLimits() const
+{
+	return properties.limits;
 }
 
 uint32_t v3d::vulkan::Devices::getGraphicsQueueFamilyIndex() const
