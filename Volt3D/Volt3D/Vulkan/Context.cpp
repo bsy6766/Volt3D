@@ -926,6 +926,11 @@ const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
 	return *instance;
 }
 
+v3d::vulkan::Devices* v3d::vulkan::Context::getDevices() const
+{
+	return devices;
+}
+
 void v3d::vulkan::Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();

@@ -176,6 +176,7 @@ namespace v3d
 			bool init( const v3d::glfw::Window& window, const bool enableValidationLayer );
 
 			const v3d::vulkan::Instance& getInstance() const;
+			v3d::vulkan::Devices* getDevices() const;
 		};
 	}
 }

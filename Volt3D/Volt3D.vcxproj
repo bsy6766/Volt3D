@@ -245,6 +245,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Shape\Triangle2D.h" />
     <ClInclude Include="Volt3D\Spritesheet\Image.h" />
     <ClInclude Include="Volt3D\Spritesheet\ImageType.h" />
+    <ClInclude Include="Volt3D\Texture\TextureManager.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
     <ClInclude Include="Volt3D\Utils\Macros.h" />
@@ -306,6 +307,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Shape\Triangle.cpp" />
     <ClCompile Include="Volt3D\Shape\Triangle2D.cpp" />
     <ClCompile Include="Volt3D\Spritesheet\Image.cpp" />
+    <ClCompile Include="Volt3D\Texture\TextureManager.cpp" />
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp" />

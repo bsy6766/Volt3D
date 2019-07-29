@@ -80,6 +80,9 @@
 #include "Spritesheet/Image.h"
 #include "Spritesheet/ImageType.h"
 
+// Texture
+#include "Texture/TextureManager.h"
+
 // Utils
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"

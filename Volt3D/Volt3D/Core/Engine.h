@@ -14,9 +14,10 @@
 
 namespace v3d
 {
-	class InputManager;
 	class Director;
 	class Preference;
+	class InputManager;
+	class TextureManager;
 	namespace glfw { class Window; class Time; }
 	namespace vulkan { class Context; }
 
@@ -31,13 +32,16 @@ namespace v3d
 		v3d::glfw::Window* window;
 		v3d::glfw::Time* time;
 		v3d::vulkan::Context* context;
-		v3d::InputManager* inputManager;
 		v3d::Director* director;
 		v3d::Preference* preference;
+
+		v3d::InputManager* inputManager;
+		std::shared_ptr<v3d::TextureManager> textureManager;
 
 		bool loadPreference(const std::wstring& folderName);
 		bool initWindow(const char* windowTitle);
 		bool initContext();
+		bool initTextureManager();
 		void release();
 
 		void preUpdate(const float delta);
