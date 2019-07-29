@@ -90,8 +90,8 @@ namespace v3d
 		/** get channel (RGBA for png) */
 		std::size_t getChannels() const { return 4; }
 
-		/** get size **/
-		std::size_t getSize() const { return width* height * 4; }
+		/** get image data size **/
+		std::size_t getDataSize() const { return width* height * 4; }
 
 		/** get data. */
 		unsigned char* getData() const { return data; }

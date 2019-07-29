@@ -550,32 +550,6 @@ v3d::vulkan::CommandBuffer v3d::vulkan::Context::createCommandBuffer( const vk::
 	return v3d::vulkan::CommandBuffer( logicalDevice.allocateCommandBuffers( allocInfo ).front() );
 }
 
-vk::Buffer v3d::vulkan::Context::createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const
-{
-	vk::BufferCreateInfo createInfo
-	(
-		vk::BufferCreateFlags(),
-		size,
-		usageFlags
-	);
-
-	return logicalDevice.createBuffer( createInfo );
-}
-
-vk::DeviceMemory v3d::vulkan::Context::createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const
-{
-	const vk::MemoryRequirements memRequirements = logicalDevice.getBufferMemoryRequirements( buffer );
-	const vk::MemoryAllocateInfo allocInfo
-	(
-		memRequirements.size,
-		devices->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
-	);
-
-	vk::DeviceMemory deviceMemory = logicalDevice.allocateMemory( allocInfo );
-	logicalDevice.bindBufferMemory( buffer, deviceMemory, vk::DeviceSize( 0 ) );
-	return deviceMemory;
-}
-
 void v3d::vulkan::Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size )
 {
 	auto cb = createCommandBuffer();
@@ -589,11 +563,11 @@ void v3d::vulkan::Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& 
 
 void v3d::vulkan::Context::createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void* vbData )
 {
-	vBuffer = createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer );
-	vbDeviceMemory = createDeviceMemory( vBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	vBuffer = devices->createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer );
+	vbDeviceMemory = devices->createDeviceMemory( vBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-	vk::Buffer stagingBuffer = createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferSrc );
-	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+	vk::Buffer stagingBuffer = devices->createBuffer( vbDataSize, vk::BufferUsageFlagBits::eTransferSrc );
+	vk::DeviceMemory stagingDeviceMemory = devices->createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	void* data = logicalDevice.mapMemory( stagingDeviceMemory, 0, vbDataSize );
 	memcpy( data, vbData, vbDataSize );
@@ -607,11 +581,11 @@ void v3d::vulkan::Context::createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMe
 
 void v3d::vulkan::Context::createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData )
 {
-	iBuffer = createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer );
-	ibDeviceMemory = createDeviceMemory( iBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	iBuffer = devices->createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer );
+	ibDeviceMemory = devices->createDeviceMemory( iBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-	vk::Buffer stagingBuffer = createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferSrc );
-	vk::DeviceMemory stagingDeviceMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+	vk::Buffer stagingBuffer = devices->createBuffer( ibDataSize, vk::BufferUsageFlagBits::eTransferSrc );
+	vk::DeviceMemory stagingDeviceMemory = devices->createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	void* data = logicalDevice.mapMemory( stagingDeviceMemory, 0, ibDataSize );
 	memcpy( data, ibData, ibDataSize );
@@ -632,8 +606,8 @@ void v3d::vulkan::Context::createUniformBuffer( UBO& ubo, const std::size_t uboD
 
 	for (std::size_t i = 0; i < size; i++)
 	{
-		ubo.buffers.at( i ) = createBuffer( uboDataSize, vk::BufferUsageFlagBits::eUniformBuffer );
-		ubo.deviceMemories.at( i ) = createDeviceMemory( ubo.buffers.at( i ), vk::MemoryPropertyFlagBits::eHostCoherent );
+		ubo.buffers.at( i ) = devices->createBuffer( uboDataSize, vk::BufferUsageFlagBits::eUniformBuffer );
+		ubo.deviceMemories.at( i ) = devices->createDeviceMemory( ubo.buffers.at( i ), vk::MemoryPropertyFlagBits::eHostCoherent );
 	}
 }
 
@@ -697,8 +671,8 @@ void v3d::vulkan::Context::createTextureImage( const char* path, v3d::vulkan::Co
 {
 	texture.imageSource = v3d::Image::createPNG( path );
 
-	vk::Buffer stagingBuffer = createBuffer( texture.imageSource->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
-	vk::DeviceMemory stagingBufferMemory = createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+	vk::Buffer stagingBuffer = devices->createBuffer( texture.imageSource->getSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	vk::DeviceMemory stagingBufferMemory = devices->createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	void* data = logicalDevice.mapMemory( stagingBufferMemory, 0, texture.imageSource->getSize() );
 	memcpy( data, texture.imageSource->getData(), texture.imageSource->getSize() );

@@ -260,6 +260,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
+    <ClInclude Include="Volt3D\Vulkan\Texture.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -314,6 +315,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Texture.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

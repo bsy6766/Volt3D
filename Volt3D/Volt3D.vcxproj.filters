@@ -197,6 +197,9 @@
     <ClCompile Include="Volt3D\Vulkan\Devices.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Texture.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -395,6 +398,9 @@
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Devices.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Texture.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

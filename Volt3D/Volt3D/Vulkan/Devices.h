@@ -31,7 +31,7 @@ namespace v3d
 		{
 			friend class Context;
 
-		private:
+		public:
 			vk::PhysicalDevice physicalDevice;
 			vk::Device logicalDevice;
 			vk::PhysicalDeviceProperties properties;
@@ -48,6 +48,7 @@ namespace v3d
 				uint32_t present;
 			}QFI;
 			
+		private:
 			bool isSuitablePhysicalDevice( const vk::PhysicalDevice& physicalDevice );
 			bool initPhysicalDevice( const std::vector<vk::PhysicalDevice>& physicalDevices );
 			bool initLogicalDevice( const vk::SurfaceKHR& surface );
@@ -76,6 +77,9 @@ namespace v3d
 			uint32_t getPresentQueueFamilyIndex() const;
 
 			uint32_t getMemoryTypeIndex( const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
+
+			vk::Buffer createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const;
+			vk::DeviceMemory createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
 		};
 	}
 }

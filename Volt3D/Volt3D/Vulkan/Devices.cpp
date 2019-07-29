@@ -225,15 +225,33 @@ uint32_t v3d::vulkan::Devices::getPresentQueueFamilyIndex() const
 
 uint32_t v3d::vulkan::Devices::getMemoryTypeIndex(const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags) const
 {
-	const vk::PhysicalDeviceMemoryProperties memProperties = getMemoryProperties();
-
-	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
 	{
-		if ((memoryTypeBits & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags) == memoryPropertyFlags) 
+		if ((memoryTypeBits & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags) == memoryPropertyFlags)
 		{
 			return i;
 		}
 	}
-
+	
 	throw std::runtime_error("failed to find suitable memory type!");
+}
+
+vk::Buffer v3d::vulkan::Devices::createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const
+{
+	vk::BufferCreateInfo createInfo( vk::BufferCreateFlags(), size, usageFlags );
+	return logicalDevice.createBuffer( createInfo );
+}
+
+vk::DeviceMemory v3d::vulkan::Devices::createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const
+{
+	const vk::MemoryRequirements memRequirements = logicalDevice.getBufferMemoryRequirements( buffer );
+	const vk::MemoryAllocateInfo allocInfo
+	(
+		memRequirements.size,
+		getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
+	);
+
+	vk::DeviceMemory deviceMemory = logicalDevice.allocateMemory( allocInfo );
+	logicalDevice.bindBufferMemory( buffer, deviceMemory, vk::DeviceSize( 0 ) );
+	return deviceMemory;
 }

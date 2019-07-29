@@ -148,8 +148,6 @@ namespace v3d
 
 			v3d::vulkan::CommandBuffer createCommandBuffer( const vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary );
 
-			vk::Buffer createBuffer( const uint64_t size, const vk::BufferUsageFlags usageFlags ) const;
-			vk::DeviceMemory createDeviceMemory( const vk::Buffer& buffer, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
 			void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
 			void createVertexBuffer( vk::Buffer& vBuffer, vk::DeviceMemory& vbDeviceMemory, const uint32_t vbDataSize, const void * vbData );
 			void createIndexBuffer( vk::Buffer& iBuffer, vk::DeviceMemory& ibDeviceMemory, const uint32_t ibDataSize, const void* ibData );
