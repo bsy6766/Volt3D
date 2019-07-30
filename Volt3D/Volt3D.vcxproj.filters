@@ -412,5 +412,6 @@
     <ClInclude Include="Volt3D\Texture\TextureManager.h">
       <Filter>Volt3D\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Volt3D\Texture\Texture.h" />
   </ItemGroup>
 </Project>

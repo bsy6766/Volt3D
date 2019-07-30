@@ -245,6 +245,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Shape\Triangle2D.h" />
     <ClInclude Include="Volt3D\Spritesheet\Image.h" />
     <ClInclude Include="Volt3D\Spritesheet\ImageType.h" />
+    <ClInclude Include="Volt3D\Texture\Texture.h" />
     <ClInclude Include="Volt3D\Texture\TextureManager.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
