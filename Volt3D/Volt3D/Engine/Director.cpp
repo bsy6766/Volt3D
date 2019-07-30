@@ -9,21 +9,9 @@
 #include "Utils/Logger.h"
 
 #include "Scene/Scene.h"
-//#include "Volt3D/Scene/TransitionScene.h"
-
 #include "Shape/Segment.h"
-
 #include "Input/InputManager.h"
-
-//#include "Volt3D/Renderer/Renderer.h"
-//
-//#include "Volt3D/Font/FontManager.h"
-//#include "Volt3D/Font/Font.h"
-
 #include "Config/BuildConfig.h"
-//
-//#include "Volt3D/Error/ErrorCodes.h"
-//#include "Volt3D/Error/ErrorReport.h"
 
 #if V3D_DEBUG_CAMERA
 #include "Debug/DebugCamera.h"
@@ -419,8 +407,8 @@ bool v3d::Director::enableDebugCamera()
 		debugCamera->setActive(true);
 		auto window = v3d::glfw::Window::get();
 
-		prevCursorMode = window.getCursorMode();
-		window.setCursorMode(v3d::CursorMode::eDisabled);
+		prevCursorMode = window->getCursorMode();
+		window->setCursorMode(v3d::CursorMode::eDisabled);
 		
 		return true;
 	}
@@ -433,7 +421,7 @@ bool v3d::Director::disableDebugCamera()
 	if (debugCamera && debugCamera->isActive())
 	{
 		debugCamera->setActive(false);
-		v3d::Application::get().getEngine()->getWindow().setCursorMode(prevCursorMode);
+		v3d::glfw::Window::get()->setCursorMode(prevCursorMode);
 
 		return true;
 	}

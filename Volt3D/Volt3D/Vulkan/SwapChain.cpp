@@ -17,7 +17,7 @@ v3d::vulkan::SwapChain::SwapChain()
 	, extent()
 {}
 
-bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window )
+bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const glm::ivec2& frameBufferSize )
 {
 	// surface format
 	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR( surface );
@@ -26,7 +26,7 @@ bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, con
 
 	// extent2D
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
-	extent = selectExtent( surfaceCapabilities, window );
+	extent = selectExtent( surfaceCapabilities, frameBufferSize );
 
 	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR( surface );
 	if (presentModes.empty()) return false;
@@ -88,11 +88,10 @@ vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat( const std::vec
 	return surfaceFormats.front();
 }
 
-vk::Extent2D v3d::vulkan::SwapChain::selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window ) const
+vk::Extent2D v3d::vulkan::SwapChain::selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const
 {
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() || surfaceCapabilities.currentExtent.height == std::numeric_limits<uint32_t>::max())
 	{
-		const glm::uvec2 frameBufferSize = window.getFrameBufferSize();
 		return { static_cast<uint32_t>(frameBufferSize.x) , static_cast<uint32_t>(frameBufferSize.y) };
 	}
 	else

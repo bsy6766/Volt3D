@@ -10,11 +10,12 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <glm/glm.hpp>
+
 #include "utils/Macros.h"
 
 namespace v3d
 {
-	namespace glfw { class Window; }
 	namespace vulkan
 	{
 		class PhysicalDevice;
@@ -37,19 +38,19 @@ namespace v3d
 			vk::SurfaceFormatKHR surfaceFormat;
 			vk::Extent2D extent;
 
-			bool init(const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const v3d::glfw::Window& window);
+			bool init( const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const glm::ivec2& frameBufferSize );
 
-			vk::SurfaceFormatKHR selectSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& surfaceFormats) const;
-			vk::Extent2D selectExtent(const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const v3d::glfw::Window& window) const;
-			vk::PresentModeKHR selectPresentMode(const std::vector<vk::PresentModeKHR>& presentModes) const;
+			vk::SurfaceFormatKHR selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const;
+			vk::Extent2D selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const;
+			vk::PresentModeKHR selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const;
 
 		public:
 			SwapChain();
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(SwapChain);
-			DEFAULT_MOVE_CONSTRUCTORS(SwapChain);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( SwapChain );
+			DEFAULT_MOVE_CONSTRUCTORS( SwapChain );
 			~SwapChain() {};
 
-			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueSwapchainKHR, vk::SwapchainKHR, swapChain);
+			UNIQUE_TO_CPP_VK_HANDLE( vk::UniqueSwapchainKHR, vk::SwapchainKHR, swapChain );
 
 			const vk::Format& getFormat() const;
 			const vk::Extent2D& getExtent2D() const;

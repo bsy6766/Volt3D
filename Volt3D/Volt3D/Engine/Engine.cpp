@@ -33,7 +33,6 @@ Engine::Engine()
 	, director( nullptr )
 	, preference( nullptr )
 	, inputManager( nullptr )
-	, textureManager( nullptr )
 {
 	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
 	v3d::Logger::getInstance().initConsole();
@@ -54,7 +53,6 @@ bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 	if (!initWindow( windowTitle )) return false;
 	if (!initContext()) return false;
 	director = new v3d::Director( *inputManager );
-	if (!initTextureManager()) return false;
 
 	return true;
 }
@@ -62,14 +60,13 @@ bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 bool Engine::loadPreference( const std::wstring& folderName )
 {
 	preference = new v3d::Preference();
-
 	return preference->init( folderName );
 }
 
 bool Engine::initWindow( const char* windowTitle )
 {
 	auto& logger = Logger::getInstance();
-	window = new v3d::glfw::Window( *inputManager );
+	window = new v3d::glfw::Window();
 	if (!window->initGLFW()) { logger.critical( "Failed to initialize GLFW" ); return false; }
 	if (!window->initWindow( windowTitle, preference->getInt( "display_resolution_width" ), preference->getInt( "display_resolution_height" ), toWindowModeEnum( preference->getInt( "display_window_mode" ) ) )) { logger.critical( "Failed to create GLFW window" ); return false; }
 	return true;
@@ -77,26 +74,14 @@ bool Engine::initWindow( const char* windowTitle )
 
 bool Engine::initContext()
 {
-	context = new v3d::vulkan::Context( *window );
-	if (!context->init( *window, true )) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
-	return true;
-}
-
-bool Engine::initTextureManager()
-{
-	auto devices = context->getDevices();
-	if (devices == nullptr) return false;
-	// @todo: handle all types of textures
-	textureManager = std::shared_ptr<v3d::TextureManager>( new v3d::TextureManager( devices->getProperties().limits.maxImageDimension2D ) );
+	context = new v3d::vulkan::Context();
+	if (!context->init( true )) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
 	return true;
 }
 
 void Engine::release()
 {
 	// release vulkan first
-	textureManager->clear();
-	textureManager->print();
-	textureManager = nullptr;
 	SAFE_DELETE( context );
 	SAFE_DELETE( window );
 	SAFE_DELETE( time );
@@ -114,12 +99,8 @@ void Engine::run()
 
 	while (window && window->isRunning())
 	{
-		window->pollGLFWEvent();
-
-		time->updateTime();
+		preUpdate();
 		const float delta = static_cast<float>(time->getElaspedTime());
-
-		preUpdate( delta );
 		update( delta );
 
 		if (!window->isIconified()) render();
@@ -134,8 +115,10 @@ void Engine::end()
 	if (window) window->closeWindow();
 }
 
-void Engine::preUpdate( const float delta )
+void Engine::preUpdate()
 {
+	if(window) window->pollGLFWEvent();
+	if(time) time->updateTime();
 }
 
 void Engine::update( const float delta )

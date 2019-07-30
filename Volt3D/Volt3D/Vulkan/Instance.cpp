@@ -16,63 +16,60 @@ v3d::vulkan::Instance::Instance()
 	: instance()
 {}
 
-bool v3d::vulkan::Instance::init(const v3d::glfw::Window& window, const bool validationLayerEnabled)
+bool v3d::vulkan::Instance::init( std::vector<const char*>& requiredExtensions, const bool validationLayerEnabled )
 {
-	vk::ApplicationInfo appInfo("Learn Context", VK_MAKE_VERSION(1, 0, 0), "Context", VK_MAKE_VERSION(1, 0, 0), VK_API_VERSION_1_1);
+	vk::ApplicationInfo appInfo( "Learn Context", VK_MAKE_VERSION( 1, 0, 0 ), "Context", VK_MAKE_VERSION( 1, 0, 0 ), VK_API_VERSION_1_1 );
 
 	std::vector<vk::ExtensionProperties> extensions = v3d::vulkan::utils::getExtensions();
 	std::vector<vk::LayerProperties> layers = v3d::vulkan::utils::getLayers();
 
 #ifdef BUILD_DEBUG
 	auto& logger = v3d::Logger::getInstance();
-	logger.logExtensions(extensions);
-	logger.logLayers(layers);
+	logger.logExtensions( extensions );
+	logger.logLayers( layers );
 #endif
-
-	std::vector<const char*> requiredExtensions;
-	window.getGLFWVKExtensions(requiredExtensions);
 
 	if (validationLayerEnabled)
 	{
-		requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		requiredExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+		requiredExtensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
+		requiredExtensions.push_back( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
 	}
 
-	if (!vulkan::utils::checkExtensionProperties(extensions, requiredExtensions)) return false;
+	if (!vulkan::utils::checkExtensionProperties( extensions, requiredExtensions )) return false;
 
 	std::vector<const char*> requiredLayers;
-	if (validationLayerEnabled) requiredLayers.push_back("VK_LAYER_KHRONOS_validation");
+	if (validationLayerEnabled) requiredLayers.push_back( "VK_LAYER_KHRONOS_validation" );
 
-	if (!vulkan::utils::checkLayerProperties(layers, requiredLayers)) return false;
+	if (!vulkan::utils::checkLayerProperties( layers, requiredLayers )) return false;
 
 	const vk::InstanceCreateInfo createInfo
 	(
 		{},
 		&appInfo,
-		uint32_t(requiredLayers.size()),
+		uint32_t( requiredLayers.size() ),
 		requiredLayers.data(),
-		uint32_t(requiredExtensions.size()),
+		uint32_t( requiredExtensions.size() ),
 		requiredExtensions.data()
 	);
 
-	instance = vk::createInstanceUnique(createInfo);
+	instance = vk::createInstanceUnique( createInfo );
 
 	return true;
 }
 
-PFN_vkVoidFunction v3d::vulkan::Instance::getProcAddr(const char* pName) const
+PFN_vkVoidFunction v3d::vulkan::Instance::getProcAddr( const char* pName ) const
 {
-	return instance.get().getProcAddr(pName);
+	return instance.get().getProcAddr( pName );
 }
 
-inline vk::UniqueDebugReportCallbackEXT v3d::vulkan::Instance::createDebugReportCallbackEXTUnique(const vk::DebugReportCallbackCreateInfoEXT& createInfo) const
+inline vk::UniqueDebugReportCallbackEXT v3d::vulkan::Instance::createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const
 {
-	return instance.get().createDebugReportCallbackEXTUnique(createInfo);
+	return instance.get().createDebugReportCallbackEXTUnique( createInfo );
 }
 
-inline vk::UniqueDebugUtilsMessengerEXT v3d::vulkan::Instance::createDebugUtilsMessengerEXTUnique(const vk::DebugUtilsMessengerCreateInfoEXT& createInfo) const
+inline vk::UniqueDebugUtilsMessengerEXT v3d::vulkan::Instance::createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const
 {
-	return instance.get().createDebugUtilsMessengerEXTUnique(createInfo);
+	return instance.get().createDebugUtilsMessengerEXTUnique( createInfo );
 }
 
 inline std::vector<vk::PhysicalDevice> v3d::vulkan::Instance::enumeratePhysicalDevices() const

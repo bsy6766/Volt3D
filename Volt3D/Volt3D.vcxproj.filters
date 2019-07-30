@@ -182,9 +182,6 @@
     <ClCompile Include="Volt3D\Texture\TextureManager.cpp">
       <Filter>Volt3D\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Texture\Texture.cpp">
-      <Filter>Volt3D\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Engine\Director.cpp">
       <Filter>Volt3D\Engine</Filter>
     </ClCompile>
@@ -380,9 +377,6 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Texture\TextureManager.h">
-      <Filter>Volt3D\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Texture\Texture.h">
       <Filter>Volt3D\Texture</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Engine\CursorMode.h">

@@ -2,7 +2,7 @@
 
 #include "Scene.h"
 
-#include "Volt3D/Core/Camera.h"
+#include "Volt3D/Engine/Camera.h"
 
 v3d::Scene::Scene(const std::string & name)
 	: v3d::TransformNode(name, v3d::NodeType::eScene)

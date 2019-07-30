@@ -9,6 +9,7 @@
 
 #include "Context.h"
 
+#include "Engine/Engine.h"
 #include "Engine/Window.h"
 #include "Instance.h"
 #include "DebugReportCallback.h"
@@ -26,7 +27,7 @@
 #include "Spritesheet/Image.h"
 #include "Texture.h"
 
-v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
+v3d::vulkan::Context::Context()
 	: instance( nullptr )
 	, validationLayerEnabled( false )
 	, debugReportCallback( nullptr )
@@ -49,8 +50,8 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 	, descriptorPool( nullptr )
 	, descriptorSets()
 	, current_frame( 0 )
-	, window( window )
-	, frameBufferSize( window.getFrameBufferSize() )
+	, window( v3d::glfw::Window::get() )
+	, frameBufferSize(0)
 
 	, lenaBuffer()
 
@@ -59,14 +60,18 @@ v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 
 	, mvpUBO()
 	, dissolveUBO()
-{}
+{
+	frameBufferSize = window->getFrameBufferSize();
+}
 
 v3d::vulkan::Context::~Context()
 {
 	release();
 }
 
-bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool enableValidationLayer )
+v3d::vulkan::Context* v3d::vulkan::Context::get() { return v3d::Engine::get()->getVulkanContext(); }
+
+bool v3d::vulkan::Context::init( const bool enableValidationLayer )
 {
 	// Init logger
 	auto& logger = v3d::Logger::getInstance();
@@ -78,9 +83,9 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 
 	validationLayerEnabled = enableValidationLayer;
 	
-	if (!initInstance( window )) return false;
+	if (!initInstance()) return false;
 	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
-	if (!initSurface( window )) return false;
+	if (!initSurface()) return false;
 	//if (!initPhysicalDevice()) return false;
 	//if (!initDevice()) return false;
 	if (!initDevices()) return false;
@@ -133,10 +138,12 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 	return true;
 }
 
-bool v3d::vulkan::Context::initInstance( const v3d::glfw::Window& window )
+bool v3d::vulkan::Context::initInstance()
 {
 	instance = new v3d::vulkan::Instance();
-	if (!instance->init( window, validationLayerEnabled )) return false;
+	std::vector<const char*> requiredExtensions;
+	window->getGLFWVKExtensions( requiredExtensions );
+	if (!instance->init( requiredExtensions, validationLayerEnabled )) return false;
 	return true;
 }
 
@@ -154,10 +161,10 @@ bool v3d::vulkan::Context::initDebugUtilsMessenger()
 	return true;
 }
 
-bool v3d::vulkan::Context::initSurface( const v3d::glfw::Window& window )
+bool v3d::vulkan::Context::initSurface()
 {
 	VkSurfaceKHR cVkSurfaceKHR;
-	if (!window.createWindowSurface( *instance, cVkSurfaceKHR )) return false;
+	if (!window->createWindowSurface( *instance, cVkSurfaceKHR )) return false;
 	surface = vk::SurfaceKHR( cVkSurfaceKHR );
 	return true;
 }
@@ -175,7 +182,7 @@ bool v3d::vulkan::Context::initDevices()
 bool v3d::vulkan::Context::initSwapChain()
 {
 	swapChain = new v3d::vulkan::SwapChain();
-	if (!swapChain->init( physicalDevice, logicalDevice, surface, window )) return false;
+	if (!swapChain->init( physicalDevice, logicalDevice, surface, window->getFrameBufferSize() )) return false;
 	return true;
 }
 
@@ -906,9 +913,9 @@ void v3d::vulkan::Context::render()
 		presentResult = vk::Result::eErrorOutOfDateKHR;
 	}
 
-	if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR || frameBufferSize != window.getFrameBufferSize())
+	if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR || frameBufferSize != window->getFrameBufferSize())
 	{
-		frameBufferSize = window.getFrameBufferSize();
+		frameBufferSize = window->getFrameBufferSize();
 		recreateSwapChain();
 	}
 	else if (presentResult != vk::Result::eSuccess)

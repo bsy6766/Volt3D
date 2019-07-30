@@ -14,11 +14,11 @@
 
 namespace v3d
 {
+	class Application;
 	class Time;
 	class Director;
 	class Preference;
 	class InputManager;
-	class TextureManager;
 	namespace glfw { class Window; }
 	namespace vulkan { class Context; }
 
@@ -29,6 +29,8 @@ namespace v3d
 	*/
 	class VOLT3D_DLL Engine
 	{
+		friend class v3d::Application;
+
 	private:
 		static v3d::Engine* instance;
 
@@ -42,33 +44,51 @@ namespace v3d
 		v3d::Preference* preference;
 
 		v3d::InputManager* inputManager;
-		std::shared_ptr<v3d::TextureManager> textureManager;
 
 		bool loadPreference(const std::wstring& folderName);
 		bool initWindow(const char* windowTitle);
 		bool initContext();
-		bool initTextureManager();
 		void release();
 
-		void preUpdate(const float delta);
+		void preUpdate();
 		void update(const float delta);
 		void postUpdate(const float delta);
 		void render();
+
+		/**
+		*	Initialize the engine.
+		*	@param windowTitle The title of the window
+		*	@param folderName The name of application folder name to be created (if doesn't exist)
+		*	@return true if successfully initializes. Else, false.
+		*/
+		bool init(const char* windowTitle, const std::wstring& folderName);
 		
+		/** Run the engine */
+		void run();
+
 	public:
 		Engine();
 		~Engine();
 
+		/** Get Engine instance */
 		static v3d::Engine* get() { return v3d::Engine::instance; }
 
-		bool init(const char* windowTitle, const std::wstring& folderName);
-		void run();
+		/** End the engine. Closes the window. */
 		void end();
 
+		/** Get window */
 		v3d::glfw::Window* getWindow() const;
+
+		/** Get time */
 		v3d::Time* getTime() const;
+
+		/** Get Vulkan context */
 		v3d::vulkan::Context* getVulkanContext() const;
+
+		/** Get Director */
 		v3d::Director* getDirector() const;
+
+		/** Get InputManager */
 		v3d::InputManager* getInputManager() const;
 	};
 }

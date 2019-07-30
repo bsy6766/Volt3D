@@ -26,10 +26,10 @@ bool HelloVulkan::onInit()
 
 #if V3D_DEBUG_CAMERA
 	auto& app = v3d::Application::get();
-	auto res = app.getEngine()->getWindow().getWindowSize();
+	auto res = v3d::glfw::Window::get()->getWindowSize();
 	auto debugCamera = std::shared_ptr<v3d::DebugCamera>( v3d::DebugCamera::create( "DebugCam", v3d::ProjectionType::ePerspective, 70.0f, 0.1f, 1000.0f, float( res.x ), float( res.y ) ) );
-	app.getEngine()->getDirector().attachDebugCamera( debugCamera );
-	app.getEngine()->getDirector().enableDebugCamera();
+	app.getEngine()->getDirector()->attachDebugCamera( debugCamera );
+	app.getEngine()->getDirector()->enableDebugCamera();
 #endif
 	return true;
 }

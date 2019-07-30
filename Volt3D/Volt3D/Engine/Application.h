@@ -63,6 +63,7 @@ public:
 
 	/** Get application name. */
 	std::wstring getName() const { return name; }
+
 	/** Get engine. */
 	v3d::Engine* getEngine() const { return engine; }
 };

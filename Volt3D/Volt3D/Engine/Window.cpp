@@ -13,22 +13,25 @@
 #include "Vulkan/Instance.h"
 #include "Input/InputManager.h"
 
-v3d::glfw::Window::Window( v3d::InputManager& input )
+V3D_NS_BEGIN
+
+v3d::glfw::Window::Window()
 	: window( nullptr )
-	, vsync( true )
-	, input( input )
+	, input( v3d::InputManager::get() )
 	, windowMode( v3d::WindowMode::eWindowed )
 	, cursorMode( v3d::CursorMode::eNormal )
 {}
 
 v3d::glfw::Window::~Window() { releaseGLFW(); }
 
-bool v3d::glfw::Window::initGLFW()
+v3d::glfw::Window* v3d::glfw::Window::get() { return v3d::Engine::get()->getWindow(); }
+
+bool glfw::Window::initGLFW()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "This GLFW supports Context" );
 
-	glfwSetErrorCallback( v3d::glfw::Window::glfwErrorCallback );
+	glfwSetErrorCallback( glfw::Window::glfwErrorCallback );
 
 	if (glfwInit() != GL_TRUE)
 	{
@@ -47,14 +50,12 @@ bool v3d::glfw::Window::initGLFW()
 	}
 }
 
-bool v3d::glfw::Window::initWindow( const char* windowTitle, const int width, const int height, const v3d::WindowMode windowMode )
+bool glfw::Window::initWindow( const char* windowTitle, const int width, const int height, const v3d::WindowMode windowMode )
 {
 	if (windowTitle == nullptr) return false;
 	if (width == 0 || height == 0) return false;
 
 	initGLFWHints();
-
-	setVsync( vsync );
 
 	window = glfwCreateWindow( width, height, windowTitle, nullptr, nullptr );
 	if (!window) return false;
@@ -67,7 +68,7 @@ bool v3d::glfw::Window::initWindow( const char* windowTitle, const int width, co
 	return true;
 }
 
-void v3d::glfw::Window::initGLFWHints()
+void glfw::Window::initGLFWHints()
 {
 	glfwWindowHint( GLFW_DEPTH_BITS, 24 );
 	glfwWindowHint( GLFW_RED_BITS, 8 );
@@ -78,7 +79,7 @@ void v3d::glfw::Window::initGLFWHints()
 	glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
 }
 
-bool v3d::glfw::Window::createWindowSurface( const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface ) const
+bool glfw::Window::createWindowSurface( const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface ) const
 {
 	if (glfwCreateWindowSurface( instance.get(), window, nullptr, &surface ) != VK_SUCCESS)
 	{
@@ -89,71 +90,60 @@ bool v3d::glfw::Window::createWindowSurface( const v3d::vulkan::Instance& instan
 	return true;
 }
 
-bool v3d::glfw::Window::isRunning()
+bool glfw::Window::isRunning()
 {
 	if (window) return !glfwWindowShouldClose( window ); else return false;
 }
 
-void v3d::glfw::Window::pollGLFWEvent()
+void glfw::Window::pollGLFWEvent()
 {
 	glfwPollEvents();
 }
 
-bool v3d::glfw::Window::closeWindow()
+bool glfw::Window::closeWindow()
 {
 	if (window) { glfwSetWindowShouldClose( window, GLFW_TRUE ); return true; }
 	else return false;
 }
 
-void v3d::glfw::Window::releaseGLFW()
+void glfw::Window::releaseGLFW()
 {
 	closeWindow();
 	if (window) { glfwDestroyWindow( window ); window = nullptr; }
 	glfwTerminate();
 }
 
-void v3d::glfw::Window::onCursorPos( const int x, const int y )
+void glfw::Window::onCursorPos( const int x, const int y )
 {
-	input.updateMousePosition( x, y );
+	if (input) input->updateMousePosition( x, y );
 }
 
-void v3d::glfw::Window::setVsync( const bool enabled )
-{
-	vsync = enabled;
-	glfwSwapInterval( vsync ? 1 : 0 );
-}
-
-bool v3d::glfw::Window::isVsyncEnabled() const
-{
-	return vsync;
-}
-
-bool v3d::glfw::Window::isIconified() const
+bool glfw::Window::isIconified() const
 {
 	return glfwGetWindowAttrib( window, GLFW_ICONIFIED );
 }
 
-glm::uvec2 v3d::glfw::Window::getFrameBufferSize() const
+glm::uvec2 glfw::Window::getFrameBufferSize() const
 {
 	int w, h;
 	glfwGetFramebufferSize( window, &w, &h );
 	return glm::uvec2( w, h );
 }
 
-glm::uvec2 v3d::glfw::Window::getWindowSize() const
+glm::uvec2 glfw::Window::getWindowSize() const
 {
 	int w, h;
 	glfwGetWindowSize( window, &w, &h );
 	return glm::uvec2( w, h );
 }
 
-void v3d::glfw::Window::setWindowTitle( const char* newTitle )
+void glfw::Window::setWindowTitle( const char* newTitle )
 {
 	glfwSetWindowTitle( window, newTitle );
 }
 
 /*
-const char* v3d::glfw::Window::getWindowTitle() const
+const char* glfw::Window::getWindowTitle() const
 {
 	auto hwnd = glfwGetWin32Window( window );
 	char title[1024] = {};
@@ -164,7 +154,7 @@ const char* v3d::glfw::Window::getWindowTitle() const
 }
 */
 
-std::size_t v3d::glfw::Window::getGLFWVKExtensions( std::vector<const char*>& extensions ) const
+std::size_t glfw::Window::getGLFWVKExtensions( std::vector<const char*>& extensions ) const
 {
 	extensions.clear();
 
@@ -183,7 +173,7 @@ std::size_t v3d::glfw::Window::getGLFWVKExtensions( std::vector<const char*>& ex
 
 
 
-void v3d::glfw::Window::initCallbacks( GLFWwindow* window )
+void glfw::Window::initCallbacks( GLFWwindow* window )
 {
 #ifdef V3D_GLFW_ERROR_CB
 	glfwSetErrorCallback( v3d::glfw::Window::glfwErrorCallback );
@@ -248,123 +238,125 @@ void v3d::glfw::Window::initCallbacks( GLFWwindow* window )
 }
 
 #ifdef V3D_GLFW_ERROR_CB
-void v3d::glfw::Window::glfwErrorCallback( int error, const char* description )
+void glfw::Window::glfwErrorCallback( int error, const char* description )
 {
 	v3d::Logger::getInstance().error( "GLFW Error: " + std::to_string( error ) + " (" + std::string( description ) );
 }
 #endif
 #ifdef V3D_GLFW_MONITOR_CB
-void v3d::glfw::Window::glfwMonitorCallback( GLFWmonitor* monitor, int event )
+void glfw::Window::glfwMonitorCallback( GLFWmonitor* monitor, int event )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_POS_CB
-void v3d::glfw::Window::glfwWindowPosCallback( GLFWwindow* window, int xpos, int ypos )
+void glfw::Window::glfwWindowPosCallback( GLFWwindow* window, int xpos, int ypos )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_SIZE_CB
-void v3d::glfw::Window::glfwWindowSizeCallback( GLFWwindow* window, int width, int height )
+void glfw::Window::glfwWindowSizeCallback( GLFWwindow* window, int width, int height )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_CLOSE_CB
-void v3d::glfw::Window::glfwWindowCloseCallback( GLFWwindow* window )
+void glfw::Window::glfwWindowCloseCallback( GLFWwindow* window )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_REFRESH_CB
-void v3d::glfw::Window::glfwWindowRefreshCallback( GLFWwindow* window )
+void glfw::Window::glfwWindowRefreshCallback( GLFWwindow* window )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_FOCUS_CB
-void v3d::glfw::Window::glfwWindowFocusCallback( GLFWwindow* window, int focused )
+void glfw::Window::glfwWindowFocusCallback( GLFWwindow* window, int focused )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_ICONIFY_CB
-void v3d::glfw::Window::glfwWindowIconifyCallback( GLFWwindow* window, int iconified )
+void glfw::Window::glfwWindowIconifyCallback( GLFWwindow* window, int iconified )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_MAXIMIZE_CB
-void v3d::glfw::Window::glfwWindowMaximizedCallback( GLFWwindow* window, int iconified )
+void glfw::Window::glfwWindowMaximizedCallback( GLFWwindow* window, int iconified )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_FRAMEBUFFER_SIZE_CB
-void v3d::glfw::Window::glfwFramebufferSizeCallback( GLFWwindow* window, int width, int height )
+void glfw::Window::glfwFramebufferSizeCallback( GLFWwindow* window, int width, int height )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_WINDOW_CONTENT_SCALE_CB
-void v3d::glfw::Window::glfwWindowContentScaleCallback( GLFWwindow* window, float xscale, float yscale )
+void glfw::Window::glfwWindowContentScaleCallback( GLFWwindow* window, float xscale, float yscale )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_KEY_CB
-void v3d::glfw::Window::glfwKeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
+void glfw::Window::glfwKeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		static_cast<v3d::glfw::Window*>(glfwGetWindowUserPointer( window ))->closeWindow();
 }
 #endif
 #ifdef V3D_GLFW_CHAR_CB
-void v3d::glfw::Window::glfwCharCallback( GLFWwindow* window, unsigned int codepoint )
+void glfw::Window::glfwCharCallback( GLFWwindow* window, unsigned int codepoint )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_CHAR_MODS_CB
-void v3d::glfw::Window::glfwCharModsCallback( GLFWwindow* window, unsigned int codepoint, int mods )
+void glfw::Window::glfwCharModsCallback( GLFWwindow* window, unsigned int codepoint, int mods )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_MOUSE_BUTTON_CB
-void v3d::glfw::Window::glfwMouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
+void glfw::Window::glfwMouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_CURSOR_POS_CB
-void v3d::glfw::Window::glfwCursorPosCallback( GLFWwindow* window, double x, double y )
+void glfw::Window::glfwCursorPosCallback( GLFWwindow* window, double x, double y )
 {
 	static_cast<v3d::glfw::Window*>(glfwGetWindowUserPointer( window ))->onCursorPos( int( x ), int( y ) );
 }
 #endif
 #ifdef V3D_GLFW_CURSOR_ENTER_CB
-void v3d::glfw::Window::glfwCursorEnterCallback( GLFWwindow* window, int entered )
+void glfw::Window::glfwCursorEnterCallback( GLFWwindow* window, int entered )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_SCROLL_CB
-void v3d::glfw::Window::glfwScrollCallback( GLFWwindow* window, double xoffset, double yoffset )
+void glfw::Window::glfwScrollCallback( GLFWwindow* window, double xoffset, double yoffset )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_DROP_CB
-void v3d::glfw::Window::glfwDropCallback( GLFWwindow* window, int count, const char** paths )
+void glfw::Window::glfwDropCallback( GLFWwindow* window, int count, const char** paths )
 {
 
 }
 #endif
 #ifdef V3D_GLFW_JOYSTICK_CB
-void v3d::glfw::Window::glfwJoystickCallback( int jid, int events )
+void glfw::Window::glfwJoystickCallback( int jid, int events )
 {
 
 }
 #endif
+
+V3D_NS_END

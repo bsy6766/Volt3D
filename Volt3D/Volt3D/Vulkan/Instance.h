@@ -16,14 +16,13 @@
 
 namespace v3d
 {
-	namespace glfw { class Window; }
 	namespace vulkan
 	{
 		/**
 		*	@class Instance
 		*	@brief Wrapper for VkInstance
 		*
-		*	@since 1.0	
+		*	@since 1.0
 		*/
 		class VOLT3D_DLL Instance
 		{
@@ -32,19 +31,19 @@ namespace v3d
 		private:
 			vk::UniqueInstance instance;
 
-			bool init(const v3d::glfw::Window& window, const bool validationLayerEnabled);
+			bool init( std::vector<const char*>& requiredExtensions, const bool validationLayerEnabled );
 
 		public:
 			Instance();
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Instance);
-			DEFAULT_MOVE_CONSTRUCTORS(Instance);
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Instance );
+			DEFAULT_MOVE_CONSTRUCTORS( Instance );
 			~Instance() {}
 
-			UNIQUE_TO_CPP_VK_HANDLE(vk::UniqueInstance, vk::Instance, instance);
+			UNIQUE_TO_CPP_VK_HANDLE( vk::UniqueInstance, vk::Instance, instance );
 
-			inline PFN_vkVoidFunction getProcAddr(const char* pName) const;
-			inline vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique(const vk::DebugReportCallbackCreateInfoEXT& createInfo) const;
-			inline vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique(const vk::DebugUtilsMessengerCreateInfoEXT& createInfo) const;
+			inline PFN_vkVoidFunction getProcAddr( const char* pName ) const;
+			inline vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const;
+			inline vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const;
 			inline std::vector<vk::PhysicalDevice> enumeratePhysicalDevices() const;
 		};
 	}

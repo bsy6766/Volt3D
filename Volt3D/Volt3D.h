@@ -22,7 +22,10 @@
 #include "Config/DebugConfig.h"
 #include "Config/GLFWCallbackConfig.h"
 
-// Core
+// Debug
+#include "Debug/DebugCamera.h"
+
+// Engine
 #include "Engine/Application.h"
 #include "Engine/Camera.h"
 #include "Engine/CursorMode.h"
@@ -34,9 +37,6 @@
 #include "Engine/Time.h"
 #include "Engine/Window.h"
 #include "Engine/WindowMode.h"
-
-// Debug
-#include "Debug/DebugCamera.h"
 
 // Input
 #include "Input/GamepadAxis.h"
@@ -81,7 +81,6 @@
 #include "Spritesheet/ImageType.h"
 
 // Texture
-#include "Texture/Texture.h"
 #include "Texture/TextureManager.h"
 
 // Utils
