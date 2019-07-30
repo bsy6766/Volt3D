@@ -22,7 +22,11 @@
 #include "Vulkan/Devices.h"
 #include "Texture/TextureManager.h"
 
-v3d::Engine::Engine()
+v3d::Engine* v3d::Engine::instance = nullptr;
+
+V3D_NS_BEGIN
+
+Engine::Engine()
 	: window( nullptr )
 	, time( nullptr )
 	, context( nullptr )
@@ -33,18 +37,19 @@ v3d::Engine::Engine()
 {
 	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
 	v3d::Logger::getInstance().initConsole();
+	v3d::Engine::instance = this;
 }
 
-v3d::Engine::~Engine()
+Engine::~Engine()
 {
 	release();
 }
 
-bool v3d::Engine::init( const char* windowTitle, const std::wstring& folderName )
+bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 {
 	if (!loadPreference( folderName )) return false;
 
-	time = new v3d::glfw::Time();
+	time = new v3d::Time();
 	inputManager = new v3d::InputManager();
 	if (!initWindow( windowTitle )) return false;
 	if (!initContext()) return false;
@@ -54,14 +59,14 @@ bool v3d::Engine::init( const char* windowTitle, const std::wstring& folderName 
 	return true;
 }
 
-bool v3d::Engine::loadPreference( const std::wstring& folderName )
+bool Engine::loadPreference( const std::wstring& folderName )
 {
 	preference = new v3d::Preference();
 
 	return preference->init( folderName );
 }
 
-bool v3d::Engine::initWindow( const char* windowTitle )
+bool Engine::initWindow( const char* windowTitle )
 {
 	auto& logger = Logger::getInstance();
 	window = new v3d::glfw::Window( *inputManager );
@@ -70,23 +75,23 @@ bool v3d::Engine::initWindow( const char* windowTitle )
 	return true;
 }
 
-bool v3d::Engine::initContext()
+bool Engine::initContext()
 {
 	context = new v3d::vulkan::Context( *window );
 	if (!context->init( *window, true )) { v3d::Logger::getInstance().critical( "Failed to initialize Context" ); return false; }
 	return true;
 }
 
-bool v3d::Engine::initTextureManager()
+bool Engine::initTextureManager()
 {
-	v3d::vulkan::Devices* devices = context->getDevices();
+	auto devices = context->getDevices();
 	if (devices == nullptr) return false;
 	// @todo: handle all types of textures
 	textureManager = std::shared_ptr<v3d::TextureManager>( new v3d::TextureManager( devices->getProperties().limits.maxImageDimension2D ) );
 	return true;
 }
 
-void v3d::Engine::release()
+void Engine::release()
 {
 	// release vulkan first
 	textureManager->clear();
@@ -101,7 +106,7 @@ void v3d::Engine::release()
 	SAFE_DELETE( preference );
 }
 
-void v3d::Engine::run()
+void Engine::run()
 {
 	time->resetTime();
 
@@ -124,50 +129,55 @@ void v3d::Engine::run()
 	context->waitIdle();
 }
 
-void v3d::Engine::end()
+void Engine::end()
 {
 	if (window) window->closeWindow();
 }
 
-void v3d::Engine::preUpdate( const float delta )
+void Engine::preUpdate( const float delta )
 {
 }
 
-void v3d::Engine::update( const float delta )
+void Engine::update( const float delta )
 {
 	if (inputManager->isKeyPressed( v3d::KeyCode::eA, true )) v3d::Logger::getInstance().info( "A pressed!" );
 	if (director) director->update( delta );
 }
 
-void v3d::Engine::postUpdate( const float delta )
+void Engine::postUpdate( const float delta )
 {
 	inputManager->postUpdate();
 }
 
-void v3d::Engine::render()
+void Engine::render()
 {
 	if (!context) return;
 	context->render();
 }
 
-v3d::glfw::Window& v3d::Engine::getWindow() const
+v3d::glfw::Window* Engine::getWindow() const
 {
-	// @todo: Handle error
-	return *window;
+	return window;
 }
 
-v3d::vulkan::Context& v3d::Engine::getVulkanContext() const
+v3d::Time* Engine::getTime() const
 {
-	// @todo: Handle error
-	return *context;
+	return time;
 }
 
-v3d::Director& v3d::Engine::getDirector() const
+v3d::vulkan::Context* Engine::getVulkanContext() const
 {
-	return *director;
+	return context;
 }
 
-v3d::InputManager& v3d::Engine::getInputManager() const
+v3d::Director* Engine::getDirector() const
 {
-	return *inputManager;
+	return director;
 }
+
+v3d::InputManager* Engine::getInputManager() const
+{
+	return inputManager;
+}
+
+V3D_NS_END

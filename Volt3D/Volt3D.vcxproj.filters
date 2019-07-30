@@ -8,9 +8,6 @@
     <Filter Include="Volt3D">
       <UniqueIdentifier>{456493b7-1ea1-42a8-a631-a9dc7c3cb033}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Volt3D\Core">
-      <UniqueIdentifier>{87989972-4916-46fb-ab22-56f3997c26e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Volt3D\Vulkan">
       <UniqueIdentifier>{326ae2ca-cb92-4ccc-baf2-1eef7afdc8b8}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     <Filter Include="Volt3D\Texture">
       <UniqueIdentifier>{3b241cd4-93f5-404c-8f2d-21ae908721ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Engine">
+      <UniqueIdentifier>{87989972-4916-46fb-ab22-56f3997c26e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -64,12 +64,6 @@
     </ClCompile>
     <ClCompile Include="PreCompiled.cpp">
       <Filter>DLL</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Window.cpp">
-      <Filter>Volt3D\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Engine.cpp">
-      <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Context.cpp">
       <Filter>Volt3D\Vulkan</Filter>
@@ -89,14 +83,8 @@
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Core\Preference.cpp">
-      <Filter>Volt3D\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
       <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Time.cpp">
-      <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp">
       <Filter>Volt3D\Vulkan</Filter>
@@ -118,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp">
       <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Application.cpp">
-      <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Node\BaseNode.cpp">
       <Filter>Volt3D\Node</Filter>
@@ -173,17 +158,8 @@
     <ClCompile Include="Volt3D\Input\InputManager.cpp">
       <Filter>Volt3D\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Core\Camera.cpp">
-      <Filter>Volt3D\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Frustum.cpp">
-      <Filter>Volt3D\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Scene\Scene.cpp">
       <Filter>Volt3D\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Core\Director.cpp">
-      <Filter>Volt3D\Core</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Action\Action.cpp">
       <Filter>Volt3D\Action</Filter>
@@ -206,6 +182,33 @@
     <ClCompile Include="Volt3D\Texture\TextureManager.cpp">
       <Filter>Volt3D\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Texture\Texture.cpp">
+      <Filter>Volt3D\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Director.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Engine.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Frustum.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Preference.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Time.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Window.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Application.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Engine\Camera.cpp">
+      <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -219,12 +222,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Utils\Logger.h">
       <Filter>Volt3D\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Window.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Engine.h">
-      <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Config\GLFWCallbackConfig.h">
       <Filter>Volt3D\Config</Filter>
@@ -256,12 +253,6 @@
     <ClInclude Include="Volt3D\Vulkan\Pipeline.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Core\Preference.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Time.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Utils\Timer.h">
       <Filter>Volt3D\Utils</Filter>
     </ClInclude>
@@ -285,9 +276,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h">
       <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Application.h">
-      <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Node\BaseNode.h">
       <Filter>Volt3D\Node</Filter>
@@ -364,23 +352,8 @@
     <ClInclude Include="Volt3D\Input\KeyModifierBits.h">
       <Filter>Volt3D\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Core\Camera.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\ProjectionType.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Frustum.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Scene\Scene.h">
       <Filter>Volt3D\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\Director.h">
-      <Filter>Volt3D\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\CursorMode.h">
-      <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Action\Action.h">
       <Filter>Volt3D\Action</Filter>
@@ -390,9 +363,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Spritesheet\ImageType.h">
       <Filter>Volt3D\Spritesheet</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Core\WindowMode.h">
-      <Filter>Volt3D\Core</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Renderer\Vertex.h">
       <Filter>Volt3D\Renderer</Filter>
@@ -412,6 +382,41 @@
     <ClInclude Include="Volt3D\Texture\TextureManager.h">
       <Filter>Volt3D\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Texture\Texture.h" />
+    <ClInclude Include="Volt3D\Texture\Texture.h">
+      <Filter>Volt3D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\CursorMode.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Director.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Engine.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Frustum.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Preference.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\ProjectionType.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Time.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Window.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\WindowMode.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Application.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Engine\Camera.h">
+      <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

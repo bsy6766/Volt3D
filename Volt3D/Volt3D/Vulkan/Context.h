@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.hpp>
 
 #include <vector>
+#include <memory>
 
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
@@ -59,7 +60,7 @@ namespace v3d
 
 			vk::SurfaceKHR surface;
 
-			v3d::vulkan::Devices* devices;
+			std::shared_ptr<v3d::vulkan::Devices> devices;
 			vk::PhysicalDevice physicalDevice;
 			vk::Device logicalDevice;
 
@@ -176,7 +177,7 @@ namespace v3d
 			bool init( const v3d::glfw::Window& window, const bool enableValidationLayer );
 
 			const v3d::vulkan::Instance& getInstance() const;
-			v3d::vulkan::Devices* getDevices() const;
+			std::shared_ptr<v3d::vulkan::Devices> getDevices() const;
 		};
 	}
 }

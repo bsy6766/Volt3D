@@ -24,6 +24,7 @@
 #include "Renderer/VertexData.cpp"
 
 #include "Spritesheet/Image.h"
+#include "Texture.h"
 
 v3d::vulkan::Context::Context( const v3d::glfw::Window& window )
 	: instance( nullptr )
@@ -127,6 +128,8 @@ bool v3d::vulkan::Context::init( const v3d::glfw::Window& window, const bool ena
 
 	if (!initCommandBuffer()) return false;
 
+	//v3d::vulkan::Texture::devices = devices;
+
 	return true;
 }
 
@@ -161,7 +164,7 @@ bool v3d::vulkan::Context::initSurface( const v3d::glfw::Window& window )
 
 bool v3d::vulkan::Context::initDevices()
 {
-	devices = new v3d::vulkan::Devices();
+	devices = std::shared_ptr<v3d::vulkan::Devices>( new v3d::vulkan::Devices() );
 	if (!devices->initPhysicalDevice( instance->enumeratePhysicalDevices() )) return false;
 	if (!devices->initLogicalDevice( surface )) return false;
 	physicalDevice = devices->physicalDevice;
@@ -926,7 +929,7 @@ const v3d::vulkan::Instance& v3d::vulkan::Context::getInstance() const
 	return *instance;
 }
 
-v3d::vulkan::Devices* v3d::vulkan::Context::getDevices() const
+std::shared_ptr<v3d::vulkan::Devices> v3d::vulkan::Context::getDevices() const
 {
 	return devices;
 }
@@ -957,7 +960,8 @@ void v3d::vulkan::Context::release()
 	renderFinishedSemaphores.clear();
 	releaseSwapChain();
 	logicalDevice.destroy();
-	SAFE_DELETE( devices );
+	//SAFE_DELETE( devices );
+	devices = nullptr;
 	instance->get().destroySurfaceKHR( surface );
 	SAFE_DELETE( debugUtilsMessenger );
 	SAFE_DELETE( debugReportCallback );

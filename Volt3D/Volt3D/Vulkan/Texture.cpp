@@ -1,112 +1,147 @@
-﻿/**
-*	@file Texture.cpp
-*
-*	@author Seung Youp Baek
-*	@copyright Copyright (c) 2019 Seung Youp Baek
-*/
-
+﻿///**
+//*	@file Texture.cpp
+//*
+//*	@author Seung Youp Baek
+//*	@copyright Copyright (c) 2019 Seung Youp Baek
+//*/
+//
 #include <PreCompiled.h>
-
-#include "Texture.h"
-
-#include "Devices.h"
-#include "Spritesheet/Image.h"
-
-v3d::vulkan::Texture::Texture(vk::Device& logicalDevice )
-	: logicalDevice( logicalDevice )
-	, path(nullptr)
-	, image()
-	, imageView()
-	, imageLayout()
-	, deviceMemory()
-	, sampler()
-	, width(0)
-	, height(0)
-	, channels(0)
-	, mipLevel(0)
-	, layerCount(0)
-{}
-
-v3d::vulkan::Texture::~Texture()
-{
-	release();
-}
-
-void v3d::vulkan::Texture::release()
-{
-	logicalDevice.destroySampler( sampler );
-	logicalDevice.freeMemory( deviceMemory );
-	logicalDevice.destroyImageView( imageView );
-	logicalDevice.destroyImage( image );
-}
-
-
-
-
-
-
-v3d::vulkan::Texture2D::Texture2D( vk::Device& device )
-	: v3d::vulkan::Texture(device)
-{}
-
-bool v3d::vulkan::Texture2D::init( const char* filePath, v3d::vulkan::Devices* devices )
-{
-	// path is guarnateed not to be null
-	v3d::Image* imageSource = v3d::Image::createPNG( filePath );
-	if (imageSource == nullptr) return false;
-
-	path = path;
-	width = imageSource->getWidth();
-	height = imageSource->getHeight();
-	channels = imageSource->getHeight();
-	mipLevel = 1;
-	layerCount = 1;
-
-	createImage( devices, vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
-
-
-	return false;
-}
-
-void v3d::vulkan::Texture2D::createImage( v3d::vulkan::Devices* devices, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags )
-{
-	vk::ImageCreateInfo createInfo
-	(
-		vk::ImageCreateFlags(),
-		vk::ImageType::e2D,
-		format,
-		vk::Extent3D( width, height, 1 ),
-		1u,
-		1u,
-		vk::SampleCountFlagBits::e1,
-		tilling,
-		usageFlags
-	);
-
-	image = logicalDevice.createImage( createInfo );
-	vk::MemoryRequirements memRequirements = logicalDevice.getImageMemoryRequirements( image );
-
-	vk::MemoryAllocateInfo allocInfo
-	(
-		memRequirements.size,
-		devices->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
-	);
-
-	deviceMemory = logicalDevice.allocateMemory( allocInfo );
-	logicalDevice.bindImageMemory( image, deviceMemory, 0 );
-}
-
-std::shared_ptr<v3d::vulkan::Texture2D> v3d::vulkan::Texture2D::create( const char* filePath, v3d::vulkan::Devices* devices )
-{
-	if (filePath == nullptr) return nullptr;
-	if (devices == nullptr) return nullptr;
-
-	v3d::vulkan::Texture2D* newTexture2D = new (std::nothrow) v3d::vulkan::Texture2D( devices->logicalDevice );
-	if (newTexture2D)
-	{
-		if (newTexture2D->init( filePath, devices )) return std::shared_ptr<v3d::vulkan::Texture2D>( newTexture2D );
-		else delete newTexture2D;
-	}
-
-	return nullptr;
-}
+//
+//#include "Texture.h"
+//
+//#include "Devices.h"
+//#include "Spritesheet/Image.h"
+//#include "Texture.h"
+//
+//std::shared_ptr<v3d::vulkan::Devices> v3d::vulkan::Texture::devices = nullptr;
+//
+//v3d::vulkan::Texture::Texture()
+//	: image()
+//	, imageView()
+//	, imageLayout()
+//	, deviceMemory()
+//	, sampler()
+//{}
+//
+//v3d::vulkan::Texture::~Texture()
+//{
+//	release();
+//}
+//
+//bool v3d::vulkan::Texture::init( const uint32_t width, const uint32_t height, const void* data, const uint64_t dataSize )
+//{
+//	if (v3d::vulkan::Texture::devices == nullptr) return false;
+//	if (width == 0) return false;
+//	if (height == 0) return false;
+//	if (data == nullptr) return false;
+//
+//	// Create staging buffers
+//	vk::Buffer stagingBuffer = devices->createBuffer( dataSize, vk::BufferUsageFlagBits::eTransferSrc );
+//	vk::DeviceMemory stagingBufferMemory = devices->createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+//
+//	vk::Device& ld = devices->logicalDevice;
+//
+//	// copy data
+//	void* dataPtr = ld.mapMemory( stagingBufferMemory, 0, dataSize );
+//	memcpy( dataPtr, data, dataSize );
+//	ld.unmapMemory( stagingBufferMemory );
+//
+//	const vk::ImageViewType imageViewType = vk::ImageViewType::e2D;
+//
+//	createImage( width, height, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled );
+//	allocateAndBindMemoryToImage( vk::MemoryPropertyFlagBits::eDeviceLocal );
+//
+//	// Transition image layout
+//	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
+//	copyBufferToImage( stagingBuffer, texture.image, uint32_t( texture.imageSource->getWidth() ), uint32_t( texture.imageSource->getHeight() ) );
+//	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
+//	
+//	createImageView( vk::ImageViewType::e2D, vk::Format::eR8G8B8A8Unorm );
+//
+//	// Create sampler
+//	vk::SamplerCreateInfo createInfo
+//	(
+//		vk::SamplerCreateFlags(),
+//		vk::Filter::eLinear,
+//		vk::Filter::eLinear,
+//		vk::SamplerMipmapMode::eLinear,
+//		vk::SamplerAddressMode::eMirroredRepeat,
+//		vk::SamplerAddressMode::eMirroredRepeat,
+//		vk::SamplerAddressMode::eMirroredRepeat,
+//		0.0f,
+//		false,
+//		1,
+//		false,
+//		vk::CompareOp::eAlways,
+//		0.0f,
+//		0.0f,
+//		vk::BorderColor::eIntOpaqueBlack,
+//		false
+//	);
+//
+//	sampler = ld.createSampler( createInfo, nullptr );
+//
+//	// Clean up
+//	ld.destroyBuffer( stagingBuffer );
+//	ld.freeMemory( stagingBufferMemory );
+//}
+//
+//void v3d::vulkan::Texture::createImage( const uint32_t width, const uint32_t height, const vk::ImageType imageType, const vk::Format format, const vk::ImageTiling tilling, const vk::ImageUsageFlags usageFlags )
+//{
+//	vk::ImageCreateInfo createInfo
+//	(
+//		vk::ImageCreateFlags(),
+//		imageType,
+//		format,
+//		vk::Extent3D( width, height, 1 ),
+//		1u,
+//		1u,
+//		vk::SampleCountFlagBits::e1,
+//		tilling,
+//		usageFlags
+//	);
+//
+//	image = devices->logicalDevice.createImage( createInfo );
+//}
+//
+//void v3d::vulkan::Texture::allocateAndBindMemoryToImage( const vk::MemoryPropertyFlags memoryPropertyFlags )
+//{
+//	vk::MemoryRequirements memRequirements = devices->logicalDevice.getImageMemoryRequirements( image );
+//	vk::MemoryAllocateInfo allocInfo
+//	(
+//		memRequirements.size,
+//		devices->getMemoryTypeIndex( memRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal )
+//	);
+//
+//	deviceMemory = devices->logicalDevice.allocateMemory( allocInfo );
+//	devices->logicalDevice.bindImageMemory( image, deviceMemory, 0 );
+//}
+//
+//void v3d::vulkan::Texture::createImageView( const vk::ImageViewType imageViewType, const vk::Format format )
+//{
+//	// Create image view
+//	vk::ImageViewCreateInfo createInfo
+//	(
+//		vk::ImageViewCreateFlags(),
+//		image,
+//		imageViewType,
+//		format,
+//		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
+//		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
+//	);
+//
+//	imageView = devices->logicalDevice.createImageView( createInfo, nullptr );
+//}
+//
+//void v3d::vulkan::Texture::transitionImageLayout( const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout )
+//{
+//}
+//
+//void v3d::vulkan::Texture::release()
+//{
+//	vk::Device& ld = devices->logicalDevice;
+//	ld.destroySampler( sampler );
+//	ld.freeMemory( deviceMemory );
+//	ld.destroyImageView( imageView );
+//	ld.destroyImage( image );
+//}

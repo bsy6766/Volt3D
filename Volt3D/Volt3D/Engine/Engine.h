@@ -28,10 +28,15 @@ namespace v3d
 	*/
 	class VOLT3D_DLL Engine
 	{
+	private:
+		static v3d::Engine* instance;
+
 	protected:
 		v3d::glfw::Window* window;
-		v3d::glfw::Time* time;
+		v3d::Time* time;
+
 		v3d::vulkan::Context* context;
+
 		v3d::Director* director;
 		v3d::Preference* preference;
 
@@ -53,14 +58,17 @@ namespace v3d
 		Engine();
 		~Engine();
 
+		static v3d::Engine* get() { return v3d::Engine::instance; }
+
 		bool init(const char* windowTitle, const std::wstring& folderName);
 		void run();
 		void end();
 
-		v3d::glfw::Window& getWindow() const;
-		v3d::vulkan::Context& getVulkanContext() const;
-		v3d::Director& getDirector() const;
-		v3d::InputManager& getInputManager() const;
+		v3d::glfw::Window* getWindow() const;
+		v3d::Time* getTime() const;
+		v3d::vulkan::Context* getVulkanContext() const;
+		v3d::Director* getDirector() const;
+		v3d::InputManager* getInputManager() const;
 	};
 }
 

@@ -12,7 +12,7 @@ private:
 public:
 	static v3d::Application& getInstance()
 	{
-		return v3d::Application::getInstance();
+		return v3d::Application::get();
 	}
 
 	virtual bool init( const wchar_t* appName, const char* windowTitle ) override;

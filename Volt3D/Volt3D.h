@@ -81,6 +81,7 @@
 #include "Spritesheet/ImageType.h"
 
 // Texture
+#include "Texture/Texture.h"
 #include "Texture/TextureManager.h"
 
 // Utils

@@ -14,6 +14,12 @@
 #define VOLT3D_DLL __declspec(dllimport)  
 #endif
 
+#define V3D_NS_BEGIN	\
+namespace v3d {
+
+#define V3D_NS_END	\
+}	// namesapce v3d
+
 #define SAFE_DELETE(_INSTANCE_)								\
 if(_INSTANCE_) { delete _INSTANCE_; _INSTANCE_ = nullptr; }	
 

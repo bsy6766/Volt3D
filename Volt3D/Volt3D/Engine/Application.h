@@ -34,7 +34,7 @@ namespace v3d
 		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Application );
 		DEFAULT_MOVE_CONSTRUCTORS( Application );
 
-		static v3d::Application& getInstance()
+		static v3d::Application& get()
 		{
 			static v3d::Application instance;
 			return instance;

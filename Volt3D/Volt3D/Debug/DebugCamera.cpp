@@ -11,7 +11,7 @@ v3d::DebugCamera::DebugCamera(std::string_view name)
 	: v3d::Camera(name)
 	, translationSpeed(0.0f)
 	, rotationSpeed(0.0f)
-	, input(v3d::Application::getInstance().getEngine()->getInputManager())
+	, input(v3d::Application::get().getEngine()->getInputManager())
 {}
 
 v3d::DebugCamera::~DebugCamera() {}
