@@ -108,7 +108,7 @@ void Engine::release()
 
 void Engine::run()
 {
-	time->resetTime();
+	time->reset();
 
 	static glm::uvec2 fb = window->getFrameBufferSize();
 

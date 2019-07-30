@@ -12,58 +12,61 @@
 
 #include "utils/Macros.h"
 
-namespace v3d
+V3D_NS_BEGIN
+
+class Engine;
+
+/**
+*	@class Time
+*	@brief Wrapper for GLFW time functions.
+*
+*	@group Engine
+*
+*	@since 1.0
+*/
+class VOLT3D_DLL Time
 {
-	/**
-	*	@class Time
-	*	@brief Wrapper for GLFW time functions.
-	*
-	*	@group Engine
-	*
-	*	@since 1.0
-	*/
-	class VOLT3D_DLL Time
-	{
-		friend class v3d::Engine;
+	friend class v3d::Engine;
 
-	private:
-		Time();
+private:
+	Time();
 
-		double currentTime;
-		double previousTime;
-		double elapsedTime;
-		int fps;
-		double fpsElapsedTime;
+	double currentTime;
+	double previousTime;
+	double elapsedTime;
+	int fps;
+	double fpsElapsedTime;
 
-		void updateTime();
-		void updateFPS();
+	void updateTime();
+	void updateFPS();
 
-		std::function<void( const int )> onFPSUpdated;
+	std::function<void( const int )> onFPSUpdated;
 
-	public:
-		~Time() {}
+public:
+	~Time() {}
 		
-		DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Time );
-		DEFAULT_MOVE_CONSTRUCTORS( Time );
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Time );
+	DEFAULT_MOVE_CONSTRUCTORS( Time );
 
-		/** Get Time instance. */
-		static v3d::Time* get();
+	/** Get Time instance. */
+	static v3d::Time* get();
 
-		/** Reset time and fps to 0 */
-		void reset();
+	/** Reset time and fps to 0 */
+	void reset();
 
-		/** Get latest FPS */
-		int getFPS() const;
+	/** Get latest FPS */
+	int getFPS() const;
 
-		/** Get elapsed time on current frame */
-		double getElaspedTime() const;
+	/** Get elapsed time on current frame */
+	double getElaspedTime() const;
 
-		/** Get current time */
-		double getCurrentTime() const;
+	/** Get current time */
+	double getCurrentTime() const;
 
-		/** Set callback function on fps update */
-		void setOnFPSUpdateCallback( const std::function<void( const int )>* func );
-	};
-}
+	/** Set callback function on fps update */
+	void setOnFPSUpdateCallback( const std::function<void( const int )>* func );
+};
+
+V3D_NS_END
 
 #endif

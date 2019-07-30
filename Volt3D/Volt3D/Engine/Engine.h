@@ -14,11 +14,12 @@
 
 namespace v3d
 {
+	class Time;
 	class Director;
 	class Preference;
 	class InputManager;
 	class TextureManager;
-	namespace glfw { class Window; class Time; }
+	namespace glfw { class Window; }
 	namespace vulkan { class Context; }
 
 	/**

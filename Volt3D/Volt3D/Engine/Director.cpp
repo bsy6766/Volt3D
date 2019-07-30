@@ -417,7 +417,7 @@ bool v3d::Director::enableDebugCamera()
 	if (debugCamera && !debugCamera->isActive())
 	{
 		debugCamera->setActive(true);
-		auto& window = v3d::Application::get().getEngine()->getWindow();
+		auto window = v3d::glfw::Window::get();
 
 		prevCursorMode = window.getCursorMode();
 		window.setCursorMode(v3d::CursorMode::eDisabled);

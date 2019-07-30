@@ -15,7 +15,7 @@
 
 #include "Utils/FileSystem.h"
 #include "Utils/Logger.h"
-#include "Core/WindowMode.h"
+#include "Engine/WindowMode.h"
 
 using json = nlohmann::json;
 

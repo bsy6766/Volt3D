@@ -2,16 +2,14 @@
 
 #include "DebugCamera.h"
 
-#include "Core/Application.h"
-#include "Core/Engine.h"
 #include "Input/InputManager.h"
 #include "Input/KeyCode.h"
 
-v3d::DebugCamera::DebugCamera(std::string_view name)
-	: v3d::Camera(name)
-	, translationSpeed(0.0f)
-	, rotationSpeed(0.0f)
-	, input(v3d::Application::get().getEngine()->getInputManager())
+v3d::DebugCamera::DebugCamera( std::string_view name )
+	: v3d::Camera( name )
+	, translationSpeed( 0.0f )
+	, rotationSpeed( 0.0f )
+	, input( v3d::InputManager::get() )
 {}
 
 v3d::DebugCamera::~DebugCamera() {}
@@ -36,63 +34,63 @@ v3d::DebugCamera* v3d::DebugCamera::create( std::string_view name, const v3d::Pr
 
 void v3d::DebugCamera::onUpdate( const float delta )
 {
-	if (active)
+	if (active && input)
 	{
 		// check W and S
-		if (input.isKeyPressed( v3d::KeyCode::eW, false ))
+		if (input->isKeyPressed( v3d::KeyCode::eW, false ))
 		{
 			// move foward
 			addPosition( getMovedDist( -180.0f, delta * translationSpeed ) );
 		}
-		else if (input.isKeyPressed( v3d::KeyCode::eS, false ))
+		else if (input->isKeyPressed( v3d::KeyCode::eS, false ))
 		{
 			// move backward
 			addPosition( getMovedDist( 0.0f, delta * translationSpeed ) );
 		}
 
 		// check A and D
-		if (input.isKeyPressed( v3d::KeyCode::eA, false ))
+		if (input->isKeyPressed( v3d::KeyCode::eA, false ))
 		{
 			// move left
 			addPosition( getMovedDist( 90.0f, delta * translationSpeed ) );
 
 		}
-		else if (input.isKeyPressed( v3d::KeyCode::eD, false ))
+		else if (input->isKeyPressed( v3d::KeyCode::eD, false ))
 		{
 			// move right
 			addPosition( getMovedDist( -90.0f, delta * translationSpeed ) );
 		}
 
 		// check space and left shift
-		if (input.isKeyPressed( v3d::KeyCode::eSpace, false ))
+		if (input->isKeyPressed( v3d::KeyCode::eSpace, false ))
 		{
 			// move left
 			addPositionY( delta * translationSpeed );
 
 		}
-		else if (input.isKeyPressed( v3d::KeyCode::eLeftShift, false ))
+		else if (input->isKeyPressed( v3d::KeyCode::eLeftShift, false ))
 		{
 			// move down
 			addPositionY( delta * translationSpeed * -1.0f );
 		}
 
 		// reset translation
-		if (input.isKeyPressed( v3d::KeyCode::eX, true ))
+		if (input->isKeyPressed( v3d::KeyCode::eX, true ))
 		{
 			setPosition( glm::vec3( 0.0f, 0.0f, 0.0f ) );
 		}
 
 		// reset rotation
-		if (input.isKeyPressed( v3d::KeyCode::eZ, true ))
+		if (input->isKeyPressed( v3d::KeyCode::eZ, true ))
 		{
 			setRotation( glm::vec3( 0.0f, 0.0f, 0.0f ) );
 		}
 
 		// mouse
-		if (input.didMouseMove())
+		if (input->didMouseMove())
 		{
 			// get distance that mouse moved with delta and speed applied
-			const glm::vec2 mouseDelta = input.getMouseMovedDistance() * delta * rotationSpeed;
+			const glm::vec2 mouseDelta = input->getMouseMovedDistance() * delta * rotationSpeed;
 
 			// rotate
 			addRotation( glm::vec2( -mouseDelta.y, mouseDelta.x ) );
@@ -102,7 +100,7 @@ void v3d::DebugCamera::onUpdate( const float delta )
 	}
 }
 
-glm::vec3 v3d::DebugCamera::getMovedDist(const float angleMod, const float distance)
+glm::vec3 v3d::DebugCamera::getMovedDist( const float angleMod, const float distance )
 {
 	// get current y rotation of camera
 	float curRotY = getRotation().y;
@@ -110,10 +108,10 @@ glm::vec3 v3d::DebugCamera::getMovedDist(const float angleMod, const float dista
 	// add angle mode
 	curRotY += angleMod;
 
-	const glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(curRotY), glm::vec3(0.0f, 1.0f, 0.0f));
-	const auto movedDist = glm::inverse(rotateMat) * glm::vec4(0, 0, distance, 1);
+	const glm::mat4 rotateMat = glm::rotate( glm::mat4( 1.0f ), glm::radians( curRotY ), glm::vec3( 0.0f, 1.0f, 0.0f ) );
+	const auto movedDist = glm::inverse( rotateMat ) * glm::vec4( 0, 0, distance, 1 );
 
-	return glm::vec3(movedDist);
+	return glm::vec3( movedDist );
 }
 
 void v3d::DebugCamera::toggle()

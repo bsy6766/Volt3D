@@ -16,14 +16,16 @@
 
 using json = nlohmann::json;
 
-v3d::Application::Application()
+V3D_NS_BEGIN
+
+Application::Application()
 	: name()
 	, engine(nullptr)
 {}
 
-v3d::Application::~Application() {}
+Application::~Application() {}
 
-bool v3d::Application::init( const wchar_t* appName, const char* windowTitle )
+bool Application::init( const wchar_t* appName, const char* windowTitle )
 {
 	if (engine) return false;
 	engine = new v3d::Engine();
@@ -32,7 +34,7 @@ bool v3d::Application::init( const wchar_t* appName, const char* windowTitle )
 	return true;
 }
 
-void v3d::Application::run()
+void Application::run()
 {
 	try
 	{
@@ -56,3 +58,5 @@ void v3d::Application::run()
 
 	SAFE_DELETE( engine );
 }
+
+V3D_NS_END

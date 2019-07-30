@@ -23,17 +23,17 @@
 #include "Config/GLFWCallbackConfig.h"
 
 // Core
-#include "Core/Application.h"
-#include "Core/Camera.h"
-#include "Core/CursorMode.h"
-#include "Core/Director.h"
-#include "Core/Engine.h"
-#include "Core/Frustum.h"
-#include "Core/Preference.h"
-#include "Core/ProjectionType.h"
-#include "Core/Time.h"
-#include "Core/Window.h"
-#include "Core/WindowMode.h"
+#include "Engine/Application.h"
+#include "Engine/Camera.h"
+#include "Engine/CursorMode.h"
+#include "Engine/Director.h"
+#include "Engine/Engine.h"
+#include "Engine/Frustum.h"
+#include "Engine/Preference.h"
+#include "Engine/ProjectionType.h"
+#include "Engine/Time.h"
+#include "Engine/Window.h"
+#include "Engine/WindowMode.h"
 
 // Debug
 #include "Debug/DebugCamera.h"

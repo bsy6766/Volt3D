@@ -6,8 +6,8 @@
 
 //#include "GameController.h"
 
-#include "Core/Engine.h"
-//#include "Core/GLView.h"
+#include "Engine/Engine.h"
+//#include "Engine/GLView.h"
 #include "Utils/Logger.h"
 
 #include "Node/TransformNode.h"
@@ -21,8 +21,10 @@
 //#include "Config/Config.h"
 //#include "Config/LogConfig.h"
 
+V3D_NS_BEGIN
+
 // GLFW key define to v3d::KeyCode
-std::unordered_map<int, v3d::KeyCode> v3d::InputManager::glfwToKeyCodeMap = 
+std::unordered_map<int, v3d::KeyCode> InputManager::glfwToKeyCodeMap = 
 {
 	//{ GLFW_KEY_UNKNOWN, v3d::KeyCode::eUnknown },				// -1
 	{ GLFW_KEY_SPACE, v3d::KeyCode::eSpace },					// 32
@@ -147,7 +149,7 @@ std::unordered_map<int, v3d::KeyCode> v3d::InputManager::glfwToKeyCodeMap =
 	{ GLFW_KEY_MENU, v3d::KeyCode::eMenu },						// 348
 };
 
-v3d::InputManager::InputManager()
+InputManager::InputManager()
 	: keyModifiers(v3d::KeyModifierBits::eNone)
 	, blocked(false)
 	, mouseScrollValueX(0)
@@ -162,12 +164,14 @@ v3d::InputManager::InputManager()
 	//, onControllerDisconnected(nullptr)
 {}
 
-v3d::InputManager::~InputManager()
+InputManager::~InputManager()
 {
 	releaseAll();
 }
 
-bool v3d::InputManager::init()
+v3d::InputManager* InputManager::get() { return v3d::Engine::get()->getInputManager(); }
+
+bool InputManager::init()
 {
 	// Init mouse button vector
 	mouseButtonInputs.resize(static_cast<int>(v3d::MouseButton::eEnumLast) - 1);
@@ -238,27 +242,27 @@ bool v3d::InputManager::init()
 	return true;
 }
 
-void v3d::InputManager::blockInput(const bool enabled)
+void InputManager::blockInput(const bool enabled)
 {
 	blocked = enabled;
 }
 
-glm::vec2 v3d::InputManager::getMousePosition() const
+glm::vec2 InputManager::getMousePosition() const
 {
 	return curMousePos;
 }
 
-glm::vec2 v3d::InputManager::getMouseMovedDistance() const
+glm::vec2 InputManager::getMouseMovedDistance() const
 {
 	return curMousePos - prevMousePos;
 }
 
-bool v3d::InputManager::didMouseMove() const
+bool InputManager::didMouseMove() const
 {
 	return prevMousePos != curMousePos;
 }
 
-bool v3d::InputManager::isMouseButtonPressed(const v3d::MouseButton mouseButton, const bool currentFrame) const
+bool InputManager::isMouseButtonPressed(const v3d::MouseButton mouseButton, const bool currentFrame) const
 {
 	if (mouseButton != v3d::MouseButton::eEnumLast)
 	{
@@ -289,7 +293,7 @@ bool v3d::InputManager::isMouseButtonPressed(const v3d::MouseButton mouseButton,
 	}
 }
 
-bool v3d::InputManager::isMouseButtonReleased(const v3d::MouseButton mouseButton, const bool currentFrame) const
+bool InputManager::isMouseButtonReleased(const v3d::MouseButton mouseButton, const bool currentFrame) const
 {
 	if (mouseButton != v3d::MouseButton::eEnumLast)
 	{
@@ -320,7 +324,7 @@ bool v3d::InputManager::isMouseButtonReleased(const v3d::MouseButton mouseButton
 	}
 }
 
-bool v3d::InputManager::isAnyMouseButtonPressed(const bool currentFrame) const
+bool InputManager::isAnyMouseButtonPressed(const bool currentFrame) const
 {
 	if (currentFrame)
 	{
@@ -350,7 +354,7 @@ bool v3d::InputManager::isAnyMouseButtonPressed(const bool currentFrame) const
 	}
 }
 
-bool v3d::InputManager::isAnyMouseButtonReleased(const bool currentFrame) const
+bool InputManager::isAnyMouseButtonReleased(const bool currentFrame) const
 {
 	if (currentFrame)
 	{
@@ -380,17 +384,17 @@ bool v3d::InputManager::isAnyMouseButtonReleased(const bool currentFrame) const
 	}
 }
 
-int v3d::InputManager::getMouseScrollXValue() const
+int InputManager::getMouseScrollXValue() const
 {
 	return mouseScrollValueX;
 }
 
-int v3d::InputManager::getMouseScrollYValue() const
+int InputManager::getMouseScrollYValue() const
 {
 	return mouseScrollValueY;
 }
 
-bool v3d::InputManager::isKeyPressed(const v3d::KeyCode keyCode, const bool currentFrame) const
+bool InputManager::isKeyPressed(const v3d::KeyCode keyCode, const bool currentFrame) const
 {
 	if (keyCode != v3d::KeyCode::eEnumLast)
 	{
@@ -422,7 +426,7 @@ bool v3d::InputManager::isKeyPressed(const v3d::KeyCode keyCode, const bool curr
 	}
 }
 
-bool v3d::InputManager::isKeyReleased(const v3d::KeyCode keyCode, const bool currentFrame) const
+bool InputManager::isKeyReleased(const v3d::KeyCode keyCode, const bool currentFrame) const
 {
 	if (keyCode != v3d::KeyCode::eEnumLast)
 	{
@@ -454,23 +458,23 @@ bool v3d::InputManager::isKeyReleased(const v3d::KeyCode keyCode, const bool cur
 	}
 }
 
-bool v3d::InputManager::isKeyModifierPressing(const v3d::KeyModifierBits keyModifier) const
+bool InputManager::isKeyModifierPressing(const v3d::KeyModifierBits keyModifier) const
 {
 	return (keyModifiers & keyModifier);
 }
 
-bool v3d::InputManager::isKeyModifierPressing(const unsigned int keyModifier) const
+bool InputManager::isKeyModifierPressing(const unsigned int keyModifier) const
 {
 	return (keyModifiers & keyModifier);
 }
 
-v3d::KeyModifierBits v3d::InputManager::getKeyModifier() const
+v3d::KeyModifierBits InputManager::getKeyModifier() const
 {
 	return keyModifiers;
 }
 
 /*
-void v3d::InputManager::setCursorToCenter()
+void InputManager::setCursorToCenter()
 {
 	glm::ivec2 res = v3d::Engine::getInstance().getGLView().getWindowSize();
 
@@ -478,14 +482,14 @@ void v3d::InputManager::setCursorToCenter()
 }
 */
 
-void v3d::InputManager::updateMousePosition(const int x, const int y)
+void InputManager::updateMousePosition(const int x, const int y)
 {
 	if (blocked) return;
 
 	curMousePos = glm::vec2(x, y);
 }
 
-void v3d::InputManager::updateMouseButtonInput(const int button, const int action, const int mods)
+void InputManager::updateMouseButtonInput(const int button, const int action, const int mods)
 {
 	if (blocked) return;
 
@@ -510,7 +514,7 @@ void v3d::InputManager::updateMouseButtonInput(const int button, const int actio
 	keyModifiers = static_cast<v3d::KeyModifierBits>(mods);
 }
 
-void v3d::InputManager::updateMouseScrollValue(const double xOffset, const double yOffset)
+void InputManager::updateMouseScrollValue(const double xOffset, const double yOffset)
 {
 	if (blocked) return;
 
@@ -518,7 +522,7 @@ void v3d::InputManager::updateMouseScrollValue(const double xOffset, const doubl
 	mouseScrollValueY = static_cast<int>(yOffset);
 }
 
-void v3d::InputManager::updateKeyInput(const int glfwKey, const int action, const int mods)
+void InputManager::updateKeyInput(const int glfwKey, const int action, const int mods)
 {
 	if (blocked) return;
 
@@ -579,7 +583,7 @@ void v3d::InputManager::updateKeyInput(const int glfwKey, const int action, cons
 	keyModifiers = static_cast<v3d::KeyModifierBits>(mods);
 }
 
-void v3d::InputManager::postUpdate()
+void InputManager::postUpdate()
 {
 	keyInputsOnce.clear();
 
@@ -597,7 +601,7 @@ void v3d::InputManager::postUpdate()
 }
 
 /*
-void v3d::InputManager::pollGameControllerInput()
+void InputManager::pollGameControllerInput()
 {
 	if (!gamecontrollerEnabled) return;
 
@@ -638,7 +642,7 @@ void v3d::InputManager::pollGameControllerInput()
 	}
 }
 
-void v3d::InputManager::addController(const SDL_ControllerDeviceEvent event)
+void InputManager::addController(const SDL_ControllerDeviceEvent event)
 {
 	if (!gamecontrollerEnabled) return;
 
@@ -836,7 +840,7 @@ void v3d::InputManager::addController(const SDL_ControllerDeviceEvent event)
 	}
 }
 
-void v3d::InputManager::removeController(const SDL_ControllerDeviceEvent event)
+void InputManager::removeController(const SDL_ControllerDeviceEvent event)
 {
 	if (!gamecontrollerEnabled) return;
 
@@ -871,7 +875,7 @@ void v3d::InputManager::removeController(const SDL_ControllerDeviceEvent event)
 	}
 }
 
-void v3d::InputManager::controllerButtonPressed(const int16_t id, const SDL_ControllerButtonEvent event)
+void InputManager::controllerButtonPressed(const int16_t id, const SDL_ControllerButtonEvent event)
 {
 	if (blocked) return;
 
@@ -914,7 +918,7 @@ void v3d::InputManager::controllerButtonPressed(const int16_t id, const SDL_Cont
 	}
 }
 
-void v3d::InputManager::controllerButtonReleased(const int16_t id, const SDL_ControllerButtonEvent event)
+void InputManager::controllerButtonReleased(const int16_t id, const SDL_ControllerButtonEvent event)
 {
 	if (blocked) return;
 
@@ -954,7 +958,7 @@ void v3d::InputManager::controllerButtonReleased(const int16_t id, const SDL_Con
 	}
 }
 
-void v3d::InputManager::controllerAxisMoved(const int16_t id, const SDL_ControllerAxisEvent event)
+void InputManager::controllerAxisMoved(const int16_t id, const SDL_ControllerAxisEvent event)
 {
 	if (blocked) return;
 	
@@ -988,7 +992,7 @@ void v3d::InputManager::controllerAxisMoved(const int16_t id, const SDL_Controll
 	}
 }
 
-std::vector<std::shared_ptr<v3d::GameController>> v3d::InputManager::getAllGameControllers()
+std::vector<std::shared_ptr<v3d::GameController>> InputManager::getAllGameControllers()
 {
 	std::vector<std::shared_ptr<v3d::GameController>> gcs;
 
@@ -1000,7 +1004,7 @@ std::vector<std::shared_ptr<v3d::GameController>> v3d::InputManager::getAllGameC
 	return gcs;
 }
 
-std::shared_ptr<v3d::GameController> v3d::InputManager::getGameController(const int16_t id)
+std::shared_ptr<v3d::GameController> InputManager::getGameController(const int16_t id)
 {
 	if (id == -1) return nullptr;
 
@@ -1024,7 +1028,7 @@ std::shared_ptr<v3d::GameController> v3d::InputManager::getGameController(const 
 }
 */
 
-void v3d::InputManager::enableKeyBufferMode(const std::size_t maxBufferSize)
+void InputManager::enableKeyBufferMode(const std::size_t maxBufferSize)
 {
 	if (!keyBufferMode)
 	{
@@ -1035,7 +1039,7 @@ void v3d::InputManager::enableKeyBufferMode(const std::size_t maxBufferSize)
 	}
 }
 
-void v3d::InputManager::disableKeyBufferMode()
+void InputManager::disableKeyBufferMode()
 {
 	if (keyBufferMode)
 	{
@@ -1045,7 +1049,7 @@ void v3d::InputManager::disableKeyBufferMode()
 	}
 }
 
-char v3d::InputManager::getCharFromBuffer()
+char InputManager::getCharFromBuffer()
 {
 	if (keyBufferMode)
 	{
@@ -1060,12 +1064,12 @@ char v3d::InputManager::getCharFromBuffer()
 	return 0;
 }
 
-std::size_t v3d::InputManager::getKeyBufferSize() const
+std::size_t InputManager::getKeyBufferSize() const
 {
 	return keyBuffer.size();
 }
 
-std::string v3d::InputManager::getBufferAsString(const bool release)
+std::string InputManager::getBufferAsString(const bool release)
 {
 	if (keyBufferMode)
 	{
@@ -1085,13 +1089,13 @@ std::string v3d::InputManager::getBufferAsString(const bool release)
 	return "";
 }
 
-bool v3d::InputManager::isKeyBufferModeEnabled() const
+bool InputManager::isKeyBufferModeEnabled() const
 {
 	return keyBufferMode;
 }
 
 /*
-bool v3d::InputManager::isGameControllerButtonPressed(const int16_t gameControllerID, const v3d::Gamepad::Button button, const bool currentFrame)
+bool InputManager::isGameControllerButtonPressed(const int16_t gameControllerID, const v3d::Gamepad::Button button, const bool currentFrame)
 {
 	// get controller
 	std::shared_ptr<v3d::GameController> gc = getGameController(gameControllerID);
@@ -1108,7 +1112,7 @@ bool v3d::InputManager::isGameControllerButtonPressed(const int16_t gameControll
 	}
 }
 
-bool v3d::InputManager::isGameControllerButtonReleased(const int16_t gameControllerID, const v3d::Gamepad::Button button, const bool currentFrame)
+bool InputManager::isGameControllerButtonReleased(const int16_t gameControllerID, const v3d::Gamepad::Button button, const bool currentFrame)
 {
 	// get controller
 	std::shared_ptr<v3d::GameController> gc = getGameController(gameControllerID);
@@ -1125,7 +1129,7 @@ bool v3d::InputManager::isGameControllerButtonReleased(const int16_t gameControl
 	}
 }
 
-int16_t v3d::InputManager::getGameControllerAxisValue(const int16_t gameControllerID, const v3d::Gamepad::Axis axis)
+int16_t InputManager::getGameControllerAxisValue(const int16_t gameControllerID, const v3d::Gamepad::Axis axis)
 {
 	// get controller
 	std::shared_ptr<v3d::GameController> gc = getGameController(gameControllerID);
@@ -1143,19 +1147,19 @@ int16_t v3d::InputManager::getGameControllerAxisValue(const int16_t gameControll
 }
 */
 
-void v3d::InputManager::resetAllKeyStates()
+void InputManager::resetAllKeyStates()
 {
 	std::fill(std::begin(keyInputs), std::end(keyInputs), v3d::InputState::eReleased);
 	keyInputsOnce.clear();
 }
 
-void v3d::InputManager::resetAllMosueButtonStates()
+void InputManager::resetAllMosueButtonStates()
 {
 	std::fill(std::begin(mouseButtonInputs), std::end(mouseButtonInputs), v3d::InputState::eReleased);
 	mouseButtonInputOnce.clear();
 }
 
-void v3d::InputManager::resetInputStates()
+void InputManager::resetInputStates()
 {
 	resetAllMosueButtonStates();
 
@@ -1175,7 +1179,7 @@ void v3d::InputManager::resetInputStates()
 	//}
 }
 
-void v3d::InputManager::releaseAll()
+void InputManager::releaseAll()
 {
 	resetInputStates();
 
@@ -1188,3 +1192,5 @@ void v3d::InputManager::releaseAll()
 	//	gamecontrollerEnabled = false;
 	//}
 }
+
+V3D_NS_END
