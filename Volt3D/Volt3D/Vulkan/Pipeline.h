@@ -22,7 +22,7 @@ namespace v3d
 		*	@class Pipeline
 		*	@brief Wrapper of Vulkan's Pipeline
 		*
-		*	@group vulkan
+		*	@group Vulkan
 		*
 		*	@since 1.0
 		*/

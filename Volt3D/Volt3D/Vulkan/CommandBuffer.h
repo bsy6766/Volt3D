@@ -26,7 +26,7 @@ namespace v3d
 		*	@class CommandBuffer
 		*	@brief A wrapper for Vulkan's commandbuffer
 		*
-		*	@group vulkan
+		*	@group Vulkan
 		*
 		*	@since 1.0
 		*/

@@ -23,7 +23,7 @@ namespace v3d
 		*	@class Device
 		*	@brief A wrapper of vulkan's physical device and logical device
 		*
-		*	@group vulkan
+		*	@group Vulkan
 		*
 		*	@since 1.0
 		*/

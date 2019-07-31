@@ -24,11 +24,14 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT(VkInstance instance, 
 	pfnVkDestroyDebugReportCallbackEXT(instance, callback, pAllocator);
 }
 
-v3d::vulkan::DebugReportCallback::DebugReportCallback()
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+DebugReportCallback::DebugReportCallback()
 	: debugReportCallback(nullptr)
 {}
 
-bool v3d::vulkan::DebugReportCallback::init(const v3d::vulkan::Instance& instance)
+bool DebugReportCallback::init(const v3d::vulkan::Instance& instance)
 {
 	auto& logger = v3d::Logger::getInstance();
 
@@ -40,6 +43,7 @@ bool v3d::vulkan::DebugReportCallback::init(const v3d::vulkan::Instance& instanc
 		logger.error("vkCreateDebugReportCallbackEXT is not supported");
 		return false;
 	}
+
 	if (!pfnVkDestroyDebugReportCallbackEXT)
 	{
 		logger.error("vkDestroyDebugReportCallbackEXT is not supported");
@@ -59,8 +63,11 @@ bool v3d::vulkan::DebugReportCallback::init(const v3d::vulkan::Instance& instanc
 	return true;
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL v3d::vulkan::DebugReportCallback::debugReportCallbackFunc(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT object_type, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
+VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugReportCallback::debugReportCallbackFunc(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT object_type, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
 {
 	Logger::getInstance().debug(std::string("Debug report: ") + std::string(pMessage));
 	return VK_FALSE;
 }
+
+V3D_NS_END
+VK_NS_END

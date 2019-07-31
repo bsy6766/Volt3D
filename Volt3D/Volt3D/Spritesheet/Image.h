@@ -33,8 +33,8 @@ namespace v3d
 		// Type of image
 		v3d::ImageType type;
 
-		std::size_t width;
-		std::size_t height;
+		unsigned int width;
+		unsigned int height;
 
 		std::string filePath;
 		std::string fileName;
@@ -82,16 +82,16 @@ namespace v3d
 		std::string getFileName() const { return fileName; }
 
 		/** get width. */
-		std::size_t getWidth() const { return width; }
+		unsigned int getWidth() const { return width; }
 
 		/** get height. */
-		std::size_t getHeight() const { return height; }
+		unsigned int getHeight() const { return height; }
 
 		/** get channel (RGBA for png) */
-		std::size_t getChannels() const { return 4; }
+		unsigned int getChannels() const { return 4; }
 
 		/** get image data size **/
-		std::size_t getDataSize() const { return width* height * 4; }
+		unsigned int getDataSize() const { return width* height * 4; }
 
 		/** get data. */
 		unsigned char* getData() const { return data; }

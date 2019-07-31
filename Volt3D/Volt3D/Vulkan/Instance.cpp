@@ -12,11 +12,19 @@
 #include "Engine/Window.h"
 #include "Utils.h"
 
-v3d::vulkan::Instance::Instance()
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+Instance::Instance()
 	: instance()
 {}
 
-bool v3d::vulkan::Instance::init( std::vector<const char*>& requiredExtensions, const bool validationLayerEnabled )
+Instance::~Instance()
+{
+	instance.destroy();
+}
+
+bool Instance::init( std::vector<const char*>& requiredExtensions, const bool validationLayerEnabled )
 {
 	vk::ApplicationInfo appInfo( "Learn Context", VK_MAKE_VERSION( 1, 0, 0 ), "Context", VK_MAKE_VERSION( 1, 0, 0 ), VK_API_VERSION_1_1 );
 
@@ -51,28 +59,37 @@ bool v3d::vulkan::Instance::init( std::vector<const char*>& requiredExtensions, 
 		uint32_t( requiredExtensions.size() ),
 		requiredExtensions.data()
 	);
-
-	instance = vk::createInstanceUnique( createInfo );
+	
+	instance = vk::createInstance( createInfo );
 
 	return true;
 }
 
-PFN_vkVoidFunction v3d::vulkan::Instance::getProcAddr( const char* pName ) const
+
+const vk::Instance& Instance::get() const
 {
-	return instance.get().getProcAddr( pName );
+	return instance;
 }
 
-inline vk::UniqueDebugReportCallbackEXT v3d::vulkan::Instance::createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const
+PFN_vkVoidFunction Instance::getProcAddr( const char* pName ) const
 {
-	return instance.get().createDebugReportCallbackEXTUnique( createInfo );
+	return instance.getProcAddr( pName );
 }
 
-inline vk::UniqueDebugUtilsMessengerEXT v3d::vulkan::Instance::createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const
+inline vk::UniqueDebugReportCallbackEXT Instance::createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const
 {
-	return instance.get().createDebugUtilsMessengerEXTUnique( createInfo );
+	return instance.createDebugReportCallbackEXTUnique( createInfo );
 }
 
-inline std::vector<vk::PhysicalDevice> v3d::vulkan::Instance::enumeratePhysicalDevices() const
+inline vk::UniqueDebugUtilsMessengerEXT Instance::createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const
 {
-	return instance->enumeratePhysicalDevices();
+	return instance.createDebugUtilsMessengerEXTUnique( createInfo );
 }
+
+inline std::vector<vk::PhysicalDevice> Instance::enumeratePhysicalDevices() const
+{
+	return instance.enumeratePhysicalDevices();
+}
+
+V3D_NS_END
+VK_NS_END

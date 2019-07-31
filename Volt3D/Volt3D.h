@@ -96,12 +96,15 @@
 #include "Vulkan/Context.h"
 #include "Vulkan/DebugReportCallback.h"
 #include "Vulkan/DebugUtilsMessenger.h"
-#include "Vulkan/Devices.h"
 #include "Vulkan/Instance.h"
+#include "Vulkan/LogicalDevice.h"
+#include "Vulkan/PhysicalDevice.h"
 #include "Vulkan/Pipeline.h"
 #include "Vulkan/ShaderModule.h"
 #include "Vulkan/SwapChain.h"
 #include "Vulkan/Texture.h"
 #include "Vulkan/Utils.h"
+#include "Vulkan/Buffers/Buffer.h"
+#include "Vulkan/Buffers/UniformBuffer.h"
 
 #endif

@@ -24,11 +24,14 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, 
 	pfnVkDestroyDebugUtilsMessengerEXT(instance, callback, pAllocator);
 }
 
-v3d::vulkan::DebugUtilsMessenger::DebugUtilsMessenger()
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+DebugUtilsMessenger::DebugUtilsMessenger()
 	: debugUtilsMessenger(nullptr)
 {}
 
-bool v3d::vulkan::DebugUtilsMessenger::init(const v3d::vulkan::Instance& instance)
+bool DebugUtilsMessenger::init(const v3d::vulkan::Instance& instance)
 {
 	auto& logger = v3d::Logger::getInstance();
 
@@ -53,7 +56,7 @@ bool v3d::vulkan::DebugUtilsMessenger::init(const v3d::vulkan::Instance& instanc
 	return true;
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL v3d::vulkan::DebugUtilsMessenger::debugUtilsMessengerFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugUtilsMessenger::debugUtilsMessengerFunc(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 {
 	Logger::getInstance().debug(std::string("Debug Util Messeage: ") + std::string(pCallbackData->pMessage));
 	return VK_FALSE;
@@ -87,3 +90,6 @@ vk::Bool32 v3d::vulkan::DebugUtilsMessenger::debugReportCallback( VkDebugReportF
 	return VK_TRUE;
 }
 	*/
+
+V3D_NS_END
+VK_NS_END

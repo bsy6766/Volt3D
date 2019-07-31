@@ -12,44 +12,44 @@
 
 #include "utils/Macros.h"
 
-namespace v3d
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+class Instance;
+
+/**
+*	@class DebugUtilsMessenger
+*	@brief A wrapper of vulkan's DebugUtilsMessenger.
+*
+*	@group Vulkan
+*
+*	@since 1.0
+*/
+class VOLT3D_DLL DebugUtilsMessenger
 {
-	namespace vulkan
-	{
-		class Instance;
+	friend class Context;
 
-		/**
-		*	@class DebugUtilsMessenger
-		*	@brief A wrapper of vulkan's DebugUtilsMessenger.
-		*
-		*	@group vulkan
-		*
-		*	@since 1.0
-		*/
-		class VOLT3D_DLL DebugUtilsMessenger
-		{
-			friend class Context;
+private:
+	vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger;
 
-		private:
-			vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger;
+	static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerFunc
+	(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		void* pUserData
+	);
 
-			static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerFunc
-			(
-				VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-				VkDebugUtilsMessageTypeFlagsEXT messageType,
-				const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-				void* pUserData
-			);
+	bool init(const v3d::vulkan::Instance& instance);
 
-			bool init(const v3d::vulkan::Instance& instance);
+public:
+	DebugUtilsMessenger ();
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(DebugUtilsMessenger);
+	DEFAULT_MOVE_CONSTRUCTORS(DebugUtilsMessenger);
+	~DebugUtilsMessenger () {}
+};
 
-		public:
-			DebugUtilsMessenger ();
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(DebugUtilsMessenger);
-			DEFAULT_MOVE_CONSTRUCTORS(DebugUtilsMessenger);
-			~DebugUtilsMessenger () {}
-		};
-	}
-}
+V3D_NS_END
+VK_NS_END
 
 #endif

@@ -25,7 +25,7 @@ namespace v3d
 		*	@class SwapChain
 		*	@brief Wrapper for Vulkan's swapchain.
 		*
-		*	@group vulkan
+		*	@group Vulkan
 		*
 		*	@since 1.0
 		*/

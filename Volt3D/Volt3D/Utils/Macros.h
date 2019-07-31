@@ -20,6 +20,18 @@ namespace v3d {
 #define V3D_NS_END	\
 }	// namesapce v3d
 
+#define GLFW_NS_BEGIN	\
+namespace glfw {
+
+#define GLFW_NS_END	\
+}	// namespace glfw
+
+#define VK_NS_BEGIN	\
+namespace vulkan {
+
+#define VK_NS_END	\
+}	// namespace vulkan
+
 #define SAFE_DELETE(_INSTANCE_)								\
 if(_INSTANCE_) { delete _INSTANCE_; _INSTANCE_ = nullptr; }	
 

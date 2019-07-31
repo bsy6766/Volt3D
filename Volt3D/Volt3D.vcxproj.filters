@@ -57,6 +57,9 @@
     <Filter Include="Volt3D\Engine">
       <UniqueIdentifier>{87989972-4916-46fb-ab22-56f3997c26e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Vulkan\Buffers">
+      <UniqueIdentifier>{b594f6a2-8868-41de-841b-3207ef2edee8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -173,9 +176,6 @@
     <ClCompile Include="Volt3D\Debug\DebugCamera.cpp">
       <Filter>Volt3D\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Devices.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Texture.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
@@ -205,6 +205,18 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Engine\Camera.cpp">
       <Filter>Volt3D\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\LogicalDevice.cpp">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Buffers\Buffer.cpp">
+      <Filter>Volt3D\Vulkan\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp">
+      <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,9 +382,6 @@
     <ClInclude Include="Volt3D\Config\DebugConfig.h">
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Devices.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Texture.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
@@ -411,6 +420,18 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Engine\Camera.h">
       <Filter>Volt3D\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\LogicalDevice.h">
+      <Filter>Volt3D\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Buffers\Buffer.h">
+      <Filter>Volt3D\Vulkan\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Buffers\UniformBuffer.h">
+      <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
