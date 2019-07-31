@@ -129,7 +129,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16d.lib;zlibd.lib;glslangd.lib;HLSLd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16d.lib;zlibd.lib;glslangd.lib;glslang-default-resource-limitsd.lib;HLSLd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);$(SolutionDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -185,7 +185,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16.lib;zlib.lib;glslang.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16.lib;zlib.lib;glslang.lib;glslang-default-resource-limits.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);$(SolutionDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

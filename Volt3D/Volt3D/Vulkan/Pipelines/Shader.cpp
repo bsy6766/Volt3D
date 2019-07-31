@@ -9,9 +9,7 @@
 
 #include "Shader.h"
 
-#include <SPIRV/GlslangToSpv.h>
-#include <glslang/Public/ShaderLang.h>
-#include <glslang/Include/ResourceLimits.h>
+#include <StandAlone/ResourceLimits.h>
 
 #include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
@@ -23,14 +21,7 @@ Shader::Shader( const std::filesystem::path& filePath )
 	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
 	, shaderModule( nullptr )
 	, stage()
-{
-	EShLanguage language = getEShLanguage();
-	//if (language == EShLanguage::EShLangCount) return false;
-
-	glslang::TProgram program;
-	glslang::TShader shader( language );
-	TBuiltInResource resource = DefaultTBuiltInResource;
-}
+{}
 
 EShLanguage Shader::getEShLanguage() const
 {
@@ -54,6 +45,58 @@ EShLanguage Shader::getEShLanguage() const
 	}
 
 	return EShLanguage::EShLangCount;
+}
+
+bool Shader::init( const std::filesystem::path& filePath )
+{
+	EShLanguage language = getEShLanguage();
+	if (language == EShLanguage::EShLangCount) return false;
+
+	glslang::TProgram program;
+	glslang::TShader shader( language );
+	TBuiltInResource resource = glslang::DefaultTBuiltInResource;
+
+	std::vector<char> shaderSource = readFile( filePath );
+	if (shaderSource.empty()) return false;
+	int shaderSourceLength = static_cast<int>(shaderSource.size());
+	std::string shaderSourceStr( shaderSource.begin(), shaderSource.end() );
+	const char* shaderSourceCStr = shaderSourceStr.c_str();
+
+	const char* shaderFileName = filePath.filename().string().c_str();
+	
+	shader.setStringsWithLengthsAndNames( &shaderSourceCStr, &shaderSourceLength, &shaderFileName, 1 );
+
+	shader.setEnvInput( glslang::EShSourceGlsl, language, glslang::EShClientVulkan, 110 );
+	shader.setEnvClient( glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1 );
+	shader.setEnvTarget( glslang::EShTargetSpv, glslang::EShTargetSpv_1_4 );
+
+	glslang::EShTargetClientVersion defaultVersion = glslang::EShTargetVulkan_1_1;
+	EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules | EShMsgDefault);
+
+	if (!shader.parse( &resource, defaultVersion, false, messages )) return false;
+
+	//https://github.com/qnope/GameEngine/blob/334e2fed2e43a007fc90f0aa70c9858983c5b4e5/Moteur/Vulkan/ShaderCompiler.cpp
+
+
+	return true;
+}
+
+std::vector<char> Shader::readFile( const std::filesystem::path& filePath )
+{
+	std::vector<char> buffer;
+
+	std::ifstream file( fileName, std::ios::ate | std::ios::binary );
+	if (!file.is_open()) return buffer;
+
+	std::size_t fileSize = (std::size_t)file.tellg();
+	buffer.resize( fileSize );
+
+	file.seekg( 0 );
+	file.read( buffer.data(), fileSize );
+
+	file.close();
+
+	return buffer;
 }
 
 const vk::ShaderStageFlagBits Shader::getShaderStage( const std::filesystem::path& fileName )

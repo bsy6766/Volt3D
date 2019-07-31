@@ -49,6 +49,8 @@ public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(Pipeline);
 	DEFAULT_MOVE_CONSTRUCTORS(Pipeline);
 	~Pipeline() {}
+
+	UNIQUE_TO_CPP_VK_HANDLE( vk::UniquePipeline, vk::Pipeline, pipeline );
 	
 	const vk::Viewport& getViewport() const;
 	const vk::Rect2D& getScissor() const;

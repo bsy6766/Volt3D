@@ -12,6 +12,9 @@
 
 #include <filesystem>
 
+#include <SPIRV/GlslangToSpv.h>
+#include <glslang/Public/ShaderLang.h>
+
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
@@ -24,8 +27,10 @@ private:
 	vk::ShaderStageFlagBits stage;
 	vk::ShaderModule shaderModule;
 
-
 	EShLanguage getEShLanguage() const;
+
+	bool init( const std::filesystem::path& filePath );
+	std::vector<char> readFile( const std::filesystem::path& filePath );
 
 public:
 	Shader() = delete;
