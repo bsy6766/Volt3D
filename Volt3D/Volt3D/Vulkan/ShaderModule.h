@@ -9,6 +9,8 @@
 #define V3D_VK_SHADER_H
 
 #include <vulkan/vulkan.hpp>
+#include <SPIRV/GlslangToSpv.h>
+#include <glslang/Public/ShaderLang.h>
 
 #include <string_view>
 
