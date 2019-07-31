@@ -10,7 +10,7 @@
 #include "CommandBuffer.h"
 
 #include "SwapChain.h"
-#include "Pipeline.h"
+#include "Pipelines/Pipeline.h"
 #include "Renderer/VertexData.h"
 
 v3d::vulkan::CommandBuffer::CommandBuffer()

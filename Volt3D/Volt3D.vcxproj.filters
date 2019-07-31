@@ -60,6 +60,15 @@
     <Filter Include="Volt3D\Vulkan\Buffers">
       <UniqueIdentifier>{b594f6a2-8868-41de-841b-3207ef2edee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Vulkan\Pipelines">
+      <UniqueIdentifier>{716c2008-571b-4ee2-9c82-a62004969fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Vulkan\Debugs">
+      <UniqueIdentifier>{2c6a52c9-daa9-4ea2-a7d3-186beb41cb5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Vulkan\Devices">
+      <UniqueIdentifier>{0825abe1-75f8-42c4-9df7-4594b4a1aadd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -74,22 +83,10 @@
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\DebugReportCallback.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\DebugUtilsMessenger.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipeline.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\ShaderModule.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Color\Color4B.cpp">
@@ -206,17 +203,32 @@
     <ClCompile Include="Volt3D\Engine\Camera.cpp">
       <Filter>Volt3D\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\PhysicalDevice.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\LogicalDevice.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Buffers\Buffer.cpp">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderModule.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Debugs\DebugReportCallback.cpp">
+      <Filter>Volt3D\Vulkan\Debugs</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.cpp">
+      <Filter>Volt3D\Vulkan\Debugs</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Devices\PhysicalDevice.cpp">
+      <Filter>Volt3D\Vulkan\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Devices\LogicalDevice.cpp">
+      <Filter>Volt3D\Vulkan\Devices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,12 +256,6 @@
     <ClInclude Include="Volt3D.h">
       <Filter>Volt3D</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\DebugReportCallback.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\DebugUtilsMessenger.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Config\BuildConfig.h">
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
@@ -259,14 +265,8 @@
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipeline.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Utils\Timer.h">
       <Filter>Volt3D\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\ShaderModule.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Color\Color3F.h">
       <Filter>Volt3D\Color</Filter>
@@ -421,17 +421,32 @@
     <ClInclude Include="Volt3D\Engine\Camera.h">
       <Filter>Volt3D\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\PhysicalDevice.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\LogicalDevice.h">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Buffers\Buffer.h">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Buffers\UniformBuffer.h">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderModule.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.h">
+      <Filter>Volt3D\Vulkan\Debugs</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Debugs\DebugReportCallback.h">
+      <Filter>Volt3D\Vulkan\Debugs</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Devices\PhysicalDevice.h">
+      <Filter>Volt3D\Vulkan\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Devices\LogicalDevice.h">
+      <Filter>Volt3D\Vulkan\Devices</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

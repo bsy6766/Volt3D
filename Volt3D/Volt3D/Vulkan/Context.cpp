@@ -12,13 +12,12 @@
 #include "Engine/Engine.h"
 #include "Engine/Window.h"
 #include "Instance.h"
-#include "DebugReportCallback.h"
-#include "DebugUtilsMessenger.h"
-#include "PhysicalDevice.h"
-#include "LogicalDevice.h"
+#include "Debugs/DebugReportCallback.h"
+#include "Debugs/DebugUtilsMessenger.h"
+#include "Devices/PhysicalDevice.h"
+#include "Devices/LogicalDevice.h"
 #include "SwapChain.h"
-#include "ShaderModule.h"
-#include "Pipeline.h"
+#include "Pipelines/Pipeline.h"
 #include "CommandBuffer.h"
 #include "Buffers/Buffer.h"
 #include "Buffers/UniformBuffer.h"
@@ -59,10 +58,6 @@ Context::Context()
 	, lenaBuffer()
 
 	, lena()
-	//, RGBW()
-
-	//, mvpUBO()
-	//, dissolveUBO()
 {
 	frameBufferSize = window->getFrameBufferSize();
 }
@@ -99,7 +94,6 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 	createTexture( "Textures/lena.png", lena );
-	//createTexture( "Textures/heightmap.png", RGBW );
 
 	// temp
 	const glm::vec4 white( 1 );
@@ -115,19 +109,11 @@ bool Context::init( const bool enableValidationLayer )
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(-halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 0.0f, 0.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( glm::vec3(halfWidth, -halfHeight, 0.0f) + glm::vec3(256.0f,0.0f,0.0f), white, { 1.0f, 0.0f } ) );
 
 	auto& indices = lenaBuffer.indexData.getVertexData();
-	indices = std::vector<uint16_t>( { 0,1,2,3,2,1,  /*4,5,6,7,6,5*/ } );
+	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
 
 	createLenaBuffer();
-	//createVertexBuffer( lenaBuffer.vertexBuffer, lenaBuffer.vbDeviceMemory, uint32_t(lenaBuffer.vertexData.getDataSize()), lenaBuffer.vertexData.getData() );
-	//createIndexBuffer( lenaBuffer.indexBuffer, lenaBuffer.ibDeviceMemory, uint32_t(lenaBuffer.indexData.getDataSize()), lenaBuffer.indexData.getData() );
-	//createUniformBuffer( mvpUBO, sizeof( glm::mat4 ) * 3 );
-	//createUniformBuffer( dissolveUBO, sizeof( float ) + sizeof( glm::vec3 ) );
 	createMVPUBO();
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
@@ -389,14 +375,6 @@ bool Context::initDescriptorPool()
 		static_cast<uint32_t>(images.size())
 	);
 
-	//vk::DescriptorPoolSize RGBWSamplerPoolSize
-	//(
-	//	vk::DescriptorType::eCombinedImageSampler,
-	//	static_cast<uint32_t>(images.size())
-	//);
-
-	//const uint32_t size = 3;
-	//vk::DescriptorPoolSize poolSizes[size] = { uboPoolSize, lenaSamplerPoolSize, RGBWSamplerPoolSize };
 	const uint32_t size = 2;
 	vk::DescriptorPoolSize poolSizes[size] = { uboPoolSize, lenaSamplerPoolSize };
 
@@ -487,9 +465,7 @@ bool Context::recreateSwapChain()
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
-	//createUniformBuffer( mvpUBO, sizeof( glm::mat4 ) * 3 );
 	createMVPUBO();
-	//createUniformBuffer( dissolveUBO, sizeof( float ) + sizeof( glm::vec3 ) );
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
 	if (!initCommandBuffer()) return false;
@@ -794,7 +770,6 @@ void Context::render()
 	assert( result.value < framebuffers.size() );
 
 	updateMVPUBO( result.value );
-	//updateDissolveUBO( result.value );
 
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame] };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame] };

@@ -10,8 +10,8 @@
 #include "Buffer.h"
 
 #include "Vulkan/Context.h"
-#include "Vulkan/PhysicalDevice.h"
-#include "Vulkan/LogicalDevice.h"
+#include "Vulkan/Devices/PhysicalDevice.h"
+#include "Vulkan/Devices/LogicalDevice.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN

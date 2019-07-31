@@ -10,7 +10,7 @@
 #include "Pipeline.h"
 
 #include "ShaderModule.h"
-#include "SwapChain.h"
+#include "Vulkan/SwapChain.h"
 #include "Renderer/Vertex.h"
 
 v3d::vulkan::Pipeline::Pipeline()
@@ -51,11 +51,8 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 	v3d::vulkan::ShaderModule fragShader;
 	if (!fragShader.init("Shaders/frag.spv", logicalDevice )) return false;
 
-	vk::PipelineShaderStageCreateInfo pipelineShaderStageCreateInfos[2] =
-	{
-	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main"),
-	  vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main")
-	};
+	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main" ) );
+	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main" ) );
 	
 	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();
@@ -183,8 +180,8 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
 	(
 		vk::PipelineCreateFlags(),                  // flags
-		2,                                          // stageCount
-		pipelineShaderStageCreateInfos,             // pStages
+		uint32_t(shaderCreateInfos.size()),			// stageCount
+		shaderCreateInfos.data(),					// pStages
 		&pipelineVertexInputStateCreateInfo,        // pVertexInputState
 		&pipelineInputAssemblyStateCreateInfo,      // pInputAssemblyState
 		nullptr,                                    // pTessellationState

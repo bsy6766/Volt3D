@@ -10,7 +10,7 @@
 #include "LogicalDevice.h"
 
 #include <optional>
-#include "Utils.h"
+#include "Vulkan/Utils.h"
 #include "Config/BuildConfig.h"
 
 V3D_NS_BEGIN

@@ -5,12 +5,10 @@
 *	@copyright Copyright (c) 2019 Seung Youp Baek
 */
 
-#ifndef V3D_VK_SHADER_H
-#define V3D_VK_SHADER_H
+#ifndef V3D_VK_SHADER_MODULE_H
+#define V3D_VK_SHADER_MODULE_H
 
 #include <vulkan/vulkan.hpp>
-#include <SPIRV/GlslangToSpv.h>
-#include <glslang/Public/ShaderLang.h>
 
 #include <string_view>
 

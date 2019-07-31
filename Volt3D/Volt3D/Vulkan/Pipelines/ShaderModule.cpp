@@ -10,6 +10,8 @@
 #include "ShaderModule.h"
 
 #include <fstream>
+#include <SPIRV/GlslangToSpv.h>
+#include <glslang/Public/ShaderLang.h>
 
 v3d::vulkan::ShaderModule::ShaderModule()
 	: shaderModule()
@@ -17,6 +19,8 @@ v3d::vulkan::ShaderModule::ShaderModule()
 
 std::vector<char> v3d::vulkan::ShaderModule::readFile(std::string_view fileName)
 {
+	glslang::TProgram program;
+
 	std::vector<char> buffer;
 
 	std::ifstream file(fileName.data(), std::ios::ate | std::ios::binary);
