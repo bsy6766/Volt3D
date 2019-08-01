@@ -9,6 +9,7 @@
 
 #include "Pipeline.h"
 
+#include "Shader.h"
 #include "ShaderModule.h"
 #include "Vulkan/SwapChain.h"
 #include "Renderer/Vertex.h"
@@ -45,11 +46,10 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 
 	pipelineLayout = logicalDevice.createPipelineLayoutUnique(layoutCreateInfo);
 
-	v3d::vulkan::ShaderModule vertShader;
-	if (!vertShader.init("Shaders/vert.spv", logicalDevice )) return false;
-
-	v3d::vulkan::ShaderModule fragShader;
-	if (!fragShader.init("Shaders/frag.spv", logicalDevice )) return false;
+	v3d::vulkan::Shader vertShader("Shaders/vert.vert");
+	vertShader.init( "Shaders/vert.vert" );
+	v3d::vulkan::Shader fragShader( "Shaders/frag.frag" );
+	fragShader.init( "Shaders/frag.frag" );
 
 	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main" ) );
 	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main" ) );

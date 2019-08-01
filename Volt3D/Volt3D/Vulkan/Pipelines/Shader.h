@@ -12,7 +12,6 @@
 
 #include <filesystem>
 
-#include <SPIRV/GlslangToSpv.h>
 #include <glslang/Public/ShaderLang.h>
 
 #include "utils/Macros.h"
@@ -24,12 +23,12 @@ class VOLT3D_DLL Shader
 {
 private:
 	const vk::Device& logicalDevice;
+	std::filesystem::path filePath;
 	vk::ShaderStageFlagBits stage;
 	vk::ShaderModule shaderModule;
 
 	EShLanguage getEShLanguage() const;
 
-	bool init( const std::filesystem::path& filePath );
 	std::vector<char> readFile( const std::filesystem::path& filePath );
 
 public:
@@ -37,6 +36,11 @@ public:
 	Shader(const std::filesystem::path& filePath);
 	~Shader();
 	
+	bool init( const std::filesystem::path& filePath );
+
+	/** Get Vulkan ShaderModule */
+	const vk::ShaderModule get() const;
+
 	/**
 	*	Get shader stage flag bits
 	*	@param fileName A file name of shader file.

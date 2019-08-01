@@ -9,7 +9,7 @@
 
 #include "DebugReportCallback.h"
 
-#include "Instance.h"
+#include "Vulkan/Instance.h"
 
 PFN_vkCreateDebugReportCallbackEXT  pfnVkCreateDebugReportCallbackEXT = VK_NULL_HANDLE;
 PFN_vkDestroyDebugReportCallbackEXT pfnVkDestroyDebugReportCallbackEXT = VK_NULL_HANDLE;

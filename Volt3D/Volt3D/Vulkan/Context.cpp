@@ -7,6 +7,8 @@
 
 #include <PreCompiled.h>
 
+#include <glslang/Public/ShaderLang.h>
+
 #include "Context.h"
 
 #include "Engine/Engine.h"
@@ -34,7 +36,6 @@ VK_NS_BEGIN
 
 Context::Context()
 	: instance( nullptr )
-	, validationLayerEnabled( false )
 	, debugReportCallback( nullptr )
 	, debugUtilsMessenger( nullptr )
 	, surface()
@@ -79,10 +80,10 @@ bool Context::init( const bool enableValidationLayer )
 	if (!vulkan::utils::getVersion( major, minor, patch )) { logger.critical( "Failed to get Context version." ); return false; }
 	logger.trace( "Context version: " + std::to_string( major ) + "." + std::to_string( minor ) + "." + std::to_string( patch ) );
 
-	validationLayerEnabled = enableValidationLayer;
+	// Init shader!
+	glslang::InitializeProcess();
 
-	if (!initInstance()) return false;
-	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
+	if (!initInstance( enableValidationLayer )) return false;
 	if (!initSurface()) return false;
 	if (!initPhysicalDevice()) return false;
 	if (!initLogicalDevice()) return false;
@@ -93,13 +94,11 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
+
 	createTexture( "Textures/lena.png", lena );
 
 	// temp
 	const glm::vec4 white( 1 );
-	const glm::vec4 red( 1, 0, 0, 1 );
-	const glm::vec4 green( 0, 1, 0, 1 );
-	const glm::vec4 blue( 0, 0, 1, 1 );
 
 	const float halfWidth = float( lena.imageSource->getWidth() ) * 0.5f;
 	const float halfHeight = float( lena.imageSource->getHeight() ) * 0.5f;
@@ -115,6 +114,7 @@ bool Context::init( const bool enableValidationLayer )
 
 	createLenaBuffer();
 	createMVPUBO();
+
 	if (!initDescriptorPool()) return false;
 	if (!initDescriptorSet()) return false;
 	if (!initSemaphore()) return false;
@@ -122,17 +122,16 @@ bool Context::init( const bool enableValidationLayer )
 
 	if (!initCommandBuffer()) return false;
 
-	//v3d::vulkan::Texture::devices = devices;
-
 	return true;
 }
 
-bool Context::initInstance()
+bool Context::initInstance( const bool enableValidationLayer )
 {
 	instance = new v3d::vulkan::Instance();
 	std::vector<const char*> requiredExtensions;
 	window->getGLFWVKExtensions( requiredExtensions );
-	if (!instance->init( requiredExtensions, validationLayerEnabled )) return false;
+	if (!instance->init( requiredExtensions, enableValidationLayer )) return false;
+	if (enableValidationLayer) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
 	return true;
 }
 
@@ -579,10 +578,10 @@ void Context::createTexture( const char* path, v3d::vulkan::Context::Texture& te
 void Context::createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture )
 {
 	texture.imageSource = v3d::Image::createPNG( path );
-	
+
 	//vk::Buffer stagingBuffer = logicalDevice->get().createBuffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
 	//vk::DeviceMemory stagingBufferMemory = logicalDevice->get().createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
-	
+
 	v3d::vulkan::Buffer stagingBuffer = v3d::vulkan::Buffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	void* data = logicalDevice->get().mapMemory( stagingBuffer.getDeviceMemory(), 0, texture.imageSource->getDataSize() );
@@ -854,7 +853,7 @@ void Context::release()
 	logicalDevice->get().destroyImageView( lena.imageView );
 	logicalDevice->get().destroyImage( lena.image );
 	logicalDevice->get().freeMemory( lena.deviceMemory );
-	
+
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );
 

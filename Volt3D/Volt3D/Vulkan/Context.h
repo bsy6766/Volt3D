@@ -57,7 +57,6 @@ private:
 	// Context instance
 	v3d::vulkan::Instance* instance;
 
-	bool validationLayerEnabled;
 	v3d::vulkan::DebugReportCallback* debugReportCallback;
 	v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
 
@@ -131,7 +130,7 @@ private:
 	//Texture RGBW;
 
 	bool init( const bool enableValidationLayer );
-	bool initInstance();
+	bool initInstance( const bool enableValidationLayer );
 	bool initDebugReport();
 	bool initDebugUtilsMessenger();
 	bool initSurface();

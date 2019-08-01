@@ -9,7 +9,7 @@
 
 #include "DebugUtilsMessenger.h"
 
-#include "Instance.h"
+#include "Vulkan/Instance.h"
 
 PFN_vkCreateDebugUtilsMessengerEXT	pfnVkCreateDebugUtilsMessengerEXT = VK_NULL_HANDLE;
 PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT = VK_NULL_HANDLE;
