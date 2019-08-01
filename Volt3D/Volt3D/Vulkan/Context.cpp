@@ -533,8 +533,6 @@ void Context::createMVPUBO()
 
 void Context::updateMVPUBO( const uint32_t imageIndex )
 {
-	static struct UniformBufferObject { glm::mat4 model, view, projection; } ubo;
-
 	glm::vec2 screenSize = glm::vec2( 1280, 720 );
 	float fovy = 70.0f;
 	glm::mat4 screenSpaceMatrix = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.0f, -((screenSize.y * 0.5f) / tanf( glm::radians( fovy * 0.5f ) )) ) );
@@ -561,12 +559,7 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	const float fars = 1000.0f;
 	curMVP.projection = glm::perspective( glm::radians( fovy ), aspect, nears, fars );
 
-	ubo.model = curMVP.model;
-	ubo.view = curMVP.view;
-	ubo.projection = curMVP.projection;
-
-	//mvpUBOs[imageIndex]->update( &curMVP );
-	mvpUBOs[imageIndex]->update( &ubo );
+	mvpUBOs[imageIndex]->update( &curMVP );
 }
 
 void Context::createTexture( const char* path, v3d::vulkan::Context::Texture& texture )

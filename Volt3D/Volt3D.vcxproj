@@ -265,7 +265,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h" />
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformValue.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Texture.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
@@ -327,7 +326,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformValue.cpp" />
     <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Texture.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />

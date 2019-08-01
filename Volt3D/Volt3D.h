@@ -107,5 +107,7 @@
 #include "Vulkan/Pipelines/Pipeline.h"
 #include "Vulkan/Pipelines/Shader.h"
 #include "Vulkan/Pipelines/ShaderModule.h"
+#include "Vulkan/Pipelines/Uniform.h"
+#include "Vulkan/Pipelines/UniformValue.h"
 
 #endif

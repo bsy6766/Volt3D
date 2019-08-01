@@ -233,9 +233,6 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformValue.cpp">
-      <Filter>DLL</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -455,9 +452,6 @@
       <Filter>Volt3D\Vulkan\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformValue.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
   </ItemGroup>
