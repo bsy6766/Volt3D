@@ -73,24 +73,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
-    <OutDir>$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectName).obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
     <IntDir>$(ProjectName).obj\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(ProjectName).obj\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(ProjectName).obj\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)bin\lib\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,14 +98,12 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -122,7 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Externals\libpng\include;$(SolutionDir)Externals\zlib\include;$(SolutionDir)Externals\glslang\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -130,12 +124,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16d.lib;zlibd.lib;glslangd.lib;glslang-default-resource-limitsd.lib;HLSLd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);$(SolutionDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(ProjectDir)Externals\GLFW\lib\$(Configuration);$(ProjectDir)Externals\libpng\lib\$(Configuration);$(ProjectDir)Externals\zlib\lib\$(Configuration);$(ProjectDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>python $(SolutionDir)BuildScripts\header_generator.py
-python $(SolutionDir)BuildScripts\export_includes.py
-python $(SolutionDir)BuildScripts\count_build_number.py
+      <Command>python $(ProjectDir)BuildScripts\header_generator.py
+python $(ProjectDir)BuildScripts\export_includes.py
+python $(ProjectDir)BuildScripts\count_build_number.py
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -151,7 +145,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.106.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -160,7 +153,6 @@ python $(SolutionDir)BuildScripts\count_build_number.py
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,7 +167,7 @@ python $(SolutionDir)BuildScripts\count_build_number.py
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Externals\GLFW\include;$(SolutionDir)Externals\spdlog\include;$(SolutionDir)Externals\glm\include;$(SolutionDir)Externals\json\include;$(SolutionDir)Externals\libpng\include;$(SolutionDir)Externals\zlib\include;$(SolutionDir)Externals\glslang\include;$(SolutionDir)Volt3D;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
@@ -186,12 +178,12 @@ python $(SolutionDir)BuildScripts\count_build_number.py
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>vulkan-1.lib;glfw3dll.lib;libpng16.lib;zlib.lib;glslang.lib;glslang-default-resource-limits.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(SolutionDir)Externals\GLFW\lib\$(Configuration);$(SolutionDir)Externals\libpng\lib\$(Configuration);$(SolutionDir)Externals\zlib\lib\$(Configuration);$(SolutionDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.1.108.0\Lib;$(ProjectDir)Externals\GLFW\lib\$(Configuration);$(ProjectDir)Externals\libpng\lib\$(Configuration);$(ProjectDir)Externals\zlib\lib\$(Configuration);$(ProjectDir)Externals\glslang\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>python $(SolutionDir)BuildScripts\header_generator.py
-python $(SolutionDir)BuildScripts\export_includes.py
-python $(SolutionDir)BuildScripts\count_build_number.py</Command>
+      <Command>python $(ProjectDir)BuildScripts\header_generator.py
+python $(ProjectDir)BuildScripts\export_includes.py
+python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
