@@ -4,6 +4,7 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 model;
     mat4 view;
     mat4 proj;
+    // mat4 mvp[3];
     // float test;
 } ubo;
 
@@ -42,6 +43,7 @@ void main()
 {
     // gl_Position = ubo.proj * ubo.view * ubo.model * vec4(VERT_POS, ubo.test);
     gl_Position = ubo.proj * ubo.view * ubo.model * vec4(VERT_POS, 1.0);
+    // gl_Position = ubo.mvp[0] * ubo.mvp[1] * ubo.mvp[2] * vec4(VERT_POS, 1.0);
     frag_color = VERT_COLOR;
     frag_texcoord = VERT_TEXCOORD;
 }

@@ -21,9 +21,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{b952fc91-bb23-4762-b21c-40644e344420}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Volt3D\Color">
       <UniqueIdentifier>{f45499da-5618-44fa-91fa-cd95946ff31b}</UniqueIdentifier>
     </Filter>
@@ -209,9 +206,6 @@
     <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderModule.cpp">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
@@ -231,6 +225,9 @@
       <Filter>Volt3D\Vulkan\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformBlock.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
   </ItemGroup>
@@ -430,9 +427,6 @@
     <ClInclude Include="Volt3D\Vulkan\Buffers\UniformBuffer.h">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderModule.h">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
@@ -452,6 +446,12 @@
       <Filter>Volt3D\Vulkan\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformType.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
   </ItemGroup>

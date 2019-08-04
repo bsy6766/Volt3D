@@ -10,15 +10,27 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <unordered_map>
 #include <filesystem>
+#include <optional>
 
 #include <glslang/Public/ShaderLang.h>
 
+#include "UniformBlock.h"
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
+/**
+*	@class Shader
+*	@brief A wrapper class for Vulkan's ShaderModule
+*	@note Compiles shader in runtime using glslang.
+*
+*	@group Vulkan
+*
+*	@since 1.0
+*/
 class VOLT3D_DLL Shader
 {
 private:
@@ -28,8 +40,10 @@ private:
 	vk::ShaderModule shaderModule;
 
 	EShLanguage getEShLanguage() const;
-
 	std::vector<char> readFile( const std::filesystem::path& filePath );
+
+	std::unordered_map<uint32_t, v3d::vulkan::UniformBlock> uniformBlocks;
+	std::unordered_map<uint32_t, v3d::vulkan::Uniform> uniforms;
 
 public:
 	Shader() = delete;
@@ -40,6 +54,13 @@ public:
 
 	/** Get Vulkan ShaderModule */
 	const vk::ShaderModule get() const;
+
+	/** Get Vulkan PipelineShaderStageCreateInfo */
+	vk::PipelineShaderStageCreateInfo getPipelineShaderStageCreateInfo() const;
+
+	std::optional<v3d::vulkan::UniformBlock> getUniformBlock( const uint32_t binding );
+
+	std::optional<v3d::vulkan::UniformBlock> getUniformBlock( const std::string_view name );
 
 	/**
 	*	Get shader stage flag bits

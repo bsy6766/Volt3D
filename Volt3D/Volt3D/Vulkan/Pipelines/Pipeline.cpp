@@ -10,7 +10,6 @@
 #include "Pipeline.h"
 
 #include "Shader.h"
-#include "ShaderModule.h"
 #include "Vulkan/SwapChain.h"
 #include "Renderer/Vertex.h"
 
@@ -51,8 +50,8 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 	v3d::vulkan::Shader fragShader( "Shaders/frag.frag" );
 	fragShader.init( "Shaders/frag.frag" );
 
-	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertShader.get(), "main" ) );
-	shaderCreateInfos.push_back( vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragShader.get(), "main" ) );
+	shaderCreateInfos.push_back( vertShader.getPipelineShaderStageCreateInfo() );
+	shaderCreateInfos.push_back( fragShader.getPipelineShaderStageCreateInfo() );
 	
 	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();

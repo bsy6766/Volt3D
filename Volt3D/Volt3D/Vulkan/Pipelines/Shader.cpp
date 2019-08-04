@@ -93,6 +93,7 @@ bool Shader::init( const std::filesystem::path& filePath )
 	{
 		const glslang::TObjectReflection& reflection = program.getUniformBlock( i );
 		reflection.dump();
+		//reflection.index
 
 		/*
 		for (auto& [uniformBlockName, uniformBlock] : m_uniformBlocks)
@@ -256,6 +257,24 @@ bool Shader::init( const std::filesystem::path& filePath )
 const vk::ShaderModule Shader::get() const
 {
 	return shaderModule;
+}
+
+vk::PipelineShaderStageCreateInfo Shader::getPipelineShaderStageCreateInfo() const
+{
+	return vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), stage, shaderModule, "main" );
+}
+
+std::optional<v3d::vulkan::UniformBlock> Shader::getUniformBlock( const uint32_t binding )
+{
+	auto find_it = uniformBlocks.find( binding );
+	if (find_it == uniformBlocks.end()) return std::nullopt;
+	return find_it->second;
+}
+
+std::optional<v3d::vulkan::UniformBlock> Shader::getUniformBlock( const std::string_view name )
+{
+	for (auto& ub : uniformBlocks) if ((ub.second).name == name) return ub.second;
+	return std::nullopt;
 }
 
 std::vector<char> Shader::readFile( const std::filesystem::path& filePath )

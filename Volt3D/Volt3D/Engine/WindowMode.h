@@ -26,7 +26,7 @@ namespace v3d
 		eWindowedFullscreen,
 	};
 
-	inline std::string windowModeToString(v3d::WindowMode value)
+	static inline std::string windowModeToString(v3d::WindowMode value)
 	{
 		switch (value)
 		{

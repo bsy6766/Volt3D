@@ -106,7 +106,8 @@
 #include "Vulkan/Devices/PhysicalDevice.h"
 #include "Vulkan/Pipelines/Pipeline.h"
 #include "Vulkan/Pipelines/Shader.h"
-#include "Vulkan/Pipelines/ShaderModule.h"
 #include "Vulkan/Pipelines/Uniform.h"
+#include "Vulkan/Pipelines/UniformBlock.h"
+#include "Vulkan/Pipelines/UniformType.h"
 
 #endif

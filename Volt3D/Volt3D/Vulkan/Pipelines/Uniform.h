@@ -8,9 +8,10 @@
 #ifndef V3D_VK_UNIFORM_H
 #define V3D_VK_UNIFORM_H
 
-#include "utils/Macros.h"
-
 #include <Vulkan/vulkan.hpp>
+
+#include "UniformType.h"
+#include "utils/Macros.h"
 
 #include <vector>
 #include <optional>
@@ -21,60 +22,27 @@ VK_NS_BEGIN
 class VOLT3D_DLL Uniform
 {
 	friend class Shader;
-
-public:
-	union Value
-	{
-	public:
-		bool boolValue;
-		int intValue;
-		float floatValue;
-		float v2Value[2];
-		float v3Value[3];
-		float v4Value[4];
-		float mat4Value[16];
-	};
-
-	enum class Type
-	{
-		eUndefined = 0,
-
-		eFloat = 0x1406,
-		eVec2 = 0x8B50,
-		eVec3 = 0x8B51,
-		eVec4 = 0x8B52,
-
-		eInt = 0x1404,
-		eIVec2 = 0x8B53,
-		eIVec3 = 0x8B54,
-		eIVec4 = 0x8B55,
-
-		eUint = 0x1405,
-		eUVec2 = 0x8DC6,
-		eUVec3 = 0x8DC7,
-		eUVec4 = 0x8DC8,
-
-		eBool = 0x8B56,
-		eBVec2 = 0x8B57,
-		eBVec3 = 0x8B58,
-		eBVec4 = 0x8B59,
-
-		eMat2 = 0x8B5A,
-		eMat3 = 0x8B5B,
-		eMat4 = 0x8B5C,
-		eMat2x3 = 0x8B65,
-		eMat2x4 = 0x8B66,
-		eMat3x2 = 0x8B67,
-		eMat3x4 = 0x8B68,
-		eMat4x2 = 0x8B69,
-		eMat4x3 = 0x8B6A,
-	};
+//
+//public:
+//	union Value
+//	{
+//	public:
+//		bool boolValue;
+//		int intValue;
+//		float floatValue;
+//		float v2Value[2];
+//		float v3Value[3];
+//		float v4Value[4];
+//		float mat4Value[16];
+//	};
 
 private:
 	std::string name;
-	v3d::vulkan::Uniform::Value value;
+	//v3d::vulkan::Uniform::Value value;
 
-	int32_t binding;
+	// Uniform binding is always -1
+	//int32_t binding;
+
 	int32_t offset;
 	int32_t size;
 	int32_t glType;
@@ -88,19 +56,19 @@ public:
 	inline std::string getName() const;
 
 	/** Get binding of uniform */
-	inline int32_t getBinding() const;
+	//inline int32_t getBinding() const;
 
 	/** Get offset of uniform from uniform block*/
 	inline int32_t getOffset() const;
 
-	/** Get data size of this uniform */
+	/** Get size of this uniform */
 	inline int32_t getSize() const;
 
 	/** Get GL type value */
 	inline int32_t getGLType() const;
 
 	/** Get data type */
-	inline v3d::vulkan::Uniform::Type getDataType() const;
+	inline v3d::vulkan::UniformType getType() const;
 
 	/** Check if data type is float */
 	inline bool isFloat() const;
@@ -177,7 +145,8 @@ public:
 	/** Check if data type is mat4x3 */
 	inline bool isMat4x3() const;
 
-
+	/** Log uniform */
+	void print() const;
 };
 
 VK_NS_END

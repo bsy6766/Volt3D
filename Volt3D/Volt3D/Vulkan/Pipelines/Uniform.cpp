@@ -14,18 +14,17 @@ VK_NS_BEGIN
 
 Uniform::Uniform( const std::string& name )
 	: name( name )
-	, binding( 0 )
 	, offset( 0 )
 	, size( 0 )
 	, glType( 0 )
-	, value()
+	//, value()
 {}
 
 Uniform::~Uniform() {}
 
 std::string Uniform::getName() const { return name; }
 
-inline int32_t Uniform::getBinding() const { return binding; }
+//inline int32_t Uniform::getBinding() const { return binding; }
 
 inline int32_t Uniform::getOffset() const { return offset; }
 
@@ -33,37 +32,9 @@ inline int32_t Uniform::getSize() const { return size; }
 
 inline int32_t Uniform::getGLType() const { return glType; }
 
-inline v3d::vulkan::Uniform::Type Uniform::getDataType() const
+inline v3d::vulkan::UniformType Uniform::getType() const
 {
-	switch (glType)
-	{
-	case 0x1406: return v3d::vulkan::Uniform::Type::eFloat;
-	case 0x8B50: return v3d::vulkan::Uniform::Type::eVec2;
-	case 0x8B51: return v3d::vulkan::Uniform::Type::eVec3;
-	case 0x8B52: return v3d::vulkan::Uniform::Type::eVec4;
-	case 0x1404: return v3d::vulkan::Uniform::Type::eInt;
-	case 0x8B53: return v3d::vulkan::Uniform::Type::eIVec2;
-	case 0x8B54: return v3d::vulkan::Uniform::Type::eIVec3;
-	case 0x8B55: return v3d::vulkan::Uniform::Type::eIVec4;
-	case 0x1405: return v3d::vulkan::Uniform::Type::eUint;
-	case 0x8DC6: return v3d::vulkan::Uniform::Type::eUVec2;
-	case 0x8DC7: return v3d::vulkan::Uniform::Type::eUVec3;
-	case 0x8DC8: return v3d::vulkan::Uniform::Type::eUVec4;
-	case 0x8B56: return v3d::vulkan::Uniform::Type::eBool;
-	case 0x8B57: return v3d::vulkan::Uniform::Type::eBVec2;
-	case 0x8B58: return v3d::vulkan::Uniform::Type::eBVec3;
-	case 0x8B59: return v3d::vulkan::Uniform::Type::eBVec4;
-	case 0x8B5A: return v3d::vulkan::Uniform::Type::eMat2;
-	case 0x8B5B: return v3d::vulkan::Uniform::Type::eMat3;
-	case 0x8B5C: return v3d::vulkan::Uniform::Type::eMat4;
-	case 0x8B65: return v3d::vulkan::Uniform::Type::eMat2x3;
-	case 0x8B66: return v3d::vulkan::Uniform::Type::eMat2x4;
-	case 0x8B67: return v3d::vulkan::Uniform::Type::eMat3x2;
-	case 0x8B68: return v3d::vulkan::Uniform::Type::eMat3x4;
-	case 0x8B69: return v3d::vulkan::Uniform::Type::eMat4x2;
-	case 0x8B6A: return v3d::vulkan::Uniform::Type::eMat4x3;
-	default: return v3d::vulkan::Uniform::Type::eUndefined;
-	}
+	return v3d::vulkan::toUniformType( glType );
 }
 
 inline bool Uniform::isFloat() const { return glType == 0x1406; }
@@ -115,6 +86,16 @@ inline bool Uniform::isMat3x4() const { return glType == 0x8B68; }
 inline bool Uniform::isMat4x2() const { return glType == 0x8B69; }
 
 inline bool Uniform::isMat4x3() const { return glType == 0x8B6A; }
+
+void Uniform::print() const
+{
+	auto& logger = v3d::Logger::getInstance();
+	logger.trace( "[Uniform] info..." );
+	//logger.trace( "Binding: {}", binding );
+	logger.trace( "Size: {}", size );
+	logger.trace( "Offset: {}", offset );
+	logger.trace( "GLType: {} ({})", glType, v3d::vulkan::uniformTypeToString( getType() ) );
+}
 
 VK_NS_END
 V3D_NS_END

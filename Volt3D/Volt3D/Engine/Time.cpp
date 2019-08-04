@@ -45,7 +45,7 @@ void Time::updateFPS()
 		if (onFPSUpdated) onFPSUpdated( fps );
 
 #ifdef BUILD_DEBUG
-		Logger::getInstance().traceConsole( "FPS: " + std::to_string( fps ) );
+		Logger::getInstance().traceConsole( "FPS: {}", fps );
 #endif
 
 		fps = 0;
