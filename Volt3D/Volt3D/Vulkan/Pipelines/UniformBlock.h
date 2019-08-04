@@ -53,8 +53,11 @@ private:
 
 	// All uniforms in this uniform block
 	std::unordered_map<std::string, v3d::vulkan::Uniform> uniforms;
-
+	
 public:
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( UniformBlock );
+	DEFAULT_MOVE_CONSTRUCTORS( UniformBlock );
+
 	~UniformBlock();
 
 	/**

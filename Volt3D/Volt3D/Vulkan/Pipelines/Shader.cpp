@@ -22,7 +22,7 @@ VK_NS_BEGIN
 Shader::Shader( const std::filesystem::path& filePath )
 	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
 	, shaderModule( nullptr )
-	, stage( v3d::vulkan::Shader::getShaderStage( filePath.filename() ) )
+	, stage( v3d::vulkan::Shader::toShaderStageFlagbits( filePath.filename() ) )
 	, filePath( filePath )
 {}
 
@@ -31,7 +31,7 @@ Shader::~Shader()
 	logicalDevice.destroyShaderModule( shaderModule );
 }
 
-bool Shader::init( const std::filesystem::path& filePath )
+bool Shader::init()
 {
 	EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules | EShMsgDefault);
 
@@ -264,18 +264,20 @@ vk::PipelineShaderStageCreateInfo Shader::getPipelineShaderStageCreateInfo() con
 	return vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), stage, shaderModule, "main" );
 }
 
-std::optional<v3d::vulkan::UniformBlock> Shader::getUniformBlock( const uint32_t binding )
+std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> Shader::getUniformBlock( const uint32_t binding )
 {
 	auto find_it = uniformBlocks.find( binding );
 	if (find_it == uniformBlocks.end()) return std::nullopt;
-	return find_it->second;
+	return (find_it->second);
 }
 
-std::optional<v3d::vulkan::UniformBlock> Shader::getUniformBlock( const std::string_view name )
+std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> Shader::getUniformBlock( const std::string_view name )
 {
-	for (auto& ub : uniformBlocks) if ((ub.second).name == name) return ub.second;
+	for (auto& uniformBlock : uniformBlocks) if ((uniformBlock.second).name == name) return uniformBlock.second;
 	return std::nullopt;
 }
+
+vk::ShaderStageFlagBits Shader::getStage() const { return stage; }
 
 std::vector<char> Shader::readFile( const std::filesystem::path& filePath )
 {
@@ -319,7 +321,7 @@ EShLanguage Shader::getEShLanguage() const
 	return EShLanguage::EShLangCount;
 }
 
-const vk::ShaderStageFlagBits Shader::getShaderStage( const std::filesystem::path& fileName )
+const vk::ShaderStageFlagBits Shader::toShaderStageFlagbits( const std::filesystem::path& fileName )
 {
 	if (fileName.has_extension())
 	{

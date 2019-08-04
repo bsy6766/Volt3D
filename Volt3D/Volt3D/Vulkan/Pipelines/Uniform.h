@@ -37,6 +37,9 @@ class VOLT3D_DLL Uniform
 //	};
 
 private:
+	Uniform() = delete;
+	Uniform( const std::string& name );
+
 	std::string name;
 	//v3d::vulkan::Uniform::Value value;
 
@@ -48,8 +51,9 @@ private:
 	int32_t glType;
 
 public:
-	Uniform() = delete;
-	Uniform( const std::string& name );
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Uniform );
+	DEFAULT_MOVE_CONSTRUCTORS( Uniform );
+
 	~Uniform();
 
 	/** Get name of uniform */

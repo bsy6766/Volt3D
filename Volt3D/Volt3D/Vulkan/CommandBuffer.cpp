@@ -97,7 +97,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	vk::DeviceSize offset = 0;
 	commandBuffer.bindVertexBuffers(0, vertexBuffer, offset);
 	commandBuffer.bindIndexBuffer(indexBuffer, offset, vk::IndexType::eUint16);
-	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.getLayout().get(), 0, 1, &descriptorSet, 0, nullptr);
+	commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.getLayout(), 0, 1, &descriptorSet, 0, nullptr);
 	commandBuffer.drawIndexed(indexSize, 1, 0, 0, 0);
 	commandBuffer.endRenderPass();
 }

@@ -9,32 +9,37 @@
 
 #include "Pipeline.h"
 
-#include "Shader.h"
+#include "Vulkan/Context.h"
+#include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/SwapChain.h"
 #include "Renderer/Vertex.h"
 
-v3d::vulkan::Pipeline::Pipeline()
-	: pipeline()
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+Pipeline::Pipeline()
+	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	, pipeline()
 	, viewport()
 	, scissor()
 {}
 
-const vk::Viewport& v3d::vulkan::Pipeline::getViewport() const
+Pipeline::~Pipeline()
 {
-	return viewport;
+	shaders.clear();
+	logicalDevice.destroyPipelineLayout( pipelineLayout );
+	logicalDevice.destroyPipeline( pipeline );
 }
 
-const vk::Rect2D& v3d::vulkan::Pipeline::getScissor() const
-{
-	return scissor;
-}
+const vk::Pipeline& Pipeline::get() const { return pipeline; }
 
-const vk::UniquePipelineLayout& v3d::vulkan::Pipeline::getLayout() const
-{
-	return pipelineLayout;
-}
+const vk::Viewport& Pipeline::getViewport() const { return viewport; }
 
-bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
+const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
+
+const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
+
+bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
 {
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
@@ -43,12 +48,15 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 		0, nullptr
 	);
 
-	pipelineLayout = logicalDevice.createPipelineLayoutUnique(layoutCreateInfo);
+	pipelineLayout = logicalDevice.createPipelineLayout(layoutCreateInfo);
 
-	v3d::vulkan::Shader vertShader("Shaders/vert.vert");
-	vertShader.init( "Shaders/vert.vert" );
+	v3d::vulkan::Shader vertShader( "Shaders/vert.vert" );
+	//if (!vertShader.init()) return false;
+	//shaders.emplace( std::make_pair( vertShader.getStage(), vertShader ) );
 	v3d::vulkan::Shader fragShader( "Shaders/frag.frag" );
-	fragShader.init( "Shaders/frag.frag" );
+	//if (!fragShader.init()) return false;
+	//shaders.emplace( std::make_pair( fragShader.getStage(), fragShader ) );
+	shaders.emplace( v3d::vulkan::Shader::toShaderStageFlagbits( "Shaders/vert.vert" ), v3d::vulkan::Shader( "Shaders/vert.vert" ) );
 
 	shaderCreateInfos.push_back( vertShader.getPipelineShaderStageCreateInfo() );
 	shaderCreateInfos.push_back( fragShader.getPipelineShaderStageCreateInfo() );
@@ -190,11 +198,14 @@ bool v3d::vulkan::Pipeline::init( const vk::Device& logicalDevice, const v3d::vu
 		nullptr,							        // pDepthStencilState
 		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
 		&pipelineDynamicStateCreateInfo,            // pDynamicState
-		pipelineLayout.get(),							    // layout
+		pipelineLayout,							    // layout
 		renderPass									// renderPass
 	);
 
-	pipeline = logicalDevice.createGraphicsPipelineUnique(nullptr, graphicsPipelineCreateInfo);
+	pipeline = logicalDevice.createGraphicsPipeline(nullptr, graphicsPipelineCreateInfo);
 	
 	return true;
 }
+
+VK_NS_END
+V3D_NS_END
