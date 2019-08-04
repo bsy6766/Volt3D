@@ -141,8 +141,8 @@ xcopy $(SolutionDir)Volt3D\Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPat
       <AdditionalLibraryDirectories>$(OutPutPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy $(SolutionDir)bin\lib\$(Platform)\$(Configuration)\Volt3D_d.* $(OutPutPath) /I /Y
-xcopy $(SolutionDir)Volt3D\Externals\GLFW\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
+      <Command>xcopy $(SolutionDir)Volt3D\bin\lib\$(Platform)\$(Configuration)\Volt3D_d.* $(OutPutPath) /I /Y
+xcopy $(SolutionDir)Volt3D\Externals\GLFW\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y /C
 xcopy $(SolutionDir)Volt3D\Externals\libpng\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y
 xcopy $(SolutionDir)Volt3D\Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPath) /I /Y</Command>
     </PreBuildEvent>
