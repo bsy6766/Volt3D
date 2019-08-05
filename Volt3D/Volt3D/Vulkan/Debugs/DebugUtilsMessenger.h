@@ -27,7 +27,7 @@ class Instance;
 */
 class VOLT3D_DLL DebugUtilsMessenger
 {
-	friend class Context;
+	friend class Instance;
 
 private:
 	vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger;
@@ -40,13 +40,13 @@ private:
 		void* pUserData
 	);
 
-	bool init(const v3d::vulkan::Instance& instance);
+	bool init( const vk::Instance& instance );
 
 public:
-	DebugUtilsMessenger ();
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(DebugUtilsMessenger);
-	DEFAULT_MOVE_CONSTRUCTORS(DebugUtilsMessenger);
-	~DebugUtilsMessenger () {}
+	DebugUtilsMessenger();
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( DebugUtilsMessenger );
+	DEFAULT_MOVE_CONSTRUCTORS( DebugUtilsMessenger );
+	~DebugUtilsMessenger() {}
 };
 
 V3D_NS_END

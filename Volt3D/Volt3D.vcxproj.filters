@@ -66,6 +66,12 @@
     <Filter Include="Volt3D\Vulkan\Devices">
       <UniqueIdentifier>{0825abe1-75f8-42c4-9df7-4594b4a1aadd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Vulkan\Images">
+      <UniqueIdentifier>{2a8413f1-eae5-4a9e-b5d8-2ab7d1c66e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Vulkan\Commands">
+      <UniqueIdentifier>{468cfdef-8bd4-487f-bfe7-b43bf5debbc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -100,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp">
       <Filter>Volt3D\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Node\BaseNode.cpp">
       <Filter>Volt3D\Node</Filter>
@@ -230,6 +233,15 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformBlock.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Images\Image.cpp">
+      <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Commands\CommandBuffer.cpp">
+      <Filter>Volt3D\Vulkan\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Commands\CommandPool.cpp">
+      <Filter>DLL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -282,9 +294,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Renderer\VertexData.h">
       <Filter>Volt3D\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Node\BaseNode.h">
       <Filter>Volt3D\Node</Filter>
@@ -453,6 +462,18 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformType.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Images\Image.h">
+      <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Commands\CommandBuffer.h">
+      <Filter>Volt3D\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Commands\CommandPool.h">
+      <Filter>Volt3D\Vulkan\Commands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

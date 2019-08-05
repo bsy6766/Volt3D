@@ -28,8 +28,6 @@ VK_NS_BEGIN
 
 class View;
 class Instance;
-class DebugReportCallback;
-class DebugUtilsMessenger;
 class PhysicalDevice;
 class LogicalDevice;
 class SwapChain;
@@ -56,9 +54,6 @@ private:
 
 	// Context instance
 	v3d::vulkan::Instance* instance;
-
-	v3d::vulkan::DebugReportCallback* debugReportCallback;
-	v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
 
 	vk::SurfaceKHR surface;
 
@@ -107,15 +102,6 @@ private:
 
 	std::vector<v3d::vulkan::Context::MVP> mvps;
 
-	//struct UniformBufferObject
-	//{
-	//	std::vector<vk::Buffer> buffers;
-	//	std::vector<vk::DeviceMemory> deviceMemories;
-	//} typedef UBO;
-
-	//UBO mvpUBO;
-	//UBO dissolveUBO;
-
 	struct Texture
 	{
 	public:
@@ -127,12 +113,9 @@ private:
 	};
 
 	Texture lena;
-	//Texture RGBW;
 
 	bool init( const bool enableValidationLayer );
 	bool initInstance( const bool enableValidationLayer );
-	bool initDebugReport();
-	bool initDebugUtilsMessenger();
 	bool initSurface();
 	bool initPhysicalDevice();
 	bool initLogicalDevice();
@@ -158,9 +141,7 @@ private:
 	void createLenaBuffer();
 
 	void createMVPUBO();
-	//void createUniformBuffer( UBO& ubo, const std::size_t uboDataSize );
 	void updateMVPUBO( const uint32_t imageIndex );
-	//void updateDissolveUBO( const uint32_t imageIndex );
 
 	void createTexture( const char* path, v3d::vulkan::Context::Texture& texture );
 	void createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture );
@@ -169,6 +150,7 @@ private:
 	void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
 	void copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
 	vk::ImageView createImageView( vk::Image& image, const vk::Format& format );
+
 	void oneTimeSubmit( v3d::vulkan::CommandBuffer& cb );
 
 	void render();
@@ -183,9 +165,13 @@ public:
 	/** Get Vulkan context */
 	static v3d::vulkan::Context* get();
 
-
+	/** Get Instance */
 	v3d::vulkan::Instance* getInstance() const;
+
+	/** Get PhysicalDevice */
 	v3d::vulkan::PhysicalDevice* getPhysicalDevice() const;
+
+	/** Get LogicalDevice */
 	v3d::vulkan::LogicalDevice* getLogicalDevice() const;
 };
 

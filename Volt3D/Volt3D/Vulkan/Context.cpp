@@ -14,13 +14,11 @@
 #include "Engine/Engine.h"
 #include "Engine/Window.h"
 #include "Instance.h"
-#include "Debugs/DebugReportCallback.h"
-#include "Debugs/DebugUtilsMessenger.h"
 #include "Devices/PhysicalDevice.h"
 #include "Devices/LogicalDevice.h"
 #include "SwapChain.h"
 #include "Pipelines/Pipeline.h"
-#include "CommandBuffer.h"
+#include "Commands/CommandBuffer.h"
 #include "Buffers/Buffer.h"
 #include "Buffers/UniformBuffer.h"
 #include "Utils.h"
@@ -36,8 +34,6 @@ VK_NS_BEGIN
 
 Context::Context()
 	: instance( nullptr )
-	, debugReportCallback( nullptr )
-	, debugUtilsMessenger( nullptr )
 	, surface()
 	, physicalDevice( nullptr )
 	, logicalDevice( nullptr )
@@ -103,6 +99,8 @@ bool Context::init( const bool enableValidationLayer )
 	const float halfWidth = float( lena.imageSource->getWidth() ) * 0.5f;
 	const float halfHeight = float( lena.imageSource->getHeight() ) * 0.5f;
 
+	SAFE_DELETE( lena.imageSource );
+
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
@@ -131,21 +129,6 @@ bool Context::initInstance( const bool enableValidationLayer )
 	std::vector<const char*> requiredExtensions;
 	window->getGLFWVKExtensions( requiredExtensions );
 	if (!instance->init( requiredExtensions, enableValidationLayer )) return false;
-	if (enableValidationLayer) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
-	return true;
-}
-
-bool Context::initDebugReport()
-{
-	debugReportCallback = new v3d::vulkan::DebugReportCallback();
-	if (!debugReportCallback->init( *instance )) return false;
-	return true;
-}
-
-bool Context::initDebugUtilsMessenger()
-{
-	debugUtilsMessenger = new v3d::vulkan::DebugUtilsMessenger();
-	if (!debugUtilsMessenger->init( *instance )) return false;
 	return true;
 }
 
@@ -236,7 +219,10 @@ bool Context::initRenderPass()
 bool Context::initGraphicsPipeline()
 {
 	pipeline = new v3d::vulkan::Pipeline();
-	if (!pipeline->init( logicalDevice->get(), *swapChain, renderPass, descriptorLayout )) return false;
+	std::vector<std::filesystem::path> shaderPath;
+	shaderPath.push_back( "Shaders/vert.vert" );
+	shaderPath.push_back( "Shaders/frag.frag" );
+	if (!pipeline->init( shaderPath, swapChain->getExtent2D(), renderPass, descriptorLayout )) return false;
 	return true;
 }
 
@@ -864,8 +850,6 @@ void Context::release()
 	SAFE_DELETE( logicalDevice );
 
 	instance->get().destroySurfaceKHR( surface );
-	SAFE_DELETE( debugUtilsMessenger );
-	SAFE_DELETE( debugReportCallback );
 	SAFE_DELETE( instance );
 	logger.info( "Releasing Context finished" );
 }

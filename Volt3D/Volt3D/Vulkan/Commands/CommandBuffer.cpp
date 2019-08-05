@@ -9,17 +9,17 @@
 
 #include "CommandBuffer.h"
 
-#include "SwapChain.h"
-#include "Pipelines/Pipeline.h"
+#include "Vulkan/SwapChain.h"
+#include "Vulkan/Pipelines/Pipeline.h"
 #include "Renderer/VertexData.h"
 
 v3d::vulkan::CommandBuffer::CommandBuffer()
 	: commandBuffer()
 {}
 
-v3d::vulkan::CommandBuffer::CommandBuffer(const vk::CommandBuffer & commandBuffer)
-	: commandBuffer(commandBuffer)
-{}
+//v3d::vulkan::CommandBuffer::CommandBuffer(const vk::CommandBuffer & commandBuffer)
+//	: commandBuffer(commandBuffer)
+//{}
 
 bool v3d::vulkan::CommandBuffer::init(const vk::Device& device, const vk::CommandPool& commandPool)
 {

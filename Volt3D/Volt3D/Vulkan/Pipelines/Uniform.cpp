@@ -12,11 +12,13 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-Uniform::Uniform( const std::string& name )
+Uniform::Uniform( const std::string& name, const int32_t binding, const int32_t offset, const int32_t size, const int32_t glType, const bool writeOnly )
 	: name( name )
-	, offset( 0 )
-	, size( 0 )
-	, glType( 0 )
+	, binding( binding )
+	, offset( offset )
+	, size( size )
+	, glType( glType )
+	, writeOnly( writeOnly )
 	//, value()
 {}
 
@@ -24,7 +26,7 @@ Uniform::~Uniform() {}
 
 std::string Uniform::getName() const { return name; }
 
-//inline int32_t Uniform::getBinding() const { return binding; }
+inline int32_t Uniform::getBinding() const { return binding; }
 
 inline int32_t Uniform::getOffset() const { return offset; }
 
@@ -32,10 +34,9 @@ inline int32_t Uniform::getSize() const { return size; }
 
 inline int32_t Uniform::getGLType() const { return glType; }
 
-inline v3d::vulkan::UniformType Uniform::getType() const
-{
-	return v3d::vulkan::toUniformType( glType );
-}
+inline UniformType Uniform::getType() const { return v3d::vulkan::toUniformType( glType ); }
+
+bool Uniform::isWriteOnly() const { return writeOnly; }
 
 inline bool Uniform::isFloat() const { return glType == 0x1406; }
 
@@ -91,7 +92,8 @@ void Uniform::print() const
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.trace( "[Uniform] info..." );
-	//logger.trace( "Binding: {}", binding );
+	logger.trace( "Name: {}", name );
+	logger.trace( "Binding: {}", binding );
 	logger.trace( "Size: {}", size );
 	logger.trace( "Offset: {}", offset );
 	logger.trace( "GLType: {} ({})", glType, v3d::vulkan::uniformTypeToString( getType() ) );

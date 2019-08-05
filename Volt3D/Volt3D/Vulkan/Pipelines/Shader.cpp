@@ -26,10 +26,7 @@ Shader::Shader( const std::filesystem::path& filePath )
 	, filePath( filePath )
 {}
 
-Shader::~Shader()
-{
-	logicalDevice.destroyShaderModule( shaderModule );
-}
+Shader::~Shader() {}
 
 bool Shader::init()
 {
@@ -86,50 +83,24 @@ bool Shader::init()
 
 	// 6. Build reflection
 	program.buildReflection();
-	program.dumpReflection();
+	//program.dumpReflection();
+
+	// 7. Query all uniforms and attributes
 
 	// uniform blocks
-	for (int32_t i{ program.getNumLiveUniformBlocks() - 1 }; i >= 0; i--)
+	for(int i = 0 ; i < program.getNumLiveUniformBlocks(); i++)
 	{
 		const glslang::TObjectReflection& reflection = program.getUniformBlock( i );
-		reflection.dump();
-		//reflection.index
 
-		/*
-		for (auto& [uniformBlockName, uniformBlock] : m_uniformBlocks)
-		{
-			if (uniformBlockName == reflection.name)
-			{
-				uniformBlock.m_stageFlags |= stageFlag;
-				return;
-			}
-		}
+		v3d::vulkan::UniformBlockType type = v3d::vulkan::UniformBlockType::eUndefined;
+		if (reflection.getType()->getQualifier().storage == glslang::EvqUniform) type = v3d::vulkan::UniformBlockType::eUniform;
+		else if (reflection.getType()->getQualifier().storage == glslang::EvqBuffer) type = v3d::vulkan::UniformBlockType::eStorage;
+		else if (reflection.getType()->getQualifier().layoutPushConstant) type = v3d::vulkan::UniformBlockType::ePush;
 
-		auto type{ UniformBlock::Type::None };
-
-		if (reflection.getType()->getQualifier().storage == glslang::EvqUniform)
-		{
-			type = UniformBlock::Type::Uniform;
-		}
-
-		if (reflection.getType()->getQualifier().storage == glslang::EvqBuffer)
-		{
-			type = UniformBlock::Type::Storage;
-		}
-
-		if (reflection.getType()->getQualifier().layoutPushConstant)
-		{
-			type = UniformBlock::Type::Push;
-		}
-
-		m_uniformBlocks.emplace( reflection.name, UniformBlock( reflection.getBinding(), reflection.size, stageFlag, type ) );
-		*/
+		uniformBlocks.emplace( reflection.getBinding(), std::move( v3d::vulkan::UniformBlock( reflection.name, reflection.getBinding(), reflection.size, type, false ) ) );
 	}
 
-
 	// uniforms
-	auto i2 = program.getNumUniformBlocks();
-	auto i3 = program.getNumLiveUniformVariables();
 	for (int32_t i = 0; i < program.getNumLiveUniformVariables(); i++)
 	{
 		const glslang::TObjectReflection& reflection = program.getUniform( i );
@@ -148,44 +119,34 @@ bool Shader::init()
 
 			if (split.size() > 1)
 			{
-				reflection.dump();
-
-				//for (auto& [uniformBlockName, uniformBlock] : m_uniformBlocks)
-				//{
-				//	if (uniformBlockName == splitName.at( 0 ))
-				//	{
-				//		uniformBlock.m_uniforms.emplace( String::ReplaceFirst( reflection.name, splitName.at( 0 ) + ".", "" ),
-				//			Uniform( reflection.getBinding(), reflection.offset, ComputeSize( reflection.getType() ), reflection.glDefineType, false, false,
-				//				stageFlag ) );
-				//		return;
-				//	}
-				//}
+				auto uniformBlock = getUniformBlock( split.front() );
+				if (uniformBlock.has_value())
+				{
+					uniformBlock.value().get().uniforms.emplace( reflection.name, std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, false ) ) );
+				}
 			}
 		}
-
-		//for (auto& [uniformName, uniform] : m_uniforms)
-		//{
-		//	if (uniformName == reflection.name)
-		//	{
-		//		uniform.m_stageFlags |= stageFlag;
-		//		return;
-		//	}
-		//}
-
-		//auto& qualifier{ reflection.getType()->getQualifier() };
-		//m_uniforms.emplace( reflection.name, Uniform( reflection.getBinding(), reflection.offset, -1, reflection.glDefineType, qualifier.readonly, qualifier.writeonly, stageFlag ) );
-
-
+		else
+		{
+			// Uniforms
+			auto& qualifier = reflection.getType()->getQualifier();
+			reflection.dump();
+			uniforms.emplace( reflection.getBinding(), std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, qualifier.writeonly ) ) );
+		}
 	}
 
-	// vertex attribs
+	for (auto& uniformBlock : uniformBlocks) uniformBlock.second.print( true );
+	for (auto& uniform : uniforms) uniform.second.print();
 
+	// vertex attribs
 	for (int32_t i{}; i < program.getNumLiveAttributes(); i++)
 	{
 		auto reflection = program.getPipeInput( i );
 
 		if (reflection.name.empty()) break;
+		auto& q = reflection.getType()->getQualifier();
 		reflection.dump();
+
 
 		/*
 		for (const auto& [attributeName, attribute] : m_attributes)
@@ -201,34 +162,6 @@ bool Shader::init()
 
 		*/
 	}
-
-	// 7. Query all uniforms and attributes
-	/*
-	for (uint32_t dim{}; dim < 3; ++dim)
-	{
-		auto localSize{ program.getLocalSize( dim ) };
-
-		if (localSize > 1)
-		{
-			m_localSizes[dim] = localSize;
-		}
-	}
-
-	for (int32_t i{ program.getNumLiveUniformBlocks() - 1 }; i >= 0; i--)
-	{
-		LoadUniformBlock( program, moduleFlag, i );
-	}
-
-	for (int32_t i{}; i < program.getNumLiveUniformVariables(); i++)
-	{
-		LoadUniform( program, moduleFlag, i );
-	}
-
-	for (int32_t i{}; i < program.getNumLiveAttributes(); i++)
-	{
-		LoadVertexAttribute( program, moduleFlag, i );
-	}
-	*/
 
 	// 8. Create spirv file
 	glslang::SpvOptions spvOptions;
@@ -252,6 +185,12 @@ bool Shader::init()
 
 	// Done.
 	return true;
+}
+
+void Shader::release()
+{
+	logicalDevice.destroyShaderModule( shaderModule );
+	shaderModule = nullptr;
 }
 
 const vk::ShaderModule Shader::get() const
@@ -278,6 +217,59 @@ std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> Shader::getUnif
 }
 
 vk::ShaderStageFlagBits Shader::getStage() const { return stage; }
+
+std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBinding() const
+{
+	std::vector<vk::DescriptorSetLayoutBinding> bindings;
+
+	for (auto& [uniformName, uniformBlock] : uniformBlocks)
+	{
+		vk::DescriptorType descriptorType;
+		if (uniformBlock.getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
+		else if (uniformBlock.getType() == v3d::vulkan::UniformBlockType::eStorage) descriptorType = vk::DescriptorType::eStorageBuffer;
+		else continue;
+		vk::DescriptorSetLayoutBinding binding
+		(
+			uniformBlock.binding,
+			descriptorType,
+			1,
+			stage
+		);
+		bindings.push_back( binding );
+	}
+	
+	for (auto& [uniformName, uniform] : uniforms)
+	{
+		vk::DescriptorType descriptorType;
+
+		switch (uniform.getGLType())
+		{
+		case 0x8B5E: // GL_SAMPLER_2D
+		case 0x904D: // GL_IMAGE_2D
+		case 0x9108: // GL_SAMPLER_2D_MULTISAMPLE
+		case 0x9055: // GL_IMAGE_2D_MULTISAMPLE
+		{
+			descriptorType = uniform.isWriteOnly() ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
+			vk::DescriptorSetLayoutBinding binding
+			(
+				uniform.getBinding(),
+				descriptorType,
+				1,
+				stage
+			);
+			bindings.push_back( binding );
+		}
+			break;
+		case 0x8B60: // GL_SAMPLER_CUBE
+		case 0x9050: // GL_IMAGE_CUBE
+		default:
+			continue;
+			break;
+		}
+	}
+
+	return bindings;
+}
 
 std::vector<char> Shader::readFile( const std::filesystem::path& filePath )
 {

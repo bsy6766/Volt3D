@@ -17,6 +17,9 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
+class DebugReportCallback;
+class DebugUtilsMessenger;
+
 /**
 *	@class Instance
 *	@brief Wrapper for VkInstance
@@ -32,7 +35,12 @@ private:
 
 	vk::Instance instance;
 
+	v3d::vulkan::DebugReportCallback* debugReportCallback;
+	v3d::vulkan::DebugUtilsMessenger* debugUtilsMessenger;
+
 	bool init( std::vector<const char*>& requiredExtensions, const bool validationLayerEnabled );
+	bool initDebugReport();
+	bool initDebugUtilsMessenger();
 
 public:
 	~Instance();
@@ -47,7 +55,6 @@ public:
 	vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const;
 	vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const;
 	std::vector<vk::PhysicalDevice> enumeratePhysicalDevices() const;
-	
 };
 
 VK_NS_END

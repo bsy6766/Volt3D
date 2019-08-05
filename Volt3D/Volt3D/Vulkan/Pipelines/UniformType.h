@@ -52,6 +52,28 @@ enum class UniformType
 	eMat3x4 = 0x8B68,
 	eMat4x2 = 0x8B69,
 	eMat4x3 = 0x8B6A,
+
+	eSampler1D = 0x8B5D,
+	eSampler2D = 0x8B5E,
+	eSampler3D = 0x8B5F,
+	// @todo add more type
+	//#define GL_SAMPLER_CUBE                   0x8B60
+	//#define GL_SAMPLER_BUFFER                 0x8DC2
+	//#define GL_SAMPLER_1D_ARRAY               0x8DC0
+	//#define GL_SAMPLER_2D_ARRAY               0x8DC1
+	//#define GL_SAMPLER_1D_ARRAY_SHADOW        0x8DC3
+	//#define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
+	//#define GL_SAMPLER_CUBE_SHADOW            0x8DC5
+	//#define GL_SAMPLER_1D_SHADOW              0x8B61
+	//#define GL_SAMPLER_2D_SHADOW              0x8B62
+	//#define GL_SAMPLER_2D_RECT                0x8B63
+	//#define GL_SAMPLER_2D_RECT_SHADOW         0x8B64
+	//#define GL_SAMPLER_2D_MULTISAMPLE         0x9108
+	//#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY   0x910B
+	//#define GL_SAMPLER_CUBE_MAP_ARRAY         0x900C
+	//#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW  0x900D
+	//#define GL_SAMPLER_CUBE_MAP_ARRAY_ARB     0x900C
+	//#define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_ARB 0x900D
 };
 
 static inline std::string uniformTypeToString( v3d::vulkan::UniformType value )
@@ -83,6 +105,9 @@ static inline std::string uniformTypeToString( v3d::vulkan::UniformType value )
 	case v3d::vulkan::UniformType::eMat3x4: return "Mat3x4";
 	case v3d::vulkan::UniformType::eMat4x2: return "Mat4x2";
 	case v3d::vulkan::UniformType::eMat4x3: return "Mat4x3";
+	case v3d::vulkan::UniformType::eSampler1D: return "Sampler1D";
+	case v3d::vulkan::UniformType::eSampler2D: return "Sampler2D";
+	case v3d::vulkan::UniformType::eSampler3D: return "Sampler3D";
 	default: return "Undefined";
 	}
 }
@@ -116,6 +141,9 @@ static inline v3d::vulkan::UniformType toUniformType( const unsigned int value )
 	case 0x8B68: return v3d::vulkan::UniformType::eMat3x4;
 	case 0x8B69: return v3d::vulkan::UniformType::eMat4x2;
 	case 0x8B6A: return v3d::vulkan::UniformType::eMat4x3;
+	case 0x8B5D: return v3d::vulkan::UniformType::eSampler1D;
+	case 0x8B5E: return v3d::vulkan::UniformType::eSampler2D;
+	case 0x8B5F: return v3d::vulkan::UniformType::eSampler3D;
 	default: return v3d::vulkan::UniformType::eUndefined;
 	}
 }

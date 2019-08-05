@@ -92,7 +92,6 @@
 #include "Utils/Utility.h"
 
 // Vulkan
-#include "Vulkan/CommandBuffer.h"
 #include "Vulkan/Context.h"
 #include "Vulkan/Instance.h"
 #include "Vulkan/SwapChain.h"
@@ -100,14 +99,18 @@
 #include "Vulkan/Utils.h"
 #include "Vulkan/Buffers/Buffer.h"
 #include "Vulkan/Buffers/UniformBuffer.h"
+#include "Vulkan/Commands/CommandBuffer.h"
+#include "Vulkan/Commands/CommandPool.h"
 #include "Vulkan/Debugs/DebugReportCallback.h"
 #include "Vulkan/Debugs/DebugUtilsMessenger.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Devices/PhysicalDevice.h"
+#include "Vulkan/Images/Image.h"
 #include "Vulkan/Pipelines/Pipeline.h"
 #include "Vulkan/Pipelines/Shader.h"
 #include "Vulkan/Pipelines/Uniform.h"
 #include "Vulkan/Pipelines/UniformBlock.h"
+#include "Vulkan/Pipelines/UniformBlockType.h"
 #include "Vulkan/Pipelines/UniformType.h"
 
 #endif

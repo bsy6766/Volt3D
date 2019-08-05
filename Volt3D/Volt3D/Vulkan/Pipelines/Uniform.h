@@ -38,17 +38,18 @@ class VOLT3D_DLL Uniform
 
 private:
 	Uniform() = delete;
-	Uniform( const std::string& name );
+	Uniform( const std::string& name, const int32_t binding, const int32_t offset, const int32_t size, const int32_t glType, const bool writeOnly );
 
 	std::string name;
 	//v3d::vulkan::Uniform::Value value;
 
-	// Uniform binding is always -1
-	//int32_t binding;
-
+	int32_t binding;
 	int32_t offset;
 	int32_t size;
 	int32_t glType;
+
+	// @todo readonly?
+	bool writeOnly;
 
 public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Uniform );
@@ -60,7 +61,7 @@ public:
 	inline std::string getName() const;
 
 	/** Get binding of uniform */
-	//inline int32_t getBinding() const;
+	inline int32_t getBinding() const;
 
 	/** Get offset of uniform from uniform block*/
 	inline int32_t getOffset() const;
@@ -73,6 +74,9 @@ public:
 
 	/** Get data type */
 	inline v3d::vulkan::UniformType getType() const;
+
+	/** Check if this uniform block is write only */
+	bool isWriteOnly() const;
 
 	/** Check if data type is float */
 	inline bool isFloat() const;

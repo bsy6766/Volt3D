@@ -26,6 +26,7 @@ Pipeline::Pipeline()
 
 Pipeline::~Pipeline()
 {
+	for (auto& shader : shaders) { shader.second.release(); }
 	shaders.clear();
 	logicalDevice.destroyPipelineLayout( pipelineLayout );
 	logicalDevice.destroyPipeline( pipeline );
@@ -39,28 +40,24 @@ const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
 
 const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
 
-bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapChain& swapChain, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout)
+bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout )
 {
+	if (!initShaderProgram( shaderPath )) return false;
+	//if (!initDescriptorSetLayout()) return false;
+	//if (!initPipelineLayout()) return false;
+
+
 	vk::PipelineLayoutCreateInfo layoutCreateInfo
 	(
 		vk::PipelineLayoutCreateFlags(),
-		1, &descriptorSetLayout,
-		0, nullptr
+		1,
+		&descriptorSetLayout,
+		0,
+		nullptr
 	);
 
-	pipelineLayout = logicalDevice.createPipelineLayout(layoutCreateInfo);
+	pipelineLayout = logicalDevice.createPipelineLayout( layoutCreateInfo );
 
-	v3d::vulkan::Shader vertShader( "Shaders/vert.vert" );
-	//if (!vertShader.init()) return false;
-	//shaders.emplace( std::make_pair( vertShader.getStage(), vertShader ) );
-	v3d::vulkan::Shader fragShader( "Shaders/frag.frag" );
-	//if (!fragShader.init()) return false;
-	//shaders.emplace( std::make_pair( fragShader.getStage(), fragShader ) );
-	shaders.emplace( v3d::vulkan::Shader::toShaderStageFlagbits( "Shaders/vert.vert" ), v3d::vulkan::Shader( "Shaders/vert.vert" ) );
-
-	shaderCreateInfos.push_back( vertShader.getPipelineShaderStageCreateInfo() );
-	shaderCreateInfos.push_back( fragShader.getPipelineShaderStageCreateInfo() );
-	
 	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
@@ -75,9 +72,7 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 		vk::PipelineInputAssemblyStateCreateFlags(),
 		vk::PrimitiveTopology::eTriangleList
 	);
-
-	const vk::Extent2D& extent = swapChain.getExtent2D();
-
+	
 	viewport = vk::Viewport
 	(
 		0.0f, 0.0f,
@@ -86,7 +81,7 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 		0.0f, 1.0f
 	);
 
-	scissor = vk::Rect2D(vk::Offset2D(0, 0), extent);
+	scissor = vk::Rect2D( vk::Offset2D( 0, 0 ), extent );
 
 	vk::PipelineViewportStateCreateInfo pipelineViewportStateCreateInfo
 	(
@@ -111,7 +106,6 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 	);
 
 	// Not using multisampling
-	vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
 
 	// @note visit later
 	// Depth and stencil
@@ -136,21 +130,8 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 		vk::ColorComponentFlagBits::eA
 	);
 
-	// Blending off
-	//vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
-	//(
-	//	false,                      // blendEnable
-	//	vk::BlendFactor::eZero,     // srcColorBlendFactor
-	//	vk::BlendFactor::eZero,     // dstColorBlendFactor
-	//	vk::BlendOp::eAdd,          // colorBlendOp
-	//	vk::BlendFactor::eZero,     // srcAlphaBlendFactor
-	//	vk::BlendFactor::eZero,     // dstAlphaBlendFactor
-	//	vk::BlendOp::eAdd,          // alphaBlendOp
-	//	colorComponentFlags         // colorWriteMask
-	//);
-
 	// typical blending
-	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState
+	pipelineColorBlendAttachmentState = vk::PipelineColorBlendAttachmentState
 	(
 		true,									// blendEnable
 		vk::BlendFactor::eSrcAlpha,				// srcColorBlendFactor
@@ -162,7 +143,7 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 		colorComponentFlags						// colorWriteMask
 	);
 
-	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo
+	pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo
 	(
 		vk::PipelineColorBlendStateCreateFlags(),   // flags
 		false,                                      // logicOpEnable
@@ -187,7 +168,7 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
 	(
 		vk::PipelineCreateFlags(),                  // flags
-		uint32_t(shaderCreateInfos.size()),			// stageCount
+		uint32_t( shaderCreateInfos.size() ),		// stageCount
 		shaderCreateInfos.data(),					// pStages
 		&pipelineVertexInputStateCreateInfo,        // pVertexInputState
 		&pipelineInputAssemblyStateCreateInfo,      // pInputAssemblyState
@@ -202,8 +183,71 @@ bool Pipeline::init( const vk::Device& logicalDevice, const v3d::vulkan::SwapCha
 		renderPass									// renderPass
 	);
 
-	pipeline = logicalDevice.createGraphicsPipeline(nullptr, graphicsPipelineCreateInfo);
-	
+	pipeline = logicalDevice.createGraphicsPipeline( nullptr, graphicsPipelineCreateInfo );
+
+	return true;
+}
+
+bool Pipeline::initShaderProgram( const std::vector<std::filesystem::path>& shaderPath )
+{
+	// Requires at least 2 shaders (vert & frag)
+	if (shaderPath.size() < 2) return false;
+
+	// Create shader instance
+	for (auto& path : shaderPath)
+	{
+		const auto pathStr = path.string();
+		shaders.emplace( v3d::vulkan::Shader::toShaderStageFlagbits( pathStr ), std::move( v3d::vulkan::Shader( pathStr ) ) );
+	}
+
+	// Init shaders
+	for (auto& e : shaders)
+	{
+		if (!(e.second).init()) return false;
+		shaderCreateInfos.push_back( (e.second).getPipelineShaderStageCreateInfo() );
+	}
+
+	return true;
+}
+
+bool Pipeline::initDescriptorSetLayout()
+{
+	std::vector<vk::DescriptorSetLayoutBinding> bindings;
+	std::vector<vk::DescriptorSetLayoutBinding> shaderBindings;
+
+	for (auto& [stage, shader] : shaders)
+	{
+		shaderBindings = shader.getDescriptorSetLayoutBinding();
+		bindings.insert( bindings.end(), shaderBindings.begin(), shaderBindings.end() );
+	}
+
+	if (bindings.empty()) return false;
+
+	vk::DescriptorSetLayoutCreateInfo layoutInfo
+	(
+		vk::DescriptorSetLayoutCreateFlags(),
+		uint32_t(bindings.size()),
+		bindings.data()
+	);
+
+	descriptorSetLayout = logicalDevice.createDescriptorSetLayout( layoutInfo );
+
+	return true;
+}
+
+bool Pipeline::initPipelineLayout()
+{
+	vk::PipelineLayoutCreateInfo layoutCreateInfo
+	(
+		vk::PipelineLayoutCreateFlags(),
+		1, 
+		&descriptorSetLayout,
+		0, 
+		nullptr
+	);
+
+	pipelineLayout = logicalDevice.createPipelineLayout( layoutCreateInfo );
+
 	return true;
 }
 

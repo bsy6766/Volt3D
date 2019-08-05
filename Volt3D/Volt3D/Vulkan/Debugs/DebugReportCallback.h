@@ -15,8 +15,6 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-class Instance;
-
 /**
 *	@class DebugReportCallback
 *	@brief A wrapper of vulkan's DebugReportCallback.
@@ -27,7 +25,7 @@ class Instance;
 */
 class VOLT3D_DLL DebugReportCallback
 {
-	friend class Context;
+	friend class Instance;
 
 private:
 	vk::UniqueDebugReportCallbackEXT debugReportCallback;
@@ -44,7 +42,7 @@ private:
 		void* pUserData
 	);
 
-	bool init( const v3d::vulkan::Instance& instance );
+	bool init( const vk::Instance& instance );
 
 public:
 	DebugReportCallback();

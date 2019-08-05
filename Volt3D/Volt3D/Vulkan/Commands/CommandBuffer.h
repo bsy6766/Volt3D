@@ -37,7 +37,7 @@ namespace v3d
 
 		public:
 			CommandBuffer();
-			CommandBuffer(const vk::CommandBuffer& commandBuffer);
+			//CommandBuffer(const vk::CommandBuffer& commandBuffer);
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(CommandBuffer);
 			DEFAULT_MOVE_CONSTRUCTORS(CommandBuffer);
 			~CommandBuffer() {}

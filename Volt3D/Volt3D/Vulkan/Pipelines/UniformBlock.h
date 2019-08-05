@@ -11,6 +11,7 @@
 #include <Vulkan/vulkan.hpp>
 
 #include "Uniform.h"
+#include "UniformBlockType.h"
 #include "utils/Macros.h"
 
 #include <string>
@@ -35,7 +36,10 @@ class VOLT3D_DLL UniformBlock
 
 private:
 	UniformBlock() = delete;
-	UniformBlock( const std::string& name, const int32_t binding, const int32_t size );
+	UniformBlock( const std::string& name, const int32_t binding, const int32_t size, const v3d::vulkan::UniformBlockType type, const bool writeOnly );
+
+	// type
+	v3d::vulkan::UniformBlockType type;
 
 	// Name of uniform block
 	std::string name;
@@ -77,6 +81,9 @@ public:
 
 	/** Get total uniforms in uniform block */
 	std::size_t getCount() const;
+
+	/** Get type of uniform block */
+	v3d::vulkan::UniformBlockType getType() const;
 	
 	/** 
 	*	Log UniformBlock 

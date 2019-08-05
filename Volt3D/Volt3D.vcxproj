@@ -118,6 +118,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,6 +171,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -246,17 +248,20 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Utils\Utility.h" />
     <ClInclude Include="Volt3D\Vulkan\Buffers\Buffer.h" />
     <ClInclude Include="Volt3D\Vulkan\Buffers\UniformBuffer.h" />
-    <ClInclude Include="Volt3D\Vulkan\CommandBuffer.h" />
+    <ClInclude Include="Volt3D\Vulkan\Commands\CommandBuffer.h" />
+    <ClInclude Include="Volt3D\Vulkan\Commands\CommandPool.h" />
     <ClInclude Include="Volt3D\Vulkan\Context.h" />
     <ClInclude Include="Volt3D\Vulkan\Debugs\DebugReportCallback.h" />
     <ClInclude Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.h" />
     <ClInclude Include="Volt3D\Vulkan\Devices\LogicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Devices\PhysicalDevice.h" />
+    <ClInclude Include="Volt3D\Vulkan\Images\Image.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformType.h" />
     <ClInclude Include="Volt3D\Vulkan\SwapChain.h" />
     <ClInclude Include="Volt3D\Vulkan\Texture.h" />
@@ -308,12 +313,14 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Texture\TextureManager.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Buffers\Buffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\CommandBuffer.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Commands\CommandBuffer.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Commands\CommandPool.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Context.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Debugs\DebugReportCallback.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Devices\LogicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Devices\PhysicalDevice.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Images\Image.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp" />

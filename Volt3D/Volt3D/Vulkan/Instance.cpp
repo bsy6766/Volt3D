@@ -10,17 +10,24 @@
 #include "Instance.h"
 
 #include "Engine/Window.h"
+#include "Debugs/DebugReportCallback.h"
+#include "Debugs/DebugUtilsMessenger.h"
 #include "Utils.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Instance::Instance()
-	: instance()
+	: instance( nullptr )
+	, debugReportCallback( nullptr )
+	, debugUtilsMessenger( nullptr )
 {}
 
 Instance::~Instance()
 {
+	SAFE_DELETE( debugUtilsMessenger );
+	SAFE_DELETE( debugReportCallback );
+
 	instance.destroy();
 }
 
@@ -59,22 +66,31 @@ bool Instance::init( std::vector<const char*>& requiredExtensions, const bool va
 		uint32_t( requiredExtensions.size() ),
 		requiredExtensions.data()
 	);
-	
+
 	instance = vk::createInstance( createInfo );
+
+	if (validationLayerEnabled) if (!initDebugReport() || !initDebugUtilsMessenger()) return false;
 
 	return true;
 }
 
-
-const vk::Instance& Instance::get() const
+bool Instance::initDebugReport()
 {
-	return instance;
+	debugReportCallback = new v3d::vulkan::DebugReportCallback();
+	if (!debugReportCallback->init( instance )) return false;
+	return true;
 }
 
-PFN_vkVoidFunction Instance::getProcAddr( const char* pName ) const
+bool Instance::initDebugUtilsMessenger()
 {
-	return instance.getProcAddr( pName );
+	debugUtilsMessenger = new v3d::vulkan::DebugUtilsMessenger();
+	if (!debugUtilsMessenger->init( instance )) return false;
+	return true;
 }
+
+const vk::Instance& Instance::get() const { return instance; }
+
+PFN_vkVoidFunction Instance::getProcAddr( const char* pName ) const { return instance.getProcAddr( pName ); }
 
 inline vk::UniqueDebugReportCallbackEXT Instance::createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const
 {

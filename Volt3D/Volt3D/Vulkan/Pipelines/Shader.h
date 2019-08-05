@@ -16,6 +16,7 @@
 
 #include <glslang/Public/ShaderLang.h>
 
+#include "Uniform.h"
 #include "UniformBlock.h"
 #include "utils/Macros.h"
 
@@ -47,10 +48,12 @@ private:
 	vk::ShaderModule shaderModule;
 
 	bool init();
+	void release();
 
 	EShLanguage getEShLanguage() const;
 	std::vector<char> readFile( const std::filesystem::path& filePath );
 
+	// key: binding
 	std::unordered_map<uint32_t, v3d::vulkan::UniformBlock> uniformBlocks;
 	std::unordered_map<uint32_t, v3d::vulkan::Uniform> uniforms;
 
@@ -83,6 +86,8 @@ public:
 
 	/** Get shader stage flag bits */
 	vk::ShaderStageFlagBits getStage() const;
+
+	std::vector<vk::DescriptorSetLayoutBinding> getDescriptorSetLayoutBinding() const;
 
 	/**
 	*	Get shader stage flag bits

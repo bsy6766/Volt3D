@@ -14,58 +14,58 @@
 PFN_vkCreateDebugReportCallbackEXT  pfnVkCreateDebugReportCallbackEXT = VK_NULL_HANDLE;
 PFN_vkDestroyDebugReportCallbackEXT pfnVkDestroyDebugReportCallbackEXT = VK_NULL_HANDLE;
 
-VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback)
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT( VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback )
 {
-	return pfnVkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
+	return pfnVkCreateDebugReportCallbackEXT( instance, pCreateInfo, pAllocator, pCallback );
 }
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator)
+VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT( VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator )
 {
-	pfnVkDestroyDebugReportCallbackEXT(instance, callback, pAllocator);
+	pfnVkDestroyDebugReportCallbackEXT( instance, callback, pAllocator );
 }
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 DebugReportCallback::DebugReportCallback()
-	: debugReportCallback(nullptr)
+	: debugReportCallback( nullptr )
 {}
 
-bool DebugReportCallback::init(const v3d::vulkan::Instance& instance)
+bool DebugReportCallback::init( const vk::Instance& instance )
 {
 	auto& logger = v3d::Logger::getInstance();
 
-	pfnVkCreateDebugReportCallbackEXT = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(instance.getProcAddr("vkCreateDebugReportCallbackEXT"));
-	pfnVkDestroyDebugReportCallbackEXT = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(instance.getProcAddr("vkDestroyDebugReportCallbackEXT"));
+	pfnVkCreateDebugReportCallbackEXT = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(instance.getProcAddr( "vkCreateDebugReportCallbackEXT" ));
+	pfnVkDestroyDebugReportCallbackEXT = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(instance.getProcAddr( "vkDestroyDebugReportCallbackEXT" ));
 
 	if (!pfnVkCreateDebugReportCallbackEXT)
 	{
-		logger.error("vkCreateDebugReportCallbackEXT is not supported");
+		logger.error( "vkCreateDebugReportCallbackEXT is not supported" );
 		return false;
 	}
 
 	if (!pfnVkDestroyDebugReportCallbackEXT)
 	{
-		logger.error("vkDestroyDebugReportCallbackEXT is not supported");
+		logger.error( "vkDestroyDebugReportCallbackEXT is not supported" );
 		return false;
 	}
 
 	const vk::DebugReportFlagsEXT flags
 	(
-		vk::DebugReportFlagBitsEXT::eWarning | 
-		vk::DebugReportFlagBitsEXT::ePerformanceWarning | 
+		vk::DebugReportFlagBitsEXT::eWarning |
+		vk::DebugReportFlagBitsEXT::ePerformanceWarning |
 		vk::DebugReportFlagBitsEXT::eError |
 		vk::DebugReportFlagBitsEXT::eDebug
 	);
 
-	debugReportCallback = std::move(instance.createDebugReportCallbackEXTUnique(vk::DebugReportCallbackCreateInfoEXT(flags, debugReportCallbackFunc, this)));
+	debugReportCallback = std::move( instance.createDebugReportCallbackEXTUnique( vk::DebugReportCallbackCreateInfoEXT( flags, debugReportCallbackFunc, this ) ) );
 
 	return true;
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugReportCallback::debugReportCallbackFunc(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT object_type, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
+VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugReportCallback::debugReportCallbackFunc( VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT object_type, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData )
 {
-	Logger::getInstance().debug(std::string("Debug report: ") + std::string(pMessage));
+	Logger::getInstance().debug( std::string( "Debug report: " ) + std::string( pMessage ) );
 	return VK_FALSE;
 }
 
