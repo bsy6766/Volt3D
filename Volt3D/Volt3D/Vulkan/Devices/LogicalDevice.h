@@ -51,6 +51,9 @@ private:
 public:
 	~LogicalDevice();
 
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( LogicalDevice );
+	DEFAULT_MOVE_CONSTRUCTORS( LogicalDevice );
+
 	/** Get LogicalDevice */
 	const vk::Device& get() const;
 

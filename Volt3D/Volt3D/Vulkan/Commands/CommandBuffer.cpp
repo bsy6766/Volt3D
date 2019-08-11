@@ -9,43 +9,42 @@
 
 #include "CommandBuffer.h"
 
-#include "Vulkan/SwapChain.h"
-#include "Vulkan/Pipelines/Pipeline.h"
-#include "Renderer/VertexData.h"
+#include "CommandPool.h"
+#include "Vulkan/Context.h"
+#include "Vulkan/Devices/LogicalDevice.h"
 
-v3d::vulkan::CommandBuffer::CommandBuffer()
-	: commandBuffer()
-{}
-
-//v3d::vulkan::CommandBuffer::CommandBuffer(const vk::CommandBuffer & commandBuffer)
-//	: commandBuffer(commandBuffer)
-//{}
-
-bool v3d::vulkan::CommandBuffer::init(const vk::Device& device, const vk::CommandPool& commandPool)
+v3d::vulkan::CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
+	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	, commandPool( v3d::vulkan::Context::get()->getCommandPool()->get() )
+	, commandBuffer( nullptr )
+	, running( false )
 {
 	vk::CommandBufferAllocateInfo allocInfo
 	(
 		commandPool,
-		vk::CommandBufferLevel::ePrimary,
+		level,
 		1
 	);
 
-	commandBuffer = device.allocateCommandBuffers(allocInfo).front();
+	commandBuffer = logicalDevice.allocateCommandBuffers( allocInfo ).front();
+}
 
-	return true;
+v3d::vulkan::CommandBuffer::~CommandBuffer()
+{
+	logicalDevice.freeCommandBuffers( commandPool, commandBuffer );
+}
+
+const vk::CommandBuffer& v3d::vulkan::CommandBuffer::get() const
+{
+	return commandBuffer;
 }
 
 void v3d::vulkan::CommandBuffer::begin( const vk::CommandBufferUsageFlags usageFlags )
 {
-	vk::CommandBufferBeginInfo beginInfo
-	(
-		vk::CommandBufferUsageFlags( usageFlags ),
-		nullptr
-	);
-
-	commandBuffer.begin( beginInfo );
+	commandBuffer.begin( vk::CommandBufferBeginInfo( usageFlags, nullptr ) );
 }
 
+/*
 void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const
 {
 	vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
@@ -102,6 +101,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	commandBuffer.endRenderPass();
 }
 
+*/
 void v3d::vulkan::CommandBuffer::end()
 {
 	commandBuffer.end();

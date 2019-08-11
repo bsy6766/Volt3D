@@ -17,19 +17,12 @@ VK_NS_BEGIN
 
 class VOLT3D_DLL Image
 {
-private:
+	friend class Context;
+
+protected:
 	Image();
 
 	const vk::Device& logicalDevice;
-
-	vk::Extent3D extent;
-	vk::Format format;
-	vk::ImageUsageFlagBits usageFlagBits;
-
-	uint32_t mip_levels;
-	uint32_t layers;
-
-	vk::Filter filter;
 
 	vk::Image image;
 	vk::DeviceMemory imageDeviceMemory;
@@ -37,16 +30,30 @@ private:
 	vk::ImageLayout imageLayout;
 	vk::ImageView imageView;
 
-	VkSampleCountFlagBits m_samples;
-	VkSamplerAddressMode m_addressMode;
-	bool m_anisotropic;
+	//vk::Extent3D extent;
+	//vk::Format format;
+	//vk::Filter filter;
+	//vk::ImageUsageFlagBits usageFlagBits;
 
-	void initImage( const uint32_t w, const uint32_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
+	uint32_t mip_levels;
+	uint32_t layers;
+
+	//VkSampleCountFlagBits sampleCount;
+	//VkSamplerAddressMode samplerAddressMode;
+	//bool anisotropic;
+
+	void initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
 	void initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags );
 
 
 public:
-	~Image();
+	virtual ~Image();
+
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Image );
+	DEFAULT_MOVE_CONSTRUCTORS( Image );
+
+	static uint32_t get_mip_levels( const vk::Extent2D& extent );
+	static uint32_t get_mip_levels( const vk::Extent3D& extent );
 };
 
 VK_NS_END

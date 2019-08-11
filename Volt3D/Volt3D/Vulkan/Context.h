@@ -34,6 +34,7 @@ class SwapChain;
 class Pipeline;
 class Queue;
 class CommandBuffer;
+class CommandPool;
 class Buffer;
 class UniformBuffer;
 
@@ -66,11 +67,13 @@ private:
 
 	vk::RenderPass renderPass;
 	v3d::vulkan::Pipeline* pipeline;
+
 	std::vector<vk::Framebuffer> framebuffers;
-	vk::CommandPool commandPool;
 	std::vector<vk::Semaphore> imageAvailableSemaphores;
 	std::vector<vk::Semaphore> renderFinishedSemaphores;
 	std::vector<vk::Fence> frameFences;
+
+	v3d::vulkan::CommandPool* commandPool;
 	std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
 
 	vk::DescriptorSetLayout descriptorLayout;
@@ -82,6 +85,9 @@ private:
 	glm::uvec2 frameBufferSize;
 
 	v3d::glfw::Window* window;
+
+
+
 
 	struct LenaBuffer
 	{
@@ -135,7 +141,7 @@ private:
 	void release();
 	void releaseSwapChain();
 
-	v3d::vulkan::CommandBuffer createCommandBuffer( const vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary );
+	//v3d::vulkan::CommandBuffer createCommandBuffer( const vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary );
 
 	void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
 	void createLenaBuffer();
@@ -173,6 +179,9 @@ public:
 
 	/** Get LogicalDevice */
 	v3d::vulkan::LogicalDevice* getLogicalDevice() const;
+
+	/** Get CommandPool */
+	v3d::vulkan::CommandPool* getCommandPool() const;
 };
 
 VK_NS_END

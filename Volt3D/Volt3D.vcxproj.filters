@@ -240,7 +240,10 @@
       <Filter>Volt3D\Vulkan\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Commands\CommandPool.cpp">
-      <Filter>DLL</Filter>
+      <Filter>Volt3D\Vulkan\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp">
+      <Filter>Volt3D\Vulkan\Images</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -474,6 +477,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Commands\CommandPool.h">
       <Filter>Volt3D\Vulkan\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h">
+      <Filter>Volt3D\Vulkan\Images</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

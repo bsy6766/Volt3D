@@ -32,33 +32,48 @@ namespace v3d
 		*/
 		class VOLT3D_DLL CommandBuffer
 		{
+			friend class Context;
+
 		private:
-			bool init(const vk::Device& device, const vk::CommandPool& commandPool);
+			CommandBuffer() = delete;
+			CommandBuffer( const vk::CommandBufferLevel level );
 
-		public:
-			CommandBuffer();
-			//CommandBuffer(const vk::CommandBuffer& commandBuffer);
-			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR(CommandBuffer);
-			DEFAULT_MOVE_CONSTRUCTORS(CommandBuffer);
-			~CommandBuffer() {}
-
+			const vk::Device& logicalDevice;
+			const vk::CommandPool& commandPool;
+			
+			bool running;
 			vk::CommandBuffer commandBuffer;
 
-			CLASS_TO_VK_HANDLE(vk::CommandBuffer, commandBuffer);
+		public:
+			~CommandBuffer();
 
-			void begin( const vk::CommandBufferUsageFlags usageFlags );
-			void record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const;
-			void record
-			(	const vk::Framebuffer& frameBuffer, 
-				const vk::RenderPass& renderPass, 
-				const v3d::vulkan::SwapChain& swapChain, 
-				const v3d::vulkan::Pipeline& pipeline, 
-				const vk::Buffer& vertexBuffer, 
-				const vk::Buffer& indexBuffer, 
-				const uint32_t indexSize,
-				const vk::DescriptorSet& descriptorSet
-			) const;
+			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( CommandBuffer );
+			DEFAULT_MOVE_CONSTRUCTORS( CommandBuffer );
+
+			/** Get Vulkan command buffer */
+			const vk::CommandBuffer& get() const;
+
+			/**
+			*	Begin command buffer.
+			*	@param usageFlags A vulkan command buffer usage flag to begin with
+			*/
+			void begin( const vk::CommandBufferUsageFlags usageFlags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
+
+			//void record( const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize ) const;
+			//void record
+			//( const vk::Framebuffer& frameBuffer,
+			//	const vk::RenderPass& renderPass,
+			//	const v3d::vulkan::SwapChain& swapChain,
+			//	const v3d::vulkan::Pipeline& pipeline,
+			//	const vk::Buffer& vertexBuffer,
+			//	const vk::Buffer& indexBuffer,
+			//	const uint32_t indexSize,
+			//	const vk::DescriptorSet& descriptorSet
+			//) const;
+
+			/** End command buffer */
 			void end();
+
 			void copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size );
 		};
 	}

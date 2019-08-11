@@ -31,6 +31,9 @@ public:
 	UniformBuffer( const uint32_t size, const vk::BufferUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertiyFlags, const void* data = nullptr );
 	~UniformBuffer();
 
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( UniformBuffer );
+	DEFAULT_MOVE_CONSTRUCTORS( UniformBuffer );
+
 	/**
 	*	Update uniform data.
 	*	@param data [in] A data pointer of uniform buffer

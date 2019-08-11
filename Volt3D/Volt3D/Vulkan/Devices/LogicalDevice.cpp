@@ -36,7 +36,7 @@ LogicalDevice::~LogicalDevice()
 bool LogicalDevice::init( const vk::SurfaceKHR& surface, const vk::PhysicalDevice& physicalDevice )
 {
 	const std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-	
+
 	uint32_t i = 0;
 	std::optional<uint32_t> g, c, t, p;
 
@@ -50,7 +50,7 @@ bool LogicalDevice::init( const vk::SurfaceKHR& surface, const vk::PhysicalDevic
 		if (queueFamilyProperty.queueFlags & vk::QueueFlagBits::eGraphics) g.emplace( i );
 		if (g.has_value() && (queueFamilyProperty.queueFlags & vk::QueueFlagBits::eCompute)) c.emplace( i );
 		if (g.has_value() && c.has_value() && (queueFamilyProperty.queueFlags & vk::QueueFlagBits::eTransfer)) t.emplace( i );
-		
+
 		if (g.has_value() && c.has_value() && t.has_value())
 		{
 			p.emplace( i );
@@ -65,7 +65,7 @@ bool LogicalDevice::init( const vk::SurfaceKHR& surface, const vk::PhysicalDevic
 	computeQueueFamilyIndex = c.value();
 	transferQueueFamilyIndex = t.value();
 	presentQueueFamilyIndex = p.value();
-	
+
 	const float queuePriority = 1.0f;
 	vk::DeviceQueueCreateInfo deviceQueueCreateInfo = vk::DeviceQueueCreateInfo
 	(

@@ -8,6 +8,7 @@
 #include "Config/BuildConfig.h"
 
 #include <libpng/png.h>
+#include "..\Vulkan\Images\Image.h"
 
 v3d::Image::Image()
 	: type(v3d::ImageType::eUndefined)

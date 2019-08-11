@@ -50,6 +50,9 @@ private:
 public:
 	~PhysicalDevice();
 
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( PhysicalDevice );
+	DEFAULT_MOVE_CONSTRUCTORS( PhysicalDevice );
+
 	/** Get PhysicalDevice */
 	const vk::PhysicalDevice& get() const;
 

@@ -18,6 +18,7 @@
 #include "Devices/LogicalDevice.h"
 #include "SwapChain.h"
 #include "Pipelines/Pipeline.h"
+#include "Commands/CommandPool.h"
 #include "Commands/CommandBuffer.h"
 #include "Buffers/Buffer.h"
 #include "Buffers/UniformBuffer.h"
@@ -254,16 +255,7 @@ bool Context::initFrameBuffer()
 
 bool Context::initCommandPool()
 {
-	const uint32_t graphicsFamilyIndex = logicalDevice->getGraphicsQueueFamilyIndex();
-
-	vk::CommandPoolCreateInfo createInfo
-	(
-		vk::CommandPoolCreateFlags(),
-		graphicsFamilyIndex
-	);
-
-	commandPool = logicalDevice->get().createCommandPool( createInfo );
-
+	commandPool = new v3d::vulkan::CommandPool( logicalDevice->getGraphicsQueueFamilyIndex() );
 	return true;
 }
 
@@ -292,22 +284,53 @@ bool Context::initCommandBuffer()
 {
 	const std::size_t fbSize = framebuffers.size();
 
-	vk::CommandBufferAllocateInfo allocInfo
-	(
-		commandPool,
-		vk::CommandBufferLevel::ePrimary,
-		static_cast<uint32_t>(fbSize)
-	);
+	//vk::CommandBufferAllocateInfo allocInfo
+	//(
+	//	commandPool->get(),
+	//	vk::CommandBufferLevel::ePrimary,
+	//	static_cast<uint32_t>(fbSize)
+	//);
 
-	const std::vector<vk::CommandBuffer> cbs = logicalDevice->get().allocateCommandBuffers( allocInfo );
+	//const std::vector<vk::CommandBuffer> cbs = logicalDevice->get().allocateCommandBuffers( allocInfo );
 
 	for (std::size_t i = 0; i < fbSize; i++)
 	{
-		auto newCB = new v3d::vulkan::CommandBuffer( cbs[i] );
+		auto newCB = new v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
 		commandBuffers.push_back( newCB );
 		newCB->begin( vk::CommandBufferUsageFlagBits::eSimultaneousUse );
-		newCB->record( framebuffers[i], renderPass, *swapChain, *pipeline, lenaBuffer.vertexBuffer->getBuffer(), lenaBuffer.indexBuffer->getBuffer(), static_cast<uint32_t>(lenaBuffer.indexData.getSize()), descriptorSets[i] );
-		newCB->end();
+
+		const vk::CommandBuffer& cb = newCB->get();
+
+		//newCB->record( framebuffers[i], renderPass, *swapChain, *pipeline, lenaBuffer.vertexBuffer->getBuffer(), lenaBuffer.indexBuffer->getBuffer(), static_cast<uint32_t>(lenaBuffer.indexData.getSize()), descriptorSets[i] );
+
+		vk::ClearValue clearValue( vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) ) );
+
+		vk::RenderPassBeginInfo renderPassInfo
+		(
+			renderPass,
+			framebuffers[i],
+			vk::Rect2D
+			(
+				vk::Offset2D(),
+				swapChain->getExtent2D()
+			),
+			1,
+			&clearValue
+		);
+
+		cb.beginRenderPass( renderPassInfo, vk::SubpassContents::eInline );
+		cb.bindPipeline( vk::PipelineBindPoint::eGraphics, pipeline->get() );
+		cb.setViewport( 0, pipeline->getViewport() );
+		cb.setScissor( 0, pipeline->getScissor() );
+		vk::DeviceSize offset = 0;
+		cb.bindVertexBuffers( 0, lenaBuffer.vertexBuffer->getBuffer(), offset );
+		cb.bindIndexBuffer( lenaBuffer.indexBuffer->getBuffer() , offset, vk::IndexType::eUint16 );
+		cb.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipeline->getLayout(), 0, 1, &descriptorSets[i], 0, nullptr );
+		cb.drawIndexed( uint32_t(lenaBuffer.indexData.getSize()), 1, 0, 0, 0 );
+		cb.endRenderPass();
+
+
+		cb.end();
 	}
 
 	return true;
@@ -437,6 +460,12 @@ bool Context::initDescriptorSet()
 	return true;
 }
 
+
+
+
+
+
+
 bool Context::recreateSwapChain()
 {
 	logicalDevice->get().waitIdle();
@@ -460,21 +489,25 @@ bool Context::recreateSwapChain()
 	return true;
 }
 
+/*
 v3d::vulkan::CommandBuffer Context::createCommandBuffer( const vk::CommandBufferLevel level )
 {
 	const vk::CommandBufferAllocateInfo allocInfo( commandPool, level, 1 );
 	return v3d::vulkan::CommandBuffer( logicalDevice->get().allocateCommandBuffers( allocInfo ).front() );
 }
+*/
 
 void Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size )
 {
-	auto cb = createCommandBuffer();
-	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	cb.copyBuffer( src, dst, size );
-	cb.end();
-	oneTimeSubmit( cb );
+	//auto cb = createCommandBuffer();
+	auto oneTimeCB = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
+	//const vk::CommandBuffer& cb = oneTimeCB.get();
+	oneTimeCB.begin();
+	oneTimeCB.copyBuffer( src, dst, size );
+	oneTimeCB.end();
+	oneTimeSubmit( oneTimeCB );
 
-	logicalDevice->get().freeCommandBuffers( commandPool, cb.getHandle() );
+	//logicalDevice->get().freeCommandBuffers( commandPool->get(), oneTimeCB.get() );
 }
 
 void Context::createLenaBuffer()
@@ -631,7 +664,8 @@ void Context::createImage( const uint32_t w, const uint32_t h, const vk::Format&
 
 void Context::transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout )
 {
-	auto cb = createCommandBuffer();
+	auto oneTimeCB = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
+	//auto cb = createCommandBuffer();
 
 	vk::ImageSubresourceRange subresourceRange
 	(
@@ -676,15 +710,16 @@ void Context::transitionImageLayout( vk::Image& image, const vk::Format& format,
 		throw std::invalid_argument( "Unsupported layout transition" );
 	}
 
-	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	cb.commandBuffer.pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
-	cb.end();
-	oneTimeSubmit( cb );
+	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
+	oneTimeCB.get().pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
+	oneTimeCB.end();
+	oneTimeSubmit( oneTimeCB );
 }
 
 void Context::copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height )
 {
-	auto cb = createCommandBuffer();
+	auto oneTimeCB = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
+	//auto cb = createCommandBuffer();
 
 	vk::ImageSubresourceLayers imgSubresourceLayer
 	(
@@ -700,10 +735,10 @@ void Context::copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const
 		vk::Extent3D( width, height, 1 )
 	);
 
-	cb.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	cb.commandBuffer.copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
-	cb.end();
-	oneTimeSubmit( cb );
+	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
+	oneTimeCB.get().copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
+	oneTimeCB.end();
+	oneTimeSubmit( oneTimeCB );
 }
 
 vk::ImageView Context::createImageView( vk::Image& image, const vk::Format& format )
@@ -752,7 +787,7 @@ void Context::render()
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame] };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame] };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	vk::CommandBuffer commandBuffers[] = { this->commandBuffers.at( result.value )->getHandle() };
+	vk::CommandBuffer commandBuffers[] = { this->commandBuffers.at( result.value )->get() };
 	vk::SubmitInfo submitInfo
 	(
 		1,
@@ -806,6 +841,9 @@ void Context::waitIdle()
 	logicalDevice->get().waitIdle();
 }
 
+
+
+
 v3d::vulkan::Instance* Context::getInstance() const
 {
 	return instance;
@@ -819,6 +857,11 @@ v3d::vulkan::PhysicalDevice* Context::getPhysicalDevice() const
 v3d::vulkan::LogicalDevice* Context::getLogicalDevice() const
 {
 	return logicalDevice;
+}
+
+v3d::vulkan::CommandPool* Context::getCommandPool() const
+{
+	return commandPool;
 }
 
 void Context::release()
@@ -863,16 +906,22 @@ void Context::releaseSwapChain()
 
 	ld.destroyDescriptorSetLayout( descriptorLayout );
 	ld.destroyDescriptorPool( descriptorPool );
-	for (auto& cb : commandBuffers) { ld.freeCommandBuffers( commandPool, cb->getHandle() ); SAFE_DELETE( cb ); }
+
+	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
 	commandBuffers.clear();
-	ld.destroyCommandPool( commandPool );
+	SAFE_DELETE( commandPool );
+
 	for (auto& f : framebuffers) { ld.destroyFramebuffer( f ); }
 	framebuffers.clear();
+
 	SAFE_DELETE( pipeline );
+
 	ld.destroyRenderPass( renderPass );
+
 	for (auto& imageView : imageViews) { ld.destroyImageView( imageView ); }
 	imageViews.clear();
 	images.clear();
+
 	SAFE_DELETE( swapChain );
 }
 

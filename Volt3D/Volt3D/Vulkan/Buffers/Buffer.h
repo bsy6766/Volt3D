@@ -53,6 +53,9 @@ public:
 	/** Destructor */
 	virtual ~Buffer();
 
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Buffer );
+	DEFAULT_MOVE_CONSTRUCTORS( Buffer );
+
 	/** 
 	*	Map buffer memory
 	*	@return A pointer to data pointer where buffer is mapped

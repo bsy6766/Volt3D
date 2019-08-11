@@ -256,6 +256,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Devices\LogicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Devices\PhysicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Images\Image.h" />
+    <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h" />
@@ -321,6 +322,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Devices\LogicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Devices\PhysicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Images\Image.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp" />

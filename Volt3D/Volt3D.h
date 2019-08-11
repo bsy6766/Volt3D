@@ -106,6 +106,7 @@
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Devices/PhysicalDevice.h"
 #include "Vulkan/Images/Image.h"
+#include "Vulkan/Images/Image2D.h"
 #include "Vulkan/Pipelines/Pipeline.h"
 #include "Vulkan/Pipelines/Shader.h"
 #include "Vulkan/Pipelines/Uniform.h"
