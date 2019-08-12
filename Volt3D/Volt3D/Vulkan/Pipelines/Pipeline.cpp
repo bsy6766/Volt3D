@@ -19,15 +19,19 @@ VK_NS_BEGIN
 
 Pipeline::Pipeline()
 	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
-	, pipeline()
+	, pipeline( nullptr )
 	, viewport()
 	, scissor()
+	, descriptorSetLayout( nullptr )
+	, descriptorPool( nullptr )
+	// @todo init all
 {}
 
 Pipeline::~Pipeline()
 {
 	for (auto& shader : shaders) { shader.second.release(); }
 	shaders.clear();
+	logicalDevice.destroyDescriptorSetLayout( descriptorSetLayout );
 	logicalDevice.destroyPipelineLayout( pipelineLayout );
 	logicalDevice.destroyPipeline( pipeline );
 }
@@ -40,26 +44,15 @@ const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
 
 const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
 
-bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout )
+bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
 {
 	if (!initShaderProgram( shaderPath )) return false;
-	//if (!initDescriptorSetLayout()) return false;
-	//if (!initPipelineLayout()) return false;
-
-
-	vk::PipelineLayoutCreateInfo layoutCreateInfo
-	(
-		vk::PipelineLayoutCreateFlags(),
-		1,
-		&descriptorSetLayout,
-		0,
-		nullptr
-	);
-
-	pipelineLayout = logicalDevice.createPipelineLayout( layoutCreateInfo );
+	if (!initDescriptorSetLayout()) return false;
+	if (!initPipelineLayout()) return false;
 
 	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();
+
 	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
 	(
 		vk::PipelineVertexInputStateCreateFlags(),

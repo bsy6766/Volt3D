@@ -19,7 +19,7 @@ VK_NS_BEGIN
 Image::Image()
 	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
 	, image( nullptr )
-	, imageDeviceMemory( nullptr )
+	, deviceMemory( nullptr )
 	, sampler( nullptr )
 	, imageLayout()
 	, imageView( nullptr )
@@ -62,8 +62,33 @@ void Image::initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyF
 		v3d::vulkan::Context::get()->getPhysicalDevice()->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
 	);
 
-	imageDeviceMemory = logicalDevice.allocateMemory( allocInfo );
-	logicalDevice.bindImageMemory( image, imageDeviceMemory, 0 );
+	deviceMemory = logicalDevice.allocateMemory( allocInfo );
+	logicalDevice.bindImageMemory( image, deviceMemory, 0 );
+}
+
+void Image::initSampler()
+{
+	vk::SamplerCreateInfo createInfo
+	(
+		vk::SamplerCreateFlags(),
+		vk::Filter::eLinear,
+		vk::Filter::eLinear,
+		vk::SamplerMipmapMode::eLinear,
+		vk::SamplerAddressMode::eMirroredRepeat,
+		vk::SamplerAddressMode::eMirroredRepeat,
+		vk::SamplerAddressMode::eMirroredRepeat,
+		0.0f,
+		false,
+		1,
+		false,
+		vk::CompareOp::eAlways,
+		0.0f,
+		0.0f,
+		vk::BorderColor::eIntOpaqueBlack,
+		false
+	);
+
+	sampler = logicalDevice.createSampler( createInfo, nullptr );
 }
 
 Image::~Image()
@@ -71,7 +96,7 @@ Image::~Image()
 	logicalDevice.destroySampler( sampler );
 	logicalDevice.destroyImageView( imageView );
 	logicalDevice.destroyImage( image );
-	logicalDevice.freeMemory( imageDeviceMemory );
+	logicalDevice.freeMemory( deviceMemory );
 }
 
 uint32_t Image::get_mip_levels( const vk::Extent2D& extent )

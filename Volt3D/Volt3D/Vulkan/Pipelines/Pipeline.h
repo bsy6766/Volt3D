@@ -34,6 +34,8 @@ private:
 	const vk::Device& logicalDevice;
 
 	vk::DescriptorSetLayout descriptorSetLayout;
+	vk::DescriptorPool descriptorPool;
+
 	vk::PipelineLayout pipelineLayout;
 	vk::Pipeline pipeline;
 	vk::Viewport viewport;
@@ -49,7 +51,7 @@ private:
 	std::unordered_map<vk::ShaderStageFlagBits, v3d::vulkan::Shader> shaders;
 	std::vector<vk::PipelineShaderStageCreateInfo> shaderCreateInfos;
 
-	bool init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass, const vk::DescriptorSetLayout& descriptorSetLayout );
+	bool init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
 	bool initShaderProgram( const std::vector<std::filesystem::path>& shaderPath );
 	bool initDescriptorSetLayout();
 	bool initPipelineLayout();

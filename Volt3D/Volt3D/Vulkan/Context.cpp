@@ -46,7 +46,7 @@ Context::Context()
 	, imageAvailableSemaphores()
 	, renderFinishedSemaphores()
 	, frameFences()
-	, descriptorLayout( nullptr )
+	//, descriptorLayout( nullptr )
 	, descriptorPool( nullptr )
 	, descriptorSets()
 	, current_frame( 0 )
@@ -87,7 +87,7 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
-	if (!initDescriptorLayout()) return false;
+	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -223,7 +223,7 @@ bool Context::initGraphicsPipeline()
 	std::vector<std::filesystem::path> shaderPath;
 	shaderPath.push_back( "Shaders/vert.vert" );
 	shaderPath.push_back( "Shaders/frag.frag" );
-	if (!pipeline->init( shaderPath, swapChain->getExtent2D(), renderPass, descriptorLayout )) return false;
+	if (!pipeline->init( shaderPath, swapChain->getExtent2D(), renderPass )) return false;
 	return true;
 }
 
@@ -336,6 +336,7 @@ bool Context::initCommandBuffer()
 	return true;
 }
 
+/*
 bool Context::initDescriptorLayout()
 {
 	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
@@ -368,19 +369,22 @@ bool Context::initDescriptorLayout()
 
 	return true;
 }
+*/
 
 bool Context::initDescriptorPool()
 {
+	const uint32_t imageSize = uint32_t( images.size() );
+
 	vk::DescriptorPoolSize uboPoolSize
 	(
 		vk::DescriptorType::eUniformBuffer,
-		static_cast<uint32_t>(images.size())
+		imageSize
 	);
 
 	vk::DescriptorPoolSize lenaSamplerPoolSize
 	(
 		vk::DescriptorType::eCombinedImageSampler,
-		static_cast<uint32_t>(images.size())
+		imageSize
 	);
 
 	const uint32_t size = 2;
@@ -389,7 +393,7 @@ bool Context::initDescriptorPool()
 	vk::DescriptorPoolCreateInfo poolInfo
 	(
 		vk::DescriptorPoolCreateFlags(),
-		static_cast<uint32_t>(images.size()),
+		imageSize,
 		size,
 		poolSizes
 	);
@@ -475,7 +479,7 @@ bool Context::recreateSwapChain()
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
-	if (!initDescriptorLayout()) return false;
+	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -904,7 +908,7 @@ void Context::releaseSwapChain()
 	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
 	mvpUBOs.clear();
 
-	ld.destroyDescriptorSetLayout( descriptorLayout );
+	//ld.destroyDescriptorSetLayout( descriptorLayout );
 	ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );

@@ -76,7 +76,7 @@ private:
 	v3d::vulkan::CommandPool* commandPool;
 	std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
 
-	vk::DescriptorSetLayout descriptorLayout;
+	//vk::DescriptorSetLayout descriptorLayout;
 	vk::DescriptorPool descriptorPool;
 	std::vector<vk::DescriptorSet> descriptorSets;
 
@@ -134,7 +134,7 @@ private:
 	bool initSemaphore();
 	bool initFences();
 	bool initCommandBuffer();
-	bool initDescriptorLayout();
+	//bool initDescriptorLayout();
 	bool initDescriptorPool();
 	bool initDescriptorSet();
 	bool recreateSwapChain();

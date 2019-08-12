@@ -25,7 +25,7 @@ protected:
 	const vk::Device& logicalDevice;
 
 	vk::Image image;
-	vk::DeviceMemory imageDeviceMemory;
+	vk::DeviceMemory deviceMemory;
 	vk::Sampler sampler;
 	vk::ImageLayout imageLayout;
 	vk::ImageView imageView;
@@ -44,13 +44,17 @@ protected:
 
 	void initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
 	void initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags );
-
+	void initSampler();
 
 public:
 	virtual ~Image();
 
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Image );
 	DEFAULT_MOVE_CONSTRUCTORS( Image );
+
+	const vk::Image& getImage() const;
+	const vk::DeviceMemory& getDeviceMemory() const;
+	const vk::Sampler& getSampler() const;
 
 	static uint32_t get_mip_levels( const vk::Extent2D& extent );
 	static uint32_t get_mip_levels( const vk::Extent3D& extent );
