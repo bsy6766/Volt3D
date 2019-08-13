@@ -479,6 +479,7 @@ bool Context::recreateSwapChain()
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
+
 	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
