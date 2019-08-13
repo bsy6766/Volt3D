@@ -94,7 +94,6 @@
 // Vulkan
 #include "Vulkan/Context.h"
 #include "Vulkan/Instance.h"
-#include "Vulkan/SwapChain.h"
 #include "Vulkan/Texture.h"
 #include "Vulkan/Utils.h"
 #include "Vulkan/Buffers/Buffer.h"
@@ -113,5 +112,6 @@
 #include "Vulkan/Pipelines/UniformBlock.h"
 #include "Vulkan/Pipelines/UniformBlockType.h"
 #include "Vulkan/Pipelines/UniformType.h"
+#include "Vulkan/Swapchain/SwapChain.h"
 
 #endif

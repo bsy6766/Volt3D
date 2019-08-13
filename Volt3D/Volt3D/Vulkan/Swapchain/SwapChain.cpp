@@ -9,25 +9,44 @@
 
 #include "SwapChain.h"
 
+#include "Engine/Engine.h"
 #include "Engine/Window.h"
+#include "Vulkan/Context.h"
+#include "Vulkan/Devices/LogicalDevice.h"
+#include "Vulkan/Devices/PhysicalDevice.h"
+
+V3D_NS_BEGIN
+VK_NS_BEGIN
 
 v3d::vulkan::SwapChain::SwapChain()
-	: swapChain()
+	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	, swapchain( nullptr )
 	, surfaceFormat()
 	, extent()
 {}
 
-bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, const vk::Device& logicalDevice, const vk::SurfaceKHR& surface, const glm::ivec2& frameBufferSize )
+SwapChain::~SwapChain()
 {
-	// surface format
+	logicalDevice.destroySwapchainKHR( swapchain );
+}
+
+bool SwapChain::init()
+{
+	auto context = v3d::vulkan::Context::get();
+	auto& physicalDevice = context->getPhysicalDevice()->get();
+	auto& surface = context->getSurface();
+	auto window = v3d::Engine::get()->getWindow();
+
+	// select format
 	std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevice.getSurfaceFormatsKHR( surface );
 	if (surfaceFormats.empty()) return false;
 	surfaceFormat = selectSurfaceFormat( surfaceFormats );
 
-	// extent2D
+	// select extent
 	const vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
-	extent = selectExtent( surfaceCapabilities, frameBufferSize );
+	extent = selectExtent( surfaceCapabilities, window->getFrameBufferSize() );
 
+	// select present mode
 	std::vector<vk::PresentModeKHR> presentModes = physicalDevice.getSurfacePresentModesKHR( surface );
 	if (presentModes.empty()) return false;
 	const vk::PresentModeKHR swapchainPresentMode = selectPresentMode( presentModes );
@@ -71,7 +90,7 @@ bool v3d::vulkan::SwapChain::init( const vk::PhysicalDevice& physicalDevice, con
 	}
 	*/
 
-	swapChain = logicalDevice.createSwapchainKHRUnique( createInfo );
+	swapchain = logicalDevice.createSwapchainKHR( createInfo );
 
 	return true;
 }
@@ -105,6 +124,11 @@ vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode( const std::vector<
 	return vk::PresentModeKHR::eMailbox;
 }
 
+const vk::SwapchainKHR& SwapChain::get() const
+{
+	return swapchain;
+}
+
 const vk::Format& v3d::vulkan::SwapChain::getFormat() const
 {
 	return surfaceFormat.format;
@@ -114,3 +138,6 @@ const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const
 {
 	return extent;
 }
+
+VK_NS_END
+V3D_NS_END

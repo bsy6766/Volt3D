@@ -72,6 +72,9 @@
     <Filter Include="Volt3D\Vulkan\Commands">
       <UniqueIdentifier>{468cfdef-8bd4-487f-bfe7-b43bf5debbc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Vulkan\Swapchain">
+      <UniqueIdentifier>{6140c1b6-fecf-431e-883c-c95c95da76e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -84,9 +87,6 @@
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp">
-      <Filter>Volt3D\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\SwapChain.cpp">
       <Filter>Volt3D\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp">
@@ -245,6 +245,9 @@
     <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp">
       <Filter>Volt3D\Vulkan\Images</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Swapchain\SwapChain.cpp">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -273,9 +276,6 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Config\BuildConfig.h">
       <Filter>Volt3D\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\SwapChain.h">
-      <Filter>Volt3D\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Utils.h">
       <Filter>Volt3D\Vulkan</Filter>
@@ -480,6 +480,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Swapchain\SwapChain.h">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

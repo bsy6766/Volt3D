@@ -16,7 +16,7 @@
 #include "Instance.h"
 #include "Devices/PhysicalDevice.h"
 #include "Devices/LogicalDevice.h"
-#include "SwapChain.h"
+#include "SwapChain/SwapChain.h"
 #include "Pipelines/Pipeline.h"
 #include "Commands/CommandPool.h"
 #include "Commands/CommandBuffer.h"
@@ -87,7 +87,7 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initSwapChain()) return false;
 	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
-	//if (!initDescriptorLayout()) return false;
+	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -156,7 +156,8 @@ bool Context::initLogicalDevice()
 bool Context::initSwapChain()
 {
 	swapChain = new v3d::vulkan::SwapChain();
-	if (!swapChain->init( physicalDevice->get(), logicalDevice->get(), surface, window->getFrameBufferSize() )) return false;
+	//if (!swapChain->init( physicalDevice->get(), logicalDevice->get(), surface, window->getFrameBufferSize() )) return false;
+	if (!swapChain->init()) return false;
 	return true;
 }
 
@@ -336,7 +337,6 @@ bool Context::initCommandBuffer()
 	return true;
 }
 
-/*
 bool Context::initDescriptorLayout()
 {
 	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
@@ -369,7 +369,6 @@ bool Context::initDescriptorLayout()
 
 	return true;
 }
-*/
 
 bool Context::initDescriptorPool()
 {
@@ -854,6 +853,11 @@ v3d::vulkan::Instance* Context::getInstance() const
 	return instance;
 }
 
+const vk::SurfaceKHR& Context::getSurface() const
+{
+	return surface;
+}
+
 v3d::vulkan::PhysicalDevice* Context::getPhysicalDevice() const
 {
 	return physicalDevice;
@@ -909,7 +913,7 @@ void Context::releaseSwapChain()
 	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
 	mvpUBOs.clear();
 
-	//ld.destroyDescriptorSetLayout( descriptorLayout );
+	ld.destroyDescriptorSetLayout( descriptorLayout );
 	ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
