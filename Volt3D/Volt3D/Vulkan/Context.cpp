@@ -85,7 +85,6 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initPhysicalDevice()) return false;
 	if (!initLogicalDevice()) return false;
 	if (!initSwapChain()) return false;
-	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
 	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
@@ -156,23 +155,7 @@ bool Context::initLogicalDevice()
 bool Context::initSwapChain()
 {
 	swapChain = new v3d::vulkan::SwapChain();
-	//if (!swapChain->init( physicalDevice->get(), logicalDevice->get(), surface, window->getFrameBufferSize() )) return false;
 	if (!swapChain->init()) return false;
-	return true;
-}
-
-bool Context::initSwapChainImages()
-{
-	images = logicalDevice->get().getSwapchainImagesKHR( swapChain->get() );
-
-	imageViews.reserve( images.size() );
-	vk::ComponentMapping componentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-	vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
-	for (auto image : images)
-	{
-		imageViews.push_back( createImageView( image, swapChain->getFormat() ) );
-	}
-
 	return true;
 }
 
@@ -926,10 +909,6 @@ void Context::releaseSwapChain()
 	SAFE_DELETE( pipeline );
 
 	ld.destroyRenderPass( renderPass );
-
-	for (auto& imageView : imageViews) { ld.destroyImageView( imageView ); }
-	imageViews.clear();
-	images.clear();
 
 	SAFE_DELETE( swapChain );
 }

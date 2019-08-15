@@ -62,8 +62,6 @@ private:
 	v3d::vulkan::LogicalDevice* logicalDevice;
 
 	v3d::vulkan::SwapChain* swapChain;
-	std::vector<vk::Image> images;
-	std::vector<vk::ImageView> imageViews;
 
 	vk::RenderPass renderPass;
 	v3d::vulkan::Pipeline* pipeline;
@@ -126,7 +124,6 @@ private:
 	bool initPhysicalDevice();
 	bool initLogicalDevice();
 	bool initSwapChain();
-	bool initSwapChainImages();
 	bool initRenderPass();
 	bool initGraphicsPipeline();
 	bool initFrameBuffer();

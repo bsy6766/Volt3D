@@ -28,6 +28,12 @@ v3d::vulkan::SwapChain::SwapChain()
 SwapChain::~SwapChain()
 {
 	logicalDevice.destroySwapchainKHR( swapchain );
+
+	for (auto& imageView : imageViews) { logicalDevice.destroyImageView( imageView ); }
+	for (auto& image : images) { logicalDevice.destroyImage( image ); }
+
+	imageViews.clear();
+	images.clear();
 }
 
 bool SwapChain::init()
@@ -91,6 +97,27 @@ bool SwapChain::init()
 	*/
 
 	swapchain = logicalDevice.createSwapchainKHR( createInfo );
+
+	images = logicalDevice.getSwapchainImagesKHR( swapchain );
+
+	imageViews.reserve( images.size() );
+	vk::ComponentMapping componentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
+	vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
+
+	for (auto& image : images)
+	{
+		vk::ImageViewCreateInfo createInfo
+		(
+			vk::ImageViewCreateFlags(),
+			image,
+			vk::ImageViewType::e2D,
+			surfaceFormat.format,
+			componentMapping,
+			subResourceRange
+		);
+
+		imageViews.push_back( logicalDevice.createImageView( createInfo, nullptr ) );
+	}
 
 	return true;
 }

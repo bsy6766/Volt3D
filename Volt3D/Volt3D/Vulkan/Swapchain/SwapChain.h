@@ -36,6 +36,9 @@ private:
 	vk::SurfaceFormatKHR surfaceFormat;
 	vk::Extent2D extent;
 
+	std::vector<vk::Image> images;
+	std::vector<vk::ImageView> imageViews;
+
 	vk::SurfaceFormatKHR selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const;
 	vk::Extent2D selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const;
 	vk::PresentModeKHR selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const;
