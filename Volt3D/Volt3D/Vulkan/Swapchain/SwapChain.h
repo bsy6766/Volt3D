@@ -1,5 +1,5 @@
 ﻿/**
-*	@file SwapChain.h
+*	@file Swapchain.h
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -16,19 +16,19 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 /**
-*	@class SwapChain
+*	@class Swapchain
 *	@brief Wrapper for Vulkan's swapchain.
 *
 *	@group Vulkan
 *
 *	@since 1.0
 */
-class VOLT3D_DLL SwapChain
+class VOLT3D_DLL Swapchain
 {
 	friend class Context;
 
 private:
-	SwapChain();
+	Swapchain();
 
 	const vk::Device& logicalDevice;
 
@@ -44,13 +44,12 @@ private:
 	vk::PresentModeKHR selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const;
 
 	bool init();
-	//bool initImageViews();
 
 public:
-	~SwapChain();
+	~Swapchain();
 
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( SwapChain );
-	DEFAULT_MOVE_CONSTRUCTORS( SwapChain );
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Swapchain );
+	DEFAULT_MOVE_CONSTRUCTORS( Swapchain );
 	
 	/** Get Vulkan SwapchainKHR */
 	const vk::SwapchainKHR& get() const;
@@ -59,7 +58,13 @@ public:
 	const vk::Format& getFormat() const;
 
 	/** Get extent of swapchain */
-	const vk::Extent2D& getExtent2D() const;
+	const vk::Extent2D& getExtent() const;
+
+	/** Get images */
+	const std::vector<vk::Image>& getImages() const;
+
+	/** Get image vies */
+	const std::vector<vk::ImageView>& getImageViews() const;
 };
 
 VK_NS_END

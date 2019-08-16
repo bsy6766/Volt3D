@@ -1,5 +1,5 @@
 ﻿/**
-*	@file SwapChain.cpp
+*	@file Swapchain.cpp
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -7,7 +7,7 @@
 
 #include <PreCompiled.h>
 
-#include "SwapChain.h"
+#include "Swapchain.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Window.h"
@@ -18,25 +18,22 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-v3d::vulkan::SwapChain::SwapChain()
+v3d::vulkan::Swapchain::Swapchain()
 	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
 	, swapchain( nullptr )
 	, surfaceFormat()
 	, extent()
 {}
 
-SwapChain::~SwapChain()
+Swapchain::~Swapchain()
 {
-	logicalDevice.destroySwapchainKHR( swapchain );
-
 	for (auto& imageView : imageViews) { logicalDevice.destroyImageView( imageView ); }
-	for (auto& image : images) { logicalDevice.destroyImage( image ); }
-
 	imageViews.clear();
+	logicalDevice.destroySwapchainKHR( swapchain );
 	images.clear();
 }
 
-bool SwapChain::init()
+bool Swapchain::init()
 {
 	auto context = v3d::vulkan::Context::get();
 	auto& physicalDevice = context->getPhysicalDevice()->get();
@@ -122,7 +119,7 @@ bool SwapChain::init()
 	return true;
 }
 
-vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const
+vk::SurfaceFormatKHR v3d::vulkan::Swapchain::selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const
 {
 	if (surfaceFormats.size() == 1 && surfaceFormats.front().format == vk::Format::eUndefined) return { vk::Format::eB8G8R8A8Unorm , vk::ColorSpaceKHR::eSrgbNonlinear };
 
@@ -134,7 +131,7 @@ vk::SurfaceFormatKHR v3d::vulkan::SwapChain::selectSurfaceFormat( const std::vec
 	return surfaceFormats.front();
 }
 
-vk::Extent2D v3d::vulkan::SwapChain::selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const
+vk::Extent2D v3d::vulkan::Swapchain::selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const
 {
 	if (surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() || surfaceCapabilities.currentExtent.height == std::numeric_limits<uint32_t>::max())
 	{
@@ -146,25 +143,30 @@ vk::Extent2D v3d::vulkan::SwapChain::selectExtent( const vk::SurfaceCapabilities
 	}
 }
 
-vk::PresentModeKHR v3d::vulkan::SwapChain::selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const
+vk::PresentModeKHR v3d::vulkan::Swapchain::selectPresentMode( const std::vector<vk::PresentModeKHR>& presentModes ) const
 {
-	return vk::PresentModeKHR::eMailbox;
+	// No v-sync
+	//return vk::PresentModeKHR::eImmediate;
+
+	// V-sync (Always supported)
+	return vk::PresentModeKHR::eFifo;
+
+	// V-sync when faster than fps, immediate when slower than fps
+	//return vk::PresentModeKHR::eFifoRelaxed;
+
+	// Triple buffering
+	//return vk::PresentModeKHR::eMailbox;
 }
 
-const vk::SwapchainKHR& SwapChain::get() const
-{
-	return swapchain;
-}
+const vk::SwapchainKHR& Swapchain::get() const { return swapchain; }
 
-const vk::Format& v3d::vulkan::SwapChain::getFormat() const
-{
-	return surfaceFormat.format;
-}
+const vk::Format& v3d::vulkan::Swapchain::getFormat() const { return surfaceFormat.format; }
 
-const vk::Extent2D& v3d::vulkan::SwapChain::getExtent2D() const
-{
-	return extent;
-}
+const vk::Extent2D& v3d::vulkan::Swapchain::getExtent() const { return extent; }
+
+const std::vector<vk::Image>& Swapchain::getImages() const { return images; }
+
+const std::vector<vk::ImageView>& Swapchain::getImageViews() const { return imageViews; }
 
 VK_NS_END
 V3D_NS_END

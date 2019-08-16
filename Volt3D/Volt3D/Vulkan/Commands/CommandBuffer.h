@@ -18,7 +18,7 @@ namespace v3d
 {
 	namespace vulkan
 	{
-		class SwapChain;
+		class Swapchain;
 		class Pipeline;
 		class CommandPool;
 
@@ -38,7 +38,6 @@ namespace v3d
 			CommandBuffer() = delete;
 			CommandBuffer( const vk::CommandBufferLevel level );
 
-			const vk::Device& logicalDevice;
 			const vk::CommandPool& commandPool;
 			
 			bool running;
@@ -59,11 +58,11 @@ namespace v3d
 			*/
 			void begin( const vk::CommandBufferUsageFlags usageFlags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
 
-			//void record( const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize ) const;
+			//void record( const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::Swapchain& swapchain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize ) const;
 			//void record
 			//( const vk::Framebuffer& frameBuffer,
 			//	const vk::RenderPass& renderPass,
-			//	const v3d::vulkan::SwapChain& swapChain,
+			//	const v3d::vulkan::Swapchain& swapchain,
 			//	const v3d::vulkan::Pipeline& pipeline,
 			//	const vk::Buffer& vertexBuffer,
 			//	const vk::Buffer& indexBuffer,

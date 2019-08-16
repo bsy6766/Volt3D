@@ -16,7 +16,9 @@
 #include "Instance.h"
 #include "Devices/PhysicalDevice.h"
 #include "Devices/LogicalDevice.h"
-#include "SwapChain/SwapChain.h"
+#include "SwapChain/Framebuffers.h"
+#include "SwapChain/Swapchain.h"
+#include "SwapChain/RenderPass.h"
 #include "Pipelines/Pipeline.h"
 #include "Commands/CommandPool.h"
 #include "Commands/CommandBuffer.h"
@@ -38,7 +40,7 @@ Context::Context()
 	, surface()
 	, physicalDevice( nullptr )
 	, logicalDevice( nullptr )
-	, swapChain( nullptr )
+	, swapchain( nullptr )
 	, renderPass( nullptr )
 	, pipeline( nullptr )
 	, framebuffers()
@@ -154,50 +156,14 @@ bool Context::initLogicalDevice()
 
 bool Context::initSwapChain()
 {
-	swapChain = new v3d::vulkan::SwapChain();
-	if (!swapChain->init()) return false;
+	swapchain = new v3d::vulkan::Swapchain();
+	if (!swapchain->init()) return false;
 	return true;
 }
 
 bool Context::initRenderPass()
 {
-	vk::AttachmentDescription attachmentDescriptions
-	(
-		vk::AttachmentDescriptionFlags(),
-		swapChain->getFormat(),
-		vk::SampleCountFlagBits::e1,
-		vk::AttachmentLoadOp::eClear,
-		vk::AttachmentStoreOp::eStore,
-		vk::AttachmentLoadOp::eDontCare,
-		vk::AttachmentStoreOp::eDontCare,
-		vk::ImageLayout::eUndefined,
-		vk::ImageLayout::ePresentSrcKHR
-	);
-
-	vk::AttachmentReference colorAttachment( 0, vk::ImageLayout::eColorAttachmentOptimal );
-
-	// @note visit later
-	//vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
-
-	vk::SubpassDescription subpassDescription
-	(
-		vk::SubpassDescriptionFlags(),
-		vk::PipelineBindPoint::eGraphics,
-		0, nullptr,
-		1, &colorAttachment//,
-		//nullptr, 
-		//(depthFormat != vk::Format::eUndefined) ? &depthAttachment : nullptr
-	);
-
-	vk::RenderPassCreateInfo createInfo
-	(
-		vk::RenderPassCreateFlags(),
-		1, &attachmentDescriptions,
-		1, &subpassDescription
-	);
-
-	renderPass = logicalDevice->get().createRenderPass( createInfo );
-
+	renderPass = new v3d::vulkan::RenderPass( swapchain->getFormat() );
 	return true;
 }
 
@@ -207,33 +173,13 @@ bool Context::initGraphicsPipeline()
 	std::vector<std::filesystem::path> shaderPath;
 	shaderPath.push_back( "Shaders/vert.vert" );
 	shaderPath.push_back( "Shaders/frag.frag" );
-	if (!pipeline->init( shaderPath, swapChain->getExtent2D(), renderPass )) return false;
+	if (!pipeline->init( shaderPath, swapchain->getExtent(), renderPass->get() )) return false;
 	return true;
 }
 
 bool Context::initFrameBuffer()
 {
-	const std::size_t size = imageViews.size();
-	const auto& extent = swapChain->getExtent2D();
-
-	framebuffers.resize( size );
-
-	for (std::size_t i = 0; i < size; i++)
-	{
-		vk::FramebufferCreateInfo createInfo
-		(
-			vk::FramebufferCreateFlags(),
-			renderPass,
-			1,
-			&imageViews[i],
-			extent.width,
-			extent.height,
-			1
-		);
-
-		framebuffers[i] = logicalDevice->get().createFramebuffer( createInfo );
-	}
-
+	framebuffers = new v3d::vulkan::Framebuffers( *swapchain, renderPass->get() );
 	return true;
 }
 
@@ -266,7 +212,8 @@ bool Context::initFences()
 
 bool Context::initCommandBuffer()
 {
-	const std::size_t fbSize = framebuffers.size();
+	//const std::vector<vk::Framebuffer>& fbs = framebuffers->getFramebuffers();
+	const std::size_t fbSize = framebuffers->size();
 
 	//vk::CommandBufferAllocateInfo allocInfo
 	//(
@@ -285,18 +232,16 @@ bool Context::initCommandBuffer()
 
 		const vk::CommandBuffer& cb = newCB->get();
 
-		//newCB->record( framebuffers[i], renderPass, *swapChain, *pipeline, lenaBuffer.vertexBuffer->getBuffer(), lenaBuffer.indexBuffer->getBuffer(), static_cast<uint32_t>(lenaBuffer.indexData.getSize()), descriptorSets[i] );
-
 		vk::ClearValue clearValue( vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) ) );
 
 		vk::RenderPassBeginInfo renderPassInfo
 		(
-			renderPass,
-			framebuffers[i],
+			renderPass->get(),
+			(*framebuffers)[i],
 			vk::Rect2D
 			(
 				vk::Offset2D(),
-				swapChain->getExtent2D()
+				swapchain->getExtent()
 			),
 			1,
 			&clearValue
@@ -355,18 +300,18 @@ bool Context::initDescriptorLayout()
 
 bool Context::initDescriptorPool()
 {
-	const uint32_t imageSize = uint32_t( images.size() );
+	const uint32_t count = uint32_t( framebuffers->size() );
 
 	vk::DescriptorPoolSize uboPoolSize
 	(
 		vk::DescriptorType::eUniformBuffer,
-		imageSize
+		count
 	);
 
 	vk::DescriptorPoolSize lenaSamplerPoolSize
 	(
 		vk::DescriptorType::eCombinedImageSampler,
-		imageSize
+		count
 	);
 
 	const uint32_t size = 2;
@@ -375,7 +320,7 @@ bool Context::initDescriptorPool()
 	vk::DescriptorPoolCreateInfo poolInfo
 	(
 		vk::DescriptorPoolCreateFlags(),
-		imageSize,
+		count,
 		size,
 		poolSizes
 	);
@@ -387,19 +332,19 @@ bool Context::initDescriptorPool()
 
 bool Context::initDescriptorSet()
 {
-	const std::size_t size = images.size();
+	const std::size_t count = framebuffers->size();
 
-	std::vector<vk::DescriptorSetLayout> layouts( size, descriptorLayout );
+	std::vector<vk::DescriptorSetLayout> layouts( count, descriptorLayout );
 	vk::DescriptorSetAllocateInfo allocInfo
 	(
 		descriptorPool,
-		static_cast<uint32_t>(size),
+		static_cast<uint32_t>(count),
 		layouts.data()
 	);
 
 	descriptorSets = logicalDevice->get().allocateDescriptorSets( allocInfo );
 
-	for (std::size_t i = 0; i < size; i++)
+	for (std::size_t i = 0; i < count; i++)
 	{
 		vk::DescriptorBufferInfo mvpUBOInfo
 		(
@@ -459,7 +404,6 @@ bool Context::recreateSwapChain()
 	releaseSwapChain();
 
 	if (!initSwapChain()) return false;
-	if (!initSwapChainImages()) return false;
 	if (!initRenderPass()) return false;
 
 	//if (!initDescriptorLayout()) return false;
@@ -527,7 +471,7 @@ void Context::createLenaBuffer()
 
 void Context::createMVPUBO()
 {
-	const std::size_t size = imageViews.size();
+	const std::size_t size = framebuffers->size();
 	mvpUBOs.resize( size, nullptr );
 	mvps.resize( size );
 
@@ -559,7 +503,7 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	curMVP.view = glm::translate( glm::mat4( 1 ), glm::vec3( cam.pos.x, cam.pos.y, cam.pos.z ) );
 
 	//const float fovy = 70.0f;
-	const auto& extent = swapChain->getExtent2D();
+	const auto& extent = swapchain->getExtent();
 	const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
 	const float nears = 0.1f;
 	const float fars = 1000.0f;
@@ -757,7 +701,7 @@ void Context::render()
 {
 	logicalDevice->get().waitForFences( 1, &frameFences[current_frame], true, std::numeric_limits<uint64_t>::max() );
 
-	const vk::ResultValue<uint32_t> result = logicalDevice->get().acquireNextImageKHR( swapChain->get(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
+	const vk::ResultValue<uint32_t> result = logicalDevice->get().acquireNextImageKHR( swapchain->get(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
 	if (result.result == vk::Result::eErrorOutOfDateKHR)
 	{
 		recreateSwapChain();
@@ -767,7 +711,7 @@ void Context::render()
 	{
 		throw std::runtime_error( "failed to acquire swap chain image!" );
 	}
-	assert( result.value < framebuffers.size() );
+	assert( result.value < framebuffers->size() );
 
 	updateMVPUBO( result.value );
 
@@ -790,7 +734,7 @@ void Context::render()
 
 	logicalDevice->getGraphicsQueue().submit( submitInfo, frameFences[current_frame] );
 
-	vk::SwapchainKHR swapChains[] = { swapChain->get() };
+	vk::SwapchainKHR swapChains[] = { swapchain->get() };
 	vk::PresentInfoKHR presentInfo
 	(
 		1,
@@ -886,6 +830,7 @@ void Context::release()
 
 	instance->get().destroySurfaceKHR( surface );
 	SAFE_DELETE( instance );
+
 	logger.info( "Releasing Context finished" );
 }
 
@@ -901,16 +846,12 @@ void Context::releaseSwapChain()
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
 	commandBuffers.clear();
+
 	SAFE_DELETE( commandPool );
-
-	for (auto& f : framebuffers) { ld.destroyFramebuffer( f ); }
-	framebuffers.clear();
-
+	SAFE_DELETE( framebuffers );
 	SAFE_DELETE( pipeline );
-
-	ld.destroyRenderPass( renderPass );
-
-	SAFE_DELETE( swapChain );
+	SAFE_DELETE( renderPass );
+	SAFE_DELETE( swapchain );
 }
 
 VK_NS_END

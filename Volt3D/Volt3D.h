@@ -112,6 +112,8 @@
 #include "Vulkan/Pipelines/UniformBlock.h"
 #include "Vulkan/Pipelines/UniformBlockType.h"
 #include "Vulkan/Pipelines/UniformType.h"
-#include "Vulkan/Swapchain/SwapChain.h"
+#include "Vulkan/Swapchain/Framebuffers.h"
+#include "Vulkan/Swapchain/RenderPass.h"
+#include "Vulkan/Swapchain/Swapchain.h"
 
 #endif

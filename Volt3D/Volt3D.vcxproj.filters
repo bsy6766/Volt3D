@@ -245,7 +245,13 @@
     <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp">
       <Filter>Volt3D\Vulkan\Images</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Swapchain\SwapChain.cpp">
+    <ClCompile Include="Volt3D\Vulkan\Swapchain\Swapchain.cpp">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Swapchain\Framebuffers.cpp">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClCompile>
   </ItemGroup>
@@ -481,7 +487,13 @@
     <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Swapchain\SwapChain.h">
+    <ClInclude Include="Volt3D\Vulkan\Swapchain\Swapchain.h">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Swapchain\Framebuffers.h">
+      <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClInclude>
   </ItemGroup>

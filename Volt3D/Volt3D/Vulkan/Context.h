@@ -30,7 +30,10 @@ class View;
 class Instance;
 class PhysicalDevice;
 class LogicalDevice;
-class SwapChain;
+class Framebuffers;
+class Swapchain;
+class RenderPass;
+class RenderPass;
 class Pipeline;
 class Queue;
 class CommandBuffer;
@@ -56,17 +59,24 @@ private:
 	// Context instance
 	v3d::vulkan::Instance* instance;
 
+	// Surface
 	vk::SurfaceKHR surface;
 
+	// Devices
 	v3d::vulkan::PhysicalDevice* physicalDevice;
 	v3d::vulkan::LogicalDevice* logicalDevice;
 
-	v3d::vulkan::SwapChain* swapChain;
+	// Swapchain
+	v3d::vulkan::Swapchain* swapchain;
+	v3d::vulkan::Framebuffers* framebuffers;
+	v3d::vulkan::RenderPass* renderPass;
 
-	vk::RenderPass renderPass;
+	// Pipeline
 	v3d::vulkan::Pipeline* pipeline;
+	vk::DescriptorSetLayout descriptorLayout;
+	vk::DescriptorPool descriptorPool;
+	std::vector<vk::DescriptorSet> descriptorSets;
 
-	std::vector<vk::Framebuffer> framebuffers;
 	std::vector<vk::Semaphore> imageAvailableSemaphores;
 	std::vector<vk::Semaphore> renderFinishedSemaphores;
 	std::vector<vk::Fence> frameFences;
@@ -74,13 +84,11 @@ private:
 	v3d::vulkan::CommandPool* commandPool;
 	std::vector<v3d::vulkan::CommandBuffer*> commandBuffers;
 
-	vk::DescriptorSetLayout descriptorLayout;
-	vk::DescriptorPool descriptorPool;
-	std::vector<vk::DescriptorSet> descriptorSets;
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
 	int current_frame;
 	glm::uvec2 frameBufferSize;
+
 
 	v3d::glfw::Window* window;
 

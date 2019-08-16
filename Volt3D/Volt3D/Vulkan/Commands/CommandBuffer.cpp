@@ -14,8 +14,7 @@
 #include "Vulkan/Devices/LogicalDevice.h"
 
 v3d::vulkan::CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
-	, commandPool( v3d::vulkan::Context::get()->getCommandPool()->get() )
+	: commandPool( v3d::vulkan::Context::get()->getCommandPool()->get() )
 	, commandBuffer( nullptr )
 	, running( false )
 {
@@ -26,12 +25,12 @@ v3d::vulkan::CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
 		1
 	);
 
-	commandBuffer = logicalDevice.allocateCommandBuffers( allocInfo ).front();
+	commandBuffer = v3d::vulkan::Context::get()->getLogicalDevice()->get().allocateCommandBuffers( allocInfo ).front();
 }
 
 v3d::vulkan::CommandBuffer::~CommandBuffer()
 {
-	logicalDevice.freeCommandBuffers( commandPool, commandBuffer );
+	v3d::vulkan::Context::get()->getLogicalDevice()->get().freeCommandBuffers( commandPool, commandBuffer );
 }
 
 const vk::CommandBuffer& v3d::vulkan::CommandBuffer::get() const
@@ -45,7 +44,7 @@ void v3d::vulkan::CommandBuffer::begin( const vk::CommandBufferUsageFlags usageF
 }
 
 /*
-void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const
+void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::Swapchain& swapchain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const uint32_t vertexSize) const
 {
 	vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
 
@@ -56,7 +55,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 		vk::Rect2D
 		(
 			vk::Offset2D(),
-			swapChain.getExtent2D()
+			swapchain.getExtent()
 		),
 		1,
 		&clearValue
@@ -72,7 +71,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	commandBuffer.endRenderPass();
 }
 
-void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::SwapChain& swapChain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const vk::Buffer& indexBuffer, const uint32_t indexSize, const vk::DescriptorSet& descriptorSet) const
+void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, const vk::RenderPass& renderPass, const v3d::vulkan::Swapchain& swapchain, const v3d::vulkan::Pipeline& pipeline, const vk::Buffer& vertexBuffer, const vk::Buffer& indexBuffer, const uint32_t indexSize, const vk::DescriptorSet& descriptorSet) const
 {
 	vk::ClearValue clearValue(vk::ClearColorValue(std::array<float, 4>({ 0.2f, 0.2f, 0.2f, 0.2f })));
 
@@ -83,7 +82,7 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 		vk::Rect2D
 		(
 			vk::Offset2D(),
-			swapChain.getExtent2D()
+			swapchain.getExtent()
 		),
 		1,
 		&clearValue
