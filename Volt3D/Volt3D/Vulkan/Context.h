@@ -157,10 +157,10 @@ private:
 	void createTexture( const char* path, v3d::vulkan::Context::Texture& texture );
 	void createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture );
 	void createTextureImageView( v3d::vulkan::Context::Texture& texture );
+	void createTextureSampler( v3d::vulkan::Context::Texture& texture );
 	void createImage( const uint32_t w, const uint32_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory );
 	void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
 	void copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
-	vk::ImageView createImageView( vk::Image& image, const vk::Format& format );
 
 	void oneTimeSubmit( v3d::vulkan::CommandBuffer& cb );
 

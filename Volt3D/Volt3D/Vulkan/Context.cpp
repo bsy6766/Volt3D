@@ -406,7 +406,7 @@ bool Context::recreateSwapChain()
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
 
-	//if (!initDescriptorLayout()) return false;
+	if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -516,6 +516,7 @@ void Context::createTexture( const char* path, v3d::vulkan::Context::Texture& te
 {
 	createTextureImage( path, texture );
 	createTextureImageView( texture );
+	createTextureSampler( texture );
 }
 
 void Context::createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture )
@@ -540,8 +541,21 @@ void Context::createTextureImage( const char* path, v3d::vulkan::Context::Textur
 
 void Context::createTextureImageView( v3d::vulkan::Context::Texture& texture )
 {
-	texture.imageView = createImageView( texture.image, vk::Format::eR8G8B8A8Unorm );
+	vk::ImageViewCreateInfo createInfo
+	(
+		vk::ImageViewCreateFlags(),
+		texture.image,
+		vk::ImageViewType::e2D,
+		vk::Format::eR8G8B8A8Unorm,
+		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
+		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
+	);
 
+	texture.imageView = logicalDevice->get().createImageView( createInfo, nullptr );
+}
+
+void Context::createTextureSampler( v3d::vulkan::Context::Texture& texture )
+{
 	vk::SamplerCreateInfo createInfo
 	(
 		vk::SamplerCreateFlags(),
@@ -670,21 +684,6 @@ void Context::copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const
 	oneTimeCB.get().copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
 	oneTimeCB.end();
 	oneTimeSubmit( oneTimeCB );
-}
-
-vk::ImageView Context::createImageView( vk::Image& image, const vk::Format& format )
-{
-	vk::ImageViewCreateInfo createInfo
-	(
-		vk::ImageViewCreateFlags(),
-		image,
-		vk::ImageViewType::e2D,
-		format,
-		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
-		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
-	);
-
-	return logicalDevice->get().createImageView( createInfo, nullptr );
 }
 
 void Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )

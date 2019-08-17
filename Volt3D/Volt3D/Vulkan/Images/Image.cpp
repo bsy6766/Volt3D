@@ -36,7 +36,7 @@ Image::Image()
 
 void Image::initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
 {
-	vk::ImageCreateInfo createInfo
+	vk::ImageCreateInfo imageCreateInfo
 	(
 		vk::ImageCreateFlags(),
 		vk::ImageType::e2D,
@@ -49,7 +49,19 @@ void Image::initImage( const uint32_t width, const uint32_t height, const vk::Fo
 		usageFlags
 	);
 
-	image = logicalDevice.createImage( createInfo );
+	image = logicalDevice.createImage( imageCreateInfo );
+
+	vk::ImageViewCreateInfo imageViewCreateInfo
+	(
+		vk::ImageViewCreateFlags(),
+		image,
+		vk::ImageViewType::e2D,
+		format,
+		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
+		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
+	);
+
+	imageView = logicalDevice.createImageView( imageViewCreateInfo, nullptr );
 }
 
 void Image::initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags )
