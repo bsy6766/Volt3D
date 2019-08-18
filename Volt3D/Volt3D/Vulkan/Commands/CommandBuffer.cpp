@@ -13,8 +13,11 @@
 #include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 
-v3d::vulkan::CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
-	: commandPool( v3d::vulkan::Context::get()->getCommandPool()->get() )
+V3D_NS_BEGIN
+VK_NS_BEGIN
+
+CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
+	: commandPool( v3d::vulkan::Context::get()->getCommandPool()->getVKCommandPool() )
 	, commandBuffer( nullptr )
 	, running( false )
 {
@@ -25,20 +28,17 @@ v3d::vulkan::CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
 		1
 	);
 
-	commandBuffer = v3d::vulkan::Context::get()->getLogicalDevice()->get().allocateCommandBuffers( allocInfo ).front();
+	commandBuffer = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().allocateCommandBuffers( allocInfo ).front();
 }
 
-v3d::vulkan::CommandBuffer::~CommandBuffer()
+CommandBuffer::~CommandBuffer()
 {
-	v3d::vulkan::Context::get()->getLogicalDevice()->get().freeCommandBuffers( commandPool, commandBuffer );
+	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().freeCommandBuffers( commandPool, commandBuffer );
 }
 
-const vk::CommandBuffer& v3d::vulkan::CommandBuffer::get() const
-{
-	return commandBuffer;
-}
+const vk::CommandBuffer& CommandBuffer::getVKCommandBuffer() const { return commandBuffer; }
 
-void v3d::vulkan::CommandBuffer::begin( const vk::CommandBufferUsageFlags usageFlags )
+void CommandBuffer::begin( const vk::CommandBufferUsageFlags usageFlags )
 {
 	commandBuffer.begin( vk::CommandBufferBeginInfo( usageFlags, nullptr ) );
 }
@@ -99,15 +99,15 @@ void v3d::vulkan::CommandBuffer::record(const vk::Framebuffer& frameBuffer, cons
 	commandBuffer.drawIndexed(indexSize, 1, 0, 0, 0);
 	commandBuffer.endRenderPass();
 }
-
 */
-void v3d::vulkan::CommandBuffer::end()
-{
-	commandBuffer.end();
-}
 
-void v3d::vulkan::CommandBuffer::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size )
+void CommandBuffer::end() { commandBuffer.end(); }
+
+void CommandBuffer::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk::DeviceSize size )
 {
 	const vk::BufferCopy copyRegion( 0, 0, size );
 	commandBuffer.copyBuffer( src, dst, 1, &copyRegion );
 }
+
+VK_NS_END
+V3D_NS_END

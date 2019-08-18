@@ -31,8 +31,6 @@ private:
 	CommandPool() = delete;
 	CommandPool( const uint32_t queueIndex );
 
-	const vk::Device& logicalDevice;
-
 	vk::CommandPool commandPool;
 
 public:
@@ -42,7 +40,7 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( CommandPool );
 
 	/** Get Vulkan CommandPool */
-	const vk::CommandPool& get() const;
+	const vk::CommandPool& getVKCommandPool() const;
 };
 
 VK_NS_END

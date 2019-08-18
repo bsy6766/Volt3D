@@ -9,6 +9,7 @@
 
 #include "PhysicalDevice.h"
 
+#include "Vulkan/Context.h"
 #include "Config/BuildConfig.h"
 
 V3D_NS_BEGIN
@@ -24,10 +25,9 @@ PhysicalDevice::PhysicalDevice()
 
 PhysicalDevice::~PhysicalDevice() {}
 
-const vk::PhysicalDevice& PhysicalDevice::get() const
-{
-	return physicalDevice;
-}
+v3d::vulkan::PhysicalDevice* PhysicalDevice::get() { return v3d::vulkan::Context::get()->getPhysicalDevice(); }
+
+const vk::PhysicalDevice& PhysicalDevice::getVKPhysicalDevice() const { return physicalDevice; }
 
 bool PhysicalDevice::init( const std::vector<vk::PhysicalDevice>& physicalDevices )
 {

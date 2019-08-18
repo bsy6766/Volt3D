@@ -258,8 +258,10 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Images\Image.h" />
     <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\Attribute.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderState.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h" />
@@ -326,8 +328,10 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Images\Image.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\Attribute.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformBlock.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Framebuffers.cpp" />

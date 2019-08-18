@@ -88,7 +88,7 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initLogicalDevice()) return false;
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
-	if (!initDescriptorLayout()) return false;
+	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -151,7 +151,7 @@ bool Context::initPhysicalDevice()
 bool Context::initLogicalDevice()
 {
 	logicalDevice = new v3d::vulkan::LogicalDevice();
-	return logicalDevice->init( surface, physicalDevice->get() );
+	return logicalDevice->init( surface, physicalDevice->getVKPhysicalDevice() );
 }
 
 bool Context::initSwapChain()
@@ -173,13 +173,13 @@ bool Context::initGraphicsPipeline()
 	std::vector<std::filesystem::path> shaderPath;
 	shaderPath.push_back( "Shaders/vert.vert" );
 	shaderPath.push_back( "Shaders/frag.frag" );
-	if (!pipeline->init( shaderPath, swapchain->getExtent(), renderPass->get() )) return false;
+	if (!pipeline->init( shaderPath, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
 	return true;
 }
 
 bool Context::initFrameBuffer()
 {
-	framebuffers = new v3d::vulkan::Framebuffers( *swapchain, renderPass->get() );
+	framebuffers = new v3d::vulkan::Framebuffers( *swapchain, renderPass->getRenderPass() );
 	return true;
 }
 
@@ -193,8 +193,8 @@ bool Context::initSemaphore()
 {
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		imageAvailableSemaphores.push_back( logicalDevice->get().createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
-		renderFinishedSemaphores.push_back( logicalDevice->get().createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
+		imageAvailableSemaphores.push_back( logicalDevice->getVKLogicalDevice().createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
+		renderFinishedSemaphores.push_back( logicalDevice->getVKLogicalDevice().createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) ) );
 	}
 
 	return true;
@@ -204,7 +204,7 @@ bool Context::initFences()
 {
 	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 	{
-		frameFences.push_back( logicalDevice->get().createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) ) );
+		frameFences.push_back( logicalDevice->getVKLogicalDevice().createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) ) );
 	}
 
 	return true;
@@ -222,7 +222,7 @@ bool Context::initCommandBuffer()
 	//	static_cast<uint32_t>(fbSize)
 	//);
 
-	//const std::vector<vk::CommandBuffer> cbs = logicalDevice->get().allocateCommandBuffers( allocInfo );
+	//const std::vector<vk::CommandBuffer> cbs = logicalDevice->getVKLogicalDevice().allocateCommandBuffers( allocInfo );
 
 	for (std::size_t i = 0; i < fbSize; i++)
 	{
@@ -230,13 +230,13 @@ bool Context::initCommandBuffer()
 		commandBuffers.push_back( newCB );
 		newCB->begin( vk::CommandBufferUsageFlagBits::eSimultaneousUse );
 
-		const vk::CommandBuffer& cb = newCB->get();
+		const vk::CommandBuffer& cb = newCB->getVKCommandBuffer();
 
 		vk::ClearValue clearValue( vk::ClearColorValue( std::array<float, 4>( { 0.2f, 0.2f, 0.2f, 0.2f } ) ) );
 
 		vk::RenderPassBeginInfo renderPassInfo
 		(
-			renderPass->get(),
+			renderPass->getRenderPass(),
 			(*framebuffers)[i],
 			vk::Rect2D
 			(
@@ -248,7 +248,7 @@ bool Context::initCommandBuffer()
 		);
 
 		cb.beginRenderPass( renderPassInfo, vk::SubpassContents::eInline );
-		cb.bindPipeline( vk::PipelineBindPoint::eGraphics, pipeline->get() );
+		cb.bindPipeline( vk::PipelineBindPoint::eGraphics, pipeline->getVKPipeline() );
 		cb.setViewport( 0, pipeline->getViewport() );
 		cb.setScissor( 0, pipeline->getScissor() );
 		vk::DeviceSize offset = 0;
@@ -265,6 +265,7 @@ bool Context::initCommandBuffer()
 	return true;
 }
 
+/*
 bool Context::initDescriptorLayout()
 {
 	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
@@ -293,10 +294,11 @@ bool Context::initDescriptorLayout()
 		bindings
 	);
 
-	descriptorLayout = logicalDevice->get().createDescriptorSetLayout( layoutInfo );
+	descriptorLayout = logicalDevice->getVKLogicalDevice().createDescriptorSetLayout( layoutInfo );
 
 	return true;
 }
+*/
 
 bool Context::initDescriptorPool()
 {
@@ -325,7 +327,7 @@ bool Context::initDescriptorPool()
 		poolSizes
 	);
 
-	descriptorPool = logicalDevice->get().createDescriptorPool( poolInfo );
+	descriptorPool = logicalDevice->getVKLogicalDevice().createDescriptorPool( poolInfo );
 
 	return true;
 }
@@ -334,7 +336,7 @@ bool Context::initDescriptorSet()
 {
 	const std::size_t count = framebuffers->size();
 
-	std::vector<vk::DescriptorSetLayout> layouts( count, descriptorLayout );
+	std::vector<vk::DescriptorSetLayout> layouts( count, pipeline->getDescriptorSetLayout() );
 	vk::DescriptorSetAllocateInfo allocInfo
 	(
 		descriptorPool,
@@ -342,7 +344,7 @@ bool Context::initDescriptorSet()
 		layouts.data()
 	);
 
-	descriptorSets = logicalDevice->get().allocateDescriptorSets( allocInfo );
+	descriptorSets = logicalDevice->getVKLogicalDevice().allocateDescriptorSets( allocInfo );
 
 	for (std::size_t i = 0; i < count; i++)
 	{
@@ -385,7 +387,7 @@ bool Context::initDescriptorSet()
 		const uint32_t uboSize = 2;
 		const vk::WriteDescriptorSet descriptorWrites[uboSize] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite };
 
-		logicalDevice->get().updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
+		logicalDevice->getVKLogicalDevice().updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
 	}
 
 	return true;
@@ -399,14 +401,14 @@ bool Context::initDescriptorSet()
 
 bool Context::recreateSwapChain()
 {
-	logicalDevice->get().waitIdle();
+	logicalDevice->getVKLogicalDevice().waitIdle();
 
 	releaseSwapChain();
 
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
 
-	if (!initDescriptorLayout()) return false;
+	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
@@ -424,7 +426,7 @@ bool Context::recreateSwapChain()
 v3d::vulkan::CommandBuffer Context::createCommandBuffer( const vk::CommandBufferLevel level )
 {
 	const vk::CommandBufferAllocateInfo allocInfo( commandPool, level, 1 );
-	return v3d::vulkan::CommandBuffer( logicalDevice->get().allocateCommandBuffers( allocInfo ).front() );
+	return v3d::vulkan::CommandBuffer( logicalDevice->getVKLogicalDevice().allocateCommandBuffers( allocInfo ).front() );
 }
 */
 
@@ -438,7 +440,7 @@ void Context::copyBuffer( const vk::Buffer& src, const vk::Buffer& dst, const vk
 	oneTimeCB.end();
 	oneTimeSubmit( oneTimeCB );
 
-	//logicalDevice->get().freeCommandBuffers( commandPool->get(), oneTimeCB.get() );
+	//logicalDevice->getVKLogicalDevice().freeCommandBuffers( commandPool->get(), oneTimeCB.get() );
 }
 
 void Context::createLenaBuffer()
@@ -446,7 +448,7 @@ void Context::createLenaBuffer()
 	lenaBuffer.vertexBuffer = new v3d::vulkan::Buffer( lenaBuffer.vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 	lenaBuffer.indexBuffer = new v3d::vulkan::Buffer( lenaBuffer.indexData.getDataSize(), vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-	const vk::Device& ld = logicalDevice->get();
+	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
 
 	{
 		v3d::vulkan::Buffer stagingBuffer = v3d::vulkan::Buffer( lenaBuffer.vertexData.getDataSize(), vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
@@ -523,14 +525,14 @@ void Context::createTextureImage( const char* path, v3d::vulkan::Context::Textur
 {
 	texture.imageSource = v3d::Image::createPNG( path );
 
-	//vk::Buffer stagingBuffer = logicalDevice->get().createBuffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
-	//vk::DeviceMemory stagingBufferMemory = logicalDevice->get().createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+	//vk::Buffer stagingBuffer = logicalDevice->getVKLogicalDevice().createBuffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
+	//vk::DeviceMemory stagingBufferMemory = logicalDevice->getVKLogicalDevice().createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	v3d::vulkan::Buffer stagingBuffer = v3d::vulkan::Buffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
-	void* data = logicalDevice->get().mapMemory( stagingBuffer.getDeviceMemory(), 0, texture.imageSource->getDataSize() );
+	void* data = logicalDevice->getVKLogicalDevice().mapMemory( stagingBuffer.getDeviceMemory(), 0, texture.imageSource->getDataSize() );
 	memcpy( data, texture.imageSource->getData(), texture.imageSource->getDataSize() );
-	logicalDevice->get().unmapMemory( stagingBuffer.getDeviceMemory() );
+	logicalDevice->getVKLogicalDevice().unmapMemory( stagingBuffer.getDeviceMemory() );
 
 	createImage( texture.imageSource->getWidth(), texture.imageSource->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture.image, texture.deviceMemory );
 
@@ -551,7 +553,7 @@ void Context::createTextureImageView( v3d::vulkan::Context::Texture& texture )
 		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
 	);
 
-	texture.imageView = logicalDevice->get().createImageView( createInfo, nullptr );
+	texture.imageView = logicalDevice->getVKLogicalDevice().createImageView( createInfo, nullptr );
 }
 
 void Context::createTextureSampler( v3d::vulkan::Context::Texture& texture )
@@ -576,7 +578,7 @@ void Context::createTextureSampler( v3d::vulkan::Context::Texture& texture )
 		false
 	);
 
-	texture.sampler = logicalDevice->get().createSampler( createInfo, nullptr );
+	texture.sampler = logicalDevice->getVKLogicalDevice().createSampler( createInfo, nullptr );
 }
 
 void Context::createImage( const uint32_t w, const uint32_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory )
@@ -594,8 +596,8 @@ void Context::createImage( const uint32_t w, const uint32_t h, const vk::Format&
 		usageFlags
 	);
 
-	image = logicalDevice->get().createImage( createInfo );
-	vk::MemoryRequirements memRequirements = logicalDevice->get().getImageMemoryRequirements( image );
+	image = logicalDevice->getVKLogicalDevice().createImage( createInfo );
+	vk::MemoryRequirements memRequirements = logicalDevice->getVKLogicalDevice().getImageMemoryRequirements( image );
 
 	vk::MemoryAllocateInfo allocInfo
 	(
@@ -603,8 +605,8 @@ void Context::createImage( const uint32_t w, const uint32_t h, const vk::Format&
 		physicalDevice->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
 	);
 
-	deviceMemory = logicalDevice->get().allocateMemory( allocInfo );
-	logicalDevice->get().bindImageMemory( image, deviceMemory, 0 );
+	deviceMemory = logicalDevice->getVKLogicalDevice().allocateMemory( allocInfo );
+	logicalDevice->getVKLogicalDevice().bindImageMemory( image, deviceMemory, 0 );
 }
 
 void Context::transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout )
@@ -656,7 +658,7 @@ void Context::transitionImageLayout( vk::Image& image, const vk::Format& format,
 	}
 
 	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	oneTimeCB.get().pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
+	oneTimeCB.getVKCommandBuffer().pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
 	oneTimeCB.end();
 	oneTimeSubmit( oneTimeCB );
 }
@@ -681,7 +683,7 @@ void Context::copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const
 	);
 
 	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	oneTimeCB.get().copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
+	oneTimeCB.getVKCommandBuffer().copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
 	oneTimeCB.end();
 	oneTimeSubmit( oneTimeCB );
 }
@@ -698,9 +700,9 @@ void Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
 
 void Context::render()
 {
-	logicalDevice->get().waitForFences( 1, &frameFences[current_frame], true, std::numeric_limits<uint64_t>::max() );
+	logicalDevice->getVKLogicalDevice().waitForFences( 1, &frameFences[current_frame], true, std::numeric_limits<uint64_t>::max() );
 
-	const vk::ResultValue<uint32_t> result = logicalDevice->get().acquireNextImageKHR( swapchain->get(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
+	const vk::ResultValue<uint32_t> result = logicalDevice->getVKLogicalDevice().acquireNextImageKHR( swapchain->getSwapchainKHR(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[current_frame], nullptr );
 	if (result.result == vk::Result::eErrorOutOfDateKHR)
 	{
 		recreateSwapChain();
@@ -717,7 +719,7 @@ void Context::render()
 	vk::Semaphore waitSemaphores[] = { imageAvailableSemaphores[current_frame] };
 	vk::Semaphore signalSemaphores[] = { renderFinishedSemaphores[current_frame] };
 	vk::PipelineStageFlags waitFlags[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-	vk::CommandBuffer commandBuffers[] = { this->commandBuffers.at( result.value )->get() };
+	vk::CommandBuffer commandBuffers[] = { this->commandBuffers.at( result.value )->getVKCommandBuffer() };
 	vk::SubmitInfo submitInfo
 	(
 		1,
@@ -729,11 +731,11 @@ void Context::render()
 		signalSemaphores
 	);
 
-	logicalDevice->get().resetFences( frameFences[current_frame] );
+	logicalDevice->getVKLogicalDevice().resetFences( frameFences[current_frame] );
 
 	logicalDevice->getGraphicsQueue().submit( submitInfo, frameFences[current_frame] );
 
-	vk::SwapchainKHR swapChains[] = { swapchain->get() };
+	vk::SwapchainKHR swapChains[] = { swapchain->getSwapchainKHR() };
 	vk::PresentInfoKHR presentInfo
 	(
 		1,
@@ -768,7 +770,7 @@ void Context::render()
 
 void Context::waitIdle()
 {
-	logicalDevice->get().waitIdle();
+	logicalDevice->getVKLogicalDevice().waitIdle();
 }
 
 
@@ -806,20 +808,20 @@ void Context::release()
 
 	SAFE_DELETE( lena.imageSource );
 
-	logicalDevice->get().destroySampler( lena.sampler );
-	logicalDevice->get().destroyImageView( lena.imageView );
-	logicalDevice->get().destroyImage( lena.image );
-	logicalDevice->get().freeMemory( lena.deviceMemory );
+	logicalDevice->getVKLogicalDevice().destroySampler( lena.sampler );
+	logicalDevice->getVKLogicalDevice().destroyImageView( lena.imageView );
+	logicalDevice->getVKLogicalDevice().destroyImage( lena.image );
+	logicalDevice->getVKLogicalDevice().freeMemory( lena.deviceMemory );
 
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );
 
-	for (auto& f : frameFences) { logicalDevice->get().destroyFence( f ); }
+	for (auto& f : frameFences) { logicalDevice->getVKLogicalDevice().destroyFence( f ); }
 	frameFences.clear();
 
-	for (auto& s : imageAvailableSemaphores) { logicalDevice->get().destroySemaphore( s ); }
+	for (auto& s : imageAvailableSemaphores) { logicalDevice->getVKLogicalDevice().destroySemaphore( s ); }
 	imageAvailableSemaphores.clear();
-	for (auto& s : renderFinishedSemaphores) { logicalDevice->get().destroySemaphore( s ); }
+	for (auto& s : renderFinishedSemaphores) { logicalDevice->getVKLogicalDevice().destroySemaphore( s ); }
 	renderFinishedSemaphores.clear();
 
 	releaseSwapChain();
@@ -827,7 +829,7 @@ void Context::release()
 	SAFE_DELETE( physicalDevice );
 	SAFE_DELETE( logicalDevice );
 
-	instance->get().destroySurfaceKHR( surface );
+	instance->getVKInstance().destroySurfaceKHR( surface );
 	SAFE_DELETE( instance );
 
 	logger.info( "Releasing Context finished" );
@@ -835,12 +837,12 @@ void Context::release()
 
 void Context::releaseSwapChain()
 {
-	const vk::Device& ld = logicalDevice->get();
+	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
 
 	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
 	mvpUBOs.clear();
 
-	ld.destroyDescriptorSetLayout( descriptorLayout );
+	//ld.destroyDescriptorSetLayout( descriptorLayout );
 	ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );

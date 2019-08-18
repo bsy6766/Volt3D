@@ -20,7 +20,7 @@ Buffer::Buffer( const vk::DeviceSize size, const vk::BufferUsageFlags usageFlags
 	: buffer()
 	, deviceMemory()
 	, size( size )
-	, logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	, logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 {
 	initBuffer( usageFlags );
 	initDeviceMemory( memoryPropertiyFlags );

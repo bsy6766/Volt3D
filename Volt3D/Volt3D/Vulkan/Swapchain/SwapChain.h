@@ -30,8 +30,6 @@ class VOLT3D_DLL Swapchain
 private:
 	Swapchain();
 
-	const vk::Device& logicalDevice;
-
 	vk::SwapchainKHR swapchain;
 	vk::SurfaceFormatKHR surfaceFormat;
 	vk::Extent2D extent;
@@ -52,7 +50,7 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( Swapchain );
 	
 	/** Get Vulkan SwapchainKHR */
-	const vk::SwapchainKHR& get() const;
+	const vk::SwapchainKHR& getSwapchainKHR() const;
 
 	/** Get format of swapchain */
 	const vk::Format& getFormat() const;

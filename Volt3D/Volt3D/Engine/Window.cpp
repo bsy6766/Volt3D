@@ -82,7 +82,7 @@ void Window::initGLFWHints()
 
 bool Window::createWindowSurface( const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface ) const
 {
-	if (glfwCreateWindowSurface( instance.get(), window, nullptr, &surface ) != VK_SUCCESS)
+	if (glfwCreateWindowSurface( instance.getVKInstance(), window, nullptr, &surface ) != VK_SUCCESS)
 	{
 		v3d::Logger::getInstance().critical( "Failed to create KHR Surface" );
 		return false;

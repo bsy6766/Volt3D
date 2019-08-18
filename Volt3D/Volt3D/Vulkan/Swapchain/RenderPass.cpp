@@ -9,7 +9,6 @@
 
 #include "RenderPass.h"
 
-#include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 
 V3D_NS_BEGIN
@@ -53,15 +52,15 @@ RenderPass::RenderPass( const vk::Format& format )
 		1, &subpassDescription
 	);
 
-	renderPass = v3d::vulkan::Context::get()->getLogicalDevice()->get().createRenderPass( createInfo );
+	renderPass = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createRenderPass( createInfo );
 }
 
 RenderPass::~RenderPass()
 {
-	v3d::vulkan::Context::get()->getLogicalDevice()->get().destroyRenderPass( renderPass );
+	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().destroyRenderPass( renderPass );
 }
 
-const vk::RenderPass& RenderPass::get() const { return renderPass; }
+const vk::RenderPass& RenderPass::getRenderPass() const { return renderPass; }
 
 VK_NS_END
 V3D_NS_END

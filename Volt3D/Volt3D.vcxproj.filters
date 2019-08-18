@@ -254,6 +254,12 @@
     <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp">
+      <Filter>DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\Attribute.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -495,6 +501,12 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderState.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\Attribute.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

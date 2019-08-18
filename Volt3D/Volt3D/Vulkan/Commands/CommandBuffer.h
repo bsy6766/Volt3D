@@ -50,7 +50,7 @@ namespace v3d
 			DEFAULT_MOVE_CONSTRUCTORS( CommandBuffer );
 
 			/** Get Vulkan command buffer */
-			const vk::CommandBuffer& get() const;
+			const vk::CommandBuffer& getVKCommandBuffer() const;
 
 			/**
 			*	Begin command buffer.

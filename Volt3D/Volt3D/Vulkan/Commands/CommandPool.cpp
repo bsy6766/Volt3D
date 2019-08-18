@@ -16,8 +16,7 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 CommandPool::CommandPool( const uint32_t queueIndex )
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
-	, commandPool( nullptr )
+	: commandPool( nullptr )
 {
 	vk::CommandPoolCreateInfo createInfo
 	(
@@ -25,18 +24,15 @@ CommandPool::CommandPool( const uint32_t queueIndex )
 		queueIndex
 	);
 
-	commandPool = logicalDevice.createCommandPool( createInfo );
+	commandPool = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createCommandPool( createInfo );
 }
 
 CommandPool::~CommandPool()
 {
-	logicalDevice.destroyCommandPool( commandPool );
+	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().destroyCommandPool( commandPool );
 }
 
-const vk::CommandPool& CommandPool::get() const
-{
-	return commandPool;
-}
+const vk::CommandPool& CommandPool::getVKCommandPool() const { return commandPool; }
 
 VK_NS_END
 V3D_NS_END

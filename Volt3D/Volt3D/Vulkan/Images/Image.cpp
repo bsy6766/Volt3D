@@ -17,7 +17,7 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Image::Image()
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, image( nullptr )
 	, deviceMemory( nullptr )
 	, sampler( nullptr )

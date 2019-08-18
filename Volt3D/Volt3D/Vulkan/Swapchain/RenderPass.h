@@ -42,7 +42,7 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( RenderPass );
 
 	/** Get Vulakn RenderPass */
-	const vk::RenderPass& get() const;
+	const vk::RenderPass& getRenderPass() const;
 };
 
 VK_NS_END

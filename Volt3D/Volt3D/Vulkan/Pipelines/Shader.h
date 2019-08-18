@@ -16,8 +16,7 @@
 
 #include <glslang/Public/ShaderLang.h>
 
-#include "Uniform.h"
-#include "UniformBlock.h"
+#include "ShaderState.h"
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
@@ -42,20 +41,15 @@ private:
 	Shader() = delete;
 	Shader( const std::filesystem::path& filePath );
 
-	const vk::Device& logicalDevice;
 	std::filesystem::path filePath;
+
 	vk::ShaderStageFlagBits stage;
 	vk::ShaderModule shaderModule;
+	v3d::vulkan::ShaderState shaderState;
 
-	bool init();
-	void release();
+	bool compile();
 
 	EShLanguage getEShLanguage() const;
-	std::vector<char> readFile( const std::filesystem::path& filePath );
-
-	// key: binding
-	std::unordered_map<uint32_t, v3d::vulkan::UniformBlock> uniformBlocks;
-	std::unordered_map<uint32_t, v3d::vulkan::Uniform> uniforms;
 
 public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Shader );
@@ -63,26 +57,11 @@ public:
 
 	~Shader();
 
-
 	/** Get Vulkan ShaderModule */
-	const vk::ShaderModule get() const;
+	const vk::ShaderModule getShaderModule() const;
 
 	/** Get Vulkan PipelineShaderStageCreateInfo */
 	vk::PipelineShaderStageCreateInfo getPipelineShaderStageCreateInfo() const;
-
-	/**
-	*	Get uniform block by binding
-	*	@param binding A uniform block binding defined in shader.
-	*	@return A pointer to uniform block with matching binding. Else, std::nullopt.
-	*/
-	std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> getUniformBlock( const uint32_t binding );
-
-	/**
-	*	Get uniform block by name
-	*	@param binding A uniform block name defined in shader.
-	*	@return A uniform block with matching name. Else, std::nullopt.
-	*/
-	std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> getUniformBlock( const std::string_view name );
 
 	/** Get shader stage flag bits */
 	vk::ShaderStageFlagBits getStage() const;

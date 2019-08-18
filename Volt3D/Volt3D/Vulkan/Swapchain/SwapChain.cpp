@@ -19,14 +19,14 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 v3d::vulkan::Swapchain::Swapchain()
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
-	, swapchain( nullptr )
+	: swapchain( nullptr )
 	, surfaceFormat()
 	, extent()
 {}
 
 Swapchain::~Swapchain()
 {
+	auto& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
 	for (auto& imageView : imageViews) { logicalDevice.destroyImageView( imageView ); }
 	imageViews.clear();
 	logicalDevice.destroySwapchainKHR( swapchain );
@@ -35,9 +35,9 @@ Swapchain::~Swapchain()
 
 bool Swapchain::init()
 {
-	auto context = v3d::vulkan::Context::get();
-	auto& physicalDevice = context->getPhysicalDevice()->get();
-	auto& surface = context->getSurface();
+	auto& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
+	auto& physicalDevice = v3d::vulkan::PhysicalDevice::get()->getVKPhysicalDevice();
+	auto& surface = v3d::vulkan::Context::get()->getSurface();
 	auto window = v3d::Engine::get()->getWindow();
 
 	// select format
@@ -158,7 +158,7 @@ vk::PresentModeKHR v3d::vulkan::Swapchain::selectPresentMode( const std::vector<
 	//return vk::PresentModeKHR::eMailbox;
 }
 
-const vk::SwapchainKHR& Swapchain::get() const { return swapchain; }
+const vk::SwapchainKHR& Swapchain::getSwapchainKHR() const { return swapchain; }
 
 const vk::Format& v3d::vulkan::Swapchain::getFormat() const { return surfaceFormat.format; }
 

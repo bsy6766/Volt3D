@@ -73,7 +73,7 @@ private:
 
 	// Pipeline
 	v3d::vulkan::Pipeline* pipeline;
-	vk::DescriptorSetLayout descriptorLayout;
+	//vk::DescriptorSetLayout descriptorLayout;
 	vk::DescriptorPool descriptorPool;
 	std::vector<vk::DescriptorSet> descriptorSets;
 
@@ -139,7 +139,7 @@ private:
 	bool initSemaphore();
 	bool initFences();
 	bool initCommandBuffer();
-	bool initDescriptorLayout();
+	//bool initDescriptorLayout();
 	bool initDescriptorPool();
 	bool initDescriptorSet();
 	bool recreateSwapChain();

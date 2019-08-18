@@ -58,14 +58,29 @@ private:
 
 public:
 	Pipeline();
+
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Pipeline );
 	DEFAULT_MOVE_CONSTRUCTORS( Pipeline );
+
 	~Pipeline();
 
-	const vk::Pipeline& get() const;
+	/** Get Vulkan Pipeline */
+	const vk::Pipeline& getVKPipeline() const;
+
+	/** Get view port of pipeline */
 	const vk::Viewport& getViewport() const;
+
+	/** Get scissor of pipeline */
 	const vk::Rect2D& getScissor() const;
+
+	/** Get Vulkan PipelineLayout */
 	const vk::PipelineLayout& getLayout() const;
+
+	/** Get DescriptorSetLayout */
+	const vk::DescriptorSetLayout& getDescriptorSetLayout() const;
+
+	/** Get shader from specific shader stage */
+	//std::optional<v3d::vulkan::Shader>
 };
 
 VK_NS_END

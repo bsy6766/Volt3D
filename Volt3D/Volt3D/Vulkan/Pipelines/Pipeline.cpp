@@ -9,7 +9,6 @@
 
 #include "Pipeline.h"
 
-#include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/SwapChain/Swapchain.h"
 #include "Renderer/Vertex.h"
@@ -18,7 +17,7 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Pipeline::Pipeline()
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
+	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, pipeline( nullptr )
 	, viewport()
 	, scissor()
@@ -29,20 +28,12 @@ Pipeline::Pipeline()
 
 Pipeline::~Pipeline()
 {
-	for (auto& shader : shaders) { shader.second.release(); }
 	shaders.clear();
 	logicalDevice.destroyDescriptorSetLayout( descriptorSetLayout );
+	logicalDevice.destroyDescriptorPool( descriptorPool );
 	logicalDevice.destroyPipelineLayout( pipelineLayout );
 	logicalDevice.destroyPipeline( pipeline );
 }
-
-const vk::Pipeline& Pipeline::get() const { return pipeline; }
-
-const vk::Viewport& Pipeline::getViewport() const { return viewport; }
-
-const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
-
-const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
 
 bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
 {
@@ -196,7 +187,7 @@ bool Pipeline::initShaderProgram( const std::vector<std::filesystem::path>& shad
 	// Init shaders
 	for (auto& e : shaders)
 	{
-		if (!(e.second).init()) return false;
+		if (!(e.second).compile()) return false;
 		shaderCreateInfos.push_back( (e.second).getPipelineShaderStageCreateInfo() );
 	}
 
@@ -243,6 +234,16 @@ bool Pipeline::initPipelineLayout()
 
 	return true;
 }
+
+const vk::Pipeline& Pipeline::getVKPipeline() const { return pipeline; }
+
+const vk::Viewport& Pipeline::getViewport() const { return viewport; }
+
+const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
+
+const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
+
+const vk::DescriptorSetLayout& Pipeline::getDescriptorSetLayout() const { return descriptorSetLayout; }
 
 VK_NS_END
 V3D_NS_END

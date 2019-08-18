@@ -42,6 +42,10 @@ private:
 	bool initDebugReport();
 	bool initDebugUtilsMessenger();
 
+	PFN_vkVoidFunction getProcAddr( const char* pName ) const;
+	vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const;
+	vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const;
+
 public:
 	~Instance();
 
@@ -49,11 +53,7 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( Instance );
 	
 	/** Get vulkan instance */
-	const vk::Instance& get() const;
-
-	PFN_vkVoidFunction getProcAddr( const char* pName ) const;
-	vk::UniqueDebugReportCallbackEXT createDebugReportCallbackEXTUnique( const vk::DebugReportCallbackCreateInfoEXT& createInfo ) const;
-	vk::UniqueDebugUtilsMessengerEXT createDebugUtilsMessengerEXTUnique( const vk::DebugUtilsMessengerCreateInfoEXT& createInfo ) const;
+	const vk::Instance& getVKInstance() const;
 	std::vector<vk::PhysicalDevice> enumeratePhysicalDevices() const;
 };
 

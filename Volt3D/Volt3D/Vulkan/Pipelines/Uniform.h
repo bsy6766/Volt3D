@@ -19,9 +19,11 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
+class ShaderState;
+
 class VOLT3D_DLL Uniform
 {
-	friend class Shader;
+	friend class v3d::vulkan::ShaderState;
 //
 //public:
 //	union Value

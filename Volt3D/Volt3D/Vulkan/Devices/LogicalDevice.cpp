@@ -10,6 +10,8 @@
 #include "LogicalDevice.h"
 
 #include <optional>
+
+#include "Vulkan/Context.h"
 #include "Vulkan/Utils.h"
 #include "Config/BuildConfig.h"
 
@@ -109,50 +111,25 @@ bool LogicalDevice::init( const vk::SurfaceKHR& surface, const vk::PhysicalDevic
 	return true;
 }
 
-const vk::Device& LogicalDevice::get() const
-{
-	return logicalDevice;
-}
+v3d::vulkan::LogicalDevice* LogicalDevice::get() { return v3d::vulkan::Context::get()->getLogicalDevice(); }
 
-uint32_t LogicalDevice::getGraphicsQueueFamilyIndex() const
-{
-	return graphicsQueueFamilyIndex;
-}
+const vk::Device& LogicalDevice::getVKLogicalDevice() const { return logicalDevice; }
 
-uint32_t LogicalDevice::getComputeQueueFamilyIndex() const
-{
-	return computeQueueFamilyIndex;
-}
+uint32_t LogicalDevice::getGraphicsQueueFamilyIndex() const { return graphicsQueueFamilyIndex; }
 
-uint32_t LogicalDevice::getTransferQueueFamilyIndex() const
-{
-	return transferQueueFamilyIndex;
-}
+uint32_t LogicalDevice::getComputeQueueFamilyIndex() const { return computeQueueFamilyIndex; }
 
-uint32_t LogicalDevice::getPresentQueueFamilyIndex() const
-{
-	return presentQueueFamilyIndex;
-}
+uint32_t LogicalDevice::getTransferQueueFamilyIndex() const { return transferQueueFamilyIndex; }
 
-const vk::Queue& LogicalDevice::getGraphicsQueue() const
-{
-	return graphicsQueue;
-}
+uint32_t LogicalDevice::getPresentQueueFamilyIndex() const { return presentQueueFamilyIndex; }
 
-const vk::Queue& LogicalDevice::getComputeQueue() const
-{
-	return computeQueue;
-}
+const vk::Queue& LogicalDevice::getGraphicsQueue() const { return graphicsQueue; }
 
-const vk::Queue& LogicalDevice::getTransferQueue() const
-{
-	return transferQueue;
-}
+const vk::Queue& LogicalDevice::getComputeQueue() const { return computeQueue; }
 
-const vk::Queue& LogicalDevice::getPresentQueue() const
-{
-	return presentQueue;
-}
+const vk::Queue& LogicalDevice::getTransferQueue() const { return transferQueue; }
+
+const vk::Queue& LogicalDevice::getPresentQueue() const { return presentQueue; }
 
 void LogicalDevice::print() const
 {

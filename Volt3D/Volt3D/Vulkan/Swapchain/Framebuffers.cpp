@@ -9,7 +9,6 @@
 
 #include "Framebuffers.h"
 
-#include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Swapchain/Swapchain.h"
 
@@ -25,7 +24,7 @@ Framebuffers::Framebuffers( const v3d::vulkan::Swapchain& swapchain, const vk::R
 	const std::size_t size = imageViews.size();
 	framebuffers.resize( size );
 
-	const vk::Device& logicalDevice = v3d::vulkan::Context::get()->getLogicalDevice()->get();
+	const vk::Device& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
 
 	for (std::size_t i = 0; i < size; i++)
 	{
@@ -46,7 +45,7 @@ Framebuffers::Framebuffers( const v3d::vulkan::Swapchain& swapchain, const vk::R
 
 Framebuffers::~Framebuffers()
 {
-	const vk::Device& logicalDevice = v3d::vulkan::Context::get()->getLogicalDevice()->get();
+	const vk::Device& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
 	for (auto& framebuffer : framebuffers) logicalDevice.destroyFramebuffer( framebuffer );
 }
 

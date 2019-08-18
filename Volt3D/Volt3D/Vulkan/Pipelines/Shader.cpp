@@ -13,27 +13,30 @@
 #include <StandAlone/ResourceLimits.h>
 #include <StandAlone/DirStackFileIncluder.h>
 
-#include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
+#include "Utils/FileSystem.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Shader::Shader( const std::filesystem::path& filePath )
-	: logicalDevice( v3d::vulkan::Context::get()->getLogicalDevice()->get() )
-	, shaderModule( nullptr )
+	: shaderModule( nullptr )
 	, stage( v3d::vulkan::Shader::toShaderStageFlagbits( filePath.filename() ) )
 	, filePath( filePath )
+	, shaderState()
 {}
 
-Shader::~Shader() {}
+Shader::~Shader() 
+{
+	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().destroyShaderModule( shaderModule );
+}
 
-bool Shader::init()
+bool Shader::compile()
 {
 	EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules | EShMsgDefault);
 
 	// 0. Read Shader file
-	std::vector<char> shaderSource = readFile( filePath );
+	std::vector<char> shaderSource = v3d::FileSystem::readShaderFile( filePath.string().c_str() );
 	if (shaderSource.empty()) return false;
 	
 	// 1. Generate c strings...
@@ -86,82 +89,7 @@ bool Shader::init()
 	//program.dumpReflection();
 
 	// 7. Query all uniforms and attributes
-
-	// uniform blocks
-	for(int i = 0 ; i < program.getNumLiveUniformBlocks(); i++)
-	{
-		const glslang::TObjectReflection& reflection = program.getUniformBlock( i );
-
-		v3d::vulkan::UniformBlockType type = v3d::vulkan::UniformBlockType::eUndefined;
-		if (reflection.getType()->getQualifier().storage == glslang::EvqUniform) type = v3d::vulkan::UniformBlockType::eUniform;
-		else if (reflection.getType()->getQualifier().storage == glslang::EvqBuffer) type = v3d::vulkan::UniformBlockType::eStorage;
-		else if (reflection.getType()->getQualifier().layoutPushConstant) type = v3d::vulkan::UniformBlockType::ePush;
-
-		uniformBlocks.emplace( reflection.getBinding(), std::move( v3d::vulkan::UniformBlock( reflection.name, reflection.getBinding(), reflection.size, type, false ) ) );
-	}
-
-	// uniforms
-	for (int32_t i = 0; i < program.getNumLiveUniformVariables(); i++)
-	{
-		const glslang::TObjectReflection& reflection = program.getUniform( i );
-
-		if (reflection.getBinding() == -1)
-		{
-			std::vector<std::string> split;
-			std::stringstream ss( reflection.name );
-
-			while (ss.good())
-			{
-				std::string substr;
-				std::getline( ss, substr, '.' );
-				split.push_back( substr );
-			}
-
-			if (split.size() > 1)
-			{
-				auto uniformBlock = getUniformBlock( split.front() );
-				if (uniformBlock.has_value())
-				{
-					uniformBlock.value().get().uniforms.emplace( reflection.name, std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, false ) ) );
-				}
-			}
-		}
-		else
-		{
-			// Uniforms
-			auto& qualifier = reflection.getType()->getQualifier();
-			reflection.dump();
-			uniforms.emplace( reflection.getBinding(), std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, qualifier.writeonly ) ) );
-		}
-	}
-
-	for (auto& uniformBlock : uniformBlocks) uniformBlock.second.print( true );
-	for (auto& uniform : uniforms) uniform.second.print();
-
-	// vertex attribs
-	for (int32_t i{}; i < program.getNumLiveAttributes(); i++)
-	{
-		auto reflection = program.getPipeInput( i );
-
-		if (reflection.name.empty()) break;
-		auto& q = reflection.getType()->getQualifier();
-		reflection.dump();
-
-
-		/*
-		for (const auto& [attributeName, attribute] : m_attributes)
-		{
-			if (attributeName == reflection.name)
-			{
-				return;
-			}
-		}
-
-		auto& qualifier{ reflection.getType()->getQualifier() };
-		m_attributes.emplace( reflection.name, Attribute( qualifier.layoutSet, qualifier.layoutLocation, ComputeSize( reflection.getType() ), reflection.glDefineType ) );
-
-		*/
-	}
+	shaderState.init( program );
 
 	// 8. Create spirv file
 	glslang::SpvOptions spvOptions;
@@ -181,39 +109,17 @@ bool Shader::init()
 
 	// 9. Create shader module
 	vk::ShaderModuleCreateInfo createInfo( vk::ShaderModuleCreateFlags(), spirv.size() * sizeof( uint32_t ), spirv.data() );
-	shaderModule = logicalDevice.createShaderModule( createInfo );
+	shaderModule = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createShaderModule( createInfo );
 
 	// Done.
 	return true;
 }
 
-void Shader::release()
-{
-	logicalDevice.destroyShaderModule( shaderModule );
-	shaderModule = nullptr;
-}
-
-const vk::ShaderModule Shader::get() const
-{
-	return shaderModule;
-}
+const vk::ShaderModule Shader::getShaderModule() const { return shaderModule; }
 
 vk::PipelineShaderStageCreateInfo Shader::getPipelineShaderStageCreateInfo() const
 {
 	return vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), stage, shaderModule, "main" );
-}
-
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> Shader::getUniformBlock( const uint32_t binding )
-{
-	auto find_it = uniformBlocks.find( binding );
-	if (find_it == uniformBlocks.end()) return std::nullopt;
-	return (find_it->second);
-}
-
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> Shader::getUniformBlock( const std::string_view name )
-{
-	for (auto& uniformBlock : uniformBlocks) if ((uniformBlock.second).name == name) return uniformBlock.second;
-	return std::nullopt;
 }
 
 vk::ShaderStageFlagBits Shader::getStage() const { return stage; }
@@ -222,7 +128,7 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 {
 	std::vector<vk::DescriptorSetLayoutBinding> bindings;
 
-	for (auto& [uniformName, uniformBlock] : uniformBlocks)
+	for (auto& [uniformName, uniformBlock] : shaderState.uniformBlocks)
 	{
 		vk::DescriptorType descriptorType;
 		if (uniformBlock.getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
@@ -230,7 +136,7 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 		else continue;
 		vk::DescriptorSetLayoutBinding binding
 		(
-			uniformBlock.binding,
+			uniformBlock.getBinding(),
 			descriptorType,
 			1,
 			stage
@@ -238,7 +144,7 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 		bindings.push_back( binding );
 	}
 	
-	for (auto& [uniformName, uniform] : uniforms)
+	for (auto& [uniformName, uniform] : shaderState.uniforms)
 	{
 		vk::DescriptorType descriptorType;
 
@@ -269,24 +175,6 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 	}
 
 	return bindings;
-}
-
-std::vector<char> Shader::readFile( const std::filesystem::path& filePath )
-{
-	std::vector<char> buffer;
-
-	std::ifstream file( filePath, std::ios::ate | std::ios::binary );
-	if (!file.is_open()) return buffer;
-
-	std::size_t fileSize = (std::size_t)file.tellg();
-	buffer.resize( fileSize );
-
-	file.seekg( 0 );
-	file.read( buffer.data(), fileSize );
-
-	file.close();
-
-	return buffer;
 }
 
 EShLanguage Shader::getEShLanguage() const

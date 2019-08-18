@@ -54,7 +54,10 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( PhysicalDevice );
 
 	/** Get PhysicalDevice */
-	const vk::PhysicalDevice& get() const;
+	static v3d::vulkan::PhysicalDevice* get();
+
+	/** Get Vulkan PhysicalDevice */
+	const vk::PhysicalDevice& getVKPhysicalDevice() const;
 
 	/** Get PhysicalDevice properties */
 	const vk::PhysicalDeviceProperties& getProperties() const;

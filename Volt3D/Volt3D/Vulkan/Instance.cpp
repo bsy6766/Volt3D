@@ -88,7 +88,7 @@ bool Instance::initDebugUtilsMessenger()
 	return true;
 }
 
-const vk::Instance& Instance::get() const { return instance; }
+const vk::Instance& Instance::getVKInstance() const { return instance; }
 
 PFN_vkVoidFunction Instance::getProcAddr( const char* pName ) const { return instance.getProcAddr( pName ); }
 

@@ -20,7 +20,7 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-class Shader;
+class ShaderState;
 
 /**
 *	@class UniformBlock
@@ -32,7 +32,7 @@ class Shader;
 */
 class VOLT3D_DLL UniformBlock
 {
-	friend class v3d::vulkan::Shader;
+	friend class v3d::vulkan::ShaderState;
 
 private:
 	UniformBlock() = delete;

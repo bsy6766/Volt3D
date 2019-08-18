@@ -55,7 +55,10 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( LogicalDevice );
 
 	/** Get LogicalDevice */
-	const vk::Device& get() const;
+	static v3d::vulkan::LogicalDevice* get();
+
+	/** Get Vulkan LogicalDevice */
+	const vk::Device& getVKLogicalDevice() const;
 
 	/** Get graphics queue family index */
 	uint32_t getGraphicsQueueFamilyIndex() const;
