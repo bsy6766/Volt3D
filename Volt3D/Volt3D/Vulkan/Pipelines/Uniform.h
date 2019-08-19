@@ -10,7 +10,7 @@
 
 #include <Vulkan/vulkan.hpp>
 
-#include "UniformType.h"
+#include "GLType.h"
 #include "utils/Macros.h"
 
 #include <vector>
@@ -48,7 +48,7 @@ private:
 	int32_t binding;
 	int32_t offset;
 	int32_t size;
-	int32_t glType;
+	int32_t glValueType;
 
 	// @todo readonly?
 	bool writeOnly;
@@ -71,11 +71,11 @@ public:
 	/** Get size of this uniform */
 	inline int32_t getSize() const;
 
-	/** Get GL type value */
-	inline int32_t getGLType() const;
+	/** Get gl value type*/
+	inline int32_t getGLValueType() const;
 
 	/** Get data type */
-	inline v3d::vulkan::UniformType getType() const;
+	inline v3d::vulkan::GLType getGLType() const;
 
 	/** Check if this uniform block is write only */
 	bool isWriteOnly() const;

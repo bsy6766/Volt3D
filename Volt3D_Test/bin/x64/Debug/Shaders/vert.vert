@@ -32,9 +32,9 @@ layout(binding = 0) uniform UniformBufferObject {
 //     mat4x3 m43;
 // } test;
 
-layout(location = 0) in vec3 VERT_POS;
-layout(location = 1) in vec4 VERT_COLOR;
-layout(location = 2) in vec2 VERT_TEXCOORD;
+layout(set = 0, location = 0) in vec3 VERT_POS;
+layout(set = 0, location = 1) in vec4 VERT_COLOR;
+layout(set = 0, location = 2) in vec2 VERT_TEXCOORD;
 
 layout(location = 0) out vec4 frag_color;
 layout(location = 1) out vec2 frag_texcoord;

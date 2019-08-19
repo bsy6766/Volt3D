@@ -12,6 +12,8 @@
 
 #include "utils/Macros.h"
 
+#include "GLType.h"
+
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
@@ -31,12 +33,12 @@ class VOLT3D_DLL Attribute
 
 private:
 	Attribute() = delete;
-	Attribute( const int32_t set, const int32_t  location, const int32_t size, const int32_t glType );
+	Attribute( const int32_t set, const int32_t location, const int32_t size, const int32_t glType );
 
 	int32_t set;
 	int32_t location;
 	int32_t size;
-	int32_t glType;
+	int32_t glValueType;
 
 public:
 	~Attribute();
@@ -54,7 +56,13 @@ public:
 	int32_t getSize() const;
 
 	/** Get GL type of this attribute */
-	int32_t getGlType() const;
+	int32_t getGlValueType() const;
+
+	/** Get data type */
+	v3d::vulkan::GLType getGLType() const;
+
+	/** Log Attribute */
+	void print() const;
 };
 
 VK_NS_END

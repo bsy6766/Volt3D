@@ -1,5 +1,5 @@
 ﻿/**
-*	@file Shader.cpp
+*	@file UniformBlock.cpp
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek

@@ -254,10 +254,13 @@
     <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp">
-      <Filter>DLL</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Attribute.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformData.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
   </ItemGroup>
@@ -475,9 +478,6 @@
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformType.h">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
@@ -506,6 +506,12 @@
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Attribute.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\GLType.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformData.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
   </ItemGroup>

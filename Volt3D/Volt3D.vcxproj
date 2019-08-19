@@ -265,7 +265,8 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h" />
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformType.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\GLType.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformData.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Framebuffers.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Swapchain.h" />
@@ -334,6 +335,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformBlock.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformData.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Framebuffers.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Swapchain.cpp" />

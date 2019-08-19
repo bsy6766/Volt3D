@@ -148,7 +148,7 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 	{
 		vk::DescriptorType descriptorType;
 
-		switch (uniform.getGLType())
+		switch (uniform.getGLValueType())
 		{
 		case 0x8B5E: // GL_SAMPLER_2D
 		case 0x904D: // GL_IMAGE_2D

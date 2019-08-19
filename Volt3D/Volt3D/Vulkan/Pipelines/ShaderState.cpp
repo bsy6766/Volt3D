@@ -15,6 +15,9 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 ShaderState::ShaderState()
+	: attributes()
+	, uniformBlocks()
+	, uniforms()
 {}
 
 void ShaderState::init( glslang::TProgram& program )
@@ -67,9 +70,6 @@ void ShaderState::init( glslang::TProgram& program )
 		}
 	}
 
-	for (auto& uniformBlock : uniformBlocks) uniformBlock.second.print( true );
-	for (auto& uniform : uniforms) uniform.second.print();
-
 	// vertex attribs
 	for (int32_t i{}; i < program.getNumLiveAttributes(); i++)
 	{
@@ -77,23 +77,15 @@ void ShaderState::init( glslang::TProgram& program )
 
 		if (reflection.name.empty()) break;
 		auto& q = reflection.getType()->getQualifier();
-		reflection.dump();
 
-
-		/*
-		for (const auto& [attributeName, attribute] : m_attributes)
-		{
-			if (attributeName == reflection.name)
-			{
-				return;
-			}
-		}
-
-		auto& qualifier{ reflection.getType()->getQualifier() };
-		m_attributes.emplace( reflection.name, Attribute( qualifier.layoutSet, qualifier.layoutLocation, ComputeSize( reflection.getType() ), reflection.glDefineType ) );
-
-		*/
+		v3d::vulkan::Attribute attribute( q.layoutSet, q.layoutLocation, 1, reflection.glDefineType );
+		attributes.emplace( attribute.location, std::move( attribute ) );
+		//auto t = reflection.getType();
 	}
+
+	for (auto& attribute : attributes) attribute.second.print();
+	for (auto& uniformBlock : uniformBlocks) uniformBlock.second.print( true );
+	for (auto& uniform : uniforms) uniform.second.print();
 }
 
 ShaderState::~ShaderState() {}
