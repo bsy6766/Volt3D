@@ -124,6 +124,8 @@ vk::PipelineShaderStageCreateInfo Shader::getPipelineShaderStageCreateInfo() con
 
 vk::ShaderStageFlagBits Shader::getStage() const { return stage; }
 
+const v3d::vulkan::ShaderState& Shader::getShaderState() const { return shaderState; }
+
 std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBinding() const
 {
 	std::vector<vk::DescriptorSetLayoutBinding> bindings;

@@ -9,6 +9,9 @@
 
 #include "UniformBlock.h"
 
+#include "UniformData.h"
+#include "Vulkan/Buffers/UniformBuffer.h"
+
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
@@ -17,9 +20,16 @@ UniformBlock::UniformBlock( const std::string& name, const int32_t binding, cons
 	, binding( binding )
 	, size( size )
 	, type( type )
+	, uniformData( new v3d::vulkan::UniformData( size ) )
+	, uniformBuffer( new v3d::vulkan::UniformBuffer( size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostCoherent ) )
 {}
 
-UniformBlock::~UniformBlock() { uniforms.clear(); }
+UniformBlock::~UniformBlock() 
+{ 
+	SAFE_DELETE( uniformData );
+	SAFE_DELETE( uniformBuffer );
+	uniforms.clear(); 
+}
 
 bool UniformBlock::hasUniform( const std::string& name ) const
 {
@@ -35,6 +45,8 @@ int32_t UniformBlock::getSize() const { return size; }
 std::size_t UniformBlock::getCount() const { return uniforms.size(); }
 
 v3d::vulkan::UniformBlockType UniformBlock::getType() const { return type; }
+
+v3d::vulkan::UniformData& UniformBlock::getUniformData() const { return *uniformData; }
 
 void UniformBlock::print( const bool detail )
 {

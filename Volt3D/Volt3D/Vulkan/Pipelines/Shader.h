@@ -66,6 +66,8 @@ public:
 	/** Get shader stage flag bits */
 	vk::ShaderStageFlagBits getStage() const;
 
+	const v3d::vulkan::ShaderState& getShaderState() const;
+
 	std::vector<vk::DescriptorSetLayoutBinding> getDescriptorSetLayoutBinding() const;
 
 	/**

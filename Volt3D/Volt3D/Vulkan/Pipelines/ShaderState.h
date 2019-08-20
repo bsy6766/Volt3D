@@ -61,14 +61,14 @@ public:
 	*	@param binding A uniform block binding defined in shader.
 	*	@return A pointer to uniform block with matching binding. Else, std::nullopt.
 	*/
-	std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> getUniformBlock( const uint32_t binding );
+	v3d::vulkan::UniformBlock* getUniformBlock( const uint32_t binding ) const;
 
 	/**
 	*	Get uniform block by name
 	*	@param binding A uniform block name defined in shader.
 	*	@return A uniform block with matching name. Else, std::nullopt.
 	*/
-	std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> getUniformBlock( const std::string_view name );
+	v3d::vulkan::UniformBlock* getUniformBlock( const std::string_view name ) const;
 };
 
 VK_NS_END

@@ -90,14 +90,14 @@ void ShaderState::init( glslang::TProgram& program )
 
 ShaderState::~ShaderState() {}
 
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const uint32_t binding )
+std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const uint32_t binding ) const
 {
 	auto find_it = uniformBlocks.find( binding );
 	if (find_it == uniformBlocks.end()) return std::nullopt;
-	return (find_it->second);
+	return std::optional(find_it->second);
 }
 
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const std::string_view name )
+std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const std::string_view name ) const
 {
 	for (auto& uniformBlock : uniformBlocks) if ((uniformBlock.second).name == name) return uniformBlock.second;
 	return std::nullopt;

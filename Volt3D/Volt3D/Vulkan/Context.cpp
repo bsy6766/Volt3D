@@ -511,6 +511,10 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	const float fars = 1000.0f;
 	curMVP.projection = glm::perspective( glm::radians( fovy ), aspect, nears, fars );
 
+	auto shaderState = pipeline->getShader( vk::ShaderStageFlagBits::eVertex );
+	shaderState->getShaderState().getUniformBlock( 0 );
+
+
 	mvpUBOs[imageIndex]->update( &curMVP );
 }
 

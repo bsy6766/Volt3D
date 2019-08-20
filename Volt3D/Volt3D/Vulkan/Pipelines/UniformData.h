@@ -15,6 +15,8 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
+class UniformBlock;
+
 /**
 *	@class UniformData
 *	@brief A dynamic allocated memory for Uniforms in Vulkan shaders.
@@ -25,11 +27,14 @@ VK_NS_BEGIN
 */
 class UniformData
 {
+	friend class v3d::vulkan::UniformBlock;
 private:
+	UniformData() = delete;
 	UniformData( const std::size_t size );
 
 	unsigned char* dataPtr;
 	std::size_t size;
+	bool dirty;
 
 public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( UniformData );
@@ -39,6 +44,7 @@ public:
 
 	void clear();
 	void setData( const void* newDataPtr, const std::size_t newDataSize, std::size_t offset = 0 );
+	bool isDirty() const;
 
 	const void* getDataPtr() const;
 };

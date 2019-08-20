@@ -15,6 +15,7 @@ VK_NS_BEGIN
 UniformData::UniformData( const std::size_t size )
 	: dataPtr( nullptr )
 	, size( size )
+	, dirty( true )
 {
 	dataPtr = new unsigned char[size];
 }
@@ -27,7 +28,10 @@ void UniformData::setData( const void* newDataPtr, const std::size_t newDataSize
 {
 	if (offset + newDataSize > size) return;
 	memcpy( dataPtr + offset, newDataPtr, newDataSize );
+	dirty = true;
 }
+
+bool UniformData::isDirty() const { return dirty; }
 
 const void* UniformData::getDataPtr() const { return dataPtr; }
 

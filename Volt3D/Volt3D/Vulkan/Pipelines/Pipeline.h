@@ -48,7 +48,7 @@ private:
 	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState;
 	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo;
 
-	std::unordered_map<vk::ShaderStageFlagBits, v3d::vulkan::Shader> shaders;
+	std::unordered_map<vk::ShaderStageFlagBits, v3d::vulkan::Shader*> shaders;
 	std::vector<vk::PipelineShaderStageCreateInfo> shaderCreateInfos;
 
 	bool init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
@@ -80,7 +80,7 @@ public:
 	const vk::DescriptorSetLayout& getDescriptorSetLayout() const;
 
 	/** Get shader from specific shader stage */
-	//std::optional<v3d::vulkan::Shader>
+	v3d::vulkan::Shader* getShader( const vk::ShaderStageFlagBits stage ) const;
 };
 
 VK_NS_END

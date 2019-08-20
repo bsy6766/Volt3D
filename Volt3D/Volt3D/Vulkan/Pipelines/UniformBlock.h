@@ -21,6 +21,8 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 class ShaderState;
+class UniformData;
+class UniformBuffer;
 
 /**
 *	@class UniformBlock
@@ -55,6 +57,11 @@ private:
 	// For uniform block, type is 0xffffffff
 	//int32_t glType;
 
+	// Actual place where cpu side uniform data is stored
+	v3d::vulkan::UniformData* uniformData;
+	// Vulkan buffer for uniform buffer
+	v3d::vulkan::UniformBuffer* uniformBuffer;
+
 	// All uniforms in this uniform block
 	std::unordered_map<std::string, v3d::vulkan::Uniform> uniforms;
 	
@@ -84,6 +91,9 @@ public:
 
 	/** Get type of uniform block */
 	v3d::vulkan::UniformBlockType getType() const;
+
+	/** Get Uniform Data */
+	v3d::vulkan::UniformData& getUniformData() const;
 	
 	/** 
 	*	Log UniformBlock 
