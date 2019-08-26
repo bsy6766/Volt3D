@@ -14,6 +14,10 @@
 #include <StandAlone/DirStackFileIncluder.h>
 
 #include "Vulkan/Devices/LogicalDevice.h"
+#include "ShaderState.h"
+#include "Attribute.h"
+#include "UniformBlock.h"
+#include "Uniform.h"
 #include "Utils/FileSystem.h"
 
 V3D_NS_BEGIN
@@ -23,11 +27,12 @@ Shader::Shader( const std::filesystem::path& filePath )
 	: shaderModule( nullptr )
 	, stage( v3d::vulkan::Shader::toShaderStageFlagbits( filePath.filename() ) )
 	, filePath( filePath )
-	, shaderState()
+	, shaderState( new v3d::vulkan::ShaderState() )
 {}
 
 Shader::~Shader() 
 {
+	SAFE_DELETE( shaderState );
 	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().destroyShaderModule( shaderModule );
 }
 
@@ -89,7 +94,7 @@ bool Shader::compile()
 	//program.dumpReflection();
 
 	// 7. Query all uniforms and attributes
-	shaderState.init( program );
+	shaderState->init( program );
 
 	// 8. Create spirv file
 	glslang::SpvOptions spvOptions;
@@ -124,21 +129,21 @@ vk::PipelineShaderStageCreateInfo Shader::getPipelineShaderStageCreateInfo() con
 
 vk::ShaderStageFlagBits Shader::getStage() const { return stage; }
 
-const v3d::vulkan::ShaderState& Shader::getShaderState() const { return shaderState; }
+v3d::vulkan::ShaderState* Shader::getShaderState() const { return shaderState; }
 
 std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBinding() const
 {
 	std::vector<vk::DescriptorSetLayoutBinding> bindings;
 
-	for (auto& [uniformName, uniformBlock] : shaderState.uniformBlocks)
+	for (auto& [uniformName, uniformBlock] : shaderState->uniformBlocks)
 	{
 		vk::DescriptorType descriptorType;
-		if (uniformBlock.getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
-		else if (uniformBlock.getType() == v3d::vulkan::UniformBlockType::eStorage) descriptorType = vk::DescriptorType::eStorageBuffer;
+		if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
+		else if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eStorage) descriptorType = vk::DescriptorType::eStorageBuffer;
 		else continue;
 		vk::DescriptorSetLayoutBinding binding
 		(
-			uniformBlock.getBinding(),
+			uniformBlock->getBinding(),
 			descriptorType,
 			1,
 			stage
@@ -146,21 +151,21 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 		bindings.push_back( binding );
 	}
 	
-	for (auto& [uniformName, uniform] : shaderState.uniforms)
+	for (auto& [uniformName, uniform] : shaderState->uniforms)
 	{
 		vk::DescriptorType descriptorType;
 
-		switch (uniform.getGLValueType())
+		switch (uniform->getGLValueType())
 		{
 		case 0x8B5E: // GL_SAMPLER_2D
 		case 0x904D: // GL_IMAGE_2D
 		case 0x9108: // GL_SAMPLER_2D_MULTISAMPLE
 		case 0x9055: // GL_IMAGE_2D_MULTISAMPLE
 		{
-			descriptorType = uniform.isWriteOnly() ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
+			descriptorType = uniform->isWriteOnly() ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
 			vk::DescriptorSetLayoutBinding binding
 			(
-				uniform.getBinding(),
+				uniform->getBinding(),
 				descriptorType,
 				1,
 				stage

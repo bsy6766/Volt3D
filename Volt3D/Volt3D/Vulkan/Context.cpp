@@ -32,6 +32,14 @@
 #include "Spritesheet/Image.h"
 #include "Texture.h"
 
+
+#include "Pipelines/Shader.h"
+#include "Pipelines/ShaderState.h"
+#include "Pipelines/UniformData.h"
+#include "Pipelines/Uniform.h"
+#include "Pipelines/UniformBlock.h"
+#include "Pipelines/Attribute.h"
+
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
@@ -384,10 +392,10 @@ bool Context::initDescriptorSet()
 			nullptr
 		);
 
-		const uint32_t uboSize = 2;
-		const vk::WriteDescriptorSet descriptorWrites[uboSize] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite };
+		const uint32_t descriptorWriteSize = 2;
+		const vk::WriteDescriptorSet descriptorWrites[descriptorWriteSize] = { mvpUBODescriptorWrite, lenaSamplerDescriptorWrite };
 
-		logicalDevice->getVKLogicalDevice().updateDescriptorSets( uboSize, descriptorWrites, 0, nullptr );
+		logicalDevice->getVKLogicalDevice().updateDescriptorSets( descriptorWriteSize, descriptorWrites, 0, nullptr );
 	}
 
 	return true;
@@ -491,9 +499,13 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 
 	MVP& curMVP = mvps[imageIndex];
 
-	curMVP.model = glm::translate( glm::mat4( 1 ), glm::vec3( 5, 0.0, 0.0 ) );
-	//curMVP.model = glm::scale( glm::mat4( 1 ), glm::vec3( 5, 5, 1 ) );
-	curMVP.model = screenSpaceMatrix;
+	static float time = 1.0f / 60.0f;
+	const float angle = 0.0f;
+	static float curAngle = 0.0f;
+	curAngle += (30.0f * time);
+	if (curAngle >= 360.0f) curAngle -= 360.0f;
+
+	curMVP.model = screenSpaceMatrix * glm::rotate( glm::mat4( 1 ), glm::radians( curAngle ), glm::vec3( 0, 0, 1 ) );
 
 	static struct Camera
 	{
@@ -510,10 +522,6 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	const float nears = 0.1f;
 	const float fars = 1000.0f;
 	curMVP.projection = glm::perspective( glm::radians( fovy ), aspect, nears, fars );
-
-	auto shaderState = pipeline->getShader( vk::ShaderStageFlagBits::eVertex );
-	shaderState->getShaderState().getUniformBlock( 0 );
-
 
 	mvpUBOs[imageIndex]->update( &curMVP );
 }

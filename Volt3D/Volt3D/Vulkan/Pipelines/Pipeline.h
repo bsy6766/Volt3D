@@ -12,11 +12,12 @@
 
 #include <unordered_map>
 
-#include "Shader.h"
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
+
+class Shader;
 
 /**
 *	@class Pipeline
@@ -31,8 +32,6 @@ class VOLT3D_DLL Pipeline
 	friend class Context;
 
 private:
-	const vk::Device& logicalDevice;
-
 	vk::DescriptorSetLayout descriptorSetLayout;
 	vk::DescriptorPool descriptorPool;
 
@@ -44,6 +43,7 @@ private:
 	std::vector<vk::VertexInputAttributeDescription> vertexInputAttribDescriptions;
 	vk::VertexInputBindingDescription vertexInputBindingDescription;
 
+	// @todo Does pipeline actually need to have these stuffs?
 	vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
 	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState;
 	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo;

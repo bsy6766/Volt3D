@@ -8,6 +8,9 @@
 #include <PreCompiled.h>
 
 #include "ShaderState.h"
+#include "Uniform.h"
+#include "UniformBlock.h"
+#include "Attribute.h"
 
 #include <SPIRV/GlslangToSpv.h>
 
@@ -19,6 +22,16 @@ ShaderState::ShaderState()
 	, uniformBlocks()
 	, uniforms()
 {}
+
+ShaderState::~ShaderState() 
+{
+	for (auto& attribute : attributes) SAFE_DELETE( attribute.second );
+	for (auto& uniformBlock : uniformBlocks) SAFE_DELETE( uniformBlock.second );
+	for (auto& uniform : uniforms) SAFE_DELETE( uniform.second );
+	attributes.clear();
+	uniformBlocks.clear();
+	uniforms.clear();
+}
 
 void ShaderState::init( glslang::TProgram& program )
 {
@@ -32,7 +45,7 @@ void ShaderState::init( glslang::TProgram& program )
 		else if (reflection.getType()->getQualifier().storage == glslang::EvqBuffer) type = v3d::vulkan::UniformBlockType::eStorage;
 		else if (reflection.getType()->getQualifier().layoutPushConstant) type = v3d::vulkan::UniformBlockType::ePush;
 
-		uniformBlocks.emplace( reflection.getBinding(), std::move( v3d::vulkan::UniformBlock( reflection.name, reflection.getBinding(), reflection.size, type, false ) ) );
+		uniformBlocks.emplace( reflection.getBinding(), new v3d::vulkan::UniformBlock( reflection.name, reflection.getBinding(), reflection.size, type, false ) );
 	}
 
 	// uniforms
@@ -55,9 +68,9 @@ void ShaderState::init( glslang::TProgram& program )
 			if (split.size() > 1)
 			{
 				auto uniformBlock = getUniformBlock( split.front() );
-				if (uniformBlock.has_value())
+				if (uniformBlock)
 				{
-					uniformBlock.value().get().uniforms.emplace( reflection.name, std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, false ) ) );
+					uniformBlock->uniforms.emplace( reflection.name, new v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, false ) );
 				}
 			}
 		}
@@ -66,7 +79,7 @@ void ShaderState::init( glslang::TProgram& program )
 			// Uniforms
 			auto& qualifier = reflection.getType()->getQualifier();
 			reflection.dump();
-			uniforms.emplace( reflection.getBinding(), std::move( v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, qualifier.writeonly ) ) );
+			uniforms.emplace( reflection.getBinding(), new v3d::vulkan::Uniform( reflection.name, reflection.getBinding(), reflection.offset, reflection.size, reflection.glDefineType, qualifier.writeonly ) );
 		}
 	}
 
@@ -78,29 +91,52 @@ void ShaderState::init( glslang::TProgram& program )
 		if (reflection.name.empty()) break;
 		auto& q = reflection.getType()->getQualifier();
 
-		v3d::vulkan::Attribute attribute( q.layoutSet, q.layoutLocation, 1, reflection.glDefineType );
-		attributes.emplace( attribute.location, std::move( attribute ) );
+		attributes.emplace( q.layoutLocation, new v3d::vulkan::Attribute( reflection.name, q.layoutSet, q.layoutLocation, 1, reflection.glDefineType ) );
 		//auto t = reflection.getType();
 	}
 
-	for (auto& attribute : attributes) attribute.second.print();
-	for (auto& uniformBlock : uniformBlocks) uniformBlock.second.print( true );
-	for (auto& uniform : uniforms) uniform.second.print();
+	for (auto& attribute : attributes) attribute.second->print();
+	for (auto& uniformBlock : uniformBlocks) uniformBlock.second->print( true );
+	for (auto& uniform : uniforms) uniform.second->print();
 }
 
-ShaderState::~ShaderState() {}
+v3d::vulkan::Attribute* ShaderState::getAttribute( const uint32_t location ) const
+{
+	auto find_it = attributes.find( location );
+	if (find_it == attributes.end()) return nullptr;
+	return find_it->second;
+}
 
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const uint32_t binding ) const
+v3d::vulkan::Attribute* ShaderState::getAttribute( const std::string_view name ) const
+{
+	for (auto& attribute : attributes) if ((attribute.second)->name == name) return attribute.second;
+	return nullptr;
+}
+
+v3d::vulkan::UniformBlock* ShaderState::getUniformBlock( const uint32_t binding ) const
 {
 	auto find_it = uniformBlocks.find( binding );
-	if (find_it == uniformBlocks.end()) return std::nullopt;
-	return std::optional(find_it->second);
+	if (find_it == uniformBlocks.end()) return nullptr;
+	return find_it->second;
 }
 
-std::optional<std::reference_wrapper<v3d::vulkan::UniformBlock>> ShaderState::getUniformBlock( const std::string_view name ) const
+v3d::vulkan::UniformBlock* ShaderState::getUniformBlock( const std::string_view name ) const
 {
-	for (auto& uniformBlock : uniformBlocks) if ((uniformBlock.second).name == name) return uniformBlock.second;
-	return std::nullopt;
+	for (auto& uniformBlock : uniformBlocks) if ((uniformBlock.second)->name == name) return uniformBlock.second;
+	return nullptr;
+}
+
+v3d::vulkan::Uniform* ShaderState::getUniform( const uint32_t binding ) const
+{
+	auto find_it = uniforms.find( binding );
+	if (find_it == uniforms.end()) return nullptr;
+	return find_it->second;
+}
+
+v3d::vulkan::Uniform* ShaderState::getUniform( const std::string_view name ) const
+{
+	for (auto& uniform : uniforms) if ((uniform.second)->name == name) return uniform.second;
+	return nullptr;
 }
 
 

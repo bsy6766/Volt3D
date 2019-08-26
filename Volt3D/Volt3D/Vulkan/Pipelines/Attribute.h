@@ -10,6 +10,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <string>
+
 #include "utils/Macros.h"
 
 #include "GLType.h"
@@ -33,7 +35,9 @@ class VOLT3D_DLL Attribute
 
 private:
 	Attribute() = delete;
-	Attribute( const int32_t set, const int32_t location, const int32_t size, const int32_t glType );
+	Attribute( const std::string& name, const int32_t set, const int32_t location, const int32_t size, const int32_t glType );
+
+	std::string name;
 
 	int32_t set;
 	int32_t location;
@@ -45,6 +49,9 @@ public:
 
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Attribute );
 	DEFAULT_MOVE_CONSTRUCTORS( Attribute );
+
+	/** Get name of this attribute in shader */
+	std::string getName() const;
 
 	/** Get set of this attribute in shader */
 	int32_t getSet() const;

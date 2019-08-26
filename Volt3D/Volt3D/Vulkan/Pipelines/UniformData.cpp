@@ -33,6 +33,8 @@ void UniformData::setData( const void* newDataPtr, const std::size_t newDataSize
 
 bool UniformData::isDirty() const { return dirty; }
 
+std::size_t UniformData::getSize() const { return size; }
+
 const void* UniformData::getDataPtr() const { return dataPtr; }
 
 VK_NS_END

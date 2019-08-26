@@ -43,9 +43,10 @@ public:
 	~UniformData();
 
 	void clear();
-	void setData( const void* newDataPtr, const std::size_t newDataSize, std::size_t offset = 0 );
+	void setData( const void* newDataPtr, const std::size_t newDataSize = 0, std::size_t offset = 0 );
 	bool isDirty() const;
 
+	std::size_t getSize() const;
 	const void* getDataPtr() const;
 };
 

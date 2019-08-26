@@ -16,13 +16,13 @@
 
 #include <glslang/Public/ShaderLang.h>
 
-#include "ShaderState.h"
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 class Pipeline;
+class ShaderState;
 
 /**
 *	@class Shader
@@ -45,7 +45,7 @@ private:
 
 	vk::ShaderStageFlagBits stage;
 	vk::ShaderModule shaderModule;
-	v3d::vulkan::ShaderState shaderState;
+	v3d::vulkan::ShaderState* shaderState;
 
 	bool compile();
 
@@ -66,7 +66,8 @@ public:
 	/** Get shader stage flag bits */
 	vk::ShaderStageFlagBits getStage() const;
 
-	const v3d::vulkan::ShaderState& getShaderState() const;
+	/** Get shader state of this shader */
+	v3d::vulkan::ShaderState* getShaderState() const;
 
 	std::vector<vk::DescriptorSetLayoutBinding> getDescriptorSetLayoutBinding() const;
 

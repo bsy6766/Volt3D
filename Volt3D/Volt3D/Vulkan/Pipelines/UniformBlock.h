@@ -63,7 +63,7 @@ private:
 	v3d::vulkan::UniformBuffer* uniformBuffer;
 
 	// All uniforms in this uniform block
-	std::unordered_map<std::string, v3d::vulkan::Uniform> uniforms;
+	std::unordered_map<std::string, v3d::vulkan::Uniform*> uniforms;
 	
 public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( UniformBlock );
@@ -93,7 +93,10 @@ public:
 	v3d::vulkan::UniformBlockType getType() const;
 
 	/** Get Uniform Data */
-	v3d::vulkan::UniformData& getUniformData() const;
+	v3d::vulkan::UniformData* getUniformData() const;
+
+	/** Get Uniform Buffer */
+	v3d::vulkan::UniformBuffer* getUniformBuffer() const;
 	
 	/** 
 	*	Log UniformBlock 

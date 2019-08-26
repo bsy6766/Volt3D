@@ -11,23 +11,31 @@
 
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/SwapChain/Swapchain.h"
+#include "Shader.h"
 #include "Renderer/Vertex.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Pipeline::Pipeline()
-	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
-	, pipeline( nullptr )
+	: pipeline()
+	, pipelineLayout()
 	, viewport()
 	, scissor()
+	, vertexInputBindingDescription()
 	, descriptorSetLayout( nullptr )
 	, descriptorPool( nullptr )
+	, pipelineMultisampleStateCreateInfo()
+	, pipelineColorBlendAttachmentState()
+	, pipelineColorBlendStateCreateInfo()
+	, shaders()
+	, shaderCreateInfos()
 	// @todo init all
 {}
 
 Pipeline::~Pipeline()
 {
+	const vk::Device& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
 	for (auto e : shaders) SAFE_DELETE( e.second );	shaders.clear();
 	logicalDevice.destroyDescriptorSetLayout( descriptorSetLayout );
 	logicalDevice.destroyDescriptorPool( descriptorPool );
@@ -167,7 +175,7 @@ bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const
 		renderPass									// renderPass
 	);
 
-	pipeline = logicalDevice.createGraphicsPipeline( nullptr, graphicsPipelineCreateInfo );
+	pipeline = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createGraphicsPipeline( nullptr, graphicsPipelineCreateInfo );
 
 	return true;
 }
@@ -214,7 +222,7 @@ bool Pipeline::initDescriptorSetLayout()
 		bindings.data()
 	);
 
-	descriptorSetLayout = logicalDevice.createDescriptorSetLayout( layoutInfo );
+	descriptorSetLayout = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createDescriptorSetLayout( layoutInfo );
 
 	return true;
 }
@@ -230,7 +238,7 @@ bool Pipeline::initPipelineLayout()
 		nullptr
 	);
 
-	pipelineLayout = logicalDevice.createPipelineLayout( layoutCreateInfo );
+	pipelineLayout = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createPipelineLayout( layoutCreateInfo );
 
 	return true;
 }

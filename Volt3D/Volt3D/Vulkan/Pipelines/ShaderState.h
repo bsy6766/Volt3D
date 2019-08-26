@@ -13,15 +13,16 @@
 #include <unordered_map>
 #include <optional>
 
-#include "Uniform.h"
-#include "UniformBlock.h"
-#include "Attribute.h"
 #include "utils/Macros.h"
 
 namespace glslang { class TProgram; }
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
+
+class Attribute;
+class UniformBlock;
+class Uniform;
 
 /**
 *	@class ShaderState
@@ -39,13 +40,13 @@ private:
 	ShaderState();
 
 	// Attributes in shaders
-	std::unordered_map<uint32_t/*location*/, v3d::vulkan::Attribute> attributes;
+	std::unordered_map<uint32_t/*location*/, v3d::vulkan::Attribute*> attributes;
 
 	// Uniform blocks in shaders
-	std::unordered_map<uint32_t/*binding*/, v3d::vulkan::UniformBlock> uniformBlocks;
+	std::unordered_map<uint32_t/*binding*/, v3d::vulkan::UniformBlock*> uniformBlocks;
 
 	// Uniforms in shader
-	std::unordered_map<uint32_t/*binding*/, v3d::vulkan::Uniform> uniforms;
+	std::unordered_map<uint32_t/*binding*/, v3d::vulkan::Uniform*> uniforms;
 
 	// initialize
 	void init( glslang::TProgram& program );
@@ -57,18 +58,50 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( ShaderState );
 
 	/**
+	*	Get attribute by location.
+	*	@param location An attribute location in shader.
+	*	@return A attribute with matching location. Else, nullptr.
+	*/
+	v3d::vulkan::Attribute* getAttribute( const uint32_t location ) const;
+
+	/**
+	*	Get attribute by name.
+	*	@param name A attribute name defined in shader.
+	*	@return A attribute with matching name. Else, nullptr.
+	*/
+	v3d::vulkan::Attribute* getAttribute( const std::string_view name ) const;
+
+	/**
 	*	Get uniform block by binding
 	*	@param binding A uniform block binding defined in shader.
-	*	@return A pointer to uniform block with matching binding. Else, std::nullopt.
+	*	@return A uniform block with matching binding. Else, nullptr.
 	*/
 	v3d::vulkan::UniformBlock* getUniformBlock( const uint32_t binding ) const;
 
 	/**
 	*	Get uniform block by name
 	*	@param binding A uniform block name defined in shader.
-	*	@return A uniform block with matching name. Else, std::nullopt.
+	*	@return A uniform block with matching name. Else, nullptr.
 	*/
 	v3d::vulkan::UniformBlock* getUniformBlock( const std::string_view name ) const;
+
+	/**
+	*	Get uniform by binding.
+	*	@warning This does not return uniform inside the uniform block.
+	*	@see getUniformBlock
+	*	@param binding A uniform binding defined in shader.
+	*	@return A uniform with matching binding. Else, nullptr.
+	*/
+	v3d::vulkan::Uniform* getUniform( const uint32_t binding ) const;
+
+	/**
+	*	Get uniform by name.
+	*	@warning This does not return uniform inside the uniform block.
+	*	@see getUniformBlock
+	*	@param name A uniform name defined in shader.
+	*	@return A uniform with matching name. Else, nullptr.
+	*/
+	v3d::vulkan::Uniform* getUniform( const std::string_view name ) const;
 };
 
 VK_NS_END

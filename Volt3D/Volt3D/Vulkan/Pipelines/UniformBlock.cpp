@@ -22,12 +22,15 @@ UniformBlock::UniformBlock( const std::string& name, const int32_t binding, cons
 	, type( type )
 	, uniformData( new v3d::vulkan::UniformData( size ) )
 	, uniformBuffer( new v3d::vulkan::UniformBuffer( size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostCoherent ) )
-{}
+{
+	v3d::Logger::getInstance().info( "UniformBlock created with memory: {}", uniformData->getSize() );
+}
 
 UniformBlock::~UniformBlock() 
 { 
 	SAFE_DELETE( uniformData );
 	SAFE_DELETE( uniformBuffer );
+	for (auto& uniform : uniforms) SAFE_DELETE( uniform.second );
 	uniforms.clear(); 
 }
 
@@ -46,7 +49,9 @@ std::size_t UniformBlock::getCount() const { return uniforms.size(); }
 
 v3d::vulkan::UniformBlockType UniformBlock::getType() const { return type; }
 
-v3d::vulkan::UniformData& UniformBlock::getUniformData() const { return *uniformData; }
+v3d::vulkan::UniformData* UniformBlock::getUniformData() const { return uniformData; }
+
+v3d::vulkan::UniformBuffer* UniformBlock::getUniformBuffer() const { return uniformBuffer; }
 
 void UniformBlock::print( const bool detail )
 {
@@ -58,7 +63,7 @@ void UniformBlock::print( const bool detail )
 	logger.trace( "Binding: {}", binding );
 	logger.trace( "Size: {}", size );
 
-	if (detail)	for (auto& e : uniforms) (e.second).print();
+	if (detail)	for (auto& e : uniforms) (e.second)->print();
 }
 
 
