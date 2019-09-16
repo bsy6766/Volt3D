@@ -30,8 +30,8 @@ protected:
 	vk::ImageLayout imageLayout;
 	vk::ImageView imageView;
 
-	//vk::Extent3D extent;
-	//vk::Format format;
+	vk::Extent3D extent;
+	vk::Format format;
 	//vk::Filter filter;
 	//vk::ImageUsageFlagBits usageFlagBits;
 
@@ -45,6 +45,8 @@ protected:
 	void initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
 	void initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags );
 	void initSampler();
+	void transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout );
+	void copyBuffer();
 
 public:
 	virtual ~Image();
@@ -52,9 +54,9 @@ public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Image );
 	DEFAULT_MOVE_CONSTRUCTORS( Image );
 
-	const vk::Image& getImage() const;
-	const vk::DeviceMemory& getDeviceMemory() const;
-	const vk::Sampler& getSampler() const;
+	//const vk::Image& getImage() const;
+	//const vk::DeviceMemory& getDeviceMemory() const;
+	//const vk::Sampler& getSampler() const;
 
 	static uint32_t get_mip_levels( const vk::Extent2D& extent );
 	static uint32_t get_mip_levels( const vk::Extent3D& extent );

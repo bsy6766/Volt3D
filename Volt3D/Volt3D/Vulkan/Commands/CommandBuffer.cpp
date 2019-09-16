@@ -17,13 +17,13 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
-	: commandPool( v3d::vulkan::Context::get()->getCommandPool()->getVKCommandPool() )
-	, commandBuffer( nullptr )
+	: commandBuffer( nullptr )
 	, running( false )
 {
+	const vk::CommandPool& cp = v3d::vulkan::Context::get()->getCommandPool()->getVKCommandPool();
 	vk::CommandBufferAllocateInfo allocInfo
 	(
-		commandPool,
+		cp,
 		level,
 		1
 	);
@@ -33,7 +33,8 @@ CommandBuffer::CommandBuffer( const vk::CommandBufferLevel level )
 
 CommandBuffer::~CommandBuffer()
 {
-	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().freeCommandBuffers( commandPool, commandBuffer );
+	const vk::CommandPool& cp = v3d::vulkan::Context::get()->getCommandPool()->getVKCommandPool();
+	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().freeCommandBuffers( cp, commandBuffer );
 }
 
 const vk::CommandBuffer& CommandBuffer::getVKCommandBuffer() const { return commandBuffer; }

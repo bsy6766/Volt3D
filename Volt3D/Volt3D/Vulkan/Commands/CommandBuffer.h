@@ -36,14 +36,12 @@ namespace v3d
 
 		private:
 			CommandBuffer() = delete;
-			CommandBuffer( const vk::CommandBufferLevel level );
-
-			const vk::CommandPool& commandPool;
-			
+						
 			bool running;
 			vk::CommandBuffer commandBuffer;
 
 		public:
+			CommandBuffer( const vk::CommandBufferLevel level );
 			~CommandBuffer();
 
 			DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( CommandBuffer );

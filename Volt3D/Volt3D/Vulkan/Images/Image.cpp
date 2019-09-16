@@ -12,6 +12,7 @@
 #include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Devices/PhysicalDevice.h"
+#include "Vulkan/Commands/CommandBuffer.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
@@ -23,8 +24,8 @@ Image::Image()
 	, sampler( nullptr )
 	, imageLayout()
 	, imageView( nullptr )
-	//, extent()
-	//, format()
+	, extent()
+	, format()
 	//, filter()
 	//, usageFlagBits()
 	, mip_levels( 0 )
@@ -33,6 +34,14 @@ Image::Image()
 	//, samplerAddressMode()
 	//, anisotropic( false )
 {}
+
+Image::~Image()
+{
+	logicalDevice.destroySampler( sampler );
+	logicalDevice.destroyImageView( imageView );
+	logicalDevice.destroyImage( image );
+	logicalDevice.freeMemory( deviceMemory );
+}
 
 void Image::initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
 {
@@ -103,12 +112,28 @@ void Image::initSampler()
 	sampler = logicalDevice.createSampler( createInfo, nullptr );
 }
 
-Image::~Image()
+void Image::transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout )
 {
-	logicalDevice.destroySampler( sampler );
-	logicalDevice.destroyImageView( imageView );
-	logicalDevice.destroyImage( image );
-	logicalDevice.freeMemory( deviceMemory );
+	auto cb = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
+
+	vk::ImageSubresourceRange subresourceRange
+	(
+		vk::ImageAspectFlagBits::eColor,
+		0, 1,	// mipmap
+		0, 1	// layer
+	);
+
+	vk::ImageMemoryBarrier barrier
+	(
+		vk::AccessFlags(),
+		vk::AccessFlags(),
+		oldLayout,
+		newLayout,
+		VK_QUEUE_FAMILY_IGNORED,
+		VK_QUEUE_FAMILY_IGNORED,
+		image,
+		subresourceRange
+	);
 }
 
 uint32_t Image::get_mip_levels( const vk::Extent2D& extent )

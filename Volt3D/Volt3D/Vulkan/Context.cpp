@@ -537,9 +537,6 @@ void Context::createTextureImage( const char* path, v3d::vulkan::Context::Textur
 {
 	texture.imageSource = v3d::Image::createPNG( path );
 
-	//vk::Buffer stagingBuffer = logicalDevice->getVKLogicalDevice().createBuffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc );
-	//vk::DeviceMemory stagingBufferMemory = logicalDevice->getVKLogicalDevice().createDeviceMemory( stagingBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
-
 	v3d::vulkan::Buffer stagingBuffer = v3d::vulkan::Buffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
 	void* data = logicalDevice->getVKLogicalDevice().mapMemory( stagingBuffer.getDeviceMemory(), 0, texture.imageSource->getDataSize() );

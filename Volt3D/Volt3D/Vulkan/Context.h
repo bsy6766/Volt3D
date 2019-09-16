@@ -116,7 +116,6 @@ private:
 
 	struct Texture
 	{
-	public:
 		vk::Image image;
 		vk::ImageView imageView;
 		vk::Sampler sampler;
