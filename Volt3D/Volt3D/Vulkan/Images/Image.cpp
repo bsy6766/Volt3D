@@ -26,6 +26,7 @@ Image::Image()
 	, imageView( nullptr )
 	, extent()
 	, format()
+	, type(vk::ImageType::e1D)
 	//, filter()
 	//, usageFlagBits()
 	, mip_levels( 0 )
@@ -43,14 +44,17 @@ Image::~Image()
 	logicalDevice.freeMemory( deviceMemory );
 }
 
-void Image::initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
+void Image::initImage( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
 {
+	this->format = format;
+	this->extent = extent;
+
 	vk::ImageCreateInfo imageCreateInfo
 	(
 		vk::ImageCreateFlags(),
 		vk::ImageType::e2D,
 		format,
-		vk::Extent3D( width, height, 1 ),
+		extent,
 		1u,
 		1u,
 		vk::SampleCountFlagBits::e1,
@@ -112,7 +116,7 @@ void Image::initSampler()
 	sampler = logicalDevice.createSampler( createInfo, nullptr );
 }
 
-void Image::transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout )
+void Image::transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout, const vk::PipelineStageFlags srcStage, const vk::PipelineStageFlags dstStage )
 {
 	auto cb = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
 
@@ -136,8 +140,8 @@ void Image::transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLa
 	);
 
 	// Source layouts (old)
-			// Source access mask controls actions that have to be finished on the old layout
-			// before it will be transitioned to the new layout
+	// Source access mask controls actions that have to be finished on the old layout
+	// before it will be transitioned to the new layout
 	switch (oldLayout)
 	{
 	case vk::ImageLayout::eUndefined:
@@ -229,6 +233,41 @@ void Image::transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLa
 		// Other source layouts aren't handled (yet)
 		break;
 	}
+
+	cb.begin();
+	cb.getVKCommandBuffer().pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
+	cb.end();
+
+	vk::SubmitInfo submitInfo;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &cb.getVKCommandBuffer();
+
+	auto& gQueue = v3d::vulkan::LogicalDevice::get()->getGraphicsQueue();
+	gQueue.submit( submitInfo, nullptr );
+	gQueue.waitIdle();
+}
+
+void Image::copyBuffer( const vk::Buffer& stagingBuffer )
+{
+	auto cb = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
+
+	vk::ImageSubresourceLayers imgSubresourceLayer
+	(
+		vk::ImageAspectFlagBits::eColor,
+		0, 0, 1
+	);
+
+	vk::BufferImageCopy region
+	(
+		0, 0, 0,
+		imgSubresourceLayer,
+		vk::Offset3D(),
+		extent
+	);
+
+	cb.begin();
+	cb.getVKCommandBuffer().copyBufferToImage( stagingBuffer, image, vk::ImageLayout::eTransferDstOptimal, 1, &region );
+	cb.end();
 }
 
 uint32_t Image::get_mip_levels( const vk::Extent2D& extent )

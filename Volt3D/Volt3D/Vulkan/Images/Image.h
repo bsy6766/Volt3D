@@ -32,6 +32,7 @@ protected:
 
 	vk::Extent3D extent;
 	vk::Format format;
+	vk::ImageType type;
 	//vk::Filter filter;
 	//vk::ImageUsageFlagBits usageFlagBits;
 
@@ -42,11 +43,13 @@ protected:
 	//VkSamplerAddressMode samplerAddressMode;
 	//bool anisotropic;
 
-	void initImage( const uint32_t width, const uint32_t height, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
+	void initImage( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
 	void initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags );
 	void initSampler();
-	void transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout );
-	void copyBuffer();
+	void transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout, const vk::PipelineStageFlags srcStage, const vk::PipelineStageFlags dstStage );
+	void copyBuffer( const vk::Buffer& stagingBuffer );
+
+	virtual void createImage( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags );
 
 public:
 	virtual ~Image();
