@@ -17,15 +17,15 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-Image::Image()
+Image::Image( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, image( nullptr )
 	, deviceMemory( nullptr )
 	, sampler( nullptr )
 	, imageLayout()
 	, imageView( nullptr )
-	, extent()
-	, format()
+	, extent(extent)
+	, format(format)
 	, type(vk::ImageType::e1D)
 	//, filter()
 	//, usageFlagBits()
@@ -34,7 +34,9 @@ Image::Image()
 	//, sampleCount( vk::SampleCountFlagBits::e1 )
 	//, samplerAddressMode()
 	//, anisotropic( false )
-{}
+{
+	createImage(tilling, usage)
+}
 
 Image::~Image()
 {
@@ -44,24 +46,11 @@ Image::~Image()
 	logicalDevice.freeMemory( deviceMemory );
 }
 
-void Image::initImage( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
+void Image::initImage( const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
 {
-	this->format = format;
-	this->extent = extent;
-
-	vk::ImageCreateInfo imageCreateInfo
-	(
-		vk::ImageCreateFlags(),
-		vk::ImageType::e2D,
-		format,
-		extent,
-		1u,
-		1u,
-		vk::SampleCountFlagBits::e1,
-		tilling,
-		usageFlags
-	);
-
+	auto imageCreateInfo = getImageCreateInfo();
+	imageCreateInfo.tiling = tilling;
+	imageCreateInfo.usage = usageFlags;
 	image = logicalDevice.createImage( imageCreateInfo );
 
 	vk::ImageViewCreateInfo imageViewCreateInfo
@@ -268,6 +257,19 @@ void Image::copyBuffer( const vk::Buffer& stagingBuffer )
 	cb.begin();
 	cb.getVKCommandBuffer().copyBufferToImage( stagingBuffer, image, vk::ImageLayout::eTransferDstOptimal, 1, &region );
 	cb.end();
+}
+
+vk::ImageCreateInfo Image::getImageCreateInfo() const
+{
+	return vk::ImageCreateInfo{
+		vk::ImageCreateFlags(),
+		vk::ImageType::e2D,
+		format,
+		extent,
+		1u,
+		1u,
+		vk::SampleCountFlagBits::e1,
+	};
 }
 
 uint32_t Image::get_mip_levels( const vk::Extent2D& extent )
