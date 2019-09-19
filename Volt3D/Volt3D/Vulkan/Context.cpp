@@ -866,35 +866,3 @@ void Context::releaseSwapChain()
 
 VK_NS_END
 V3D_NS_END
-
-
-
-
-
-
-
-
-
-
-class A
-{
-public:
-	bool init()
-	{
-		// init
-		return true;
-	}
-
-	static A* create( int a, int b )
-	{
-		A* newA = new (std::nothrow) A( a, b );
-		if (newA && newA->init())
-			return newA;
-		else nullptr;
-	}
-};
-
-int main()
-{
-	A* a = A::create( 10, 4 );
-}
