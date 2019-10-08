@@ -17,16 +17,16 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-Image::Image( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+Image::Image()
 	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, image( nullptr )
 	, deviceMemory( nullptr )
 	, sampler( nullptr )
 	, imageLayout()
 	, imageView( nullptr )
-	, extent(extent)
-	, format(format)
-	, type(vk::ImageType::e1D)
+	, extent()
+	, format()
+	, type()
 	//, filter()
 	//, usageFlagBits()
 	, mip_levels( 0 )
@@ -34,9 +34,7 @@ Image::Image( const vk::Extent3D& extent, const vk::Format& format, const vk::Im
 	//, sampleCount( vk::SampleCountFlagBits::e1 )
 	//, samplerAddressMode()
 	//, anisotropic( false )
-{
-	createImage(tilling, usage)
-}
+{}
 
 Image::~Image()
 {

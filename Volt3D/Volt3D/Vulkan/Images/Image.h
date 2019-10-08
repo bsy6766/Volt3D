@@ -20,7 +20,7 @@ class VOLT3D_DLL Image
 	friend class Context;
 
 protected:
-	Image( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+	Image();
 
 	const vk::Device& logicalDevice;
 
@@ -49,7 +49,6 @@ protected:
 	void transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout, const vk::PipelineStageFlags srcStage, const vk::PipelineStageFlags dstStage );
 	void copyBuffer( const vk::Buffer& stagingBuffer );
 
-	virtual void createImage( const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags );
 	virtual vk::ImageCreateInfo getImageCreateInfo() const;
 
 public:

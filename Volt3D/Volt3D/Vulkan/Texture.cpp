@@ -26,18 +26,22 @@ Texture* v3d::vulkan::Texture::create2D( const vk::Extent2D& extent, const vk::F
 	v3d::vulkan::Texture* newTexture = new (std::nothrow) v3d::vulkan::Texture();
 	if (newTexture)
 	{
-		if (newTexture->init())
+		if (newTexture->init2D(extent, format, tilling, usage, memoryProperty))
 		{
 
 		}
+
+		SAFE_DELETE( newTexture );
 	}
 
 	return nullptr;
 }
 
-bool Texture::init2D()
+bool Texture::init2D( const vk::Extent2D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
 	image = new (std::nothrow) v3d::vulkan::Image2D();
+	if (!image) return false;
+
 }
 
 void Texture::release()

@@ -34,13 +34,13 @@ protected:
 
 	void release();
 
-	bool init2D();
+	bool init2D( const vk::Extent2D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 	//bool init( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 
 public:
 	~Texture();
 
-	//static Texture* create1D();
+	static Texture* create1D( const vk::Extent2D& extent );
 	static Texture* create2D( const vk::Extent2D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 	//static Texture* create3D();
 	//static Texture* create1DArray();
