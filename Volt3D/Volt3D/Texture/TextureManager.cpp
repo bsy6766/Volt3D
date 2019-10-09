@@ -13,18 +13,11 @@
 #include "Utils/FileSystem.h"
 #include "Config/BuildConfig.h"
 
-v3d::TextureManager::TextureManager( const uint32_t maxTextureSize )
-	: maxTextureSize( maxTextureSize )
-{}
+v3d::TextureManager::TextureManager() {}
 
 v3d::TextureManager::~TextureManager()
 {
 	clear();
-}
-
-uint32_t v3d::TextureManager::getMaxTextureSize() const
-{
-	return maxTextureSize;
 }
 
 /*
@@ -173,6 +166,9 @@ void v3d::TextureManager::print() const
 
 	logger.trace("[TextureManager] Info");
 	logger.trace("Total textures: " + std::to_string(textures.size()));
+
+	//std::size_t i = 0;
+	//for()
 
 	//int index = 0;
 

@@ -46,7 +46,7 @@ namespace glfw
 
 
 		GLFWwindow* window;
-		InputManager* input;
+		v3d::InputManager& input;
 		
 		// Modes
 		v3d::WindowMode windowMode;

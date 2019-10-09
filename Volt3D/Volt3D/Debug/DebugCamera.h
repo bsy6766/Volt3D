@@ -52,7 +52,7 @@ namespace v3d
 		void onUpdate( const float delta ) override;
 
 		// input manager ref
-		v3d::InputManager* input;
+		v3d::InputManager& input;
 
 		// Get camera moving distance
 		glm::vec3 getMovedDist(const float angleMod, const float distance);

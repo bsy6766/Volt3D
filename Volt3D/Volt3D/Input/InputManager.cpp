@@ -169,7 +169,7 @@ InputManager::~InputManager()
 	releaseAll();
 }
 
-v3d::InputManager* InputManager::get() { return v3d::Engine::get()->getInputManager(); }
+v3d::InputManager& InputManager::get() { return v3d::Engine::get()->getInputManager(); }
 
 bool InputManager::init()
 {

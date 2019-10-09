@@ -34,6 +34,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <memory>
 #include <unordered_map>
 #include <set>
 #include <unordered_set>

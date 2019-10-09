@@ -34,63 +34,63 @@ v3d::DebugCamera* v3d::DebugCamera::create( std::string_view name, const v3d::Pr
 
 void v3d::DebugCamera::onUpdate( const float delta )
 {
-	if (active && input)
+	if (active)
 	{
 		// check W and S
-		if (input->isKeyPressed( v3d::KeyCode::eW, false ))
+		if (input.isKeyPressed( v3d::KeyCode::eW, false ))
 		{
 			// move foward
 			addPosition( getMovedDist( -180.0f, delta * translationSpeed ) );
 		}
-		else if (input->isKeyPressed( v3d::KeyCode::eS, false ))
+		else if (input.isKeyPressed( v3d::KeyCode::eS, false ))
 		{
 			// move backward
 			addPosition( getMovedDist( 0.0f, delta * translationSpeed ) );
 		}
 
 		// check A and D
-		if (input->isKeyPressed( v3d::KeyCode::eA, false ))
+		if (input.isKeyPressed( v3d::KeyCode::eA, false ))
 		{
 			// move left
 			addPosition( getMovedDist( 90.0f, delta * translationSpeed ) );
 
 		}
-		else if (input->isKeyPressed( v3d::KeyCode::eD, false ))
+		else if (input.isKeyPressed( v3d::KeyCode::eD, false ))
 		{
 			// move right
 			addPosition( getMovedDist( -90.0f, delta * translationSpeed ) );
 		}
 
 		// check space and left shift
-		if (input->isKeyPressed( v3d::KeyCode::eSpace, false ))
+		if (input.isKeyPressed( v3d::KeyCode::eSpace, false ))
 		{
 			// move left
 			addPositionY( delta * translationSpeed );
 
 		}
-		else if (input->isKeyPressed( v3d::KeyCode::eLeftShift, false ))
+		else if (input.isKeyPressed( v3d::KeyCode::eLeftShift, false ))
 		{
 			// move down
 			addPositionY( delta * translationSpeed * -1.0f );
 		}
 
 		// reset translation
-		if (input->isKeyPressed( v3d::KeyCode::eX, true ))
+		if (input.isKeyPressed( v3d::KeyCode::eX, true ))
 		{
 			setPosition( glm::vec3( 0.0f, 0.0f, 0.0f ) );
 		}
 
 		// reset rotation
-		if (input->isKeyPressed( v3d::KeyCode::eZ, true ))
+		if (input.isKeyPressed( v3d::KeyCode::eZ, true ))
 		{
 			setRotation( glm::vec3( 0.0f, 0.0f, 0.0f ) );
 		}
 
 		// mouse
-		if (input->didMouseMove())
+		if (input.didMouseMove())
 		{
 			// get distance that mouse moved with delta and speed applied
-			const glm::vec2 mouseDelta = input->getMouseMovedDistance() * delta * rotationSpeed;
+			const glm::vec2 mouseDelta = input.getMouseMovedDistance() * delta * rotationSpeed;
 
 			// rotate
 			addRotation( glm::vec2( -mouseDelta.y, mouseDelta.x ) );

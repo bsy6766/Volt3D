@@ -31,7 +31,7 @@
 
 #include "Spritesheet/Image.h"
 #include "Images/Image.h"
-#include "Textures/Texture2D.h"
+#include "Texture/Texture2D.h"
 
 
 #include "Pipelines/Shader.h"

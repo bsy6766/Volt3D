@@ -239,6 +239,8 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Shape\Triangle2D.h" />
     <ClInclude Include="Volt3D\Spritesheet\Image.h" />
     <ClInclude Include="Volt3D\Spritesheet\ImageType.h" />
+    <ClInclude Include="Volt3D\Texture\Texture.h" />
+    <ClInclude Include="Volt3D\Texture\Texture2D.h" />
     <ClInclude Include="Volt3D\Texture\TextureManager.h" />
     <ClInclude Include="Volt3D\Utils\FileSystem.h" />
     <ClInclude Include="Volt3D\Utils\Logger.h" />
@@ -270,8 +272,6 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Framebuffers.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Swapchain.h" />
-    <ClInclude Include="Volt3D\Vulkan\Textures\Texture.h" />
-    <ClInclude Include="Volt3D\Vulkan\Textures\Texture2D.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -317,6 +317,8 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Shape\Triangle.cpp" />
     <ClCompile Include="Volt3D\Shape\Triangle2D.cpp" />
     <ClCompile Include="Volt3D\Spritesheet\Image.cpp" />
+    <ClCompile Include="Volt3D\Texture\Texture.cpp" />
+    <ClCompile Include="Volt3D\Texture\Texture2D.cpp" />
     <ClCompile Include="Volt3D\Texture\TextureManager.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Buffers\Buffer.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp" />
@@ -340,8 +342,6 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Framebuffers.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Swapchain.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Textures\Texture.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Textures\Texture2D.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

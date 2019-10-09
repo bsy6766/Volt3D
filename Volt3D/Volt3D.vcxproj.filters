@@ -75,9 +75,6 @@
     <Filter Include="Volt3D\Vulkan\Swapchain">
       <UniqueIdentifier>{6140c1b6-fecf-431e-883c-c95c95da76e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Volt3D\Vulkan\Textures">
-      <UniqueIdentifier>{c16f68d8-ec92-4b82-9382-d7eedce017c6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -263,11 +260,11 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformData.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Textures\Texture.cpp">
-      <Filter>Volt3D\Vulkan\Textures</Filter>
+    <ClCompile Include="Volt3D\Texture\Texture2D.cpp">
+      <Filter>Volt3D\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Textures\Texture2D.cpp">
-      <Filter>DLL</Filter>
+    <ClCompile Include="Volt3D\Texture\Texture.cpp">
+      <Filter>Volt3D\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -517,11 +514,11 @@
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformData.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Textures\Texture.h">
-      <Filter>Volt3D\Vulkan\Textures</Filter>
+    <ClInclude Include="Volt3D\Texture\Texture2D.h">
+      <Filter>Volt3D\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Textures\Texture2D.h">
-      <Filter>Volt3D\Vulkan\Textures</Filter>
+    <ClInclude Include="Volt3D\Texture\Texture.h">
+      <Filter>Volt3D\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

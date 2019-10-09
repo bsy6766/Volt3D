@@ -130,13 +130,13 @@ private:
 	//// poll gamecontroller input
 	//void pollGameControllerInput();
 	// ==================================================
-
+	
 public:
 	// Destructor. Releases all shaders
 	~InputManager();
 
 	/** Get InputManager instance */
-	static v3d::InputManager* get();
+	static v3d::InputManager& get();
 
 	/**
 	*	Block input.

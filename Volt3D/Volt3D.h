@@ -81,6 +81,8 @@
 #include "Spritesheet/ImageType.h"
 
 // Texture
+#include "Texture/Texture.h"
+#include "Texture/Texture2D.h"
 #include "Texture/TextureManager.h"
 
 // Utils
@@ -117,7 +119,5 @@
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
 #include "Vulkan/Swapchain/Swapchain.h"
-#include "Vulkan/Textures/Texture.h"
-#include "Vulkan/Textures/Texture2D.h"
 
 #endif

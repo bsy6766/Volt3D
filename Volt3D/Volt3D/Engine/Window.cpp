@@ -116,7 +116,7 @@ void Window::releaseGLFW()
 
 void Window::onCursorPos( const int x, const int y )
 {
-	if (input) input->updateMousePosition( x, y );
+	input.updateMousePosition( x, y );
 }
 
 bool Window::isIconified() const
