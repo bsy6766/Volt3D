@@ -16,15 +16,17 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-Image2D::Image2D()
-	: v3d::vulkan::Image()
+Image2D::Image2D( const vk::Extent3D& extent, const vk::Format& format )
+	: v3d::vulkan::Image( extent, format )
 {
 	type = vk::ImageType::e2D;
 }
 
-Image2D::~Image2D()
-{
-}
+Image2D::~Image2D() {}
+
+vk::ImageType Image2D::getImageType() const { return vk::ImageType::e2D; }
+
+vk::ImageViewType Image2D::getImageViewType( const bool arrayType ) const { return arrayType ? vk::ImageViewType::e2DArray : vk::ImageViewType::e2D ; }
 
 
 VK_NS_END

@@ -88,14 +88,18 @@ namespace v3d
 		unsigned int getHeight() const { return height; }
 
 		/** get channel (RGBA for png) */
+		// @todo: Return correct channels for each image type
 		unsigned int getChannels() const { return 4; }
 
 		/** get image data size **/
-		unsigned int getDataSize() const { return width* height * 4; }
+		unsigned int getDataSize() const { return width* height * getChannels(); }
 
 		/** get data. */
 		unsigned char* getData() const { return data; }
-		
+
+		/** Get Vulkan Format. */
+		vk::Format getVKFormat() const;
+
 		/** Log iamge. For debug. */
 		void print() const;
 	};

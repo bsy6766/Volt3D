@@ -279,6 +279,16 @@ void v3d::Image::flipImage()
 	delete[] rowBuffer;
 }
 
+vk::Format v3d::Image::getVKFormat() const
+{
+	switch (type)
+	{
+	case v3d::ImageType::ePNG:					return vk::Format::eR8G8B8A8Unorm;
+	// @todo Add more type
+	case v3d::ImageType::eUndefined: default:	return vk::Format::eR8G8B8A8Unorm;
+	}
+}
+
 void v3d::Image::print() const
 {
 	auto& logger = v3d::Logger::getInstance();

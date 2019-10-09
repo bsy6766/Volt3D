@@ -17,15 +17,15 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-Image::Image()
+Image::Image( const vk::Extent3D& extent, const vk::Format& format )
 	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, image( nullptr )
 	, deviceMemory( nullptr )
 	, sampler( nullptr )
 	, imageLayout()
 	, imageView( nullptr )
-	, extent()
-	, format()
+	, extent( extent )
+	, format( format )
 	, type()
 	//, filter()
 	//, usageFlagBits()
@@ -50,18 +50,6 @@ void Image::initImage( const vk::ImageTiling& tilling, const vk::ImageUsageFlags
 	imageCreateInfo.tiling = tilling;
 	imageCreateInfo.usage = usageFlags;
 	image = logicalDevice.createImage( imageCreateInfo );
-
-	vk::ImageViewCreateInfo imageViewCreateInfo
-	(
-		vk::ImageViewCreateFlags(),
-		image,
-		vk::ImageViewType::e2D,
-		format,
-		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
-		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
-	);
-
-	imageView = logicalDevice.createImageView( imageViewCreateInfo, nullptr );
 }
 
 void Image::initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags )
@@ -76,6 +64,21 @@ void Image::initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyF
 
 	deviceMemory = logicalDevice.allocateMemory( allocInfo );
 	logicalDevice.bindImageMemory( image, deviceMemory, 0 );
+}
+
+void Image::initImageView()
+{
+	vk::ImageViewCreateInfo imageViewCreateInfo
+	(
+		vk::ImageViewCreateFlags(),
+		image,
+		vk::ImageViewType::e2D,
+		format,
+		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
+		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
+	);
+
+	imageView = logicalDevice.createImageView( imageViewCreateInfo, nullptr );
 }
 
 void Image::initSampler()
@@ -261,7 +264,7 @@ vk::ImageCreateInfo Image::getImageCreateInfo() const
 {
 	return vk::ImageCreateInfo{
 		vk::ImageCreateFlags(),
-		vk::ImageType::e2D,
+		getImageType(),
 		format,
 		extent,
 		1u,
@@ -270,12 +273,16 @@ vk::ImageCreateInfo Image::getImageCreateInfo() const
 	};
 }
 
-uint32_t Image::get_mip_levels( const vk::Extent2D& extent )
+vk::ImageType Image::getImageType() const { return vk::ImageType::e1D; }
+
+vk::ImageViewType Image::getImageViewType( const bool arrayType ) const { return arrayType ? vk::ImageViewType::e1DArray : vk::ImageViewType::e1D; }
+
+uint32_t Image::getMipLevels( const vk::Extent2D& extent )
 {
 	return static_cast<uint32_t>(std::floor( std::log2( std::max( extent.width, extent.height ) ) ) + 1);
 }
 
-uint32_t Image::get_mip_levels( const vk::Extent3D& extent )
+uint32_t Image::getMipLevels( const vk::Extent3D& extent )
 {
 	return static_cast<uint32_t>(std::floor( std::log2( std::max( extent.width, std::max( extent.height, extent.depth ) ) ) ) + 1);
 }

@@ -22,13 +22,16 @@ class VOLT3D_DLL Image2D : public v3d::vulkan::Image
 	friend class Texture;
 
 private:
-	Image2D();
+	Image2D( const vk::Extent3D& extent, const vk::Format& format );
 
 public:
 	~Image2D();
 
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Image2D );
 	DEFAULT_MOVE_CONSTRUCTORS( Image2D );
+
+	virtual vk::ImageType getImageType() const override;
+	virtual vk::ImageViewType getImageViewType( const bool arrayType = false ) const override;
 };
 
 VK_NS_END

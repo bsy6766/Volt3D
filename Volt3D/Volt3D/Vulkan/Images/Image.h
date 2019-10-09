@@ -18,9 +18,10 @@ VK_NS_BEGIN
 class VOLT3D_DLL Image
 {
 	friend class Context;
+	friend class Texture;
 
 protected:
-	Image();
+	Image( const vk::Extent3D& extent, const vk::Format& format );
 
 	const vk::Device& logicalDevice;
 
@@ -45,11 +46,14 @@ protected:
 
 	void initImage( const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags );
 	void initImageDeviceMemory( const vk::MemoryPropertyFlags memoryPropertyFlags );
+	void initImageView();
 	void initSampler();
 	void transitionLayout( const vk::ImageLayout oldLayout, const vk::ImageLayout newLayout, const vk::PipelineStageFlags srcStage, const vk::PipelineStageFlags dstStage );
 	void copyBuffer( const vk::Buffer& stagingBuffer );
 
-	virtual vk::ImageCreateInfo getImageCreateInfo() const;
+	vk::ImageCreateInfo getImageCreateInfo() const;
+	virtual vk::ImageType getImageType() const;
+	virtual vk::ImageViewType getImageViewType( const bool arrayType = false ) const;
 
 public:
 	virtual ~Image();
@@ -61,8 +65,15 @@ public:
 	//const vk::DeviceMemory& getDeviceMemory() const;
 	//const vk::Sampler& getSampler() const;
 
-	static uint32_t get_mip_levels( const vk::Extent2D& extent );
-	static uint32_t get_mip_levels( const vk::Extent3D& extent );
+	uint32_t getWidth() const { return extent.width; }
+	uint32_t getHeight() const { return extent.height; }
+	uint32_t getDepth() const { return extent.depth; }
+
+	const vk::Sampler& getSampler() const { return sampler; }
+	const vk::ImageView& getImageview() const { return imageView; }
+
+	static uint32_t getMipLevels( const vk::Extent2D& extent );
+	static uint32_t getMipLevels( const vk::Extent3D& extent );
 };
 
 VK_NS_END
