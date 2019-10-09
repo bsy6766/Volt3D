@@ -94,7 +94,6 @@
 // Vulkan
 #include "Vulkan/Context.h"
 #include "Vulkan/Instance.h"
-#include "Vulkan/Texture.h"
 #include "Vulkan/Utils.h"
 #include "Vulkan/Buffers/Buffer.h"
 #include "Vulkan/Buffers/UniformBuffer.h"
@@ -117,6 +116,8 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/SwapChain.h"
+#include "Vulkan/Swapchain/Swapchain.h"
+#include "Vulkan/Textures/Texture.h"
+#include "Vulkan/Textures/Texture2D.h"
 
 #endif

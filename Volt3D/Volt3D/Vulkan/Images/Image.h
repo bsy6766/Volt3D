@@ -28,12 +28,10 @@ protected:
 	vk::Image image;
 	vk::DeviceMemory deviceMemory;
 	vk::Sampler sampler;
-	vk::ImageLayout imageLayout;
 	vk::ImageView imageView;
 
 	vk::Extent3D extent;
 	vk::Format format;
-	vk::ImageType type;
 	//vk::Filter filter;
 	//vk::ImageUsageFlagBits usageFlagBits;
 
@@ -52,7 +50,6 @@ protected:
 	void copyBuffer( const vk::Buffer& stagingBuffer );
 
 	vk::ImageCreateInfo getImageCreateInfo() const;
-	virtual vk::ImageType getImageType() const;
 	virtual vk::ImageViewType getImageViewType( const bool arrayType = false ) const;
 
 public:
@@ -60,17 +57,17 @@ public:
 
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Image );
 	DEFAULT_MOVE_CONSTRUCTORS( Image );
-
-	//const vk::Image& getImage() const;
-	//const vk::DeviceMemory& getDeviceMemory() const;
-	//const vk::Sampler& getSampler() const;
-
+	
 	uint32_t getWidth() const { return extent.width; }
 	uint32_t getHeight() const { return extent.height; }
 	uint32_t getDepth() const { return extent.depth; }
 
-	const vk::Sampler& getSampler() const { return sampler; }
+	const vk::Image& getImage() const { return image; }
 	const vk::ImageView& getImageview() const { return imageView; }
+	const vk::Sampler& getSampler() const { return sampler; }
+	const vk::DeviceMemory& getDeviceMemory() const { return deviceMemory; }
+
+	virtual vk::ImageType getImageType() const;
 
 	static uint32_t getMipLevels( const vk::Extent2D& extent );
 	static uint32_t getMipLevels( const vk::Extent3D& extent );

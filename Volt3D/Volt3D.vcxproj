@@ -270,7 +270,8 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Framebuffers.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h" />
     <ClInclude Include="Volt3D\Vulkan\Swapchain\Swapchain.h" />
-    <ClInclude Include="Volt3D\Vulkan\Texture.h" />
+    <ClInclude Include="Volt3D\Vulkan\Textures\Texture.h" />
+    <ClInclude Include="Volt3D\Vulkan\Textures\Texture2D.h" />
     <ClInclude Include="Volt3D\Vulkan\Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -339,7 +340,8 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Framebuffers.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\RenderPass.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Swapchain\Swapchain.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Texture.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Textures\Texture.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Textures\Texture2D.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

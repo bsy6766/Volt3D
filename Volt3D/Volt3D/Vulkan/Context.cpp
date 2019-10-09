@@ -31,7 +31,7 @@
 
 #include "Spritesheet/Image.h"
 #include "Images/Image.h"
-#include "Texture.h"
+#include "Textures/Texture2D.h"
 
 
 #include "Pipelines/Shader.h"
@@ -66,7 +66,7 @@ Context::Context()
 
 	, lenaBuffer()
 
-	, lena()
+	, lena( nullptr )
 {
 	frameBufferSize = window->getFrameBufferSize();
 }
@@ -103,7 +103,7 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initCommandPool()) return false;
 
 	//createTexture( "Textures/lena.png", lena );
-	lena = v3d::vulkan::Texture::create2D( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	lena = v3d::vulkan::Texture2D::create( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
 	// temp
 	const glm::vec4 white( 1 );
@@ -529,179 +529,6 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	mvpUBOs[imageIndex]->update( &curMVP );
 }
 
-/*
-void Context::createTexture( const char* path, v3d::vulkan::Context::Texture& texture )
-{
-	createTextureImage( path, texture );
-	createTextureImageView( texture );
-	createTextureSampler( texture );
-}
-
-void Context::createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture )
-{
-	texture.imageSource = v3d::Image::createPNG( path );
-
-	v3d::vulkan::Buffer stagingBuffer = v3d::vulkan::Buffer( texture.imageSource->getDataSize(), vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
-
-	void* data = logicalDevice->getVKLogicalDevice().mapMemory( stagingBuffer.getDeviceMemory(), 0, texture.imageSource->getDataSize() );
-	memcpy( data, texture.imageSource->getData(), texture.imageSource->getDataSize() );
-	logicalDevice->getVKLogicalDevice().unmapMemory( stagingBuffer.getDeviceMemory() );
-
-	createImage( texture.imageSource->getWidth(), texture.imageSource->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture.image, texture.deviceMemory );
-
-	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
-	copyBufferToImage( stagingBuffer.getBuffer(), texture.image, uint32_t( texture.imageSource->getWidth() ), uint32_t( texture.imageSource->getHeight() ) );
-	transitionImageLayout( texture.image, vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
-}
-
-void Context::createTextureImageView( v3d::vulkan::Context::Texture& texture )
-{
-	vk::ImageViewCreateInfo createInfo
-	(
-		vk::ImageViewCreateFlags(),
-		texture.image,
-		vk::ImageViewType::e2D,
-		vk::Format::eR8G8B8A8Unorm,
-		vk::ComponentMapping( vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA ),
-		vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 )
-	);
-
-	texture.imageView = logicalDevice->getVKLogicalDevice().createImageView( createInfo, nullptr );
-}
-
-void Context::createTextureSampler( v3d::vulkan::Context::Texture& texture )
-{
-	vk::SamplerCreateInfo createInfo
-	(
-		vk::SamplerCreateFlags(),
-		vk::Filter::eLinear,
-		vk::Filter::eLinear,
-		vk::SamplerMipmapMode::eLinear,
-		vk::SamplerAddressMode::eMirroredRepeat,
-		vk::SamplerAddressMode::eMirroredRepeat,
-		vk::SamplerAddressMode::eMirroredRepeat,
-		0.0f,
-		false,
-		1,
-		false,
-		vk::CompareOp::eAlways,
-		0.0f,
-		0.0f,
-		vk::BorderColor::eIntOpaqueBlack,
-		false
-	);
-
-	texture.sampler = logicalDevice->getVKLogicalDevice().createSampler( createInfo, nullptr );
-}
-
-void Context::createImage( const uint32_t w, const uint32_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory )
-{
-	vk::ImageCreateInfo createInfo
-	(
-		vk::ImageCreateFlags(),
-		vk::ImageType::e2D,
-		format,
-		vk::Extent3D( w, h, 1 ),
-		1u,
-		1u,
-		vk::SampleCountFlagBits::e1,
-		tilling,
-		usageFlags
-	);
-
-	image = logicalDevice->getVKLogicalDevice().createImage( createInfo );
-	vk::MemoryRequirements memRequirements = logicalDevice->getVKLogicalDevice().getImageMemoryRequirements( image );
-
-	vk::MemoryAllocateInfo allocInfo
-	(
-		memRequirements.size,
-		physicalDevice->getMemoryTypeIndex( memRequirements.memoryTypeBits, memoryPropertyFlags )
-	);
-
-	deviceMemory = logicalDevice->getVKLogicalDevice().allocateMemory( allocInfo );
-	logicalDevice->getVKLogicalDevice().bindImageMemory( image, deviceMemory, 0 );
-}
-
-void Context::transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout )
-{
-	auto oneTimeCB = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
-	//auto cb = createCommandBuffer();
-
-	vk::ImageSubresourceRange subresourceRange
-	(
-		vk::ImageAspectFlagBits::eColor,
-		0, 1,
-		0, 1
-	);
-
-	vk::ImageMemoryBarrier barrier
-	(
-		vk::AccessFlags(),
-		vk::AccessFlags(),
-		oldLayout,
-		newLayout,
-		VK_QUEUE_FAMILY_IGNORED,
-		VK_QUEUE_FAMILY_IGNORED,
-		image,
-		subresourceRange
-	);
-
-	vk::PipelineStageFlags srcStage;
-	vk::PipelineStageFlags dstStage;
-
-	if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
-	{
-		barrier.srcAccessMask = vk::AccessFlags();
-		barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
-
-		srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
-		dstStage = vk::PipelineStageFlagBits::eTransfer;
-	}
-	else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
-	{
-		barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
-		barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
-
-		srcStage = vk::PipelineStageFlagBits::eTransfer;
-		dstStage = vk::PipelineStageFlagBits::eFragmentShader;
-	}
-	else
-	{
-		throw std::invalid_argument( "Unsupported layout transition" );
-	}
-
-	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	oneTimeCB.getVKCommandBuffer().pipelineBarrier( srcStage, dstStage, vk::DependencyFlagBits::eByRegion, 0, nullptr, 0, nullptr, 1, &barrier );
-	oneTimeCB.end();
-	oneTimeSubmit( oneTimeCB );
-}
-
-void Context::copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height )
-{
-	auto oneTimeCB = v3d::vulkan::CommandBuffer( vk::CommandBufferLevel::ePrimary );
-	//auto cb = createCommandBuffer();
-
-	vk::ImageSubresourceLayers imgSubresourceLayer
-	(
-		vk::ImageAspectFlagBits::eColor,
-		0, 0, 1
-	);
-
-	vk::BufferImageCopy region
-	(
-		0, 0, 0,
-		imgSubresourceLayer,
-		vk::Offset3D( 0, 0, 0 ),
-		vk::Extent3D( width, height, 1 )
-	);
-
-	oneTimeCB.begin( vk::CommandBufferUsageFlagBits::eOneTimeSubmit );
-	oneTimeCB.getVKCommandBuffer().copyBufferToImage( buffer, dst, vk::ImageLayout::eTransferDstOptimal, 1, &region );
-	oneTimeCB.end();
-	oneTimeSubmit( oneTimeCB );
-}
-*/
-
 void Context::oneTimeSubmit( v3d::vulkan::CommandBuffer& cb )
 {
 	vk::SubmitInfo submitInfo;
@@ -829,6 +656,7 @@ void Context::release()
 
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );
+	SAFE_DELETE( lena );
 
 	for (auto& f : frameFences) { logicalDevice->getVKLogicalDevice().destroyFence( f ); }
 	frameFences.clear();

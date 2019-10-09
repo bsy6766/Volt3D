@@ -36,14 +36,14 @@ protected:
 
 	void release();
 
-	bool init2D( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
-	//bool init( const vk::Extent3D& extent, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+	virtual bool initImage( const vk::Extent3D& extent, const vk::Format& format );
+	bool init( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 
 public:
-	~Texture();
+	virtual ~Texture();
 
 	//static Texture* create1D( const vk::Extent2D& extent );
-	static Texture* create2D( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+	static Texture* create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 	//static Texture* create3D();
 	//static Texture* create1DArray();
 	//static Texture* create2DArray();
@@ -52,6 +52,7 @@ public:
 	uint32_t getWidth() const;
 	uint32_t getHeight() const;
 	uint32_t getDepth() const;
+
 	v3d::vulkan::Image* getImage() const;
 };
 

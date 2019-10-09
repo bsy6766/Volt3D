@@ -10,8 +10,7 @@
 #include "Texture.h"
 
 #include "Spritesheet/Image.h"
-#include "Images/Image.h"
-#include "Images/Image2D.h"
+#include "Vulkan/Images/Image.h"
 #include "vulkan/Buffers/Buffer.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 
@@ -22,36 +21,40 @@ Texture::Texture()
 	: image(nullptr)
 {}
 
-Texture::~Texture() {}
+Texture::~Texture() 
+{
+	SAFE_DELETE( image );
+}
 
-Texture* v3d::vulkan::Texture::create2D( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+Texture* Texture::create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
 	v3d::vulkan::Texture* newTexture = new (std::nothrow) v3d::vulkan::Texture();
 	if (newTexture)
 	{
-		if (newTexture->init2D(texture_name, tilling, usage, memoryProperty))
-		{
-			return newTexture;
-		}
-
+		if (newTexture->init(texture_name, tilling, usage, memoryProperty)) return newTexture;
 		SAFE_DELETE( newTexture );
 	}
 
 	return nullptr;
 }
 
-bool Texture::init2D( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+bool Texture::initImage( const vk::Extent3D& extent, const vk::Format& format )
+{
+	image = new (std::nothrow) v3d::vulkan::Image( extent, format );
+	return image != nullptr;
+}
+
+bool Texture::init( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
 	// 1. Load image from texture file
 	v3d::Image* imgSrc = v3d::Image::createPNG( texture_name );
 	if (!imgSrc) return false;
 
 	// 2. Create vulkan image
-	image = new (std::nothrow) v3d::vulkan::Image2D( vk::Extent3D( imgSrc->getWidth(), imgSrc->getHeight(), 1 ), imgSrc->getVKFormat() );
-	if (!image) 
-	{ 
-		SAFE_DELETE( imgSrc ); 
-		return false; 
+	if (!initImage( vk::Extent3D( imgSrc->getWidth(), imgSrc->getHeight(), 1 ), imgSrc->getVKFormat() ))
+	{
+		SAFE_DELETE( imgSrc );
+		return false;
 	}
 
 	// 3. Initialize vulkan image
@@ -75,7 +78,7 @@ bool Texture::init2D( const std::string& texture_name, const vk::ImageTiling& ti
 	// 4. Buffer to image
 	image->transitionLayout( vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer );
 	image->copyBuffer( stagingBuffer.getBuffer() );
-	image->transitionLayout( vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eBottomOfPipe );
+	image->transitionLayout( vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader );
 
 	SAFE_DELETE( imgSrc );
 

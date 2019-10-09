@@ -19,7 +19,7 @@ VK_NS_BEGIN
 class VOLT3D_DLL Image2D : public v3d::vulkan::Image
 {
 	friend class Context;
-	friend class Texture;
+	friend class Texture2D;
 
 private:
 	Image2D( const vk::Extent3D& extent, const vk::Format& format );

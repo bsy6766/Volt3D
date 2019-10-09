@@ -22,11 +22,9 @@ Image::Image( const vk::Extent3D& extent, const vk::Format& format )
 	, image( nullptr )
 	, deviceMemory( nullptr )
 	, sampler( nullptr )
-	, imageLayout()
 	, imageView( nullptr )
 	, extent( extent )
 	, format( format )
-	, type()
 	//, filter()
 	//, usageFlagBits()
 	, mip_levels( 0 )
@@ -258,6 +256,14 @@ void Image::copyBuffer( const vk::Buffer& stagingBuffer )
 	cb.begin();
 	cb.getVKCommandBuffer().copyBufferToImage( stagingBuffer, image, vk::ImageLayout::eTransferDstOptimal, 1, &region );
 	cb.end();
+
+	vk::SubmitInfo submitInfo;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &cb.getVKCommandBuffer();
+
+	auto& gQueue = v3d::vulkan::LogicalDevice::get()->getGraphicsQueue();
+	gQueue.submit( submitInfo, nullptr );
+	gQueue.waitIdle();
 }
 
 vk::ImageCreateInfo Image::getImageCreateInfo() const

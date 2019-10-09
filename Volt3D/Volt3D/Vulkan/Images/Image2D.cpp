@@ -18,9 +18,7 @@ VK_NS_BEGIN
 
 Image2D::Image2D( const vk::Extent3D& extent, const vk::Format& format )
 	: v3d::vulkan::Image( extent, format )
-{
-	type = vk::ImageType::e2D;
-}
+{}
 
 Image2D::~Image2D() {}
 

@@ -40,7 +40,7 @@ class CommandBuffer;
 class CommandPool;
 class Buffer;
 class UniformBuffer;
-class Texture;
+class Texture2D;
 
 /**
 *	@class Context
@@ -115,16 +115,7 @@ private:
 
 	std::vector<v3d::vulkan::Context::MVP> mvps;
 
-	//struct Texture
-	//{
-	//	vk::Image image;
-	//	vk::ImageView imageView;
-	//	vk::Sampler sampler;
-	//	vk::DeviceMemory deviceMemory;
-	//	v3d::Image* imageSource;
-	//};
-
-	v3d::vulkan::Texture* lena;
+	v3d::vulkan::Texture2D* lena;
 
 	bool init( const bool enableValidationLayer );
 	bool initInstance( const bool enableValidationLayer );
