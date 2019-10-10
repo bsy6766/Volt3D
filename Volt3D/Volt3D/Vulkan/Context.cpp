@@ -398,32 +398,6 @@ bool Context::initDescriptorSet()
 
 
 
-
-
-
-bool Context::recreateSwapChain()
-{
-	logicalDevice->getVKLogicalDevice().waitIdle();
-
-	releaseSwapChain();
-
-	if (!initSwapChain()) return false;
-	if (!initRenderPass()) return false;
-
-	//if (!initDescriptorLayout()) return false;
-	if (!initGraphicsPipeline()) return false;
-	if (!initFrameBuffer()) return false;
-	if (!initCommandPool()) return false;
-	createMVPUBO();
-	if (!initDescriptorPool()) return false;
-	if (!initDescriptorSet()) return false;
-	if (!initCommandBuffer()) return false;
-
-	v3d::Logger::getInstance().info( "Recreated swapchain" );
-
-	return true;
-}
-
 /*
 v3d::vulkan::CommandBuffer Context::createCommandBuffer( const vk::CommandBufferLevel level )
 {
@@ -661,6 +635,29 @@ void Context::release()
 	logger.info( "Releasing Context finished" );
 }
 
+bool Context::recreateSwapChain()
+{
+	logicalDevice->getVKLogicalDevice().waitIdle();
+
+	releaseSwapChain();
+
+	if (!initSwapChain()) return false;
+	if (!initRenderPass()) return false;
+
+	//if (!initDescriptorLayout()) return false;
+	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
+	createMVPUBO();
+	//if (!initDescriptorPool()) return false;
+	//if (!initDescriptorSet()) return false;
+	if (!initCommandBuffer()) return false;
+
+	v3d::Logger::getInstance().info( "Recreated swapchain" );
+
+	return true;
+}
+
 void Context::releaseSwapChain()
 {
 	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
@@ -669,7 +666,7 @@ void Context::releaseSwapChain()
 	mvpUBOs.clear();
 
 	//ld.destroyDescriptorSetLayout( descriptorLayout );
-	ld.destroyDescriptorPool( descriptorPool );
+	//ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
 	commandBuffers.clear();
