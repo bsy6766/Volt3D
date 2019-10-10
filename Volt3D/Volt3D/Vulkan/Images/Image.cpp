@@ -279,6 +279,11 @@ vk::ImageCreateInfo Image::getImageCreateInfo() const
 	};
 }
 
+vk::DescriptorImageInfo Image::getDescriptorImageInfo() const
+{
+	return vk::DescriptorImageInfo{ sampler, imageView, vk::ImageLayout::eShaderReadOnlyOptimal };
+}
+
 vk::ImageType Image::getImageType() const { return vk::ImageType::e1D; }
 
 vk::ImageViewType Image::getImageViewType( const bool arrayType ) const { return arrayType ? vk::ImageViewType::e1DArray : vk::ImageViewType::e1D; }

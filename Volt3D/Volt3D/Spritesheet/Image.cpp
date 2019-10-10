@@ -8,48 +8,47 @@
 #include "Config/BuildConfig.h"
 
 #include <libpng/png.h>
-#include "..\Vulkan\Images\Image.h"
 
-v3d::Image::Image()
-	: type(v3d::ImageType::eUndefined)
+V3D_NS_BEGIN
+
+Image::Image()
+	: type(ImageType::eUndefined)
 	, width(0)
 	, height(0)
-	, filePath("")
-	, fileName("")
+	, filePath()
 	, data(0)
 {}
 
-v3d::Image::~Image()
+Image::~Image()
 {
 	if (data) delete[] data;
 }
 
-v3d::Image * v3d::Image::createPNG(const std::string & filePath)
+Image * Image::createPNG(const std::filesystem::path& imageFilePath)
 {
-	v3d::Image* newImage = new (std::nothrow) v3d::Image();
+	Image* newImage = new (std::nothrow) Image();
 	if (newImage == nullptr) return nullptr;
-	else if (newImage->initPNG(filePath)) return newImage;
+	else if (newImage->initPNG(imageFilePath)) return newImage;
 	else return nullptr;
 }
 
-v3d::Image * v3d::Image::createPNG(const std::string & filePath, const int width, const int height, unsigned char * data)
+Image * Image::createPNG(const std::filesystem::path& imageFilePath, const int width, const int height, unsigned char * data)
 {
-	v3d::Image* newImage = new (std::nothrow) v3d::Image();
+	Image* newImage = new (std::nothrow) Image();
 	if (newImage == nullptr) return nullptr;
-	else if (newImage->initPNGWithData(filePath, width, height, data)) return newImage;
+	else if (newImage->initPNGWithData(imageFilePath, width, height, data)) return newImage;
 	else return nullptr;
 }
 
-bool v3d::Image::initPNG(const std::string & filePath)
+bool Image::initPNG(const std::filesystem::path& imageFilePath)
 {
-	if (filePath.empty()) return false;
+	if (imageFilePath.empty()) return false;
 	
 	// Read as file
-	FILE* fp = fopen(filePath.c_str(), "rb");
+	FILE* fp = fopen( imageFilePath.string().c_str(), "rb");
 	if (fp == nullptr) return false;
 
-	this->fileName = v3d::FileSystem::getFileName(filePath.c_str());
-	this->filePath = filePath;
+	filePath = imageFilePath;
 	
 	// Init libpng
 	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -146,24 +145,20 @@ bool v3d::Image::initPNG(const std::string & filePath)
 	info = nullptr;
 
 	// Set type to png
-	type = v3d::ImageType::ePNG;
+	type = ImageType::ePNG;
 
 	// Done.
 	return true;
 }
 
-bool v3d::Image::initPNGWithData(const std::string & filePath, const int width, const int height, unsigned char * data)
+bool Image::initPNGWithData(const std::filesystem::path & imageFilePath, const int width, const int height, unsigned char * data)
 {
 	// check path
-	if (filePath.empty()) return false;
+	if (imageFilePath.empty()) return false;
 	if (data == 0) return false;
 	if (width == 0 || height == 0) return false;
-
-	auto name = v3d::FileSystem::getFileName(filePath.c_str());
-	if (name.empty()) return false;
-
-	this->fileName = name;
-	this->filePath = filePath;
+	
+	this->filePath = imageFilePath;
 	this->width = width;
 	this->height = height;
 
@@ -171,30 +166,32 @@ bool v3d::Image::initPNGWithData(const std::string & filePath, const int width, 
 	this->data = new uint8_t[size];
 	memcpy(this->data, data, size);
 
-	type = v3d::ImageType::ePNG;
+	type = ImageType::ePNG;
 
 	return true;
 }
 
-bool v3d::Image::write()
+bool Image::write()
 {
 	return write(filePath);
 }
 
-bool v3d::Image::write(const std::string & filePath)
+bool Image::write(const std::filesystem::path& imageFilePath)
 {
 	// Check path
-	if (filePath.empty()) return false;
+	if (imageFilePath.empty()) return false;
 	
-	std::string parentDir = v3d::FileSystem::getParentDir(filePath.c_str());
+	std::filesystem::path dst = imageFilePath;
+	std::filesystem::path parentDir = dst.parent_path();
 
-	if (parentDir.empty()) parentDir = filePath;
-	if (!v3d::FileSystem::exists(parentDir.c_str())) v3d::FileSystem::createDirectory(parentDir.c_str());
+	if (parentDir.empty()) parentDir = dst;
+	if (!std::filesystem::exists( parentDir )) std::filesystem::create_directory( parentDir );
 
 	// @todo: Check if filpath already contains png extension.
+	if (!dst.has_extension()) dst.append( ".png" );
 
 	// read file
-	FILE *fp = fopen((filePath + ".png").c_str(), "wb");
+	FILE *fp = fopen( dst.string().c_str(), "wb");
 	if (fp == nullptr) return false;
 
 	// init libpng
@@ -261,7 +258,7 @@ bool v3d::Image::write(const std::string & filePath)
 	return true;
 }
 
-void v3d::Image::flipImage()
+void Image::flipImage()
 {
 	unsigned long rowSize = width * 4u; //RGBA
 	unsigned char* rowBuffer = new unsigned char[rowSize];
@@ -279,7 +276,7 @@ void v3d::Image::flipImage()
 	delete[] rowBuffer;
 }
 
-vk::Format v3d::Image::getVKFormat() const
+vk::Format Image::getVKFormat() const
 {
 	switch (type)
 	{
@@ -289,13 +286,15 @@ vk::Format v3d::Image::getVKFormat() const
 	}
 }
 
-void v3d::Image::print() const
+void Image::print() const
 {
 	auto& logger = v3d::Logger::getInstance();
 
 	logger.info("[Image] Info");
-	logger.info("File: " + filePath);
+	logger.info("File: " + filePath.string());
 	logger.info("Type: " + imageTypeToString(type));
 	logger.info("Width: " + std::to_string(width));
 	logger.info("Height: " + std::to_string(height));
 }
+
+V3D_NS_END

@@ -85,8 +85,8 @@ public:
 	//*/
 	//std::shared_ptr<v3d::Texture> getTexture(const std::string& filePath) const;
 
-	// print all texture info
-	void print() const;
+	/** Log TextureManager */
+	void log() const;
 
 	// release all textures
 	void clear();

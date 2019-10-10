@@ -167,29 +167,15 @@ std::shared_ptr<v3d::Texture2D> TextureManager::getTexture(const std::string & f
 }
 
 */
-void TextureManager::print() const
+void TextureManager::log() const
 {
 	auto& logger = v3d::Logger::getInstance();
 
-	//logger.trace("[TextureManager] Info");
-	//logger.trace("Total textures: " + std::to_string(textures.size()));
+	logger.trace("[TextureManager] Info");
+	logger.trace("Total textures: " + std::to_string(textures.size()));
 
-	//std::size_t i = 0;
-	//for()
-
-	//int index = 0;
-
-	//for (auto& e : textures)
-	//{
-	//	if (e.second)
-	//	{
-	//		logger.info("#" + std::to_string(index) + ") ID: " + std::to_string(e.first) + ", Ref Count: " + std::to_string((e.second).use_count()));
-
-	//		(e.second)->print();
-
-	//		index++;
-	//	}
-	//}
+	std::size_t i = 0;
+	for (auto& texture : textures) if (texture.second) texture.second->log();
 }
 
 void TextureManager::clear()

@@ -102,17 +102,14 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 
-	//createTexture( "Textures/lena.png", lena );
-	lena = v3d::Texture2D::create( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
 	// temp
 	const glm::vec4 white( 1 );
 
 	const float halfWidth = float( lena->getWidth() ) * 0.5f;
 	const float halfHeight = float( lena->getHeight() ) * 0.5f;
-
-	//SAFE_DELETE( lena.imageSource );
-
+	
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
@@ -365,13 +362,7 @@ bool Context::initDescriptorSet()
 			vk::DeviceSize( sizeof( glm::mat4 ) * 3 )
 		);
 
-		v3d::vulkan::Image* texImg = lena->getImage();
-		vk::DescriptorImageInfo lenaImageInfo
-		(
-			texImg->getSampler(),
-			texImg->getImageview(),
-			vk::ImageLayout::eShaderReadOnlyOptimal
-		);
+		vk::DescriptorImageInfo lenaImageInfo = lena->getImage()->getDescriptorImageInfo();
 
 		vk::WriteDescriptorSet mvpUBODescriptorWrite
 		(
@@ -646,13 +637,6 @@ void Context::release()
 {
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
-
-	//SAFE_DELETE( lena.imageSource );
-
-	//logicalDevice->getVKLogicalDevice().destroySampler( lena.sampler );
-	//logicalDevice->getVKLogicalDevice().destroyImageView( lena.imageView );
-	//logicalDevice->getVKLogicalDevice().destroyImage( lena.image );
-	//logicalDevice->getVKLogicalDevice().freeMemory( lena.deviceMemory );
 
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );

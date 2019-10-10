@@ -16,8 +16,18 @@
 
 V3D_NS_BEGIN
 
+std::size_t Texture::idCounter = 0;
+
 Texture::Texture()
-	: image( nullptr )
+	: id( idCounter++ )
+	, name()
+	, image( nullptr )
+{}
+
+Texture::Texture( const std::string& name )
+	: id( idCounter++ )
+	, name( name )
+	, image( nullptr )
 {}
 
 Texture::~Texture() 
@@ -25,12 +35,12 @@ Texture::~Texture()
 	SAFE_DELETE( image );
 }
 
-Texture* Texture::create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+Texture* Texture::create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
-	v3d::Texture* newTexture = new (std::nothrow) v3d::Texture();
+	v3d::Texture* newTexture = new (std::nothrow) v3d::Texture( name );
 	if (newTexture)
 	{
-		if (newTexture->init(texture_name, tilling, usage, memoryProperty)) return newTexture;
+		if (newTexture->init( textureFilePath, tilling, usage, memoryProperty)) return newTexture;
 		SAFE_DELETE( newTexture );
 	}
 
@@ -43,10 +53,10 @@ bool Texture::initImage( const vk::Extent3D& extent, const vk::Format& format )
 	return image != nullptr;
 }
 
-bool Texture::init( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+bool Texture::init( const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
 	// 1. Load image from texture file
-	v3d::Image* imgSrc = v3d::Image::createPNG( texture_name );
+	v3d::Image* imgSrc = v3d::Image::createPNG( textureFilePath );
 	if (!imgSrc) return false;
 
 	// 2. Create vulkan image
@@ -89,6 +99,10 @@ void Texture::release()
 	SAFE_DELETE( image );
 }
 
+std::size_t Texture::getID() const { return id; }
+
+std::string Texture::getName() const { return name; }
+
 uint32_t Texture::getWidth() const { return (image == nullptr) ? 0 : image->getWidth(); }
 
 uint32_t Texture::getHeight() const { return (image == nullptr) ? 0 : image->getHeight(); }
@@ -96,5 +110,17 @@ uint32_t Texture::getHeight() const { return (image == nullptr) ? 0 : image->get
 uint32_t Texture::getDepth() const { return (image == nullptr) ? 0 : image->getDepth(); }
 
 v3d::vulkan::Image* Texture::getImage() const { return image; }
+
+void Texture::log() const
+{
+	auto& logger = v3d::Logger::getInstance();
+
+	logger.trace( "[Texture] info" );
+	logger.trace( "ID: {}", id );
+	logger.trace( "Name: {}", name );
+	logger.trace( "Width: {}", image->extent.width );
+	logger.trace( "Height: {}", image->extent.height );
+	logger.trace( "Depth: {}", image->extent.depth );
+}
 
 V3D_NS_END;
