@@ -103,7 +103,7 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initCommandPool()) return false;
 
 	//createTexture( "Textures/lena.png", lena );
-	lena = v3d::vulkan::Texture2D::create( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	lena = v3d::Texture2D::create( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
 	// temp
 	const glm::vec4 white( 1 );

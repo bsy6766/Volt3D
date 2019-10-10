@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <memory>
+#include "Texture/Texture2D.h"
 
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
@@ -22,6 +23,7 @@
 V3D_NS_BEGIN
 
 class Image;
+class Texture2D;
 namespace glfw { class Window; }
 
 VK_NS_BEGIN
@@ -40,7 +42,6 @@ class CommandBuffer;
 class CommandPool;
 class Buffer;
 class UniformBuffer;
-class Texture2D;
 
 /**
 *	@class Context
@@ -115,7 +116,8 @@ private:
 
 	std::vector<v3d::vulkan::Context::MVP> mvps;
 
-	v3d::vulkan::Texture2D* lena;
+	v3d::Texture2D* lena;
+	std::unordered_map<std::string, std::unique_ptr<v3d::Texture2D>> textures;
 
 	bool init( const bool enableValidationLayer );
 	bool initInstance( const bool enableValidationLayer );

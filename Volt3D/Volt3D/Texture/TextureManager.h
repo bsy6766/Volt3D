@@ -8,16 +8,11 @@
 #ifndef V3D_TEXTURE_MANAGER_H
 #define V3D_TEXTURE_MANAGER_H
 
-#include <string>
-#include <memory>
-
 #include "Utils/Macros.h"
 
 V3D_NS_BEGIN
 
-// Foward declaration
 class Texture;
-class Texture2D;
 
 /**
 *	@class TextureManager
@@ -30,13 +25,16 @@ class VOLT3D_DLL TextureManager
 private:
 	// default constructor
 	TextureManager();
-	
-	std::unordered_map<std::size_t, std::shared_ptr<v3d::Texture>> textures;
+
+	std::unordered_map<int, std::unique_ptr<v3d::Texture>> textures;
 		
 public:
 	// Destructor
 	~TextureManager();
-	
+
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureManager );
+	DEFAULT_MOVE_CONSTRUCTORS( TextureManager );
+
 	///**
 	//*	Check if there is a texture with same id.
 	//*	@param id A texture id to query.

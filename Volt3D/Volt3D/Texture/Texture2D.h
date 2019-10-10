@@ -14,7 +14,6 @@
 #include "Utils/Macros.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
 /**
 *	@class Texture2D
@@ -24,7 +23,7 @@ VK_NS_BEGIN
 *
 *	@since 1.0
 */
-class Texture2D : public v3d::vulkan::Texture
+class VOLT3D_DLL Texture2D : public v3d::Texture
 {
 	friend class Context;
 
@@ -35,11 +34,13 @@ protected:
 
 public:
 	~Texture2D();
+	
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Texture2D );
+	DEFAULT_MOVE_CONSTRUCTORS( Texture2D );
 
 	static Texture2D* create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 };
 
-VK_NS_END
 V3D_NS_END;
 
 #endif

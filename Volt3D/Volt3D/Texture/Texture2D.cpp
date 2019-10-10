@@ -12,17 +12,16 @@
 #include "Vulkan/Images/Image2D.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
 Texture2D::Texture2D()
-	: v3d::vulkan::Texture()
+	: v3d::Texture()
 {}
 
 Texture2D::~Texture2D() {}
 
 Texture2D* Texture2D::create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
-	v3d::vulkan::Texture2D* newTexture = new (std::nothrow) v3d::vulkan::Texture2D();
+	v3d::Texture2D* newTexture = new (std::nothrow) v3d::Texture2D();
 	if (newTexture)
 	{
 		if (newTexture->init( texture_name, tilling, usage, memoryProperty )) return newTexture;
@@ -38,5 +37,4 @@ bool Texture2D::initImage( const vk::Extent3D& extent, const vk::Format& format 
 	return image != nullptr;
 }
 
-VK_NS_END
 V3D_NS_END

@@ -8,14 +8,18 @@
 #ifndef V3D_VK_TEXTURE_H
 #define V3D_VK_TEXTURE_H
 
+#include <memory>
+#include <unordered_map>
+
 #include <vulkan/vulkan.hpp>
 
 #include "Utils/Macros.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
+VK_NS_BEGIN
 class Image;
+VK_NS_END
 
 /**
 *	@class Texture
@@ -25,9 +29,10 @@ class Image;
 *
 *	@since 1.0
 */
-class Texture
+class VOLT3D_DLL Texture
 {
 	friend class Context;
+	friend class TextureManager;
 
 protected:
 	Texture();
@@ -42,21 +47,24 @@ protected:
 public:
 	virtual ~Texture();
 
-	//static Texture* create1D( const vk::Extent2D& extent );
-	static Texture* create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
-	//static Texture* create3D();
-	//static Texture* create1DArray();
-	//static Texture* create2DArray();
-	//static Texture* createCubeMap();
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Texture );
+	DEFAULT_MOVE_CONSTRUCTORS( Texture );
 
+	static Texture* create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+
+	/** Get width of texture */
 	uint32_t getWidth() const;
+
+	/** Get height of texture */
 	uint32_t getHeight() const;
+
+	/** Get depth of texture */
 	uint32_t getDepth() const;
 
+	/** Get image ptr */
 	v3d::vulkan::Image* getImage() const;
 };
 
-VK_NS_END
 V3D_NS_END;
 
 #endif

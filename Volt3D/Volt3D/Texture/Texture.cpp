@@ -15,10 +15,9 @@
 #include "Vulkan/Devices/LogicalDevice.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
 Texture::Texture()
-	: image(nullptr)
+	: image( nullptr )
 {}
 
 Texture::~Texture() 
@@ -28,7 +27,7 @@ Texture::~Texture()
 
 Texture* Texture::create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
-	v3d::vulkan::Texture* newTexture = new (std::nothrow) v3d::vulkan::Texture();
+	v3d::Texture* newTexture = new (std::nothrow) v3d::Texture();
 	if (newTexture)
 	{
 		if (newTexture->init(texture_name, tilling, usage, memoryProperty)) return newTexture;
@@ -98,5 +97,4 @@ uint32_t Texture::getDepth() const { return (image == nullptr) ? 0 : image->getD
 
 v3d::vulkan::Image* Texture::getImage() const { return image; }
 
-VK_NS_END
 V3D_NS_END;

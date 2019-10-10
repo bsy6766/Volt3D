@@ -9,24 +9,31 @@
 
 #include "TextureManager.h"
 
+#include "Texture.h"
+#include "Texture2D.h"
+
 #include "Utils/Logger.h"
 #include "Utils/FileSystem.h"
 #include "Config/BuildConfig.h"
 
-v3d::TextureManager::TextureManager() {}
+V3D_NS_BEGIN
 
-v3d::TextureManager::~TextureManager()
+TextureManager::TextureManager()
+	: textures()
+{}
+
+TextureManager::~TextureManager()
 {
 	clear();
 }
 
 /*
-bool v3d::TextureManager::hasTexture(const std::size_t id) const
+bool TextureManager::hasTexture(const std::size_t id) const
 {
 	return textures.find(id) != textures.end();
 }
 
-bool v3d::TextureManager::hasTexture(const std::string & filePath) const
+bool TextureManager::hasTexture(const std::string & filePath) const
 {
 	// iterate
 	for (auto& e : textures)
@@ -47,7 +54,7 @@ bool v3d::TextureManager::hasTexture(const std::string & filePath) const
 	return false;
 }
 
-bool v3d::TextureManager::addTexture(std::shared_ptr<v3d::Texture2D> texture)
+bool TextureManager::addTexture(std::shared_ptr<v3d::Texture2D> texture)
 {
 	// check nullptr
 	if (texture == nullptr)
@@ -74,7 +81,7 @@ bool v3d::TextureManager::addTexture(std::shared_ptr<v3d::Texture2D> texture)
 	return true;
 }
 
-bool v3d::TextureManager::removeTexture(const std::size_t id)
+bool TextureManager::removeTexture(const std::size_t id)
 {
 	// Find
 	auto find_it = textures.find(id);
@@ -95,7 +102,7 @@ bool v3d::TextureManager::removeTexture(const std::size_t id)
 	}
 }
 
-bool v3d::TextureManager::removeTexture(const std::string & filePath)
+bool TextureManager::removeTexture(const std::string & filePath)
 {
 	// file path can be empty
 
@@ -108,7 +115,7 @@ bool v3d::TextureManager::removeTexture(const std::string & filePath)
 		// Check
 		if ((*iter).second && (((*iter).second)->getFilePath() == filePath))
 		{
-			// matches. 
+			// matches.
 
 			// Remove
 			textures.erase(iter);
@@ -122,7 +129,7 @@ bool v3d::TextureManager::removeTexture(const std::string & filePath)
 	return false;
 }
 
-std::shared_ptr<v3d::Texture2D> v3d::TextureManager::getTexture(const std::size_t id) const
+std::shared_ptr<v3d::Texture2D> TextureManager::getTexture(const std::size_t id) const
 {
 	// find
 	auto find_it = textures.find(id);
@@ -140,7 +147,7 @@ std::shared_ptr<v3d::Texture2D> v3d::TextureManager::getTexture(const std::size_
 	}
 }
 
-std::shared_ptr<v3d::Texture2D> v3d::TextureManager::getTexture(const std::string & filePath) const
+std::shared_ptr<v3d::Texture2D> TextureManager::getTexture(const std::string & filePath) const
 {
 	// File path can be empty
 
@@ -160,12 +167,12 @@ std::shared_ptr<v3d::Texture2D> v3d::TextureManager::getTexture(const std::strin
 }
 
 */
-void v3d::TextureManager::print() const
+void TextureManager::print() const
 {
 	auto& logger = v3d::Logger::getInstance();
 
-	logger.trace("[TextureManager] Info");
-	logger.trace("Total textures: " + std::to_string(textures.size()));
+	//logger.trace("[TextureManager] Info");
+	//logger.trace("Total textures: " + std::to_string(textures.size()));
 
 	//std::size_t i = 0;
 	//for()
@@ -185,7 +192,9 @@ void v3d::TextureManager::print() const
 	//}
 }
 
-void v3d::TextureManager::clear()
+void TextureManager::clear()
 {
-	textures.clear();
+	//textures.clear();
 }
+
+V3D_NS_END
