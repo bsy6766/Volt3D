@@ -9,6 +9,7 @@
 
 #include "Texture.h"
 
+#include "TextureManager.h"
 #include "Spritesheet/Image.h"
 #include "Vulkan/Images/Image.h"
 #include "vulkan/Buffers/Buffer.h"
@@ -16,16 +17,16 @@
 
 V3D_NS_BEGIN
 
-std::size_t Texture::idCounter = 0;
+std::size_t Texture::idCounter = 1;
 
 Texture::Texture()
-	: id( idCounter++ )
+	: id(0)
 	, name()
 	, image( nullptr )
 {}
 
 Texture::Texture( const std::string& name )
-	: id( idCounter++ )
+	: id(0)
 	, name( name )
 	, image( nullptr )
 {}
@@ -89,9 +90,26 @@ bool Texture::init( const std::filesystem::path& textureFilePath, const vk::Imag
 	image->copyBuffer( stagingBuffer.getBuffer() );
 	image->transitionLayout( vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader );
 
+	// 5. Assign ID
+	id = v3d::Texture::idCounter++;
+
+	// 6. Add to texture manager
+	// @todo Maybe do something with return value?
+	addToTextureManager();
+
 	SAFE_DELETE( imgSrc );
 
 	return true;
+}
+
+bool Texture::addToTextureManager()
+{
+	return v3d::TextureManager::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+}
+
+bool Texture::isValid() const
+{
+	return (image != nullptr) && id != 0;
 }
 
 void Texture::release()

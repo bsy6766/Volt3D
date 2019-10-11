@@ -27,7 +27,7 @@ v3d::Texture2D::~Texture2D() {}
 
 Texture2D* Texture2D::create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
-	v3d::Texture2D* newTexture = new (std::nothrow) v3d::Texture2D();
+	v3d::Texture2D* newTexture = new (std::nothrow) v3d::Texture2D( name );
 	if (newTexture)
 	{
 		if (newTexture->init( textureFilePath, tilling, usage, memoryProperty )) return newTexture;

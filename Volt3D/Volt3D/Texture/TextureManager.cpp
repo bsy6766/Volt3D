@@ -9,9 +9,8 @@
 
 #include "TextureManager.h"
 
-#include "Texture.h"
 #include "Texture2D.h"
-
+#include "Engine/Engine.h"
 #include "Utils/Logger.h"
 #include "Utils/FileSystem.h"
 #include "Config/BuildConfig.h"
@@ -27,146 +26,133 @@ TextureManager::~TextureManager()
 	clear();
 }
 
-/*
-bool TextureManager::hasTexture(const std::size_t id) const
+v3d::TextureManager& TextureManager::get()
 {
-	return textures.find(id) != textures.end();
+	return v3d::Engine::get()->getTextureManager();
 }
 
-bool TextureManager::hasTexture(const std::string & filePath) const
+bool TextureManager::hasTexture( const std::size_t id ) const
 {
-	// iterate
-	for (auto& e : textures)
-	{
-		// check
-		if (e.second)
-		{
-			// check name
-			if ((e.second)->getFilePath() == filePath)
-			{
-				// Done.
-				return true;
-			}
-		}
-	}
+	return textures.find( id ) != textures.end();
+}
 
-	// Failed
+bool TextureManager::hasTexture( const std::string_view name ) const
+{
+	for (auto& texture : textures)
+		if (texture.second && texture.second->getName() == name) 
+			return true;
 	return false;
 }
 
-bool TextureManager::addTexture(std::shared_ptr<v3d::Texture2D> texture)
+bool TextureManager::hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const
 {
-	// check nullptr
-	if (texture == nullptr)
+	if (texture == nullptr) 
+		return false;
+	return hasTexture( texture->getID() ) ? true : hasTexture( texture->getName() ) ? true : false;
+}
+
+bool TextureManager::addTexture( const std::shared_ptr<v3d::Texture>& texture )
+{
+	if (!texture) 
+		return false;
+	if (hasTexture( texture->getID() ))
 	{
-#if (V3D_TARGET_BUILD == V3D_DEBUG_BUILD)
-		v3d::Error::Report::report(v3d::Error::Code::generate(false, v3d::Error::Code::Source::TEXTURE_MANAGER, v3d::Error::Code::TMErrCode::CAN_NOT_ADD_NULLPTR_TEXTURE));
+		v3d::Logger::getInstance().warn( "[TextureManager] already has a [Texture] with id: {}", texture->getID() );
+		return false;
+	}
+	textures.emplace( texture->getID(), texture );
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().debug( "[TextureManager] Added [Texture] ID: {}, Name: {}", texture->getID(), texture->getName() );
 #endif
-
-		// Failed
-		return false;
-	}
-
-	// Check
-	if (hasTexture(texture->getID()))
-	{
-		// Failed
-		return false;
-	}
-
-	// Add
-	textures.emplace(std::make_pair(texture->getID(), texture));
-
-	// Done.
 	return true;
 }
 
-bool TextureManager::removeTexture(const std::size_t id)
+bool TextureManager::removeTexture( const std::size_t id )
 {
-	// Find
-	auto find_it = textures.find(id);
-
-	// Check
-	if (find_it == textures.end())
-	{
-		// Doesn't exists.
-		return false;
-	}
-	else
-	{
-		// remove.
-		textures.erase(find_it);
-
-		//  Done.
-		return true;
-	}
+	// 0 id does not exist
+	if (id == 0) return false;
+	auto find_it = textures.find( id );
+	if (find_it == textures.end()) return false;
+	textures.erase( find_it );
+	return true;
 }
 
-bool TextureManager::removeTexture(const std::string & filePath)
+bool TextureManager::removeTexture( const std::string_view name )
 {
-	// file path can be empty
-
-	// get iter
-	auto iter = textures.begin();
-
-	// iterate
-	for (; iter != textures.end();)
+	for (auto iter = textures.begin(); iter != textures.end(); )
 	{
-		// Check
-		if ((*iter).second && (((*iter).second)->getFilePath() == filePath))
+		if ((*iter).second && ((*iter).second)->getName() == name)
 		{
-			// matches.
-
-			// Remove
-			textures.erase(iter);
-
-			// Done.
+			textures.erase( iter );
 			return true;
 		}
+		iter++;
 	}
-
-	// Failed
 	return false;
 }
 
-std::shared_ptr<v3d::Texture2D> TextureManager::getTexture(const std::size_t id) const
+std::size_t TextureManager::removeAllTextures( const std::string_view name )
 {
-	// find
-	auto find_it = textures.find(id);
-
-	// check
-	if (find_it == textures.end())
+	std::size_t c = 0;
+	for (auto iter = textures.begin(); iter != textures.end(); )
 	{
-		// Failed
-		return nullptr;
+		if ((*iter).second && ((*iter).second)->getName() == name)
+		{
+			iter = textures.erase( iter );
+			c++;
+			continue;
+		}
+		iter++;
 	}
-	else
-	{
-		// Done.
-		return (find_it->second);
-	}
+	return c;
 }
 
-std::shared_ptr<v3d::Texture2D> TextureManager::getTexture(const std::string & filePath) const
+bool TextureManager::removeTexture( const std::shared_ptr<v3d::Texture>& texture )
 {
-	// File path can be empty
+	if (texture == nullptr) return false;
+	return removeTexture( texture->getID() );
+}
 
-	// Iterate and compare path
-	for (auto& e : textures)
-	{
-		// Check path
-		if ((e.second)->getFilePath() == filePath)
-		{
-			// Done.
-			return (e.second);
-		}
-	}
+std::shared_ptr<v3d::Texture> TextureManager::getTexture( const std::size_t id ) const
+{
+	if (id == 0) return nullptr;
+	return textures.find( id )->second;
+}
 
-	// Failed
+std::shared_ptr<v3d::Texture> TextureManager::getTexture( const std::string_view name ) const
+{
+	for (auto& texture : textures)
+		if ((texture.second)->getName() == name)
+			return texture.second;
 	return nullptr;
 }
 
-*/
+std::vector<std::shared_ptr<v3d::Texture>> TextureManager::getAllTextures( const std::string_view name ) const
+{
+	std::vector<std::shared_ptr<v3d::Texture>> ret;
+
+	for (auto& texture : textures)
+		if ((texture.second)->getName() == name)
+			ret.push_back( texture.second );
+	return ret;
+}
+
+std::size_t TextureManager::purge()
+{
+	std::size_t c = 0;
+	for (auto iter = textures.begin(); iter != textures.end();)
+	{
+		if (iter->second == nullptr || iter->second.use_count() == 0)
+		{
+			iter = textures.erase( iter );
+			c++;
+			continue;
+		}
+		iter++;
+	}
+	return c;
+}
+
 void TextureManager::log() const
 {
 	auto& logger = v3d::Logger::getInstance();
@@ -180,7 +166,7 @@ void TextureManager::log() const
 
 void TextureManager::clear()
 {
-	//textures.clear();
+	textures.clear();
 }
 
 V3D_NS_END

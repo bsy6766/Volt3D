@@ -12,7 +12,6 @@
 
 #include <vector>
 #include <memory>
-#include "Texture/Texture2D.h"
 
 #include "utils/Macros.h"
 #include "Config/BuildConfig.h"
@@ -117,7 +116,6 @@ private:
 	std::vector<v3d::vulkan::Context::MVP> mvps;
 
 	v3d::Texture2D* lena;
-	std::unordered_map<std::string, std::unique_ptr<v3d::Texture2D>> textures;
 
 	bool init( const bool enableValidationLayer );
 	bool initInstance( const bool enableValidationLayer );

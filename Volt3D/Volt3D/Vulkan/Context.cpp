@@ -57,7 +57,6 @@ Context::Context()
 	, imageAvailableSemaphores()
 	, renderFinishedSemaphores()
 	, frameFences()
-	//, descriptorLayout( nullptr )
 	, descriptorPool( nullptr )
 	, descriptorSets()
 	, current_frame( 0 )
@@ -126,7 +125,6 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initDescriptorSet()) return false;
 	if (!initSemaphore()) return false;
 	if (!initFences()) return false;
-
 	if (!initCommandBuffer()) return false;
 
 	return true;
@@ -271,41 +269,6 @@ bool Context::initCommandBuffer()
 
 	return true;
 }
-
-/*
-bool Context::initDescriptorLayout()
-{
-	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
-	(
-		0,
-		vk::DescriptorType::eUniformBuffer,
-		1,
-		vk::ShaderStageFlagBits::eVertex
-	);
-
-	vk::DescriptorSetLayoutBinding lenaSamplerBinding
-	(
-		1,
-		vk::DescriptorType::eCombinedImageSampler,
-		1,
-		vk::ShaderStageFlagBits::eFragment
-	);
-
-	const uint32_t size = 2;
-	vk::DescriptorSetLayoutBinding bindings[size] = { mvpUBOLayoutBinding, lenaSamplerBinding };
-
-	vk::DescriptorSetLayoutCreateInfo layoutInfo
-	(
-		vk::DescriptorSetLayoutCreateFlags(),
-		size,
-		bindings
-	);
-
-	descriptorLayout = logicalDevice->getVKLogicalDevice().createDescriptorSetLayout( layoutInfo );
-
-	return true;
-}
-*/
 
 bool Context::initDescriptorPool()
 {
@@ -614,7 +577,6 @@ void Context::release()
 
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );
-	SAFE_DELETE( lena );
 
 	for (auto& f : frameFences) { logicalDevice->getVKLogicalDevice().destroyFence( f ); }
 	frameFences.clear();
@@ -623,6 +585,12 @@ void Context::release()
 	imageAvailableSemaphores.clear();
 	for (auto& s : renderFinishedSemaphores) { logicalDevice->getVKLogicalDevice().destroySemaphore( s ); }
 	renderFinishedSemaphores.clear();
+
+	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
+	mvpUBOs.clear();
+
+	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
+	ld.destroyDescriptorPool( descriptorPool );
 
 	releaseSwapChain();
 
@@ -643,14 +611,9 @@ bool Context::recreateSwapChain()
 
 	if (!initSwapChain()) return false;
 	if (!initRenderPass()) return false;
-
-	//if (!initDescriptorLayout()) return false;
 	if (!initGraphicsPipeline()) return false;
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
-	createMVPUBO();
-	//if (!initDescriptorPool()) return false;
-	//if (!initDescriptorSet()) return false;
 	if (!initCommandBuffer()) return false;
 
 	v3d::Logger::getInstance().info( "Recreated swapchain" );
@@ -662,11 +625,6 @@ void Context::releaseSwapChain()
 {
 	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
 
-	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
-	mvpUBOs.clear();
-
-	//ld.destroyDescriptorSetLayout( descriptorLayout );
-	//ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
 	commandBuffers.clear();
