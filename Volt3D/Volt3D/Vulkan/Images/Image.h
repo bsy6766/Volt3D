@@ -67,6 +67,8 @@ public:
 	const vk::Sampler& getSampler() const { return sampler; }
 	const vk::DeviceMemory& getDeviceMemory() const { return deviceMemory; }
 
+	vk::DescriptorImageInfo getDescriptorImageInfo() const;
+
 	virtual vk::ImageType getImageType() const;
 
 	static uint32_t getMipLevels( const vk::Extent2D& extent );

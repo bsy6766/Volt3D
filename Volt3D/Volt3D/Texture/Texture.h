@@ -8,14 +8,21 @@
 #ifndef V3D_VK_TEXTURE_H
 #define V3D_VK_TEXTURE_H
 
+#include <memory>
+#include <unordered_map>
+#include <filesystem>
+
 #include <vulkan/vulkan.hpp>
 
 #include "Utils/Macros.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
+class TextureManager;
+
+VK_NS_BEGIN
 class Image;
+VK_NS_END
 
 /**
 *	@class Texture
@@ -25,38 +32,65 @@ class Image;
 *
 *	@since 1.0
 */
-class Texture
+class VOLT3D_DLL Texture
 {
 	friend class Context;
+	friend class TextureManager;
+
+protected:
+	static std::size_t idCounter;
 
 protected:
 	Texture();
+	Texture( const std::string& name );
+
+	std::size_t id;
+	std::string name;
 
 	v3d::vulkan::Image* image;
 
 	void release();
 
 	virtual bool initImage( const vk::Extent3D& extent, const vk::Format& format );
-	bool init( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+	bool init( const std::filesystem::path& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+	bool addToTextureManager();
+	bool isValid() const;
 
 public:
 	virtual ~Texture();
 
-	//static Texture* create1D( const vk::Extent2D& extent );
-	static Texture* create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
-	//static Texture* create3D();
-	//static Texture* create1DArray();
-	//static Texture* create2DArray();
-	//static Texture* createCubeMap();
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( Texture );
+	DEFAULT_MOVE_CONSTRUCTORS( Texture );
 
+	/**
+	*	Create 1D Texture.
+	*	@param name A name of this texture object.
+	*	@param texture
+	*/
+	static Texture* create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+
+	/** Get ID */
+	std::size_t getID() const;
+
+	/** Get name of texture */
+	std::string getName() const;
+
+	/** Get width of texture */
 	uint32_t getWidth() const;
+
+	/** Get height of texture */
 	uint32_t getHeight() const;
+
+	/** Get depth of texture */
 	uint32_t getDepth() const;
 
+	/** Get image ptr */
 	v3d::vulkan::Image* getImage() const;
+
+	/** Log Texture */
+	void log() const;
 };
 
-VK_NS_END
 V3D_NS_END;
 
 #endif

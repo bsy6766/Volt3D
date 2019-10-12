@@ -22,6 +22,7 @@
 V3D_NS_BEGIN
 
 class Image;
+class Texture2D;
 namespace glfw { class Window; }
 
 VK_NS_BEGIN
@@ -40,7 +41,6 @@ class CommandBuffer;
 class CommandPool;
 class Buffer;
 class UniformBuffer;
-class Texture2D;
 
 /**
 *	@class Context
@@ -115,7 +115,7 @@ private:
 
 	std::vector<v3d::vulkan::Context::MVP> mvps;
 
-	v3d::vulkan::Texture2D* lena;
+	v3d::Texture2D* lena;
 
 	bool init( const bool enableValidationLayer );
 	bool initInstance( const bool enableValidationLayer );
@@ -144,15 +144,7 @@ private:
 
 	void createMVPUBO();
 	void updateMVPUBO( const uint32_t imageIndex );
-
-	//void createTexture( const char* path, v3d::vulkan::Context::Texture& texture );
-	//void createTextureImage( const char* path, v3d::vulkan::Context::Texture& texture );
-	//void createTextureImageView( v3d::vulkan::Context::Texture& texture );
-	//void createTextureSampler( v3d::vulkan::Context::Texture& texture );
-	//void createImage( const uint32_t w, const uint32_t h, const vk::Format& format, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags, const vk::MemoryPropertyFlags memoryPropertyFlags, vk::Image& image, vk::DeviceMemory& deviceMemory );
-	//void transitionImageLayout( vk::Image& image, const vk::Format& format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout );
-	//void copyBufferToImage( const vk::Buffer& buffer, vk::Image& dst, const uint32_t width, const uint32_t height );
-
+	
 	void oneTimeSubmit( v3d::vulkan::CommandBuffer& cb );
 
 	void render();

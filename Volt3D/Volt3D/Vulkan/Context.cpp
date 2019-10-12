@@ -57,7 +57,6 @@ Context::Context()
 	, imageAvailableSemaphores()
 	, renderFinishedSemaphores()
 	, frameFences()
-	//, descriptorLayout( nullptr )
 	, descriptorPool( nullptr )
 	, descriptorSets()
 	, current_frame( 0 )
@@ -102,17 +101,14 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 
-	//createTexture( "Textures/lena.png", lena );
-	lena = v3d::vulkan::Texture2D::create( "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
 	// temp
 	const glm::vec4 white( 1 );
 
 	const float halfWidth = float( lena->getWidth() ) * 0.5f;
 	const float halfHeight = float( lena->getHeight() ) * 0.5f;
-
-	//SAFE_DELETE( lena.imageSource );
-
+	
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
@@ -129,7 +125,6 @@ bool Context::init( const bool enableValidationLayer )
 	if (!initDescriptorSet()) return false;
 	if (!initSemaphore()) return false;
 	if (!initFences()) return false;
-
 	if (!initCommandBuffer()) return false;
 
 	return true;
@@ -275,41 +270,6 @@ bool Context::initCommandBuffer()
 	return true;
 }
 
-/*
-bool Context::initDescriptorLayout()
-{
-	vk::DescriptorSetLayoutBinding mvpUBOLayoutBinding
-	(
-		0,
-		vk::DescriptorType::eUniformBuffer,
-		1,
-		vk::ShaderStageFlagBits::eVertex
-	);
-
-	vk::DescriptorSetLayoutBinding lenaSamplerBinding
-	(
-		1,
-		vk::DescriptorType::eCombinedImageSampler,
-		1,
-		vk::ShaderStageFlagBits::eFragment
-	);
-
-	const uint32_t size = 2;
-	vk::DescriptorSetLayoutBinding bindings[size] = { mvpUBOLayoutBinding, lenaSamplerBinding };
-
-	vk::DescriptorSetLayoutCreateInfo layoutInfo
-	(
-		vk::DescriptorSetLayoutCreateFlags(),
-		size,
-		bindings
-	);
-
-	descriptorLayout = logicalDevice->getVKLogicalDevice().createDescriptorSetLayout( layoutInfo );
-
-	return true;
-}
-*/
-
 bool Context::initDescriptorPool()
 {
 	const uint32_t count = uint32_t( framebuffers->size() );
@@ -365,13 +325,7 @@ bool Context::initDescriptorSet()
 			vk::DeviceSize( sizeof( glm::mat4 ) * 3 )
 		);
 
-		v3d::vulkan::Image* texImg = lena->getImage();
-		vk::DescriptorImageInfo lenaImageInfo
-		(
-			texImg->getSampler(),
-			texImg->getImageview(),
-			vk::ImageLayout::eShaderReadOnlyOptimal
-		);
+		vk::DescriptorImageInfo lenaImageInfo = lena->getImage()->getDescriptorImageInfo();
 
 		vk::WriteDescriptorSet mvpUBODescriptorWrite
 		(
@@ -406,32 +360,6 @@ bool Context::initDescriptorSet()
 
 
 
-
-
-
-
-bool Context::recreateSwapChain()
-{
-	logicalDevice->getVKLogicalDevice().waitIdle();
-
-	releaseSwapChain();
-
-	if (!initSwapChain()) return false;
-	if (!initRenderPass()) return false;
-
-	//if (!initDescriptorLayout()) return false;
-	if (!initGraphicsPipeline()) return false;
-	if (!initFrameBuffer()) return false;
-	if (!initCommandPool()) return false;
-	createMVPUBO();
-	if (!initDescriptorPool()) return false;
-	if (!initDescriptorSet()) return false;
-	if (!initCommandBuffer()) return false;
-
-	v3d::Logger::getInstance().info( "Recreated swapchain" );
-
-	return true;
-}
 
 /*
 v3d::vulkan::CommandBuffer Context::createCommandBuffer( const vk::CommandBufferLevel level )
@@ -647,16 +575,8 @@ void Context::release()
 	auto& logger = v3d::Logger::getInstance();
 	logger.info( "Releasing Context..." );
 
-	//SAFE_DELETE( lena.imageSource );
-
-	//logicalDevice->getVKLogicalDevice().destroySampler( lena.sampler );
-	//logicalDevice->getVKLogicalDevice().destroyImageView( lena.imageView );
-	//logicalDevice->getVKLogicalDevice().destroyImage( lena.image );
-	//logicalDevice->getVKLogicalDevice().freeMemory( lena.deviceMemory );
-
 	SAFE_DELETE( lenaBuffer.vertexBuffer );
 	SAFE_DELETE( lenaBuffer.indexBuffer );
-	SAFE_DELETE( lena );
 
 	for (auto& f : frameFences) { logicalDevice->getVKLogicalDevice().destroyFence( f ); }
 	frameFences.clear();
@@ -665,6 +585,12 @@ void Context::release()
 	imageAvailableSemaphores.clear();
 	for (auto& s : renderFinishedSemaphores) { logicalDevice->getVKLogicalDevice().destroySemaphore( s ); }
 	renderFinishedSemaphores.clear();
+
+	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
+	mvpUBOs.clear();
+
+	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
+	ld.destroyDescriptorPool( descriptorPool );
 
 	releaseSwapChain();
 
@@ -677,15 +603,28 @@ void Context::release()
 	logger.info( "Releasing Context finished" );
 }
 
+bool Context::recreateSwapChain()
+{
+	logicalDevice->getVKLogicalDevice().waitIdle();
+
+	releaseSwapChain();
+
+	if (!initSwapChain()) return false;
+	if (!initRenderPass()) return false;
+	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
+	if (!initCommandBuffer()) return false;
+
+	v3d::Logger::getInstance().info( "Recreated swapchain" );
+
+	return true;
+}
+
 void Context::releaseSwapChain()
 {
 	const vk::Device& ld = logicalDevice->getVKLogicalDevice();
 
-	for (auto mvpUBO : mvpUBOs) { SAFE_DELETE( mvpUBO ); }
-	mvpUBOs.clear();
-
-	//ld.destroyDescriptorSetLayout( descriptorLayout );
-	ld.destroyDescriptorPool( descriptorPool );
 
 	for (auto& cb : commandBuffers) SAFE_DELETE( cb );
 	commandBuffers.clear();

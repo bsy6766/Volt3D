@@ -8,16 +8,13 @@
 #ifndef V3D_TEXTURE_MANAGER_H
 #define V3D_TEXTURE_MANAGER_H
 
-#include <string>
-#include <memory>
-
 #include "Utils/Macros.h"
+
+#include "Texture.h"
 
 V3D_NS_BEGIN
 
-// Foward declaration
 class Texture;
-class Texture2D;
 
 /**
 *	@class TextureManager
@@ -30,67 +27,39 @@ class VOLT3D_DLL TextureManager
 private:
 	// default constructor
 	TextureManager();
-	
+
+	// id : texture
 	std::unordered_map<std::size_t, std::shared_ptr<v3d::Texture>> textures;
 		
 public:
 	// Destructor
 	~TextureManager();
-	
-	///**
-	//*	Check if there is a texture with same id.
-	//*	@param id A texture id to query.
-	//*	@return true if exists. Else, false.
-	//*/
-	//bool hasTexture(const std::size_t id) const;
 
-	///**
-	//*	Check if there is a texture with same texture file path that was created.
-	//*	@param filePath A texture file path to query.
-	//*	@return true if exists. Else, false.
-	//*/
-	//bool hasTexture(const std::string& filePath) const;
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureManager );
+	DEFAULT_MOVE_CONSTRUCTORS( TextureManager );
 
-	///**
-	//*	Add texture to texture manager.
-	//*	@param texture A Texture2D instance to add.
-	//*	@return true if successfully add texture. Else, false.
-	//*/
-	//bool addTexture(std::shared_ptr<v3d::Texture> texture);
+	static v3d::TextureManager& get();
 
-	///**
-	//*	Remove texture from texture manager.
-	//*	@param id A texture id to remove.
-	//*	@return true if successfully removes. Else, false.
-	//*/
-	//bool removeTexture(const std::size_t id);
+	bool hasTexture(const std::size_t id) const;
+	bool hasTexture( const std::string_view name ) const;
+	bool hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const;
 
-	///**
-	//*	Remove texture from texture manager with same file path
-	//*	@warning This will remove the first texture that matches the file path.
-	//*	@param filePath A texture name to remove.
-	//*	@return true if successfully removes. Else, false.
-	//*/
-	//bool removeTexture(const std::string& filePath);
+	bool addTexture( const std::shared_ptr<v3d::Texture>& texture );
 
-	///**
-	//*	Get texture by id.
-	//*	@param id Texture id to query.
-	//*	@return A Texture instance if success. Else, nullptr.
-	//*/
-	//std::shared_ptr<v3d::Texture> getTexture(const std::size_t id) const;
+	bool removeTexture( const std::size_t id );
+	bool removeTexture( const std::string_view name );
+	std::size_t removeAllTextures( const std::string_view name );
+	bool removeTexture( const std::shared_ptr<v3d::Texture>& texture );
 
-	///**
-	//*	Get texture by file path.
-	//*	@param filePath A texture name to query.
-	//*	@return A Texture instance if success. Else, nullptr.
-	//*/
-	//std::shared_ptr<v3d::Texture> getTexture(const std::string& filePath) const;
+	std::shared_ptr<v3d::Texture> getTexture( const std::size_t id ) const;
+	std::shared_ptr<v3d::Texture> getTexture( const std::string_view name ) const;
+	std::vector<std::shared_ptr<v3d::Texture>> getAllTextures( const std::string_view name ) const;
 
-	// print all texture info
-	void print() const;
+	std::size_t purge();
 
-	// release all textures
+	/** Log TextureManager */
+	void log() const;
+
 	void clear();
 };
 

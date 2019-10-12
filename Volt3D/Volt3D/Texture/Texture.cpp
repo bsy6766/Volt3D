@@ -9,16 +9,26 @@
 
 #include "Texture.h"
 
+#include "TextureManager.h"
 #include "Spritesheet/Image.h"
 #include "Vulkan/Images/Image.h"
 #include "vulkan/Buffers/Buffer.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
+
+std::size_t Texture::idCounter = 1;
 
 Texture::Texture()
-	: image(nullptr)
+	: id(0)
+	, name()
+	, image( nullptr )
+{}
+
+Texture::Texture( const std::string& name )
+	: id(0)
+	, name( name )
+	, image( nullptr )
 {}
 
 Texture::~Texture() 
@@ -26,12 +36,12 @@ Texture::~Texture()
 	SAFE_DELETE( image );
 }
 
-Texture* Texture::create( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+Texture* Texture::create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
-	v3d::vulkan::Texture* newTexture = new (std::nothrow) v3d::vulkan::Texture();
+	v3d::Texture* newTexture = new (std::nothrow) v3d::Texture( name );
 	if (newTexture)
 	{
-		if (newTexture->init(texture_name, tilling, usage, memoryProperty)) return newTexture;
+		if (newTexture->init( textureFilePath, tilling, usage, memoryProperty)) return newTexture;
 		SAFE_DELETE( newTexture );
 	}
 
@@ -44,10 +54,10 @@ bool Texture::initImage( const vk::Extent3D& extent, const vk::Format& format )
 	return image != nullptr;
 }
 
-bool Texture::init( const std::string& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
+bool Texture::init( const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty )
 {
 	// 1. Load image from texture file
-	v3d::Image* imgSrc = v3d::Image::createPNG( texture_name );
+	v3d::Image* imgSrc = v3d::Image::createPNG( textureFilePath );
 	if (!imgSrc) return false;
 
 	// 2. Create vulkan image
@@ -80,15 +90,36 @@ bool Texture::init( const std::string& texture_name, const vk::ImageTiling& till
 	image->copyBuffer( stagingBuffer.getBuffer() );
 	image->transitionLayout( vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader );
 
+	// 5. Assign ID
+	id = v3d::Texture::idCounter++;
+
+	// 6. Add to texture manager
+	// @todo Maybe do something with return value?
+	addToTextureManager();
+
 	SAFE_DELETE( imgSrc );
 
 	return true;
+}
+
+bool Texture::addToTextureManager()
+{
+	return v3d::TextureManager::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+}
+
+bool Texture::isValid() const
+{
+	return (image != nullptr) && id != 0;
 }
 
 void Texture::release()
 {
 	SAFE_DELETE( image );
 }
+
+std::size_t Texture::getID() const { return id; }
+
+std::string Texture::getName() const { return name; }
 
 uint32_t Texture::getWidth() const { return (image == nullptr) ? 0 : image->getWidth(); }
 
@@ -98,5 +129,16 @@ uint32_t Texture::getDepth() const { return (image == nullptr) ? 0 : image->getD
 
 v3d::vulkan::Image* Texture::getImage() const { return image; }
 
-VK_NS_END
+void Texture::log() const
+{
+	auto& logger = v3d::Logger::getInstance();
+
+	logger.trace( "[Texture] info" );
+	logger.trace( "ID: {}", id );
+	logger.trace( "Name: {}", name );
+	logger.trace( "Width: {}", image->extent.width );
+	logger.trace( "Height: {}", image->extent.height );
+	logger.trace( "Depth: {}", image->extent.depth );
+}
+
 V3D_NS_END;

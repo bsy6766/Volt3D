@@ -119,6 +119,7 @@
       <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +173,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
