@@ -39,6 +39,8 @@ public:
 	*	@param data [in] A data pointer of uniform buffer
 	*/
 	void update( const void* data );
+
+	vk::DescriptorBufferInfo getDescriptorBufferInfo() const;
 };
 
 VK_NS_END

@@ -118,6 +118,6 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/SwapChain.h"
+#include "Vulkan/Swapchain/Swapchain.h"
 
 #endif

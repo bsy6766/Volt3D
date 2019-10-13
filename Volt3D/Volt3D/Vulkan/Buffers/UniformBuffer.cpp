@@ -28,5 +28,10 @@ void UniformBuffer::update( const void* data )
 	unmapMemory();
 }
 
+vk::DescriptorBufferInfo UniformBuffer::getDescriptorBufferInfo() const
+{
+	return vk::DescriptorBufferInfo{ buffer, vk::DeviceSize(0), size };
+}
+
 V3D_NS_END
 VK_NS_END

@@ -318,15 +318,6 @@ bool Context::initDescriptorSet()
 
 	for (std::size_t i = 0; i < count; i++)
 	{
-		vk::DescriptorBufferInfo mvpUBOInfo
-		(
-			mvpUBOs[i]->getBuffer(),
-			vk::DeviceSize( 0 ),
-			vk::DeviceSize( sizeof( glm::mat4 ) * 3 )
-		);
-
-		vk::DescriptorImageInfo lenaImageInfo = lena->getImage()->getDescriptorImageInfo();
-
 		vk::WriteDescriptorSet mvpUBODescriptorWrite
 		(
 			descriptorSets[i],
@@ -334,7 +325,7 @@ bool Context::initDescriptorSet()
 			1,
 			vk::DescriptorType::eUniformBuffer,
 			nullptr,
-			&mvpUBOInfo,
+			&mvpUBOs[i]->getDescriptorBufferInfo(),
 			nullptr
 		);
 
@@ -344,7 +335,7 @@ bool Context::initDescriptorSet()
 			1, 0,
 			1,
 			vk::DescriptorType::eCombinedImageSampler,
-			&lenaImageInfo,
+			&lena->getImage()->getDescriptorImageInfo(),
 			nullptr,
 			nullptr
 		);
