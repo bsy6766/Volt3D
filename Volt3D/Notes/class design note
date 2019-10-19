@@ -1,0 +1,131 @@
+v3d::Application
+- The class that manages the entire application, including the game itself
+- Initialize stuffs that need to fire up the engine
+- When everything is ready, engine is created
+- Components
+	- [v3d::Engine]
+	- Window title
+
+v3d::Engine
+- The class which has everything that the game engine provides
+- 
+	- Shader
+	- Assets
+		- Texture
+		- Model
+		- Audio
+	- 2D/3D
+
+v3d::ResourceManager
+- The class that manages all types of resources in the game.
+- Manage all the caches classes.
+- Async loading on background thread
+
+v3d::TextureCache
+- The class caches [v3d::Texture] objects
+
+v3d::ShaderCache
+- The class caches [v3d::Shader] objects
+
+v3d::MeshCache
+- The class caches [v3d::Mesh] objects
+
+v3d::MaterialCache
+- The class caches [v3d::Material] objects
+
+v3d::Texture
+- The class wraps everything needed to create Vulkan Texture.
+- Contains Vulkan Image objects, texture path, etc.
+
+v3d::Shader
+- The class wraps everything needed to create Vulkan Shader.
+- Contains shader path, name, id, Vulkan ShaderModule
+
+v3d::Mesh
+- The class contains mesh information (vertex, index, material etc)
+
+v3d::Material
+- The class contains material information (color, diffuse, texture, etc)
+
+
+
+
+
+
+v3d::Renderer
+- The class which take cares everything related to rendering.
+- Vulkan backend lives here
+
+v3d::V3_N3_T2
+
+
+// -- Input -----------------------------
+
+v3d::InputManager
+- The class manages all inputs 
+- Uses GLFW
+- Handles Keyboard, Mouse, and GamePad (XInput) 
+
+// --------------------------------------
+
+
+
+// -- Vulkan ----------------------------
+// ---- v3d::vulkan ---------------------
+
+Context
+
+Image
+Image2D
+Image3D
+
+ShaderModule
+Pipeline
+
+// --------------------------------------
+
+// -- Game Objects ----------------------
+// ---- v3d -----------------------------
+
+Node
+- The base object that can be added to scene.
+- Can transform.
+
+MeshNode
+- 3D object node
+
+Sprite
+- Simple quad with texture
+
+SpriteAnimation
+- Sequence of sprites
+
+Text
+- Text mesh
+
+ProgressTimer
+- Progress bar or radial
+
+ShapeNode
+- Line and triangle
+
+ParticleSystem
+- A particle system that can be loaded with XML file
+
+// --------------------------------------
+
+
+// -- UI --------------------------------
+// ---- v3d::UI -------------------------
+
+Canvas
+Button
+CheckBox
+Slider
+ScrollBar
+ScrollNode
+NinePatchSprite
+RichText
+TextField
+
+// --------------------------------------
