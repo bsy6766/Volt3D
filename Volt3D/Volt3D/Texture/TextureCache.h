@@ -1,5 +1,5 @@
 /**
-*	@file TextureManager.h
+*	@file TextureCache.h
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -17,28 +17,28 @@ V3D_NS_BEGIN
 class Texture;
 
 /**
-*	@class TextureManager
+*	@class TextureCache
 *	@brief Manages all textures.
 */
-class VOLT3D_DLL TextureManager
+class VOLT3D_DLL TextureCache
 {
 	friend class Engine;
 
 private:
 	// default constructor
-	TextureManager();
+	TextureCache();
 
 	// id : texture
 	std::unordered_map<std::size_t, std::shared_ptr<v3d::Texture>> textures;
 		
 public:
 	// Destructor
-	~TextureManager();
+	~TextureCache();
 
-	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureManager );
-	DEFAULT_MOVE_CONSTRUCTORS( TextureManager );
+	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureCache );
+	DEFAULT_MOVE_CONSTRUCTORS( TextureCache );
 
-	static v3d::TextureManager& get();
+	static v3d::TextureCache& get();
 
 	bool hasTexture(const std::size_t id) const;
 	bool hasTexture( const std::string_view name ) const;
@@ -57,7 +57,7 @@ public:
 
 	std::size_t purge();
 
-	/** Log TextureManager */
+	/** Log TextureCache */
 	void log() const;
 
 	void clear();

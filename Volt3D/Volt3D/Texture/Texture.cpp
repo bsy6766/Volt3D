@@ -9,7 +9,7 @@
 
 #include "Texture.h"
 
-#include "TextureManager.h"
+#include "TextureCache.h"
 #include "Spritesheet/Image.h"
 #include "Vulkan/Images/Image.h"
 #include "vulkan/Buffers/Buffer.h"
@@ -104,7 +104,7 @@ bool Texture::init( const std::filesystem::path& textureFilePath, const vk::Imag
 
 bool Texture::addToTextureManager()
 {
-	return v3d::TextureManager::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+	return v3d::TextureCache::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
 }
 
 bool Texture::isValid() const

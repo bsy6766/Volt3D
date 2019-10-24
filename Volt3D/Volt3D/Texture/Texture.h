@@ -18,7 +18,7 @@
 
 V3D_NS_BEGIN
 
-class TextureManager;
+class TextureCache;
 
 VK_NS_BEGIN
 class Image;
@@ -35,7 +35,7 @@ VK_NS_END
 class VOLT3D_DLL Texture
 {
 	friend class Context;
-	friend class TextureManager;
+	friend class TextureCache;
 
 protected:
 	static std::size_t idCounter;

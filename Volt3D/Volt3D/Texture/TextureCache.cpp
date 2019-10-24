@@ -1,5 +1,5 @@
 /**
-*	@file TextureManager.cpp
+*	@file TextureCache.cpp
 *
 *	@author Seung Youp Baek
 *	@copyright Copyright (c) 2019 Seung Youp Baek
@@ -7,7 +7,7 @@
 
 #include <PreCompiled.h>
 
-#include "TextureManager.h"
+#include "TextureCache.h"
 
 #include "Texture2D.h"
 #include "Engine/Engine.h"
@@ -17,26 +17,26 @@
 
 V3D_NS_BEGIN
 
-TextureManager::TextureManager()
+TextureCache::TextureCache()
 	: textures()
 {}
 
-TextureManager::~TextureManager()
+TextureCache::~TextureCache()
 {
 	clear();
 }
 
-v3d::TextureManager& TextureManager::get()
+v3d::TextureCache& TextureCache::get()
 {
-	return v3d::Engine::get()->getTextureManager();
+	return v3d::Engine::get()->getTextureCache();
 }
 
-bool TextureManager::hasTexture( const std::size_t id ) const
+bool TextureCache::hasTexture( const std::size_t id ) const
 {
 	return textures.find( id ) != textures.end();
 }
 
-bool TextureManager::hasTexture( const std::string_view name ) const
+bool TextureCache::hasTexture( const std::string_view name ) const
 {
 	for (auto& texture : textures)
 		if (texture.second && texture.second->getName() == name) 
@@ -44,30 +44,32 @@ bool TextureManager::hasTexture( const std::string_view name ) const
 	return false;
 }
 
-bool TextureManager::hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const
+bool TextureCache::hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const
 {
 	if (texture == nullptr) 
 		return false;
 	return hasTexture( texture->getID() ) ? true : hasTexture( texture->getName() ) ? true : false;
 }
 
-bool TextureManager::addTexture( const std::shared_ptr<v3d::Texture>& texture )
+bool TextureCache::addTexture( const std::shared_ptr<v3d::Texture>& texture )
 {
 	if (!texture) 
 		return false;
 	if (hasTexture( texture->getID() ))
 	{
-		v3d::Logger::getInstance().warn( "[TextureManager] already has a [Texture] with id: {}", texture->getID() );
+		v3d::Logger::getInstance().warn( "[TextureCache] already has a [Texture] with id: {}", texture->getID() );
 		return false;
 	}
 	textures.emplace( texture->getID(), texture );
+
 #ifdef BUILD_DEBUG
-	v3d::Logger::getInstance().debug( "[TextureManager] Added [Texture] ID: {}, Name: {}", texture->getID(), texture->getName() );
+	v3d::Logger::getInstance().debug( "[TextureCache] Added [Texture] ID: {}, Name: {}", texture->getID(), texture->getName() );
 #endif
+
 	return true;
 }
 
-bool TextureManager::removeTexture( const std::size_t id )
+bool TextureCache::removeTexture( const std::size_t id )
 {
 	// 0 id does not exist
 	if (id == 0) return false;
@@ -77,7 +79,7 @@ bool TextureManager::removeTexture( const std::size_t id )
 	return true;
 }
 
-bool TextureManager::removeTexture( const std::string_view name )
+bool TextureCache::removeTexture( const std::string_view name )
 {
 	for (auto iter = textures.begin(); iter != textures.end(); )
 	{
@@ -91,7 +93,7 @@ bool TextureManager::removeTexture( const std::string_view name )
 	return false;
 }
 
-std::size_t TextureManager::removeAllTextures( const std::string_view name )
+std::size_t TextureCache::removeAllTextures( const std::string_view name )
 {
 	std::size_t c = 0;
 	for (auto iter = textures.begin(); iter != textures.end(); )
@@ -107,19 +109,19 @@ std::size_t TextureManager::removeAllTextures( const std::string_view name )
 	return c;
 }
 
-bool TextureManager::removeTexture( const std::shared_ptr<v3d::Texture>& texture )
+bool TextureCache::removeTexture( const std::shared_ptr<v3d::Texture>& texture )
 {
 	if (texture == nullptr) return false;
 	return removeTexture( texture->getID() );
 }
 
-std::shared_ptr<v3d::Texture> TextureManager::getTexture( const std::size_t id ) const
+std::shared_ptr<v3d::Texture> TextureCache::getTexture( const std::size_t id ) const
 {
 	if (id == 0) return nullptr;
 	return textures.find( id )->second;
 }
 
-std::shared_ptr<v3d::Texture> TextureManager::getTexture( const std::string_view name ) const
+std::shared_ptr<v3d::Texture> TextureCache::getTexture( const std::string_view name ) const
 {
 	for (auto& texture : textures)
 		if ((texture.second)->getName() == name)
@@ -127,7 +129,7 @@ std::shared_ptr<v3d::Texture> TextureManager::getTexture( const std::string_view
 	return nullptr;
 }
 
-std::vector<std::shared_ptr<v3d::Texture>> TextureManager::getAllTextures( const std::string_view name ) const
+std::vector<std::shared_ptr<v3d::Texture>> TextureCache::getAllTextures( const std::string_view name ) const
 {
 	std::vector<std::shared_ptr<v3d::Texture>> ret;
 
@@ -137,7 +139,7 @@ std::vector<std::shared_ptr<v3d::Texture>> TextureManager::getAllTextures( const
 	return ret;
 }
 
-std::size_t TextureManager::purge()
+std::size_t TextureCache::purge()
 {
 	std::size_t c = 0;
 	for (auto iter = textures.begin(); iter != textures.end();)
@@ -153,18 +155,18 @@ std::size_t TextureManager::purge()
 	return c;
 }
 
-void TextureManager::log() const
+void TextureCache::log() const
 {
 	auto& logger = v3d::Logger::getInstance();
 
-	logger.trace("[TextureManager] Info");
+	logger.trace("[TextureCache] Info");
 	logger.trace("Total textures: " + std::to_string(textures.size()));
 
 	std::size_t i = 0;
 	for (auto& texture : textures) if (texture.second) texture.second->log();
 }
 
-void TextureManager::clear()
+void TextureCache::clear()
 {
 	textures.clear();
 }

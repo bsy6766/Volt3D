@@ -139,6 +139,56 @@ v3d::vulkan::Uniform* ShaderState::getUniform( const std::string_view name ) con
 	return nullptr;
 }
 
+void ShaderState::getDescriptorSetLayoutBinding( std::vector<vk::DescriptorSetLayoutBinding>& bindings ) const
+{
+	for (auto& [uniformName, uniformBlock] : uniformBlocks)
+	{
+		vk::DescriptorType descriptorType;
+		if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
+		else if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eStorage) descriptorType = vk::DescriptorType::eStorageBuffer;
+		else continue;
+		vk::DescriptorSetLayoutBinding binding
+		(
+			uniformBlock->getBinding(),
+			descriptorType,
+			1//,
+			//stage
+		);
+		bindings.push_back( binding );
+	}
+
+	for (auto& [uniformName, uniform] : uniforms)
+	{
+		vk::DescriptorType descriptorType;
+
+		switch (uniform->getGLValueType())
+		{
+		case 0x8B5E: // GL_SAMPLER_2D
+		case 0x904D: // GL_IMAGE_2D
+		case 0x9108: // GL_SAMPLER_2D_MULTISAMPLE
+		case 0x9055: // GL_IMAGE_2D_MULTISAMPLE
+		{
+			descriptorType = uniform->isWriteOnly() ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
+			vk::DescriptorSetLayoutBinding binding
+			(
+				uniform->getBinding(),
+				descriptorType,
+				1//,
+				//stage
+			);
+			bindings.push_back( binding );
+		}
+		break;
+		case 0x8B60: // GL_SAMPLER_CUBE
+		case 0x9050: // GL_IMAGE_CUBE
+		default:
+			continue;
+			break;
+		}
+	}
+
+}
+
 
 VK_NS_END
 V3D_NS_END

@@ -23,6 +23,7 @@ VK_NS_BEGIN
 
 class Pipeline;
 class ShaderState;
+class ShaderModule;
 
 /**
 *	@class Shader
@@ -45,6 +46,7 @@ private:
 
 	vk::ShaderStageFlagBits stage;
 	vk::ShaderModule shaderModule;
+
 	v3d::vulkan::ShaderState* shaderState;
 
 	bool compile();

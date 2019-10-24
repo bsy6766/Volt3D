@@ -102,6 +102,8 @@ public:
 	*	@return A uniform with matching name. Else, nullptr.
 	*/
 	v3d::vulkan::Uniform* getUniform( const std::string_view name ) const;
+
+	void getDescriptorSetLayoutBinding( std::vector<vk::DescriptorSetLayoutBinding>& bindings ) const;
 };
 
 VK_NS_END

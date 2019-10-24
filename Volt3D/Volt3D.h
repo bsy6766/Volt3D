@@ -83,7 +83,7 @@
 // Texture
 #include "Texture/Texture.h"
 #include "Texture/Texture2D.h"
-#include "Texture/TextureManager.h"
+#include "Texture/TextureCache.h"
 
 // Utils
 #include "Utils/FileSystem.h"

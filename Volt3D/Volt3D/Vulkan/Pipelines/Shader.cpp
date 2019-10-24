@@ -15,9 +15,6 @@
 
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "ShaderState.h"
-#include "Attribute.h"
-#include "UniformBlock.h"
-#include "Uniform.h"
 #include "Utils/FileSystem.h"
 
 V3D_NS_BEGIN
@@ -134,51 +131,13 @@ v3d::vulkan::ShaderState* Shader::getShaderState() const { return shaderState; }
 std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBinding() const
 {
 	std::vector<vk::DescriptorSetLayoutBinding> bindings;
+	if (!shaderState) return bindings;
 
-	for (auto& [uniformName, uniformBlock] : shaderState->uniformBlocks)
-	{
-		vk::DescriptorType descriptorType;
-		if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eUniform) descriptorType = vk::DescriptorType::eUniformBuffer;
-		else if (uniformBlock->getType() == v3d::vulkan::UniformBlockType::eStorage) descriptorType = vk::DescriptorType::eStorageBuffer;
-		else continue;
-		vk::DescriptorSetLayoutBinding binding
-		(
-			uniformBlock->getBinding(),
-			descriptorType,
-			1,
-			stage
-		);
-		bindings.push_back( binding );
-	}
-	
-	for (auto& [uniformName, uniform] : shaderState->uniforms)
-	{
-		vk::DescriptorType descriptorType;
+	shaderState->getDescriptorSetLayoutBinding( bindings );
 
-		switch (uniform->getGLValueType())
-		{
-		case 0x8B5E: // GL_SAMPLER_2D
-		case 0x904D: // GL_IMAGE_2D
-		case 0x9108: // GL_SAMPLER_2D_MULTISAMPLE
-		case 0x9055: // GL_IMAGE_2D_MULTISAMPLE
-		{
-			descriptorType = uniform->isWriteOnly() ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
-			vk::DescriptorSetLayoutBinding binding
-			(
-				uniform->getBinding(),
-				descriptorType,
-				1,
-				stage
-			);
-			bindings.push_back( binding );
-		}
-			break;
-		case 0x8B60: // GL_SAMPLER_CUBE
-		case 0x9050: // GL_IMAGE_CUBE
-		default:
-			continue;
-			break;
-		}
+	for (auto& binding : bindings)
+	{
+		binding.setStageFlags( stage );
 	}
 
 	return bindings;
@@ -212,7 +171,9 @@ const vk::ShaderStageFlagBits Shader::toShaderStageFlagbits( const std::filesyst
 {
 	if (fileName.has_extension())
 	{
-		const auto ext = fileName.extension().string();
+		std::string ext = fileName.extension().string();
+		std::transform( ext.begin(), ext.end(), ext.begin(), []( unsigned char c ) { return std::tolower( c ); } );
+
 		if (ext == ".vert") return vk::ShaderStageFlagBits::eVertex;
 		if (ext == ".tesc") return vk::ShaderStageFlagBits::eTessellationControl;
 		if (ext == ".tese") return vk::ShaderStageFlagBits::eTessellationEvaluation;

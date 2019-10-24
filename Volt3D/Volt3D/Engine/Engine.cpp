@@ -19,7 +19,7 @@
 #include "Director.h"
 #include "Preference.h"
 #include "WindowMode.h"
-#include "Texture/TextureManager.h"
+#include "Texture/TextureCache.h"
 
 v3d::Engine* v3d::Engine::instance = nullptr;
 
@@ -32,7 +32,7 @@ Engine::Engine()
 	, director( nullptr )
 	, preference( nullptr )
 	, inputManager( nullptr )
-	, textureManager( nullptr )
+	, textureCache( nullptr )
 {
 	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
 	v3d::Logger::getInstance().initConsole();
@@ -50,7 +50,7 @@ bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 
 	time = new v3d::Time();
 	inputManager = std::unique_ptr<v3d::InputManager>( new v3d::InputManager() );
-	textureManager = std::unique_ptr<v3d::TextureManager>( new v3d::TextureManager() );
+	textureCache = std::unique_ptr<v3d::TextureCache>( new v3d::TextureCache() );
 	if (!initWindow( windowTitle )) return false;
 	if (!initContext()) return false;
 	director = new v3d::Director( *inputManager );
@@ -83,7 +83,7 @@ bool Engine::initContext()
 void Engine::release()
 {
 	// release vulkan first
-	textureManager.reset();
+	textureCache.reset();
 	SAFE_DELETE( context );
 	SAFE_DELETE( window );
 	SAFE_DELETE( time );
@@ -165,9 +165,9 @@ v3d::InputManager& Engine::getInputManager() const
 	return *inputManager.get();
 }
 
-v3d::TextureManager& Engine::getTextureManager() const
+v3d::TextureCache& Engine::getTextureCache() const
 {
-	return *textureManager.get();
+	return *textureCache.get();
 }
 
 V3D_NS_END

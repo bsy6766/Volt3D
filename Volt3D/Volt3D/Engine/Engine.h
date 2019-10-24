@@ -19,7 +19,7 @@ class Time;
 class Director;
 class Preference;
 class InputManager;
-class TextureManager;
+class TextureCache;
 namespace glfw { class Window; }
 namespace vulkan { class Context; }
 
@@ -48,7 +48,7 @@ private:
 	v3d::Preference* preference;
 
 	std::unique_ptr<v3d::InputManager> inputManager;
-	std::unique_ptr<v3d::TextureManager> textureManager;
+	std::unique_ptr<v3d::TextureCache> textureCache;
 
 	bool loadPreference(const std::wstring& folderName);
 	bool initWindow(const char* windowTitle);
@@ -95,8 +95,8 @@ public:
 	/** Get InputManager */
 	v3d::InputManager& getInputManager() const;
 
-	/** Get TextureManager */
-	v3d::TextureManager& getTextureManager() const;
+	/** Get TextureCache */
+	v3d::TextureCache& getTextureCache() const;
 };
 
 V3D_NS_END

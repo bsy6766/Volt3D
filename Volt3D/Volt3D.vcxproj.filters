@@ -173,9 +173,6 @@
     <ClCompile Include="Volt3D\Debug\DebugCamera.cpp">
       <Filter>Volt3D\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Texture\TextureManager.cpp">
-      <Filter>Volt3D\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Engine\Director.cpp">
       <Filter>Volt3D\Engine</Filter>
     </ClCompile>
@@ -264,6 +261,9 @@
       <Filter>Volt3D\Texture</Filter>
     </ClCompile>
     <ClCompile Include="Volt3D\Texture\Texture.cpp">
+      <Filter>Volt3D\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Texture\TextureCache.cpp">
       <Filter>Volt3D\Texture</Filter>
     </ClCompile>
   </ItemGroup>
@@ -412,9 +412,6 @@
     <ClInclude Include="Volt3D\Config\DebugConfig.h">
       <Filter>Volt3D\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Texture\TextureManager.h">
-      <Filter>Volt3D\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Engine\CursorMode.h">
       <Filter>Volt3D\Engine</Filter>
     </ClInclude>
@@ -518,6 +515,9 @@
       <Filter>Volt3D\Texture</Filter>
     </ClInclude>
     <ClInclude Include="Volt3D\Texture\Texture.h">
+      <Filter>Volt3D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Texture\TextureCache.h">
       <Filter>Volt3D\Texture</Filter>
     </ClInclude>
   </ItemGroup>
