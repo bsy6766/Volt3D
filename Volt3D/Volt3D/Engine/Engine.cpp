@@ -20,6 +20,7 @@
 #include "Preference.h"
 #include "WindowMode.h"
 #include "Texture/TextureCache.h"
+#include "Shader/ShaderCache.h"
 
 v3d::Engine* v3d::Engine::instance = nullptr;
 
@@ -140,34 +141,39 @@ void Engine::render()
 	context->render();
 }
 
-v3d::glfw::Window* Engine::getWindow() const
+inline v3d::glfw::Window* Engine::getWindow() const
 {
 	return window;
 }
 
-v3d::Time* Engine::getTime() const
+inline v3d::Time* Engine::getTime() const
 {
 	return time;
 }
 
-v3d::vulkan::Context* Engine::getVulkanContext() const
+inline v3d::vulkan::Context* Engine::getVulkanContext() const
 {
 	return context;
 }
 
-v3d::Director* Engine::getDirector() const
+inline v3d::Director* Engine::getDirector() const
 {
 	return director;
 }
 
-v3d::InputManager& Engine::getInputManager() const
+inline v3d::InputManager& Engine::getInputManager() const
 {
 	return *inputManager.get();
 }
 
-v3d::TextureCache& Engine::getTextureCache() const
+inline v3d::TextureCache& Engine::getTextureCache() const
 {
 	return *textureCache.get();
+}
+
+inline v3d::ShaderCache& Engine::getShaderCache() const
+{
+	return *shaderCache.get();
 }
 
 V3D_NS_END

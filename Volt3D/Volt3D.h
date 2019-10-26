@@ -61,6 +61,11 @@
 // Scene
 #include "Scene/Scene.h"
 
+// Shader
+#include "Shader/Shader.h"
+#include "Shader/ShaderCache.h"
+#include "Shader/ShaderState.h"
+
 // Shape
 #include "Shape/AABB.h"
 #include "Shape/Circle.h"
@@ -110,8 +115,7 @@
 #include "Vulkan/Pipelines/Attribute.h"
 #include "Vulkan/Pipelines/GLType.h"
 #include "Vulkan/Pipelines/Pipeline.h"
-#include "Vulkan/Pipelines/Shader.h"
-#include "Vulkan/Pipelines/ShaderState.h"
+#include "Vulkan/Pipelines/ShaderModule.h"
 #include "Vulkan/Pipelines/Uniform.h"
 #include "Vulkan/Pipelines/UniformBlock.h"
 #include "Vulkan/Pipelines/UniformBlockType.h"

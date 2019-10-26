@@ -34,8 +34,8 @@
 #include "Texture/Texture2D.h"
 
 
-#include "Pipelines/Shader.h"
-#include "Pipelines/ShaderState.h"
+#include "Shader/Shader.h"
+#include "Shader/ShaderState.h"
 #include "Pipelines/UniformData.h"
 #include "Pipelines/Uniform.h"
 #include "Pipelines/UniformBlock.h"

@@ -63,24 +63,6 @@ namespace v3d
 		static std::wstring getFileNameW(const wchar_t* path) { return std::filesystem::path(path).filename().wstring(); }
 		static std::string getFileExtension(const char* path) { return std::filesystem::path(path).extension().string(); }
 		static std::wstring getFileExtensionW(const wchar_t* path) { return std::filesystem::path(path).extension().wstring(); }
-
-		static std::vector<char> readShaderFile( const char* path )
-		{
-			std::vector<char> buffer;
-
-			std::ifstream file( path, std::ios::ate | std::ios::binary );
-			if (!file.is_open()) return buffer;
-
-			std::size_t fileSize = (std::size_t)file.tellg();
-			buffer.resize( fileSize );
-
-			file.seekg( 0 );
-			file.read( buffer.data(), fileSize );
-
-			file.close();
-
-			return buffer;
-		}
 	};
 
 }

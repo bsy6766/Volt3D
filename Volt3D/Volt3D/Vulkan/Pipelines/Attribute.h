@@ -17,9 +17,9 @@
 #include "GLType.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
-
 class ShaderState;
+
+VK_NS_BEGIN
 
 /**
 *	@class Attribute
@@ -31,7 +31,7 @@ class ShaderState;
 */
 class VOLT3D_DLL Attribute
 {
-	friend class v3d::vulkan::ShaderState;
+	friend class v3d::ShaderState;
 
 private:
 	Attribute() = delete;

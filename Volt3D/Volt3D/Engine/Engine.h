@@ -20,6 +20,7 @@ class Director;
 class Preference;
 class InputManager;
 class TextureCache;
+class ShaderCache;
 namespace glfw { class Window; }
 namespace vulkan { class Context; }
 
@@ -49,6 +50,7 @@ private:
 
 	std::unique_ptr<v3d::InputManager> inputManager;
 	std::unique_ptr<v3d::TextureCache> textureCache;
+	std::unique_ptr<v3d::ShaderCache> shaderCache;
 
 	bool loadPreference(const std::wstring& folderName);
 	bool initWindow(const char* windowTitle);
@@ -81,22 +83,25 @@ public:
 	void end();
 
 	/** Get window */
-	v3d::glfw::Window* getWindow() const;
+	inline v3d::glfw::Window* getWindow() const;
 
 	/** Get time */
-	v3d::Time* getTime() const;
+	inline v3d::Time* getTime() const;
 
 	/** Get Vulkan context */
-	v3d::vulkan::Context* getVulkanContext() const;
+	inline v3d::vulkan::Context* getVulkanContext() const;
 
 	/** Get Director */
-	v3d::Director* getDirector() const;
+	inline v3d::Director* getDirector() const;
 
 	/** Get InputManager */
-	v3d::InputManager& getInputManager() const;
+	inline v3d::InputManager& getInputManager() const;
 
 	/** Get TextureCache */
-	v3d::TextureCache& getTextureCache() const;
+	inline v3d::TextureCache& getTextureCache() const;
+
+	/** Get ShaderCache */
+	inline v3d::ShaderCache& getShaderCache() const;
 };
 
 V3D_NS_END

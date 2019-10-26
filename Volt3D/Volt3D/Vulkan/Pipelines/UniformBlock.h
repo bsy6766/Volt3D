@@ -18,9 +18,9 @@
 #include <unordered_map>
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
-
 class ShaderState;
+
+VK_NS_BEGIN
 class UniformData;
 class UniformBuffer;
 
@@ -34,7 +34,7 @@ class UniformBuffer;
 */
 class VOLT3D_DLL UniformBlock
 {
-	friend class v3d::vulkan::ShaderState;
+	friend class v3d::ShaderState;
 
 private:
 	UniformBlock() = delete;

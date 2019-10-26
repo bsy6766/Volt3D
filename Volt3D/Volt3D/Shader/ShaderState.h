@@ -18,23 +18,26 @@
 namespace glslang { class TProgram; }
 
 V3D_NS_BEGIN
+class Shader;
 VK_NS_BEGIN
-
+class ShaderModule;
 class Attribute;
 class UniformBlock;
 class Uniform;
+VK_NS_END
 
 /**
 *	@class ShaderState
 *	@brief A class that contains all uniform information of shader
 *
-*	@group Vulkan
+*	@group Volt3D
 *
 *	@since 1.0
 */
 class VOLT3D_DLL ShaderState
 {
-	friend class Shader;
+	friend class v3d::Shader;
+	friend class v3d::vulkan::ShaderModule;
 
 private:
 	ShaderState();
@@ -106,7 +109,6 @@ public:
 	void getDescriptorSetLayoutBinding( std::vector<vk::DescriptorSetLayoutBinding>& bindings ) const;
 };
 
-VK_NS_END
 V3D_NS_END
 
 #endif

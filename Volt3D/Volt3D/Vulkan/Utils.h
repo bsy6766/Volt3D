@@ -123,6 +123,33 @@ namespace v3d
 			{
 				return getVersion(major, minor, patch, getVersion());
 			}
+
+			static vk::ShaderStageFlagBits extToShaderStageFlagBit( const std::filesystem::path& fileName )
+			{
+				if (fileName.has_extension())
+				{
+					std::string ext = fileName.extension().string();
+					std::transform( ext.begin(), ext.end(), ext.begin(), []( unsigned char c ) { return std::tolower( c ); } );
+
+					if (ext == ".vert") return vk::ShaderStageFlagBits::eVertex;
+					if (ext == ".tesc") return vk::ShaderStageFlagBits::eTessellationControl;
+					if (ext == ".tese") return vk::ShaderStageFlagBits::eTessellationEvaluation;
+					if (ext == ".geom") return vk::ShaderStageFlagBits::eGeometry;
+					if (ext == ".frag") return vk::ShaderStageFlagBits::eFragment;
+					if (ext == ".comp") return vk::ShaderStageFlagBits::eCompute;
+					if (ext == ".mesh") return vk::ShaderStageFlagBits::eMeshNV;
+					if (ext == ".task") return vk::ShaderStageFlagBits::eTaskNV;
+					if (ext == ".rgen") return vk::ShaderStageFlagBits::eRaygenNV;
+					if (ext == ".rint") return vk::ShaderStageFlagBits::eIntersectionNV;
+					if (ext == ".rahit") return vk::ShaderStageFlagBits::eAnyHitNV;
+					if (ext == ".rchit") return vk::ShaderStageFlagBits::eClosestHitNV;
+					if (ext == ".rmiss") return vk::ShaderStageFlagBits::eMissNV;
+					if (ext == ".rcall") return vk::ShaderStageFlagBits::eCallableNV;
+				}
+
+				return vk::ShaderStageFlagBits::eAll;
+			}
+
 		}
 	}
 }

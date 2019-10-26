@@ -226,6 +226,9 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Renderer\Vertex.h" />
     <ClInclude Include="Volt3D\Renderer\VertexData.h" />
     <ClInclude Include="Volt3D\Scene\Scene.h" />
+    <ClInclude Include="Volt3D\Shader\Shader.h" />
+    <ClInclude Include="Volt3D\Shader\ShaderCache.h" />
+    <ClInclude Include="Volt3D\Shader\ShaderState.h" />
     <ClInclude Include="Volt3D\Shape\AABB.h" />
     <ClInclude Include="Volt3D\Shape\Circle.h" />
     <ClInclude Include="Volt3D\Shape\OBB.h" />
@@ -264,8 +267,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Attribute.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h" />
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h" />
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderState.h" />
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderModule.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Uniform.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlock.h" />
     <ClInclude Include="Volt3D\Vulkan\Pipelines\UniformBlockType.h" />
@@ -305,6 +307,9 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Renderer\Vertex.cpp" />
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
     <ClCompile Include="Volt3D\Scene\Scene.cpp" />
+    <ClCompile Include="Volt3D\Shader\Shader.cpp" />
+    <ClCompile Include="Volt3D\Shader\ShaderCache.cpp" />
+    <ClCompile Include="Volt3D\Shader\ShaderState.cpp" />
     <ClCompile Include="Volt3D\Shape\AABB.cpp" />
     <ClCompile Include="Volt3D\Shape\Circle.cpp" />
     <ClCompile Include="Volt3D\Shape\OBB.cpp" />
@@ -336,8 +341,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Attribute.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp" />
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderModule.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Uniform.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformBlock.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformData.cpp" />

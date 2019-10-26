@@ -75,6 +75,9 @@
     <Filter Include="Volt3D\Vulkan\Swapchain">
       <UniqueIdentifier>{6140c1b6-fecf-431e-883c-c95c95da76e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Shader">
+      <UniqueIdentifier>{6b3b2731-4695-4f72-9d6f-d28dfd14d354}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -206,9 +209,6 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\Shader.cpp">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Debugs\DebugReportCallback.cpp">
       <Filter>Volt3D\Vulkan\Debugs</Filter>
     </ClCompile>
@@ -251,9 +251,6 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Attribute.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderState.cpp">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Pipelines\UniformData.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
@@ -265,6 +262,18 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Texture\TextureCache.cpp">
       <Filter>Volt3D\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\ShaderModule.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shader\ShaderState.cpp">
+      <Filter>Volt3D\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shader\Shader.cpp">
+      <Filter>Volt3D\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shader\ShaderCache.cpp">
+      <Filter>Volt3D\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -454,9 +463,6 @@
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Pipeline.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\Shader.h">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.h">
       <Filter>Volt3D\Vulkan\Debugs</Filter>
     </ClInclude>
@@ -499,9 +505,6 @@
     <ClInclude Include="Volt3D\Vulkan\Swapchain\RenderPass.h">
       <Filter>Volt3D\Vulkan\Swapchain</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderState.h">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Pipelines\Attribute.h">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClInclude>
@@ -519,6 +522,18 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Texture\TextureCache.h">
       <Filter>Volt3D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Pipelines\ShaderModule.h">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shader\ShaderState.h">
+      <Filter>Volt3D\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shader\Shader.h">
+      <Filter>Volt3D\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shader\ShaderCache.h">
+      <Filter>Volt3D\Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

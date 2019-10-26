@@ -11,7 +11,8 @@
 
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/SwapChain/Swapchain.h"
-#include "Shader.h"
+#include "ShaderModule.h"
+#include "Shader/Shader.h"
 #include "Renderer/Vertex.h"
 
 V3D_NS_BEGIN
@@ -36,16 +37,16 @@ Pipeline::Pipeline()
 Pipeline::~Pipeline()
 {
 	const vk::Device& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
-	for (auto e : shaders) SAFE_DELETE( e.second );	shaders.clear();
 	logicalDevice.destroyDescriptorSetLayout( descriptorSetLayout );
 	logicalDevice.destroyDescriptorPool( descriptorPool );
 	logicalDevice.destroyPipelineLayout( pipelineLayout );
 	logicalDevice.destroyPipeline( pipeline );
+
+	shaders.clear();
 }
 
 bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
 {
-	if (!initShaderProgram( shaderPath )) return false;
 	if (!initDescriptorSetLayout()) return false;
 	if (!initPipelineLayout()) return false;
 
@@ -180,34 +181,12 @@ bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const
 	return true;
 }
 
-bool Pipeline::initShaderProgram( const std::vector<std::filesystem::path>& shaderPath )
-{
-	// Requires at least 2 shaders (vert & frag)
-	if (shaderPath.size() < 2) return false;
-
-	// Create shader instance
-	for (auto& path : shaderPath)
-	{
-		const auto pathStr = path.string();
-		shaders.emplace( v3d::vulkan::Shader::toShaderStageFlagbits( pathStr ), std::move( new v3d::vulkan::Shader( pathStr ) ) );
-	}
-
-	// Init shaders
-	for (auto& e : shaders)
-	{
-		if (!(e.second)->compile()) return false;
-		shaderCreateInfos.push_back( (e.second)->getPipelineShaderStageCreateInfo() );
-	}
-
-	return true;
-}
-
 bool Pipeline::initDescriptorSetLayout()
 {
 	std::vector<vk::DescriptorSetLayoutBinding> bindings;
 	std::vector<vk::DescriptorSetLayoutBinding> shaderBindings;
 
-	for (auto& [stage, shader] : shaders)
+	for (auto& shader : shaders)
 	{
 		shaderBindings = shader->getDescriptorSetLayoutBinding();
 		bindings.insert( bindings.end(), shaderBindings.begin(), shaderBindings.end() );
@@ -243,21 +222,42 @@ bool Pipeline::initPipelineLayout()
 	return true;
 }
 
-const vk::Pipeline& Pipeline::getVKPipeline() const { return pipeline; }
+inline const vk::Pipeline& Pipeline::getVKPipeline() const 
+{ 
+	return pipeline; 
+}
 
-const vk::Viewport& Pipeline::getViewport() const { return viewport; }
+inline const vk::Viewport& Pipeline::getViewport() const 
+{ 
+	return viewport; 
+}
 
-const vk::Rect2D& Pipeline::getScissor() const { return scissor; }
+inline const vk::Rect2D& Pipeline::getScissor() const 
+{ 
+	return scissor; 
+}
 
-const vk::PipelineLayout& Pipeline::getLayout() const { return pipelineLayout; }
+inline const vk::PipelineLayout& Pipeline::getLayout() const 
+{ 
+	return pipelineLayout; 
+}
 
-const vk::DescriptorSetLayout& Pipeline::getDescriptorSetLayout() const { return descriptorSetLayout; }
+inline const vk::DescriptorSetLayout& Pipeline::getDescriptorSetLayout() const 
+{ 
+	return descriptorSetLayout; 
+}
 
-v3d::vulkan::Shader* Pipeline::getShader( const vk::ShaderStageFlagBits stage ) const
+std::shared_ptr<v3d::Shader> Pipeline::getShader( const vk::ShaderStageFlagBits stage ) const
 {
-	auto find_it = shaders.find( stage );
-	if (find_it == shaders.end()) return nullptr;
-	else return find_it->second;
+	for (auto shader : shaders)
+	{
+		if (shader->getShaderModule().getStage() == stage)
+		{
+			return shader;
+		}
+	}
+
+	return nullptr;
 }
 
 VK_NS_END

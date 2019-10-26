@@ -14,12 +14,15 @@
 #include <StandAlone/DirStackFileIncluder.h>
 
 #include "Vulkan/Devices/LogicalDevice.h"
+#include "Shader/ShaderState.h"
+#include "Vulkan/Utils.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
 ShaderModule::ShaderModule()
 	: shaderModule( nullptr )
+	, stage()
 {}
 
 ShaderModule::~ShaderModule()
@@ -27,16 +30,14 @@ ShaderModule::~ShaderModule()
 	v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().destroyShaderModule( shaderModule );
 }
 
-bool ShaderModule::compile( const std::vector<char>& sourceCode )
+bool ShaderModule::compile( const std::vector<char>& sourceCode, const std::filesystem::path& filePath, v3d::ShaderState& shaderState )
 {
-	if (sourceCode.empty()) 
-		return false;
-
 	EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules | EShMsgDefault);
 
-	// 0. Read Shader file
-	//std::vector<char> shaderCode = v3d::FileSystem::readShaderFile( filePath.string().c_str() );
-
+	// set stage
+	stage = v3d::vulkan::utils::extToShaderStageFlagBit( filePath.filename() );
+	if (stage == vk::ShaderStageFlagBits::eAll) return false;
+		
 	// 1. Generate c strings...
 	int shaderSourceLength = static_cast<int>(sourceCode.size());
 	std::string shaderSourceStr( sourceCode.begin(), sourceCode.end() );
@@ -45,9 +46,27 @@ bool ShaderModule::compile( const std::vector<char>& sourceCode )
 	const char* shaderFileNameCStr = shaderFileName.c_str();
 
 	// 2. Get language
-	EShLanguage language = getEShLanguage();
-	if (language == EShLanguage::EShLangCount) return false;
+	EShLanguage language;
 
+	switch (stage)
+	{
+	case vk::ShaderStageFlagBits::eVertex: language = EShLanguage::EShLangVertex;
+	case vk::ShaderStageFlagBits::eTessellationControl: language = EShLanguage::EShLangTessControl;
+	case vk::ShaderStageFlagBits::eTessellationEvaluation: language = EShLanguage::EShLangTessEvaluation;
+	case vk::ShaderStageFlagBits::eGeometry: language = EShLanguage::EShLangGeometry;
+	case vk::ShaderStageFlagBits::eFragment: language = EShLanguage::EShLangFragment;
+	case vk::ShaderStageFlagBits::eCompute: language = EShLanguage::EShLangCompute;
+	case vk::ShaderStageFlagBits::eRaygenNV: language = EShLanguage::EShLangRayGenNV;
+	case vk::ShaderStageFlagBits::eAnyHitNV: language = EShLanguage::EShLangAnyHitNV;
+	case vk::ShaderStageFlagBits::eClosestHitNV: language = EShLanguage::EShLangClosestHitNV;
+	case vk::ShaderStageFlagBits::eMissNV: language = EShLanguage::EShLangMissNV;
+	case vk::ShaderStageFlagBits::eIntersectionNV: language = EShLanguage::EShLangIntersectNV;
+	case vk::ShaderStageFlagBits::eCallableNV: language = EShLanguage::EShLangCallableNV;
+	case vk::ShaderStageFlagBits::eTaskNV: language = EShLanguage::EShLangTaskNV;
+	case vk::ShaderStageFlagBits::eMeshNV: language = EShLanguage::EShLangMeshNV;
+	default: return false;
+	}
+	
 	// 3. Create glslang shader
 	TBuiltInResource resource = glslang::DefaultTBuiltInResource;
 	const glslang::EShTargetClientVersion defaultVersion = glslang::EShTargetVulkan_1_1;
@@ -87,7 +106,7 @@ bool ShaderModule::compile( const std::vector<char>& sourceCode )
 	//program.dumpReflection();
 
 	// 7. Query all uniforms and attributes
-	shaderState->init( program );
+	shaderState.init( program );
 
 	// 8. Create spirv file
 	glslang::SpvOptions spvOptions;
@@ -113,7 +132,20 @@ bool ShaderModule::compile( const std::vector<char>& sourceCode )
 	return true;
 }
 
-vk::ShaderModule ShaderModule::get() const { return shaderModule; }
+const vk::ShaderModule ShaderModule::getShaderModule() const 
+{ 
+	return shaderModule; 
+}
+
+inline vk::PipelineShaderStageCreateInfo ShaderModule::getPipelineShaderStageCreateInfo() const
+{
+	return vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), stage, shaderModule, "main" );
+}
+
+inline vk::ShaderStageFlagBits ShaderModule::getStage() const
+{ 
+	return stage; 
+}
 
 VK_NS_END
 V3D_NS_END

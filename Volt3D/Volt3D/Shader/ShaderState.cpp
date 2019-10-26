@@ -8,14 +8,13 @@
 #include <PreCompiled.h>
 
 #include "ShaderState.h"
-#include "Uniform.h"
-#include "UniformBlock.h"
-#include "Attribute.h"
+#include "Vulkan/Pipelines/Uniform.h"
+#include "Vulkan/Pipelines/UniformBlock.h"
+#include "Vulkan/Pipelines/Attribute.h"
 
 #include <SPIRV/GlslangToSpv.h>
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
 
 ShaderState::ShaderState()
 	: attributes()
@@ -189,6 +188,4 @@ void ShaderState::getDescriptorSetLayoutBinding( std::vector<vk::DescriptorSetLa
 
 }
 
-
-VK_NS_END
 V3D_NS_END

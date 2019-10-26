@@ -20,13 +20,13 @@ V3D_NS_BEGIN
 std::size_t Texture::idCounter = 1;
 
 Texture::Texture()
-	: id(0)
+	: id( 0 )
 	, name()
 	, image( nullptr )
 {}
 
 Texture::Texture( const std::string& name )
-	: id(0)
+	: id( 0 )
 	, name( name )
 	, image( nullptr )
 {}
@@ -41,7 +41,9 @@ Texture* Texture::create( const std::string& name, const std::filesystem::path& 
 	v3d::Texture* newTexture = new (std::nothrow) v3d::Texture( name );
 	if (newTexture)
 	{
-		if (newTexture->init( textureFilePath, tilling, usage, memoryProperty)) return newTexture;
+		if (newTexture->init( textureFilePath, tilling, usage, memoryProperty)) 
+			return newTexture;
+
 		SAFE_DELETE( newTexture );
 	}
 
@@ -117,17 +119,35 @@ void Texture::release()
 	SAFE_DELETE( image );
 }
 
-std::size_t Texture::getID() const { return id; }
+std::size_t Texture::getID() const 
+{
+	return id; 
+}
 
-std::string Texture::getName() const { return name; }
+std::string Texture::getName() const 
+{
+	return name; 
+}
 
-uint32_t Texture::getWidth() const { return (image == nullptr) ? 0 : image->getWidth(); }
+uint32_t Texture::getWidth() const 
+{
+	return (image == nullptr) ? 0 : image->getWidth(); 
+}
 
-uint32_t Texture::getHeight() const { return (image == nullptr) ? 0 : image->getHeight(); }
+uint32_t Texture::getHeight() const 
+{
+	return (image == nullptr) ? 0 : image->getHeight(); 
+}
 
-uint32_t Texture::getDepth() const { return (image == nullptr) ? 0 : image->getDepth(); }
+uint32_t Texture::getDepth() const 
+{
+	return (image == nullptr) ? 0 : image->getDepth(); 
+}
 
-v3d::vulkan::Image* Texture::getImage() const { return image; }
+v3d::vulkan::Image* Texture::getImage() const 
+{
+	return image; 
+}
 
 void Texture::log() const
 {

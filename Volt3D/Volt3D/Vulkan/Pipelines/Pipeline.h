@@ -10,14 +10,14 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include <unordered_map>
+#include <vector>
 
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
-VK_NS_BEGIN
-
 class Shader;
+
+VK_NS_BEGIN
 
 /**
 *	@class Pipeline
@@ -48,11 +48,10 @@ private:
 	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState;
 	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo;
 
-	std::unordered_map<vk::ShaderStageFlagBits, v3d::vulkan::Shader*> shaders;
+	std::vector<std::shared_ptr<v3d::Shader>> shaders;
 	std::vector<vk::PipelineShaderStageCreateInfo> shaderCreateInfos;
 
 	bool init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
-	bool initShaderProgram( const std::vector<std::filesystem::path>& shaderPath );
 	bool initDescriptorSetLayout();
 	bool initPipelineLayout();
 
@@ -65,22 +64,22 @@ public:
 	~Pipeline();
 
 	/** Get Vulkan Pipeline */
-	const vk::Pipeline& getVKPipeline() const;
+	inline const vk::Pipeline& getVKPipeline() const;
 
 	/** Get view port of pipeline */
-	const vk::Viewport& getViewport() const;
+	inline const vk::Viewport& getViewport() const;
 
 	/** Get scissor of pipeline */
-	const vk::Rect2D& getScissor() const;
+	inline const vk::Rect2D& getScissor() const;
 
 	/** Get Vulkan PipelineLayout */
-	const vk::PipelineLayout& getLayout() const;
+	inline const vk::PipelineLayout& getLayout() const;
 
 	/** Get DescriptorSetLayout */
-	const vk::DescriptorSetLayout& getDescriptorSetLayout() const;
+	inline const vk::DescriptorSetLayout& getDescriptorSetLayout() const;
 
 	/** Get shader from specific shader stage */
-	v3d::vulkan::Shader* getShader( const vk::ShaderStageFlagBits stage ) const;
+	std::shared_ptr<v3d::Shader> getShader( const vk::ShaderStageFlagBits stage ) const;
 };
 
 VK_NS_END
