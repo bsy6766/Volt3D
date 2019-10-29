@@ -20,7 +20,10 @@
 #include "Preference.h"
 #include "WindowMode.h"
 #include "Texture/TextureCache.h"
+#include "Shader/Shader.h"
 #include "Shader/ShaderCache.h"
+
+#include "Config/BuildConfig.h"
 
 v3d::Engine* v3d::Engine::instance = nullptr;
 
@@ -34,6 +37,7 @@ Engine::Engine()
 	, preference( nullptr )
 	, inputManager( nullptr )
 	, textureCache( nullptr )
+	, shaderCache( nullptr )
 {
 	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
 	v3d::Logger::getInstance().initConsole();
@@ -52,8 +56,11 @@ bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 	time = new v3d::Time();
 	inputManager = std::unique_ptr<v3d::InputManager>( new v3d::InputManager() );
 	textureCache = std::unique_ptr<v3d::TextureCache>( new v3d::TextureCache() );
+	shaderCache = std::unique_ptr<v3d::ShaderCache>( new v3d::ShaderCache() );
 	if (!initWindow( windowTitle )) return false;
 	if (!initContext()) return false;
+	if (!initDefaultShaders()) return false;
+	context->initGraphics();	// @note: This should be renderer...
 	director = new v3d::Director( *inputManager );
 
 	return true;
@@ -63,6 +70,25 @@ bool Engine::loadPreference( const std::wstring& folderName )
 {
 	preference = new v3d::Preference();
 	return preference->init( folderName );
+}
+
+bool Engine::initDefaultShaders()
+{
+	glslang::InitializeProcess();
+
+	v3d::Shader* vertShader = v3d::Shader::create( "V3D.DEFAULT.3D.VERT", "Shaders/vert.vert" );
+	if (!vertShader) return false;
+	if (!shaderCache->addShader(std::shared_ptr<v3d::Shader>(vertShader))) return false;
+
+	v3d::Shader* fragShader = v3d::Shader::create( "V3D.DEFAULT.3D.FRAG", "Shaders/frag.frag" );
+	if (!fragShader) return false;
+	if (!shaderCache->addShader( std::shared_ptr<v3d::Shader>( fragShader ) )) return false;
+
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().info( "Initialized {} default shaders.", shaderCache->count() );
+#endif
+
+	return true;
 }
 
 bool Engine::initWindow( const char* windowTitle )
@@ -83,7 +109,17 @@ bool Engine::initContext()
 
 void Engine::release()
 {
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().info( "[Engine] Releasing..." );
+#endif
 	// release vulkan first
+#ifdef BUILD_DEBUG
+	shaderCache->log();
+#endif
+	shaderCache.reset();
+#ifdef BUILD_DEBUG
+	textureCache->log();
+#endif
 	textureCache.reset();
 	SAFE_DELETE( context );
 	SAFE_DELETE( window );
@@ -92,6 +128,8 @@ void Engine::release()
 	inputManager.reset();
 	if (preference) preference->save();
 	SAFE_DELETE( preference );
+
+	glslang::FinalizeProcess();
 }
 
 void Engine::run()

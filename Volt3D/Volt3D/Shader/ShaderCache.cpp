@@ -18,7 +18,7 @@
 V3D_NS_BEGIN
 
 ShaderCache::ShaderCache()
-	: textures()
+	: shaders()
 {}
 
 ShaderCache::~ShaderCache()
@@ -30,45 +30,45 @@ v3d::ShaderCache& ShaderCache::get()
 {
 	return v3d::Engine::get()->getShaderCache();
 }
-//
-//bool ShaderCache::hasTexture( const std::size_t id ) const
-//{
-//	return textures.find( id ) != textures.end();
-//}
-//
-//bool ShaderCache::hasTexture( const std::string_view name ) const
-//{
-//	for (auto& texture : textures)
-//		if (texture.second && texture.second->getName() == name)
-//			return true;
-//	return false;
-//}
-//
-//bool ShaderCache::hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const
-//{
-//	if (texture == nullptr)
-//		return false;
-//	return hasTexture( texture->getID() ) ? true : hasTexture( texture->getName() ) ? true : false;
-//}
-//
-//bool ShaderCache::addTexture( const std::shared_ptr<v3d::Texture>& texture )
-//{
-//	if (!texture)
-//		return false;
-//	if (hasTexture( texture->getID() ))
-//	{
-//		v3d::Logger::getInstance().warn( "[TextureCache] already has a [Texture] with id: {}", texture->getID() );
-//		return false;
-//	}
-//	textures.emplace( texture->getID(), texture );
-//
-//#ifdef BUILD_DEBUG
-//	v3d::Logger::getInstance().debug( "[TextureCache] Added [Texture] ID: {}, Name: {}", texture->getID(), texture->getName() );
-//#endif
-//
-//	return true;
-//}
-//
+
+bool ShaderCache::hasShader( const std::size_t id ) const
+{
+	return shaders.find( id ) != shaders.end();
+}
+
+bool ShaderCache::hasShader( const std::string_view name ) const
+{
+	for (auto& shader : shaders)
+		if (shader.second && shader.second->getName() == name)
+			return true;
+	return false;
+}
+
+bool ShaderCache::hasShader( const std::shared_ptr<v3d::Shader>& shader ) const
+{
+	if (shader == nullptr)
+		return false;
+	return hasShader( shader->getID() ) ? true : hasShader( shader->getName() ) ? true : false;
+}
+
+bool ShaderCache::addShader( const std::shared_ptr<v3d::Shader>& shader )
+{
+	if (!shader)
+		return false;
+	if (hasShader( shader->getID() ))
+	{
+		v3d::Logger::getInstance().warn( "[ShaderCache] already has a [Shader] with id: {}", shader->getID() );
+		return false;
+	}
+	shaders.emplace( shader->getID(), shader );
+	
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().debug( "[ShaderCache] Added [Shader] ID: {}, Name: {}", shader->getID(), shader->getName() );
+#endif
+	
+	return true;
+}
+
 //bool ShaderCache::removeTexture( const std::size_t id )
 //{
 //	// 0 id does not exist
@@ -115,36 +115,36 @@ v3d::ShaderCache& ShaderCache::get()
 //	return removeTexture( texture->getID() );
 //}
 //
-//std::shared_ptr<v3d::Texture> ShaderCache::getTexture( const std::size_t id ) const
-//{
-//	if (id == 0) return nullptr;
-//	return textures.find( id )->second;
-//}
-//
-//std::shared_ptr<v3d::Texture> ShaderCache::getTexture( const std::string_view name ) const
-//{
-//	for (auto& texture : textures)
-//		if ((texture.second)->getName() == name)
-//			return texture.second;
-//	return nullptr;
-//}
-//
-//std::vector<std::shared_ptr<v3d::Texture>> ShaderCache::getAllTextures( const std::string_view name ) const
-//{
-//	std::vector<std::shared_ptr<v3d::Texture>> ret;
-//
-//	for (auto& texture : textures)
-//		if ((texture.second)->getName() == name)
-//			ret.push_back( texture.second );
-//	return ret;
-//}
-//
+std::shared_ptr<v3d::Shader> ShaderCache::getShader( const std::size_t id ) const
+{
+	if (id == 0) return nullptr;
+	return shaders.find( id )->second;
+}
+
+std::shared_ptr<v3d::Shader> ShaderCache::getShader( const std::string_view name ) const
+{
+	for (auto& shader : shaders)
+		if ((shader.second)->getName() == name)
+			return shader.second;
+	return nullptr;
+}
+
+std::vector<std::shared_ptr<v3d::Shader>> ShaderCache::getAllShaders( const std::string_view name ) const
+{
+	std::vector<std::shared_ptr<v3d::Shader>> ret;
+
+	for (auto& shader : shaders)
+		if ((shader.second)->getName() == name)
+			ret.push_back( shader.second );
+	return ret;
+}
+
 //std::size_t ShaderCache::purge()
 //{
 //	std::size_t c = 0;
 //	for (auto iter = textures.begin(); iter != textures.end();)
 //	{
-//		if (iter->second == nullptr || iter->second.use_count() == 0)
+//		if (iter->second == nullptr || iter->second.use_count() == 1)
 //		{
 //			iter = textures.erase( iter );
 //			c++;
@@ -154,21 +154,26 @@ v3d::ShaderCache& ShaderCache::get()
 //	}
 //	return c;
 //}
-//
-//void ShaderCache::log() const
-//{
-//	auto& logger = v3d::Logger::getInstance();
-//
-//	logger.trace( "[TextureCache] Info" );
-//	logger.trace( "Total textures: " + std::to_string( textures.size() ) );
-//
-//	std::size_t i = 0;
-//	for (auto& texture : textures) if (texture.second) texture.second->log();
-//}
+
+inline std::size_t ShaderCache::count() const
+{
+	return shaders.size();
+}
+
+void ShaderCache::log() const
+{
+	auto& logger = v3d::Logger::getInstance();
+
+	logger.trace( "[ShaderCahce] Info" );
+	logger.trace( "Total shaders: " + std::to_string( shaders.size() ) );
+
+	std::size_t i = 0;
+	for (auto& shader : shaders) if (shader.second) shader.second->log();
+}
 
 void ShaderCache::clear()
 {
-	textures.clear();
+	shaders.clear();
 }
 
 V3D_NS_END

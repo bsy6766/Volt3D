@@ -27,7 +27,7 @@ private:
 	ShaderCache();
 
 	// id : shaders
-	std::unordered_map<std::size_t, std::shared_ptr<v3d::Shader>> textures;
+	std::unordered_map<std::size_t, std::shared_ptr<v3d::Shader>> shaders;
 
 public:
 	// Destructor
@@ -38,25 +38,28 @@ public:
 
 	static v3d::ShaderCache& get();
 
-	//bool hasTexture( const std::size_t id ) const;
-	//bool hasTexture( const std::string_view name ) const;
-	//bool hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const;
+	bool hasShader( const std::size_t id ) const;
+	bool hasShader( const std::string_view name ) const;
+	bool hasShader( const std::shared_ptr<v3d::Shader>& shader ) const;
 
-	//bool addTexture( const std::shared_ptr<v3d::Texture>& texture );
+	bool addShader( const std::shared_ptr<v3d::Shader>& shader );
 
 	//bool removeTexture( const std::size_t id );
 	//bool removeTexture( const std::string_view name );
 	//std::size_t removeAllTextures( const std::string_view name );
 	//bool removeTexture( const std::shared_ptr<v3d::Texture>& texture );
 
-	//std::shared_ptr<v3d::Texture> getTexture( const std::size_t id ) const;
-	//std::shared_ptr<v3d::Texture> getTexture( const std::string_view name ) const;
-	//std::vector<std::shared_ptr<v3d::Texture>> getAllTextures( const std::string_view name ) const;
+	std::shared_ptr<v3d::Shader> getShader( const std::size_t id ) const;
+	std::shared_ptr<v3d::Shader> getShader( const std::string_view name ) const;
+	std::vector<std::shared_ptr<v3d::Shader>> getAllShaders( const std::string_view name ) const;
 
 	//std::size_t purge();
 
-	///** Log TextureCache */
-	//void log() const;
+	/** Get total count of shaders in ShaderCache */
+	inline std::size_t count() const;
+
+	/** Log TextureCache */
+	void log() const;
 
 	void clear();
 };

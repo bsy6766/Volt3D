@@ -45,8 +45,32 @@ Pipeline::~Pipeline()
 	shaders.clear();
 }
 
-bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
+Pipeline* Pipeline::create( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
 {
+	if (shaders.empty())
+	{
+		//todo: error handle
+		return nullptr;
+	}
+
+	v3d::vulkan::Pipeline* newPipeline = new (std::nothrow) v3d::vulkan::Pipeline();
+	if (newPipeline)
+	{
+		if (newPipeline->init( shaders, extent, renderPass ))
+		{
+			return newPipeline;
+		}
+
+		SAFE_DELETE( newPipeline );
+	}
+
+	return nullptr;
+}
+
+bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, const vk::Extent2D& extent, const vk::RenderPass& renderPass )
+{
+	this->shaders = shaders;
+
 	if (!initDescriptorSetLayout()) return false;
 	if (!initPipelineLayout()) return false;
 
@@ -157,6 +181,11 @@ bool Pipeline::init( const std::vector<std::filesystem::path>& shaderPath, const
 		vk::PipelineDynamicStateCreateFlags(),
 		2, dynamicStates
 	);
+
+	for (auto& shader : shaders)
+	{
+		shaderCreateInfos.push_back( shader->getShaderModule().getPipelineShaderStageCreateInfo() );
+	}
 
 	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
 	(

@@ -50,20 +50,20 @@ bool ShaderModule::compile( const std::vector<char>& sourceCode, const std::file
 
 	switch (stage)
 	{
-	case vk::ShaderStageFlagBits::eVertex: language = EShLanguage::EShLangVertex;
-	case vk::ShaderStageFlagBits::eTessellationControl: language = EShLanguage::EShLangTessControl;
-	case vk::ShaderStageFlagBits::eTessellationEvaluation: language = EShLanguage::EShLangTessEvaluation;
-	case vk::ShaderStageFlagBits::eGeometry: language = EShLanguage::EShLangGeometry;
-	case vk::ShaderStageFlagBits::eFragment: language = EShLanguage::EShLangFragment;
-	case vk::ShaderStageFlagBits::eCompute: language = EShLanguage::EShLangCompute;
-	case vk::ShaderStageFlagBits::eRaygenNV: language = EShLanguage::EShLangRayGenNV;
-	case vk::ShaderStageFlagBits::eAnyHitNV: language = EShLanguage::EShLangAnyHitNV;
-	case vk::ShaderStageFlagBits::eClosestHitNV: language = EShLanguage::EShLangClosestHitNV;
-	case vk::ShaderStageFlagBits::eMissNV: language = EShLanguage::EShLangMissNV;
-	case vk::ShaderStageFlagBits::eIntersectionNV: language = EShLanguage::EShLangIntersectNV;
-	case vk::ShaderStageFlagBits::eCallableNV: language = EShLanguage::EShLangCallableNV;
-	case vk::ShaderStageFlagBits::eTaskNV: language = EShLanguage::EShLangTaskNV;
-	case vk::ShaderStageFlagBits::eMeshNV: language = EShLanguage::EShLangMeshNV;
+	case vk::ShaderStageFlagBits::eVertex: language = EShLanguage::EShLangVertex; break;
+	case vk::ShaderStageFlagBits::eTessellationControl: language = EShLanguage::EShLangTessControl; break;
+	case vk::ShaderStageFlagBits::eTessellationEvaluation: language = EShLanguage::EShLangTessEvaluation; break;
+	case vk::ShaderStageFlagBits::eGeometry: language = EShLanguage::EShLangGeometry; break;
+	case vk::ShaderStageFlagBits::eFragment: language = EShLanguage::EShLangFragment; break;
+	case vk::ShaderStageFlagBits::eCompute: language = EShLanguage::EShLangCompute; break;
+	case vk::ShaderStageFlagBits::eRaygenNV: language = EShLanguage::EShLangRayGenNV; break;
+	case vk::ShaderStageFlagBits::eAnyHitNV: language = EShLanguage::EShLangAnyHitNV; break;
+	case vk::ShaderStageFlagBits::eClosestHitNV: language = EShLanguage::EShLangClosestHitNV; break;
+	case vk::ShaderStageFlagBits::eMissNV: language = EShLanguage::EShLangMissNV; break;
+	case vk::ShaderStageFlagBits::eIntersectionNV: language = EShLanguage::EShLangIntersectNV; break;
+	case vk::ShaderStageFlagBits::eCallableNV: language = EShLanguage::EShLangCallableNV; break;
+	case vk::ShaderStageFlagBits::eTaskNV: language = EShLanguage::EShLangTaskNV; break;
+	case vk::ShaderStageFlagBits::eMeshNV: language = EShLanguage::EShLangMeshNV; break;
 	default: return false;
 	}
 	

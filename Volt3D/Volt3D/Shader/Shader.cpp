@@ -52,6 +52,16 @@ Shader* Shader::create( const std::string & name, const std::filesystem::path & 
 	return nullptr;
 }
 
+inline std::size_t Shader::getID() const
+{
+	return id;
+}
+
+inline std::string Shader::getName() const
+{
+	return name;
+}
+
 bool Shader::compile()
 {
 	// 0. Check path
@@ -124,6 +134,16 @@ std::vector<vk::DescriptorSetLayoutBinding> Shader::getDescriptorSetLayoutBindin
 	}
 
 	return bindings;
+}
+
+void Shader::log() const
+{
+	auto& logger = v3d::Logger::getInstance();
+
+	logger.trace( "[Shader] info" );
+	logger.trace( "ID: {}", id );
+	logger.trace( "Name: {}", name );
+	logger.trace( "Stage: {}", vk::to_string(shaderModule->getStage()) );
 }
 
 V3D_NS_END

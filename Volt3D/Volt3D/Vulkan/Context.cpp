@@ -36,6 +36,7 @@
 
 #include "Shader/Shader.h"
 #include "Shader/ShaderState.h"
+#include "Shader/ShaderCache.h"
 #include "Pipelines/UniformData.h"
 #include "Pipelines/Uniform.h"
 #include "Pipelines/UniformBlock.h"
@@ -86,46 +87,11 @@ bool Context::init( const bool enableValidationLayer )
 	uint32_t major, minor, patch;
 	if (!vulkan::utils::getVersion( major, minor, patch )) { logger.critical( "Failed to get Context version." ); return false; }
 	logger.trace( "Context version: " + std::to_string( major ) + "." + std::to_string( minor ) + "." + std::to_string( patch ) );
-
-	// Init shader!
-	glslang::InitializeProcess();
-
+	
 	if (!initInstance( enableValidationLayer )) return false;
 	if (!initSurface()) return false;
 	if (!initPhysicalDevice()) return false;
 	if (!initLogicalDevice()) return false;
-	if (!initSwapChain()) return false;
-	if (!initRenderPass()) return false;
-	//if (!initDescriptorLayout()) return false;
-	if (!initGraphicsPipeline()) return false;
-	if (!initFrameBuffer()) return false;
-	if (!initCommandPool()) return false;
-
-	lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
-
-	// temp
-	const glm::vec4 white( 1 );
-
-	const float halfWidth = float( lena->getWidth() ) * 0.5f;
-	const float halfHeight = float( lena->getHeight() ) * 0.5f;
-	
-	auto& vertices = lenaBuffer.vertexData.getVertexData();
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
-
-	auto& indices = lenaBuffer.indexData.getVertexData();
-	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
-
-	createLenaBuffer();
-	createMVPUBO();
-
-	if (!initDescriptorPool()) return false;
-	if (!initDescriptorSet()) return false;
-	if (!initSemaphore()) return false;
-	if (!initFences()) return false;
-	if (!initCommandBuffer()) return false;
 
 	return true;
 }
@@ -159,6 +125,43 @@ bool Context::initLogicalDevice()
 	return logicalDevice->init( surface, physicalDevice->getVKPhysicalDevice() );
 }
 
+bool Context::initGraphics()
+{
+	if (!initSwapChain()) return false;
+	if (!initRenderPass()) return false;
+	if (!initGraphicsPipeline()) return false;
+	if (!initFrameBuffer()) return false;
+	if (!initCommandPool()) return false;
+
+	lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+
+	// temp
+	const glm::vec4 white( 1 );
+
+	const float halfWidth = float( lena->getWidth() ) * 0.5f;
+	const float halfHeight = float( lena->getHeight() ) * 0.5f;
+
+	auto& vertices = lenaBuffer.vertexData.getVertexData();
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
+
+	auto& indices = lenaBuffer.indexData.getVertexData();
+	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
+
+	createLenaBuffer();
+	createMVPUBO();
+
+	if (!initDescriptorPool()) return false;
+	if (!initDescriptorSet()) return false;
+	if (!initSemaphore()) return false;
+	if (!initFences()) return false;
+	if (!initCommandBuffer()) return false;
+
+	return true;
+}
+
 bool Context::initSwapChain()
 {
 	swapchain = new v3d::vulkan::Swapchain();
@@ -175,10 +178,12 @@ bool Context::initRenderPass()
 bool Context::initGraphicsPipeline()
 {
 	pipeline = new v3d::vulkan::Pipeline();
-	std::vector<std::filesystem::path> shaderPath;
-	shaderPath.push_back( "Shaders/vert.vert" );
-	shaderPath.push_back( "Shaders/frag.frag" );
-	if (!pipeline->init( shaderPath, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
+	
+	v3d::ShaderCache& shaderCache = v3d::ShaderCache::get();
+	auto vert = shaderCache.getShader( "V3D.DEFAULT.3D.VERT" );
+	auto frag = shaderCache.getShader( "V3D.DEFAULT.3D.FRAG" );
+
+	if (!pipeline->init( { vert, frag }, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
 	return true;
 }
 

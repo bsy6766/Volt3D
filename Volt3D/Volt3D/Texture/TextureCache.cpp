@@ -144,7 +144,7 @@ std::size_t TextureCache::purge()
 	std::size_t c = 0;
 	for (auto iter = textures.begin(); iter != textures.end();)
 	{
-		if (iter->second == nullptr || iter->second.use_count() == 0)
+		if (iter->second == nullptr || iter->second.use_count() == 1)
 		{
 			iter = textures.erase( iter );
 			c++;

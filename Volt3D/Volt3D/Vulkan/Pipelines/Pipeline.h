@@ -11,12 +11,12 @@
 #include <vulkan/vulkan.hpp>
 
 #include <vector>
+#include <memory>
 
 #include "utils/Macros.h"
 
 V3D_NS_BEGIN
 class Shader;
-
 VK_NS_BEGIN
 
 /**
@@ -51,7 +51,7 @@ private:
 	std::vector<std::shared_ptr<v3d::Shader>> shaders;
 	std::vector<vk::PipelineShaderStageCreateInfo> shaderCreateInfos;
 
-	bool init( const std::vector<std::filesystem::path>& shaderPath, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
+	bool init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
 	bool initDescriptorSetLayout();
 	bool initPipelineLayout();
 
@@ -62,6 +62,8 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( Pipeline );
 
 	~Pipeline();
+
+	static Pipeline* create( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, const vk::Extent2D& extent, const vk::RenderPass& renderPass );
 
 	/** Get Vulkan Pipeline */
 	inline const vk::Pipeline& getVKPipeline() const;

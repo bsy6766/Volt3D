@@ -122,6 +122,7 @@ private:
 	bool initSurface();
 	bool initPhysicalDevice();
 	bool initLogicalDevice();
+	bool initGraphics();
 	bool initSwapChain();
 	bool initRenderPass();
 	bool initGraphicsPipeline();

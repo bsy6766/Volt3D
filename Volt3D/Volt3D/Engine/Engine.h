@@ -53,6 +53,7 @@ private:
 	std::unique_ptr<v3d::ShaderCache> shaderCache;
 
 	bool loadPreference(const std::wstring& folderName);
+	bool initDefaultShaders();
 	bool initWindow(const char* windowTitle);
 	bool initContext();
 	void release();

@@ -49,6 +49,12 @@ public:
 
 	static Shader* create( const std::string& name, const std::filesystem::path& shaderFilePath );
 
+	/** Get id of shader */
+	inline std::size_t getID() const;
+
+	/** Get name of shader */
+	inline std::string getName() const;
+
 	/** Get shader state of this shader */
 	inline v3d::ShaderState* getShaderState() const;
 
@@ -56,6 +62,8 @@ public:
 	inline const v3d::vulkan::ShaderModule& getShaderModule() const;
 
 	std::vector<vk::DescriptorSetLayoutBinding> getDescriptorSetLayoutBinding() const;
+
+	void log() const;
 };
 
 V3D_NS_END
