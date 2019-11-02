@@ -55,6 +55,7 @@
 #include "Node/ZOrder.h"
 
 // Renderer
+#include "Renderer/Renderer.h"
 #include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 

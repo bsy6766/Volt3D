@@ -78,6 +78,9 @@
     <Filter Include="Volt3D\Shader">
       <UniqueIdentifier>{6b3b2731-4695-4f72-9d6f-d28dfd14d354}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Material">
+      <UniqueIdentifier>{12c9e641-4b94-4510-ac51-2b0ee1b83511}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -274,6 +277,15 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Shader\ShaderCache.cpp">
       <Filter>Volt3D\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Renderer\Renderer.cpp">
+      <Filter>Volt3D\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Material\MaterialCache.cpp">
+      <Filter>Volt3D\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Material\Material.cpp">
+      <Filter>Volt3D\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -534,6 +546,15 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Shader\ShaderCache.h">
       <Filter>Volt3D\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Renderer\Renderer.h">
+      <Filter>Volt3D\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Material\MaterialCache.h">
+      <Filter>Volt3D\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Material\Material.h">
+      <Filter>Volt3D\Material</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

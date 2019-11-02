@@ -218,11 +218,14 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Input\KeyCode.h" />
     <ClInclude Include="Volt3D\Input\KeyModifierBits.h" />
     <ClInclude Include="Volt3D\Input\MouseButton.h" />
+    <ClInclude Include="Volt3D\Material\Material.h" />
+    <ClInclude Include="Volt3D\Material\MaterialCache.h" />
     <ClInclude Include="Volt3D\Node\BaseNode.h" />
     <ClInclude Include="Volt3D\Node\NodeType.h" />
     <ClInclude Include="Volt3D\Node\Pivot.h" />
     <ClInclude Include="Volt3D\Node\TransformNode.h" />
     <ClInclude Include="Volt3D\Node\ZOrder.h" />
+    <ClInclude Include="Volt3D\Renderer\Renderer.h" />
     <ClInclude Include="Volt3D\Renderer\Vertex.h" />
     <ClInclude Include="Volt3D\Renderer\VertexData.h" />
     <ClInclude Include="Volt3D\Scene\Scene.h" />
@@ -301,9 +304,12 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Engine\Time.cpp" />
     <ClCompile Include="Volt3D\Engine\Window.cpp" />
     <ClCompile Include="Volt3D\Input\InputManager.cpp" />
+    <ClCompile Include="Volt3D\Material\Material.cpp" />
+    <ClCompile Include="Volt3D\Material\MaterialCache.cpp" />
     <ClCompile Include="Volt3D\Node\BaseNode.cpp" />
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />
     <ClCompile Include="Volt3D\Node\ZOrder.cpp" />
+    <ClCompile Include="Volt3D\Renderer\Renderer.cpp" />
     <ClCompile Include="Volt3D\Renderer\Vertex.cpp" />
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
     <ClCompile Include="Volt3D\Scene\Scene.cpp" />
