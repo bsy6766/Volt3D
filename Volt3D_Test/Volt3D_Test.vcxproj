@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Volt3D\Externals\GLFW\include;$(SolutionDir)Volt3D\Externals\spdlog\include;$(SolutionDir)Volt3D\Externals\glm\include;$(SolutionDir)Volt3D\Externals\json\include;$(SolutionDir)Volt3D\Externals\glslang\include;$(SolutionDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Volt3D\Externals\GLFW\include;$(SolutionDir)Volt3D\Externals\spdlog\include;$(SolutionDir)Volt3D\Externals\glm\include;$(SolutionDir)Volt3D\Externals\json\include;$(SolutionDir)Volt3D\Externals\fx-gltf\include;$(SolutionDir)Volt3D\Externals\glslang\include;$(SolutionDir)Volt3D\Volt3D;$(SolutionDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -132,7 +132,7 @@ xcopy $(SolutionDir)Volt3D\Externals\zlib\lib\$(Configuration)\*.dll $(OutPutPat
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Volt3D\Externals\GLFW\include;$(SolutionDir)Volt3D\Externals\spdlog\include;$(SolutionDir)Volt3D\Externals\glm\include;$(SolutionDir)Volt3D\Externals\json\include;$(SolutionDir)Volt3D\Externals\glslang\include;$(SolutionDir)Volt3D\Volt3D;$(SolutionDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(SolutionDir)Volt3D\Externals\GLFW\include;$(SolutionDir)Volt3D\Externals\spdlog\include;$(SolutionDir)Volt3D\Externals\glm\include;$(SolutionDir)Volt3D\Externals\json\include;$(SolutionDir)Volt3D\Externals\fx-gltf\include;$(SolutionDir)Volt3D\Externals\glslang\include;$(SolutionDir)Volt3D\Volt3D;$(SolutionDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>

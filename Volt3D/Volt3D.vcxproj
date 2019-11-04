@@ -116,7 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\fx-gltf\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -169,7 +169,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>PreCompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.1.108.0\Include;$(ProjectDir)Externals\GLFW\include;$(ProjectDir)Externals\spdlog\include;$(ProjectDir)Externals\glm\include;$(ProjectDir)Externals\json\include;$(ProjectDir)Externals\libpng\include;$(ProjectDir)Externals\zlib\include;$(ProjectDir)Externals\fx-gltf\include;$(ProjectDir)Externals\glslang\include;$(ProjectDir)Volt3D;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
@@ -220,6 +220,10 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Input\MouseButton.h" />
     <ClInclude Include="Volt3D\Material\Material.h" />
     <ClInclude Include="Volt3D\Material\MaterialCache.h" />
+    <ClInclude Include="Volt3D\Mesh\Mesh.h" />
+    <ClInclude Include="Volt3D\Mesh\MeshCache.h" />
+    <ClInclude Include="Volt3D\Model\ModelData.h" />
+    <ClInclude Include="Volt3D\Model\ModelLoader.h" />
     <ClInclude Include="Volt3D\Node\BaseNode.h" />
     <ClInclude Include="Volt3D\Node\NodeType.h" />
     <ClInclude Include="Volt3D\Node\Pivot.h" />
@@ -306,6 +310,10 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Input\InputManager.cpp" />
     <ClCompile Include="Volt3D\Material\Material.cpp" />
     <ClCompile Include="Volt3D\Material\MaterialCache.cpp" />
+    <ClCompile Include="Volt3D\Mesh\Mesh.cpp" />
+    <ClCompile Include="Volt3D\Mesh\MeshCache.cpp" />
+    <ClCompile Include="Volt3D\Model\ModelData.cpp" />
+    <ClCompile Include="Volt3D\Model\ModelLoader.cpp" />
     <ClCompile Include="Volt3D\Node\BaseNode.cpp" />
     <ClCompile Include="Volt3D\Node\TransformNode.cpp" />
     <ClCompile Include="Volt3D\Node\ZOrder.cpp" />

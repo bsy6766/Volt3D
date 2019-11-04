@@ -81,6 +81,12 @@
     <Filter Include="Volt3D\Material">
       <UniqueIdentifier>{12c9e641-4b94-4510-ac51-2b0ee1b83511}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Mesh">
+      <UniqueIdentifier>{082053c0-8bee-42fd-b9e2-a10493e1e757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Volt3D\Model">
+      <UniqueIdentifier>{d1d27805-6dd1-40d5-9cc9-a6e43757f7bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -286,6 +292,18 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Material\Material.cpp">
       <Filter>Volt3D\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Mesh\MeshCache.cpp">
+      <Filter>Volt3D\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Mesh\Mesh.cpp">
+      <Filter>Volt3D\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Model\ModelLoader.cpp">
+      <Filter>Volt3D\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Model\ModelData.cpp">
+      <Filter>Volt3D\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -555,6 +573,18 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Material\Material.h">
       <Filter>Volt3D\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Mesh\MeshCache.h">
+      <Filter>Volt3D\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Mesh\Mesh.h">
+      <Filter>Volt3D\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Model\ModelLoader.h">
+      <Filter>Volt3D\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Model\ModelData.h">
+      <Filter>Volt3D\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

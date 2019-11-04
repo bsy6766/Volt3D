@@ -12,6 +12,7 @@
 #include "Action/Action.h"
 
 // Color
+#include "Color/Color.h"
 #include "Color/Color3B.h"
 #include "Color/Color3F.h"
 #include "Color/Color4B.h"
@@ -46,6 +47,18 @@
 #include "Input/KeyCode.h"
 #include "Input/KeyModifierBits.h"
 #include "Input/MouseButton.h"
+
+// Material
+#include "Material/Material.h"
+#include "Material/MaterialCache.h"
+
+// Mesh
+#include "Mesh/Mesh.h"
+#include "Mesh/MeshCache.h"
+
+// Model
+#include "Model/ModelData.h"
+#include "Model/ModelLoader.h"
 
 // Node
 #include "Node/BaseNode.h"
