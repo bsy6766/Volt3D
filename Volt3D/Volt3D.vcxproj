@@ -269,6 +269,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.h" />
     <ClInclude Include="Volt3D\Vulkan\Devices\LogicalDevice.h" />
     <ClInclude Include="Volt3D\Vulkan\Devices\PhysicalDevice.h" />
+    <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h" />
     <ClInclude Include="Volt3D\Vulkan\Images\Image.h" />
     <ClInclude Include="Volt3D\Vulkan\Images\Image2D.h" />
     <ClInclude Include="Volt3D\Vulkan\Instance.h" />
@@ -350,6 +351,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Vulkan\Debugs\DebugUtilsMessenger.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Devices\LogicalDevice.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Devices\PhysicalDevice.cpp" />
+    <ClCompile Include="Volt3D\Vulkan\Images\DepthImage.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Images\Image.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Images\Image2D.cpp" />
     <ClCompile Include="Volt3D\Vulkan\Instance.cpp" />

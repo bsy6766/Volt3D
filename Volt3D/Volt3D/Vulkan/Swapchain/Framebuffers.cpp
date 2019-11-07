@@ -11,6 +11,7 @@
 
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Swapchain/Swapchain.h"
+#include "Vulkan/Images/DepthImage.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
@@ -19,21 +20,28 @@ Framebuffers::Framebuffers( const v3d::vulkan::Swapchain& swapchain, const vk::R
 	: framebuffers()
 {
 	const std::vector<vk::ImageView>& imageViews = swapchain.getImageViews();
+	const v3d::vulkan::DepthImage* depthImage = swapchain.getDepthImage();
 	const vk::Extent2D& extent = swapchain.getExtent();
 
 	const std::size_t size = imageViews.size();
 	framebuffers.resize( size );
 
 	const vk::Device& logicalDevice = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice();
-
+	
 	for (std::size_t i = 0; i < size; i++)
 	{
+		std::array<vk::ImageView, 2> ivs =
+		{
+			imageViews[i],
+			depthImage->getImageView()
+		};
+
 		vk::FramebufferCreateInfo createInfo
 		(
 			vk::FramebufferCreateFlags(),
 			renderPass,
 			1,
-			&imageViews[i],
+			ivs.data(),
 			extent.width,
 			extent.height,
 			1

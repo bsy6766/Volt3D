@@ -123,6 +123,7 @@
 #include "Vulkan/Debugs/DebugUtilsMessenger.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Devices/PhysicalDevice.h"
+#include "Vulkan/Images/DepthImage.h"
 #include "Vulkan/Images/Image.h"
 #include "Vulkan/Images/Image2D.h"
 #include "Vulkan/Pipelines/Attribute.h"
@@ -135,6 +136,6 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/SwapChain.h"
+#include "Vulkan/Swapchain/Swapchain.h"
 
 #endif

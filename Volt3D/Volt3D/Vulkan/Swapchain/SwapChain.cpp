@@ -14,6 +14,7 @@
 #include "Vulkan/Context.h"
 #include "Vulkan/Devices/LogicalDevice.h"
 #include "Vulkan/Devices/PhysicalDevice.h"
+#include "Vulkan/Images/DepthImage.h"
 
 V3D_NS_BEGIN
 VK_NS_BEGIN
@@ -34,6 +35,8 @@ Swapchain::~Swapchain()
 	imageViews.clear();
 	logicalDevice.destroySwapchainKHR( swapchain );
 	images.clear();
+
+	SAFE_DELETE( depthImage );
 }
 
 bool Swapchain::init()
@@ -119,6 +122,35 @@ bool Swapchain::init()
 		imageViews.push_back( logicalDevice.createImageView( createInfo, nullptr ) );
 	}
 
+	depthImage = new v3d::vulkan::DepthImage();
+
+	const std::vector<vk::Format> depthFormats =
+	{
+		vk::Format::eD16Unorm,
+		vk::Format::eD16UnormS8Uint,
+		vk::Format::eD24UnormS8Uint,
+		vk::Format::eD32Sfloat,
+		vk::Format::eD32SfloatS8Uint,
+	};
+
+	vk::Format depthFormat;
+	v3d::vulkan::PhysicalDevice* pd = v3d::vulkan::PhysicalDevice::get();
+
+	bool found = false;
+	for (auto format : depthFormats)
+	{
+		if (pd->isFormatSupported( format, vk::ImageTiling::eOptimal, vk::FormatFeatureFlagBits::eDepthStencilAttachment ))
+		{
+			depthFormat = format;
+			found = true;
+			break;
+		}
+	}
+
+	if (!found) return false;
+
+	if (!depthImage->init( extent, depthFormat )) return false;
+
 	return true;
 }
 
@@ -161,15 +193,35 @@ vk::PresentModeKHR v3d::vulkan::Swapchain::selectPresentMode( const std::vector<
 	//return vk::PresentModeKHR::eMailbox;
 }
 
-const vk::SwapchainKHR& Swapchain::getSwapchainKHR() const { return swapchain; }
+const vk::SwapchainKHR& Swapchain::getSwapchainKHR() const 
+{ 
+	return swapchain; 
+}
 
-const vk::Format& v3d::vulkan::Swapchain::getFormat() const { return surfaceFormat.format; }
+const vk::Format& v3d::vulkan::Swapchain::getFormat() const 
+{ 
+	return surfaceFormat.format; 
+}
 
-const vk::Extent2D& v3d::vulkan::Swapchain::getExtent() const { return extent; }
+const vk::Extent2D& v3d::vulkan::Swapchain::getExtent() const 
+{ 
+	return extent; 
+}
 
-const std::vector<vk::Image>& Swapchain::getImages() const { return images; }
+const std::vector<vk::Image>& Swapchain::getImages() const 
+{ 
+	return images; 
+}
 
-const std::vector<vk::ImageView>& Swapchain::getImageViews() const { return imageViews; }
+const std::vector<vk::ImageView>& Swapchain::getImageViews() const 
+{ 
+	return imageViews; 
+}
+
+const v3d::vulkan::DepthImage* Swapchain::getDepthImage() const
+{
+	return depthImage;
+}
 
 VK_NS_END
 V3D_NS_END

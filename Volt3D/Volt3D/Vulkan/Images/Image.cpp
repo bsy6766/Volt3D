@@ -18,6 +18,7 @@ V3D_NS_BEGIN
 VK_NS_BEGIN
 
 Image::Image( const vk::Extent3D& extent, const vk::Format& format )
+// @todo: Do we really have to store the logical device?
 	: logicalDevice( v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice() )
 	, image( nullptr )
 	, deviceMemory( nullptr )
@@ -27,8 +28,8 @@ Image::Image( const vk::Extent3D& extent, const vk::Format& format )
 	, format( format )
 	//, filter()
 	//, usageFlagBits()
-	, mip_levels( 0 )
-	, layers( 0 )
+	//, mip_levels( 0 )
+	//, layers( 0 )
 	//, sampleCount( vk::SampleCountFlagBits::e1 )
 	//, samplerAddressMode()
 	//, anisotropic( false )
@@ -44,7 +45,7 @@ Image::~Image()
 
 void Image::initImage( const vk::ImageTiling& tilling, const vk::ImageUsageFlags usageFlags )
 {
-	auto imageCreateInfo = getImageCreateInfo();
+	vk::ImageCreateInfo imageCreateInfo = getImageCreateInfo();
 	imageCreateInfo.tiling = tilling;
 	imageCreateInfo.usage = usageFlags;
 	image = logicalDevice.createImage( imageCreateInfo );

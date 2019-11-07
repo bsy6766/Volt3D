@@ -44,9 +44,9 @@ private:
 	vk::VertexInputBindingDescription vertexInputBindingDescription;
 
 	// @todo Does pipeline actually need to have these stuffs?
-	vk::PipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo;
+	vk::PipelineMultisampleStateCreateInfo MultisampleStateCI;
 	vk::PipelineColorBlendAttachmentState pipelineColorBlendAttachmentState;
-	vk::PipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo;
+	vk::PipelineColorBlendStateCreateInfo colorBlendStateCI;
 
 	std::vector<std::shared_ptr<v3d::Shader>> shaders;
 	std::vector<vk::PipelineShaderStageCreateInfo> shaderCreateInfos;

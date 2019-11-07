@@ -15,7 +15,7 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
-class Image;
+class DepthImage;
 
 /**
 *	@class Swapchain
@@ -39,7 +39,7 @@ private:
 	std::vector<vk::Image> images;
 	std::vector<vk::ImageView> imageViews;
 
-	v3d::vulkan::Image* depthImage;
+	v3d::vulkan::DepthImage* depthImage;
 
 	vk::SurfaceFormatKHR selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const;
 	vk::Extent2D selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const;
@@ -65,8 +65,11 @@ public:
 	/** Get images */
 	const std::vector<vk::Image>& getImages() const;
 
-	/** Get image vies */
+	/** Get image views */
 	const std::vector<vk::ImageView>& getImageViews() const;
+
+	/** Get depth image */
+	const v3d::vulkan::DepthImage* getDepthImage() const;
 };
 
 VK_NS_END

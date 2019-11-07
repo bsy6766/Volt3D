@@ -26,9 +26,9 @@ Pipeline::Pipeline()
 	, vertexInputBindingDescription()
 	, descriptorSetLayout( nullptr )
 	, descriptorPool( nullptr )
-	, pipelineMultisampleStateCreateInfo()
+	, MultisampleStateCI()
 	, pipelineColorBlendAttachmentState()
-	, pipelineColorBlendStateCreateInfo()
+	, colorBlendStateCI()
 	, shaders()
 	, shaderCreateInfos()
 	// @todo init all
@@ -77,14 +77,14 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 	vertexInputAttribDescriptions = v3d::V3_C4_T2::getInputAttributeDescription();
 	vertexInputBindingDescription = v3d::V3_C4_T2::getInputBindingDescription();
 
-	vk::PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo
+	vk::PipelineVertexInputStateCreateInfo vertexInputStateCI
 	(
 		vk::PipelineVertexInputStateCreateFlags(),
 		1, &vertexInputBindingDescription,
 		3, vertexInputAttribDescriptions.data()
 	);
 
-	vk::PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo
+	vk::PipelineInputAssemblyStateCreateInfo inputAssemblyStateCI
 	(
 		vk::PipelineInputAssemblyStateCreateFlags(),
 		vk::PrimitiveTopology::eTriangleList
@@ -100,14 +100,14 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 
 	scissor = vk::Rect2D( vk::Offset2D( 0, 0 ), extent );
 
-	vk::PipelineViewportStateCreateInfo pipelineViewportStateCreateInfo
+	vk::PipelineViewportStateCreateInfo viewportStateCI
 	(
 		vk::PipelineViewportStateCreateFlags(),
 		1, &viewport,
 		1, &scissor
 	);
 
-	vk::PipelineRasterizationStateCreateInfo pipelineRasterizationStateCreateInfo
+	vk::PipelineRasterizationStateCreateInfo RasterStateCI
 	(
 		vk::PipelineRasterizationStateCreateFlags(),  // flags
 		false,                                        // depthClampEnable
@@ -127,17 +127,17 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 	// @note visit later
 	// Depth and stencil
 	//vk::StencilOpState stencilOpState(vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::StencilOp::eKeep, vk::CompareOp::eAlways);
-	//vk::PipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo
-	//(
-	//	vk::PipelineDepthStencilStateCreateFlags(), // flags
-	//	true,                                       // depthTestEnable
-	//	true,                                       // depthWriteEnable
-	//	vk::CompareOp::eLessOrEqual,                // depthCompareOp
-	//	false,                                      // depthBoundTestEnable
-	//	false,                                      // stencilTestEnable
-	//	stencilOpState,                             // front
-	//	stencilOpState                              // back
-	//);
+	vk::PipelineDepthStencilStateCreateInfo depthStencilCI
+	(
+		vk::PipelineDepthStencilStateCreateFlags(), // flags
+		true,                                       // depthTestEnable
+		true,                                       // depthWriteEnable
+		vk::CompareOp::eLessOrEqual,                // depthCompareOp
+		false,                                      // depthBoundTestEnable
+		false//,                                      // stencilTestEnable
+		//stencilOpState,                             // front
+		//stencilOpState                              // back
+	);
 
 	vk::ColorComponentFlags colorComponentFlags
 	(
@@ -160,7 +160,7 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 		colorComponentFlags						// colorWriteMask
 	);
 
-	pipelineColorBlendStateCreateInfo = vk::PipelineColorBlendStateCreateInfo
+	colorBlendStateCI = vk::PipelineColorBlendStateCreateInfo
 	(
 		vk::PipelineColorBlendStateCreateFlags(),   // flags
 		false,                                      // logicOpEnable
@@ -176,7 +176,7 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 		vk::DynamicState::eScissor
 	};
 
-	vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo
+	vk::PipelineDynamicStateCreateInfo dynamicStateCI
 	(
 		vk::PipelineDynamicStateCreateFlags(),
 		2, dynamicStates
@@ -189,20 +189,20 @@ bool Pipeline::init( const std::vector<std::shared_ptr<v3d::Shader>>& shaders, c
 
 	vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
 	(
-		vk::PipelineCreateFlags(),                  // flags
-		uint32_t( shaderCreateInfos.size() ),		// stageCount
-		shaderCreateInfos.data(),					// pStages
-		&pipelineVertexInputStateCreateInfo,        // pVertexInputState
-		&pipelineInputAssemblyStateCreateInfo,      // pInputAssemblyState
-		nullptr,                                    // pTessellationState
-		&pipelineViewportStateCreateInfo,           // pViewportState
-		&pipelineRasterizationStateCreateInfo,      // pRasterizationState
-		&pipelineMultisampleStateCreateInfo,        // pMultisampleState
-		nullptr,							        // pDepthStencilState
-		&pipelineColorBlendStateCreateInfo,         // pColorBlendState
-		&pipelineDynamicStateCreateInfo,            // pDynamicState
-		pipelineLayout,							    // layout
-		renderPass									// renderPass
+		vk::PipelineCreateFlags(),				// flags
+		uint32_t( shaderCreateInfos.size() ),	// stageCount
+		shaderCreateInfos.data(),				// pStages
+		&vertexInputStateCI,					// pVertexInputState
+		&inputAssemblyStateCI,					// pInputAssemblyState
+		nullptr,								// pTessellationState
+		&viewportStateCI,						// pViewportState
+		&RasterStateCI,							// pRasterizationState
+		&MultisampleStateCI,					// pMultisampleState
+		&depthStencilCI,						// pDepthStencilState
+		&colorBlendStateCI,						// pColorBlendState
+		&dynamicStateCI,						// pDynamicState
+		pipelineLayout,							// layout
+		renderPass								// renderPass
 	);
 
 	pipeline = v3d::vulkan::LogicalDevice::get()->getVKLogicalDevice().createGraphicsPipeline( nullptr, graphicsPipelineCreateInfo );

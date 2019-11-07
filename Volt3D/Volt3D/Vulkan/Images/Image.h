@@ -35,8 +35,8 @@ protected:
 	//vk::Filter filter;
 	//vk::ImageUsageFlagBits usageFlagBits;
 
-	uint32_t mip_levels;
-	uint32_t layers;
+	//uint32_t mip_levels;
+	//uint32_t layers;
 
 	//VkSampleCountFlagBits sampleCount;
 	//VkSamplerAddressMode samplerAddressMode;

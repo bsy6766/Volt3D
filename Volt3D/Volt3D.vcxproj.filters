@@ -305,6 +305,9 @@
     <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
       <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Images\DepthImage.cpp">
+      <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -585,6 +588,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Model\ModelData.h">
       <Filter>Volt3D\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h">
+      <Filter>Volt3D\Vulkan\Images</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -137,18 +137,33 @@ bool Context::initGraphics()
 
 	// temp
 	const glm::vec4 white( 1 );
+	const glm::vec4 green( 0,1,0,1 );
 
-	const float halfWidth = float( lena->getWidth() ) * 0.5f;
-	const float halfHeight = float( lena->getHeight() ) * 0.5f;
+	float halfWidth = float( lena->getWidth() ) * 0.5f;
+	float halfHeight = float( lena->getHeight() ) * 0.5f;
 
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
 	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
+	
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 1.0f }, green, { 0.0f, 1.0f } ) );
+	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 1.0f }, green, { 0.0f, 0.0f } ) );
+	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 1.0f }, green, { 1.0f, 1.0f } ) );
+	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 1.0f }, green, { 1.0f, 0.0f } ) );
+	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
 
 	auto& indices = lenaBuffer.indexData.getVertexData();
-	indices = std::vector<uint16_t>( { 0,1,2,3,2,1 } );
+	indices = std::vector<uint16_t>( 
+		{ 
+			0,1,2,3,2,1,
+			4,5,6,7,6,5,
+		} 
+	);
 
 	createLenaBuffer();
 	createMVPUBO();
