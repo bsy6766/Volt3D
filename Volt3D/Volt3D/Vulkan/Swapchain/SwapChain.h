@@ -15,6 +15,8 @@
 V3D_NS_BEGIN
 VK_NS_BEGIN
 
+class Image;
+
 /**
 *	@class Swapchain
 *	@brief Wrapper for Vulkan's swapchain.
@@ -36,6 +38,8 @@ private:
 
 	std::vector<vk::Image> images;
 	std::vector<vk::ImageView> imageViews;
+
+	v3d::vulkan::Image* depthImage;
 
 	vk::SurfaceFormatKHR selectSurfaceFormat( const std::vector<vk::SurfaceFormatKHR>& surfaceFormats ) const;
 	vk::Extent2D selectExtent( const vk::SurfaceCapabilitiesKHR& surfaceCapabilities, const glm::ivec2& frameBufferSize ) const;

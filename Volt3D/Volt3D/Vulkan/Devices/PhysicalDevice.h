@@ -74,6 +74,8 @@ public:
 	/** Get PhysicalDevice SampleCountFlagBits */
 	const vk::SampleCountFlagBits& getSampleCountFlagBits() const;
 
+	bool isFormatSupported( const vk::Format depthFormat, const vk::ImageTiling tiling, const vk::FormatFeatureFlags& features ) const;
+
 	/** Get memory type index */
 	uint32_t getMemoryTypeIndex( const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags ) const;
 

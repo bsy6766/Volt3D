@@ -22,6 +22,9 @@ v3d::vulkan::Swapchain::Swapchain()
 	: swapchain( nullptr )
 	, surfaceFormat()
 	, extent()
+	, images()
+	, imageViews()
+	, depthImage( nullptr )
 {}
 
 Swapchain::~Swapchain()

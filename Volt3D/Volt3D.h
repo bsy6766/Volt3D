@@ -12,7 +12,6 @@
 #include "Action/Action.h"
 
 // Color
-#include "Color/Color.h"
 #include "Color/Color3B.h"
 #include "Color/Color3F.h"
 #include "Color/Color4B.h"
@@ -136,6 +135,6 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/Swapchain.h"
+#include "Vulkan/Swapchain/SwapChain.h"
 
 #endif

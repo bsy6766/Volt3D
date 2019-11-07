@@ -17,6 +17,7 @@ VK_NS_BEGIN
 RenderPass::RenderPass( const vk::Format& format )
 	: renderPass(nullptr) 
 {
+	// Color attachment
 	vk::AttachmentDescription attachmentDescriptions
 	(
 		vk::AttachmentDescriptionFlags(),
@@ -33,14 +34,16 @@ RenderPass::RenderPass( const vk::Format& format )
 	vk::AttachmentReference colorAttachment( 0, vk::ImageLayout::eColorAttachmentOptimal );
 
 	// @note visit later
-	//vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+	vk::AttachmentReference depthAttachment(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
 	vk::SubpassDescription subpassDescription
 	(
 		vk::SubpassDescriptionFlags(),
 		vk::PipelineBindPoint::eGraphics,
-		0, nullptr,
-		1, &colorAttachment//,
+		0,
+		nullptr,
+		1, 
+		&colorAttachment//,
 		//nullptr, 
 		//(depthFormat != vk::Format::eUndefined) ? &depthAttachment : nullptr
 	);

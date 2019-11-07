@@ -37,6 +37,7 @@ v3d::ModelData* ModelLoader::load( const std::filesystem::path& modelFilePath )
 	}
 	catch (std::system_error& s_err)
 	{
+		v3d::Logger::getInstance().error( "Failed to load model at \"{}\". Details: {}\n", modelFilePath.string(), s_err.what() );
 		return nullptr;
 	}
 

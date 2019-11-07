@@ -142,6 +142,22 @@ const vk::SampleCountFlagBits& PhysicalDevice::getSampleCountFlagBits() const
 	return sampleCountFlagBits;
 }
 
+bool PhysicalDevice::isFormatSupported( const vk::Format depthFormat, const vk::ImageTiling tiling, const vk::FormatFeatureFlags& features ) const
+{
+	const vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( depthFormat );
+	
+	if (tiling == vk::ImageTiling::eLinear && (formatProperties.linearTilingFeatures & features) == features)
+	{
+		return true;
+	}
+	else if (tiling == vk::ImageTiling::eOptimal && (formatProperties.optimalTilingFeatures & features) == features)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 uint32_t PhysicalDevice::getMemoryTypeIndex( const uint32_t memoryTypeBits, const vk::MemoryPropertyFlags memoryPropertyFlags ) const
 {
 	for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)

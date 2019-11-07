@@ -10,6 +10,8 @@
 
 #include "Utils/Macros.h"
 
+#include <filesystem>
+
 V3D_NS_BEGIN
 
 class ModelData;

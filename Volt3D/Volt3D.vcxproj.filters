@@ -215,9 +215,6 @@
     <ClCompile Include="Volt3D\Vulkan\Buffers\UniformBuffer.cpp">
       <Filter>Volt3D\Vulkan\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
-      <Filter>Volt3D\Vulkan\Pipelines</Filter>
-    </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Debugs\DebugReportCallback.cpp">
       <Filter>Volt3D\Vulkan\Debugs</Filter>
     </ClCompile>
@@ -304,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Model\ModelData.cpp">
       <Filter>Volt3D\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Vulkan\Pipelines\Pipeline.cpp">
+      <Filter>Volt3D\Vulkan\Pipelines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
