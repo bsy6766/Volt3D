@@ -11,6 +11,8 @@
 
 #include "Context.h"
 
+#include <Volt3D/Input/InputManager.h>
+
 #include "Engine/Engine.h"
 #include "Engine/Window.h"
 #include "Instance.h"
@@ -143,25 +145,45 @@ bool Context::initGraphics()
 	float halfHeight = float( lena->getHeight() ) * 0.5f;
 
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
-	
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 1.0f }, green, { 0.0f, 1.0f } ) );
-	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 1.0f }, green, { 0.0f, 0.0f } ) );
-	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 1.0f }, green, { 1.0f, 1.0f } ) );
-	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 1.0f }, green, { 1.0f, 0.0f } ) );
-	vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
+	//
+	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 1.0f }, green, { 0.0f, 1.0f } ) );
+	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 1.0f }, green, { 0.0f, 0.0f } ) );
+	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 1.0f }, green, { 1.0f, 1.0f } ) );
+	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 1.0f }, green, { 1.0f, 0.0f } ) );
+	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+
+	float halfSize = halfWidth * 0.25f;
+
+	// front
+	vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize,  halfSize }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize,  halfSize }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize,  halfSize }, white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize,  halfSize }, white, { 1.0f, 0.0f } ) );
+	// back
+	vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize, -halfSize }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize, -halfSize }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize, -halfSize }, white, { 1.f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize, -halfSize }, white, { 1.f, 1.0f } ) );
 
 	auto& indices = lenaBuffer.indexData.getVertexData();
 	indices = std::vector<uint16_t>( 
 		{ 
+			//0,1,2,3,2,1,
+			//4,5,6,7,6,5,
+
 			0,1,2,3,2,1,
+			2,3,4,5,4,3,
 			4,5,6,7,6,5,
+			6,7,0,1,0,7,
+			1,7,3,5,3,7,
+			6,0,4,2,4,0
 		} 
 	);
 
@@ -447,7 +469,63 @@ void Context::updateMVPUBO( const uint32_t imageIndex )
 	curAngle += (30.0f * time);
 	if (curAngle >= 360.0f) curAngle -= 360.0f;
 
-	curMVP.model = screenSpaceMatrix * glm::rotate( glm::mat4( 1 ), glm::radians( curAngle ), glm::vec3( 0, 0, 1 ) );
+	static glm::vec3 angleDelta = glm::vec3( 0.0f );
+
+	auto& input = v3d::InputManager::get();
+	if (input.didMouseMove())
+	{
+		if (input.isMouseButtonPressed( v3d::MouseButton::e1, false ))
+		{
+			auto md = input.getMouseMovedDistance();
+
+			if (md.x > 0.0f)
+			{
+				angleDelta.x += 200.0f * time;
+			}
+			else if (md.x < 0.0f)
+			{
+				angleDelta.x -= 200.0f * time;
+			}
+
+			if (angleDelta.x >= 360.0f) angleDelta.x -= 360.0f;
+			else if (angleDelta.x < 0.0f) angleDelta.x += 360.0f;
+		}
+		else if (input.isMouseButtonPressed( v3d::MouseButton::e2, false ))
+		{
+			auto md = input.getMouseMovedDistance();
+
+			if (md.y > 0.0f)
+			{
+				angleDelta.y += 200.0f * time;
+			}
+			else if (md.y < 0.0f)
+			{
+				angleDelta.y -= 200.0f * time;
+			}
+
+			if (angleDelta.y >= 360.0f) angleDelta.y -= 360.0f;
+			else if (angleDelta.y < 0.0f) angleDelta.y += 360.0f;
+		}
+		else if (input.isMouseButtonPressed( v3d::MouseButton::e3, false ))
+		{
+			auto md = input.getMouseMovedDistance();
+
+			if (md.x > 0.0f)
+			{
+				angleDelta.z += 200.0f * time;
+			}
+			else if (md.x < 0.0f)
+			{
+				angleDelta.z -= 200.0f * time;
+			}
+
+			if (angleDelta.z >= 360.0f) angleDelta.z -= 360.0f;
+			else if (angleDelta.z < 0.0f) angleDelta.z += 360.0f;
+		}
+
+	}
+
+	curMVP.model = screenSpaceMatrix * glm::rotate( glm::mat4( 1 ), glm::radians( angleDelta.x ), glm::vec3( 0, 1, 0 ) ) * glm::rotate( glm::mat4( 1 ), glm::radians( angleDelta.y ), glm::vec3( 1, 0, 0 ) );// *glm::rotate( glm::mat4( 1 ), glm::radians( angleDelta.x ), glm::vec3( 0, 0, 1 ) );
 
 	static struct Camera
 	{

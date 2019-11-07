@@ -55,6 +55,7 @@ bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 
 	time = new v3d::Time();
 	inputManager = std::unique_ptr<v3d::InputManager>( new v3d::InputManager() );
+	if (!inputManager->init()) return false;
 	textureCache = std::unique_ptr<v3d::TextureCache>( new v3d::TextureCache() );
 	shaderCache = std::unique_ptr<v3d::ShaderCache>( new v3d::ShaderCache() );
 	if (!initWindow( windowTitle )) return false;

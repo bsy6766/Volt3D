@@ -63,6 +63,7 @@ namespace glfw
 		bool createWindowSurface(const v3d::vulkan::Instance& instance, VkSurfaceKHR& surface) const;
 
 		// listener from GLFW callback
+		void onMouseButton( const int button, const int action, const int mods );
 		void onCursorPos(const int x, const int y);
 
 		void initCallbacks(GLFWwindow* window);

@@ -114,6 +114,11 @@ void Window::releaseGLFW()
 	glfwTerminate();
 }
 
+void glfw::Window::onMouseButton( const int button, const int action, const int mods )
+{
+	input.updateMouseButtonInput( button, action, mods );
+}
+
 void Window::onCursorPos( const int x, const int y )
 {
 	input.updateMousePosition( x, y );
@@ -326,7 +331,7 @@ void Window::glfwCharModsCallback( GLFWwindow* window, unsigned int codepoint, i
 #ifdef V3D_GLFW_MOUSE_BUTTON_CB
 void Window::glfwMouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
 {
-
+	static_cast<v3d::glfw::Window*>(glfwGetWindowUserPointer( window ))->onMouseButton( button, action, mods );
 }
 #endif
 #ifdef V3D_GLFW_CURSOR_POS_CB
