@@ -16,6 +16,8 @@
 
 #include "Utils/Macros.h"
 
+#include "Resource/BaseAsset.h"
+
 V3D_NS_BEGIN
 
 class TextureCache;
@@ -32,21 +34,15 @@ VK_NS_END
 *
 *	@since 1.0
 */
-class VOLT3D_DLL Texture
+class VOLT3D_DLL Texture : public v3d::BaseAsset
 {
 	friend class Context;
 	friend class TextureCache;
 
 protected:
-	static std::size_t idCounter;
-
-protected:
-	Texture();
+	Texture() = delete;
 	Texture( const std::string& name );
-
-	std::size_t id;
-	std::string name;
-
+	
 	v3d::vulkan::Image* image;
 
 	void release();
@@ -55,6 +51,7 @@ protected:
 	bool init( const std::filesystem::path& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
 	bool addToTextureManager();
 	bool isValid() const;
+	void logInfo() const;
 
 public:
 	virtual ~Texture();
@@ -68,13 +65,7 @@ public:
 	*	@param texture
 	*/
 	static Texture* create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
-
-	/** Get ID */
-	std::size_t getID() const;
-
-	/** Get name of texture */
-	std::string getName() const;
-
+	
 	/** Get width of texture */
 	uint32_t getWidth() const;
 
@@ -88,7 +79,7 @@ public:
 	v3d::vulkan::Image* getImage() const;
 
 	/** Log Texture */
-	void log() const;
+	void log() const override;
 };
 
 V3D_NS_END;

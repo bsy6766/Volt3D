@@ -16,24 +16,22 @@
 
 #include "utils/Macros.h"
 
+#include "Resource/BaseAsset.h"
+
 V3D_NS_BEGIN
 class ShaderState;
 VK_NS_BEGIN
 class ShaderModule;
 VK_NS_END
 
-class VOLT3D_DLL Shader
+class VOLT3D_DLL Shader : public v3d::BaseAsset
 {
 	friend class Pipeline;
 
-protected:
-	static std::size_t idCounter;
-
 private:
+	Shader() = delete;
 	Shader( const std::string& name, const std::filesystem::path& shaderFilePath );
 
-	std::size_t id;
-	std::string name;
 	std::filesystem::path filePath;
 
 	v3d::vulkan::ShaderModule* shaderModule;
@@ -48,13 +46,7 @@ public:
 	~Shader();
 
 	static Shader* create( const std::string& name, const std::filesystem::path& shaderFilePath );
-
-	/** Get id of shader */
-	inline std::size_t getID() const;
-
-	/** Get name of shader */
-	inline std::string getName() const;
-
+	   
 	/** Get shader state of this shader */
 	inline v3d::ShaderState* getShaderState() const;
 
@@ -63,7 +55,7 @@ public:
 
 	std::vector<vk::DescriptorSetLayoutBinding> getDescriptorSetLayoutBinding() const;
 
-	void log() const;
+	void log() const override;
 };
 
 V3D_NS_END

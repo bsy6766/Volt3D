@@ -135,55 +135,48 @@ bool Context::initGraphics()
 	if (!initFrameBuffer()) return false;
 	if (!initCommandPool()) return false;
 
-	lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	//lena = v3d::Texture2D::create( "lena", "Textures/lena.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
+	lena = v3d::Texture2D::create( "lena", "Textures/RGBW.png", vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal );
 
 	// temp
 	const glm::vec4 white( 1 );
 	const glm::vec4 green( 0,1,0,1 );
 
-	float halfWidth = float( lena->getWidth() ) * 0.5f;
-	float halfHeight = float( lena->getHeight() ) * 0.5f;
+	float halfWidth = float( lena->getWidth() ) *100.0f;
+	float halfHeight = float( lena->getHeight() ) * 100.0f;
 
 	auto& vertices = lenaBuffer.vertexData.getVertexData();
-	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
-	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
-	//
-	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 1.0f }, green, { 0.0f, 1.0f } ) );
-	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	//vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 1.0f }, green, { 0.0f, 0.0f } ) );
-	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 1.0f }, green, { 1.0f, 1.0f } ) );
-	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
-	//vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 1.0f }, green, { 1.0f, 0.0f } ) );
-	//vertices.back().vertex += glm::vec3( 50.0f, 50.0f, 0.0f );
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, halfHeight, 0.0f }, white, { 0.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { -halfWidth, -halfHeight, 0.0f }, white, { 0.0f, 0.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, halfHeight, 0.0f }, white, { 1.0f, 1.0f } ) );
+	vertices.push_back( v3d::V3_C4_T2( { halfWidth, -halfHeight, 0.0f }, white, { 1.0f, 0.0f } ) );
 
-	float halfSize = halfWidth * 0.25f;
+	//float halfSize = halfWidth * 0.25f;
 
-	// front
-	vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize,  halfSize }, white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize,  halfSize }, white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize,  halfSize }, white, { 1.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize,  halfSize }, white, { 1.0f, 0.0f } ) );
-	// back
-	vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize, -halfSize }, white, { 0.0f, 1.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize, -halfSize }, white, { 0.0f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize, -halfSize }, white, { 1.f, 0.0f } ) );
-	vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize, -halfSize }, white, { 1.f, 1.0f } ) );
+	//// front
+	//vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize,  halfSize }, white, { 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize,  halfSize }, white, { 0.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize,  halfSize }, white, { 1.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize,  halfSize }, white, { 1.0f, 0.0f } ) );
+	//// back
+	//vertices.push_back( v3d::V3_C4_T2( { halfSize,  halfSize, -halfSize }, white, { 0.0f, 1.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { halfSize, -halfSize, -halfSize }, white, { 0.0f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfSize,  halfSize, -halfSize }, white, { 1.f, 0.0f } ) );
+	//vertices.push_back( v3d::V3_C4_T2( { -halfSize, -halfSize, -halfSize }, white, { 1.f, 1.0f } ) );
 
 	auto& indices = lenaBuffer.indexData.getVertexData();
 	indices = std::vector<uint16_t>( 
 		{ 
-			//0,1,2,3,2,1,
+			0,1,2,3,2,1,
+
 			//4,5,6,7,6,5,
 
-			0,1,2,3,2,1,
-			2,3,4,5,4,3,
-			4,5,6,7,6,5,
-			6,7,0,1,0,7,
-			1,7,3,5,3,7,
-			6,0,4,2,4,0
+			//0,1,2,3,2,1,
+			//2,3,4,5,4,3,
+			//4,5,6,7,6,5,
+			//6,7,0,1,0,7,
+			//1,7,3,5,3,7,
+			//6,0,4,2,4,0
 		} 
 	);
 
@@ -216,11 +209,11 @@ bool Context::initGraphicsPipeline()
 {
 	pipeline = new v3d::vulkan::Pipeline();
 	
-	v3d::ShaderCache& shaderCache = v3d::ShaderCache::get();
-	auto vert = shaderCache.getShader( "V3D.DEFAULT.3D.VERT" );
-	auto frag = shaderCache.getShader( "V3D.DEFAULT.3D.FRAG" );
+	//v3d::ShaderCache& shaderCache = v3d::ShaderCache::get();
+	//auto vert = shaderCache.getShader( "V3D.DEFAULT.3D.VERT" );
+	//auto frag = shaderCache.getShader( "V3D.DEFAULT.3D.FRAG" );
 
-	if (!pipeline->init( { vert, frag }, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
+	//if (!pipeline->init( { vert, frag }, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
 	return true;
 }
 

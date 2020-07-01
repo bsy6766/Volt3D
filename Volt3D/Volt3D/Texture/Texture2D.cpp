@@ -13,13 +13,8 @@
 
 V3D_NS_BEGIN
 
-
-Texture2D::Texture2D()
-	: v3d::Texture()
-{}
-
-Texture2D::Texture2D( const std::string & name )
-	: v3d::Texture(name)
+Texture2D::Texture2D( const std::string& name )
+	: v3d::Texture( name )
 {}
 
 
@@ -36,10 +31,17 @@ Texture2D* Texture2D::create( const std::string& name, const std::filesystem::pa
 
 	return nullptr;
 }
+
 bool Texture2D::initImage( const vk::Extent3D& extent, const vk::Format& format )
 {
 	image = new (std::nothrow) v3d::vulkan::Image2D( extent, format );
 	return image != nullptr;
+}
+
+void Texture2D::log() const
+{
+	v3d::Logger::getInstance().trace( "[Texture2D] info" );
+	v3d::Texture::logInfo();
 }
 
 V3D_NS_END

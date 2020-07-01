@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetLayout>
+	<Scene name="DebugScene">
+		<ResourcePaths>
+			<ResourcePath> PATH_TO_RESOURCE_FOLDER </ResourcePath>
+			<ResourcePath> PATH_TO_RESOURCE_FOLDER </ResourcePath>
+			<ResourcePath> PATH_TO_RESOURCE_FOLDER </ResourcePath>
+		</ResourcePaths>
+		<Models>
+			<Model name="SampleModel"> PATH_TO_FILE </Model>
+		</Models>
+		<Textures>
+			<Texture name="NOT_FOUND"> PATH_TO_FILE </Texture>
+			<Texture name="RGBW"> PATH_TO_FILE </Texture>
+		</Textures>
+		<Audios>
+		</Audios>
+	</Scene>
+</AssetLayout>

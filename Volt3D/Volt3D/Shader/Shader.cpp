@@ -15,11 +15,8 @@
 
 V3D_NS_BEGIN
 
-std::size_t Shader::idCounter = 1;
-
 Shader::Shader( const std::string& name, const std::filesystem::path& shaderFilePath )
-	: id( 0 )
-	, name( name )
+	: v3d::BaseAsset( name )
 	, filePath( shaderFilePath )
 	, shaderModule( nullptr )
 {}
@@ -50,16 +47,6 @@ Shader* Shader::create( const std::string & name, const std::filesystem::path & 
 	}
 
 	return nullptr;
-}
-
-inline std::size_t Shader::getID() const
-{
-	return id;
-}
-
-inline std::string Shader::getName() const
-{
-	return name;
 }
 
 bool Shader::compile()
@@ -104,7 +91,7 @@ bool Shader::compile()
 	}
 
 	// 4. Assign id
-	id = v3d::Shader::idCounter++;
+	//id = v3d::Shader::idCounter++;
 
 	// Done.
 	return true;
@@ -141,8 +128,7 @@ void Shader::log() const
 	auto& logger = v3d::Logger::getInstance();
 
 	logger.trace( "[Shader] info" );
-	logger.trace( "ID: {}", id );
-	logger.trace( "Name: {}", name );
+	v3d::BaseAsset::log();
 	logger.trace( "Stage: {}", vk::to_string(shaderModule->getStage()) );
 }
 

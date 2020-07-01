@@ -71,12 +71,23 @@
 #include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 
+// Resource
+#include "Resource/AssetCache.h"
+#include "Resource/AssetLoader.h"
+#include "Resource/BaseAsset.h"
+#include "Resource/BaseCache.h"
+#include "Resource/BaseLoader.h"
+#include "Resource/Resource.h"
+#include "Resource/ResourceManager.h"
+#include "Resource/Resources.h"
+
 // Scene
 #include "Scene/Scene.h"
 
 // Shader
 #include "Shader/Shader.h"
 #include "Shader/ShaderCache.h"
+#include "Shader/ShaderLoader.h"
 #include "Shader/ShaderState.h"
 
 // Shape
@@ -102,6 +113,7 @@
 #include "Texture/Texture.h"
 #include "Texture/Texture2D.h"
 #include "Texture/TextureCache.h"
+#include "Texture/TextureLoader.h"
 
 // Utils
 #include "Utils/FileSystem.h"
@@ -136,6 +148,6 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/Swapchain.h"
+#include "Vulkan/Swapchain/SwapChain.h"
 
 #endif

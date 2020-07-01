@@ -17,18 +17,8 @@
 
 V3D_NS_BEGIN
 
-std::size_t Texture::idCounter = 1;
-
-Texture::Texture()
-	: id( 0 )
-	, name()
-	, image( nullptr )
-{}
-
 Texture::Texture( const std::string& name )
-	: id( 0 )
-	, name( name )
-	, image( nullptr )
+	: v3d::BaseAsset( name )
 {}
 
 Texture::~Texture() 
@@ -93,11 +83,14 @@ bool Texture::init( const std::filesystem::path& textureFilePath, const vk::Imag
 	image->transitionLayout( vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader );
 
 	// 5. Assign ID
-	id = v3d::Texture::idCounter++;
+	//id = v3d::Texture::idCounter++;
 
 	// 6. Add to texture manager
 	// @todo Maybe do something with return value?
-	addToTextureManager();
+	if (!addToTextureManager())
+	{
+		v3d::Logger::getInstance().warn( "Error. please fix this" );
+	}
 
 	SAFE_DELETE( imgSrc );
 
@@ -106,7 +99,8 @@ bool Texture::init( const std::filesystem::path& textureFilePath, const vk::Imag
 
 bool Texture::addToTextureManager()
 {
-	return v3d::TextureCache::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+	//return v3d::TextureCache::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+	return false;
 }
 
 bool Texture::isValid() const
@@ -117,16 +111,6 @@ bool Texture::isValid() const
 void Texture::release()
 {
 	SAFE_DELETE( image );
-}
-
-std::size_t Texture::getID() const 
-{
-	return id; 
-}
-
-std::string Texture::getName() const 
-{
-	return name; 
 }
 
 uint32_t Texture::getWidth() const 
@@ -149,16 +133,21 @@ v3d::vulkan::Image* Texture::getImage() const
 	return image; 
 }
 
-void Texture::log() const
+void Texture::logInfo() const
 {
 	auto& logger = v3d::Logger::getInstance();
 
-	logger.trace( "[Texture] info" );
 	logger.trace( "ID: {}", id );
 	logger.trace( "Name: {}", name );
 	logger.trace( "Width: {}", image->extent.width );
 	logger.trace( "Height: {}", image->extent.height );
 	logger.trace( "Depth: {}", image->extent.depth );
+}
+
+void Texture::log() const
+{
+	v3d::Logger::getInstance().trace( "[Texture] info" );
+	v3d::Texture::logInfo();
 }
 
 V3D_NS_END;

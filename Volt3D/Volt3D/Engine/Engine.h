@@ -19,8 +19,8 @@ class Time;
 class Director;
 class Preference;
 class InputManager;
-class TextureCache;
-class ShaderCache;
+//class TextureCache;
+//class ShaderCache;
 namespace glfw { class Window; }
 namespace vulkan { class Context; }
 
@@ -49,10 +49,11 @@ private:
 	v3d::Preference* preference;
 
 	std::unique_ptr<v3d::InputManager> inputManager;
-	std::unique_ptr<v3d::TextureCache> textureCache;
-	std::unique_ptr<v3d::ShaderCache> shaderCache;
 
 	bool loadPreference(const std::wstring& folderName);
+	void initTime();
+	bool initInputManager();
+	bool initResource();
 	bool initDefaultShaders();
 	bool initWindow(const char* windowTitle);
 	bool initContext();
@@ -97,12 +98,6 @@ public:
 
 	/** Get InputManager */
 	inline v3d::InputManager& getInputManager() const;
-
-	/** Get TextureCache */
-	inline v3d::TextureCache& getTextureCache() const;
-
-	/** Get ShaderCache */
-	inline v3d::ShaderCache& getShaderCache() const;
 };
 
 V3D_NS_END

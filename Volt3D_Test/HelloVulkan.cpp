@@ -24,6 +24,12 @@ bool HelloVulkan::onInit()
 
 	//delete RGBW;
 
+	auto texture = v3d::Resource::get<v3d::Texture>( 1 );
+	if (texture)
+	{
+		texture->log();
+	}
+
 #if V3D_DEBUG_CAMERA
 	auto& app = v3d::Application::get();
 	auto res = v3d::glfw::Window::get()->getWindowSize();

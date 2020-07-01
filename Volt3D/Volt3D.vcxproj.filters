@@ -87,6 +87,9 @@
     <Filter Include="Volt3D\Model">
       <UniqueIdentifier>{d1d27805-6dd1-40d5-9cc9-a6e43757f7bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Resource">
+      <UniqueIdentifier>{7ee40be7-598e-49ae-9b08-7e165233fb3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -307,6 +310,30 @@
     </ClCompile>
     <ClCompile Include="Volt3D\Vulkan\Images\DepthImage.cpp">
       <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\Resource.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\AssetLoader.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseAsset.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\AssetCache.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseCache.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseLoader.cpp">
+      <Filter>Volt3D\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Shader\ShaderLoader.cpp">
+      <Filter>Volt3D\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Texture\TextureLoader.cpp">
+      <Filter>Volt3D\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -591,6 +618,33 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\Resource.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\AssetLoader.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseCache.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseAsset.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\AssetCache.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\AssetMeta.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseLoader.h">
+      <Filter>Volt3D\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Shader\ShaderLoader.h">
+      <Filter>Volt3D\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Texture\TextureLoader.h">
+      <Filter>Volt3D\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

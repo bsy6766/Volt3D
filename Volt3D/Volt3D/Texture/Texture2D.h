@@ -30,7 +30,7 @@ class VOLT3D_DLL Texture2D : public v3d::Texture
 	friend class Context;
 
 protected:
-	Texture2D();
+	Texture2D() = delete;
 	Texture2D( const std::string& name );
 
 	virtual bool initImage( const vk::Extent3D& extent, const vk::Format& format ) override;
@@ -42,6 +42,9 @@ public:
 	DEFAULT_MOVE_CONSTRUCTORS( Texture2D );
 
 	static Texture2D* create( const std::string& name, const std::filesystem::path& textureFilePath, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
+
+	/** Log Texture2D */
+	void log() const override;
 };
 
 V3D_NS_END;
