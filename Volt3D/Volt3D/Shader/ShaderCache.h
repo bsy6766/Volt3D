@@ -10,58 +10,43 @@
 
 #include "Utils/Macros.h"
 
+#include "Resource/BaseCache.h"
+
+#include "Shader.h"
+
 V3D_NS_BEGIN
 
 class Shader;
 
 /**
-*	@class TextureCache
+*	@class ShaderCache
 *	@brief Manages all textures.
 */
-class VOLT3D_DLL ShaderCache
+class VOLT3D_DLL ShaderCache : public v3d::BaseCache
 {
+	friend class Engine;
+	friend class AssetCache;
+	friend class AssetLoader;
 	friend class ResourceManager;
 
 private:
 	// default constructor
 	ShaderCache();
 
-	// id : shaders
-	std::unordered_map<std::size_t, std::shared_ptr<v3d::Shader>> shaders;
+	static std::size_t idCounter;
+
+	virtual bool isSupported( std::type_info& typeInfo ) override;
 
 public:
-	// Destructor
-	~ShaderCache();
-
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( ShaderCache );
 	DEFAULT_MOVE_CONSTRUCTORS( ShaderCache );
 
+	// Destructor
+	~ShaderCache();
+
 	//static v3d::ShaderCache& get();
 
-	bool hasShader( const std::size_t id ) const;
-	bool hasShader( const std::string_view name ) const;
-	bool hasShader( const std::shared_ptr<v3d::Shader>& shader ) const;
-
-	bool addShader( const std::shared_ptr<v3d::Shader>& shader );
-
-	//bool removeTexture( const std::size_t id );
-	//bool removeTexture( const std::string_view name );
-	//std::size_t removeAllTextures( const std::string_view name );
-	//bool removeTexture( const std::shared_ptr<v3d::Texture>& texture );
-
-	std::shared_ptr<v3d::Shader> getShader( const std::size_t id ) const;
-	std::shared_ptr<v3d::Shader> getShader( const std::string_view name ) const;
-	std::vector<std::shared_ptr<v3d::Shader>> getAllShaders( const std::string_view name ) const;
-
-	//std::size_t purge();
-
-	/** Get total count of shaders in ShaderCache */
-	inline std::size_t count() const;
-
-	/** Log TextureCache */
-	void log() const;
-
-	void clear();
+	virtual void log() const override;
 };
 
 V3D_NS_END

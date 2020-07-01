@@ -10,6 +10,8 @@
 
 #include "Utils/Macros.h"
 
+#include "Resource/BaseCache.h"
+
 #include "Texture.h"
 
 V3D_NS_BEGIN
@@ -20,47 +22,29 @@ class Texture;
 *	@class TextureCache
 *	@brief Manages all textures.
 */
-class VOLT3D_DLL TextureCache
+class VOLT3D_DLL TextureCache : public v3d::BaseCache
 {
+	friend class Engine;
 	friend class ResourceManager;
 
 private:
 	// default constructor
 	TextureCache();
 
-	// id : texture
-	std::unordered_map<std::size_t, std::shared_ptr<v3d::Texture>> textures;
-		
+	static std::size_t idCounter;
+
+	virtual bool isSupported( std::type_info& typeInfo ) override;
 public:
-	// Destructor
-	~TextureCache();
 
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureCache );
 	DEFAULT_MOVE_CONSTRUCTORS( TextureCache );
 
+	// Destructor
+	~TextureCache();
+
 	//static v3d::TextureCache& get();
 
-	bool hasTexture(const std::size_t id) const;
-	bool hasTexture( const std::string_view name ) const;
-	bool hasTexture( const std::shared_ptr<v3d::Texture>& texture ) const;
-
-	bool addTexture( const std::shared_ptr<v3d::Texture>& texture );
-
-	bool removeTexture( const std::size_t id );
-	bool removeTexture( const std::string_view name );
-	std::size_t removeAllTextures( const std::string_view name );
-	bool removeTexture( const std::shared_ptr<v3d::Texture>& texture );
-
-	std::shared_ptr<v3d::Texture> getTexture( const std::size_t id ) const;
-	std::shared_ptr<v3d::Texture> getTexture( const std::string_view name ) const;
-	std::vector<std::shared_ptr<v3d::Texture>> getAllTextures( const std::string_view name ) const;
-
-	std::size_t purge();
-
-	/** Log TextureCache */
-	void log() const;
-
-	void clear();
+	virtual void log() const override;
 };
 
 V3D_NS_END
