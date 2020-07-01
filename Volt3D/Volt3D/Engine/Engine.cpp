@@ -19,9 +19,7 @@
 #include "Director.h"
 #include "Preference.h"
 #include "WindowMode.h"
-#include "Texture/TextureCache.h"
-#include "Shader/Shader.h"
-#include "Shader/ShaderCache.h"
+#include "Resource/Resources.h"
 
 #include "Config/BuildConfig.h"
 
@@ -36,8 +34,8 @@ Engine::Engine()
 	, director( nullptr )
 	, preference( nullptr )
 	, inputManager( nullptr )
-	, textureCache( nullptr )
-	, shaderCache( nullptr )
+	//, textureCache( nullptr )
+	//, shaderCache( nullptr )
 {
 	v3d::Logger::getInstance().init( FileSystem::getWorkingDirectoryW(), L"log.txt" );
 	v3d::Logger::getInstance().initConsole();
@@ -51,16 +49,16 @@ Engine::~Engine()
 
 bool Engine::init( const char* windowTitle, const std::wstring& folderName )
 {
-	if (!loadPreference( folderName )) return false;
+	// Load pref. @todo load defaults when there isn't preference
+	if (!loadPreference( folderName ))	return false;
 
-	time = new v3d::Time();
-	inputManager = std::unique_ptr<v3d::InputManager>( new v3d::InputManager() );
-	if (!inputManager->init()) return false;
-	textureCache = std::unique_ptr<v3d::TextureCache>( new v3d::TextureCache() );
-	shaderCache = std::unique_ptr<v3d::ShaderCache>( new v3d::ShaderCache() );
-	if (!initWindow( windowTitle )) return false;
-	if (!initContext()) return false;
-	if (!initDefaultShaders()) return false;
+	// Initialize subsystems requires to run the engine...
+	initTime();
+	if (!initInputManager())			return false;
+	if (!initWindow( windowTitle ))		return false;
+	if (!initResourceSystem())			return false;
+	if (!initContext())					return false;
+	if (!initDefaultShaders())			return false;
 	context->initGraphics();	// @note: This should be renderer...
 	director = new v3d::Director( *inputManager );
 
@@ -73,21 +71,38 @@ bool Engine::loadPreference( const std::wstring& folderName )
 	return preference->init( folderName );
 }
 
+void Engine::initTime()
+{
+	time = new v3d::Time();
+	time->reset();
+}
+
+bool Engine::initInputManager()
+{
+	inputManager = std::unique_ptr<v3d::InputManager>(new v3d::InputManager());
+	return inputManager->init();
+}
+
+bool Engine::initResourceSystem()
+{
+	return v3d::Resources::rm.init();
+}
+
 bool Engine::initDefaultShaders()
 {
-	glslang::InitializeProcess();
-
-	v3d::Shader* vertShader = v3d::Shader::create( "V3D.DEFAULT.3D.VERT", "Shaders/vert.vert" );
-	if (!vertShader) return false;
-	if (!shaderCache->addShader(std::shared_ptr<v3d::Shader>(vertShader))) return false;
-
-	v3d::Shader* fragShader = v3d::Shader::create( "V3D.DEFAULT.3D.FRAG", "Shaders/frag.frag" );
-	if (!fragShader) return false;
-	if (!shaderCache->addShader( std::shared_ptr<v3d::Shader>( fragShader ) )) return false;
-
-#ifdef BUILD_DEBUG
-	v3d::Logger::getInstance().info( "Initialized {} default shaders.", shaderCache->count() );
-#endif
+//	v3d::Resources::load
+//
+//	v3d::Shader* vertShader = v3d::Shader::create( "V3D.DEFAULT.3D.VERT", "Shaders/vert.vert" );
+//	if (!vertShader) return false;
+//	if (!shaderCache->addShader(std::shared_ptr<v3d::Shader>(vertShader))) return false;
+//
+//	v3d::Shader* fragShader = v3d::Shader::create( "V3D.DEFAULT.3D.FRAG", "Shaders/frag.frag" );
+//	if (!fragShader) return false;
+//	if (!shaderCache->addShader( std::shared_ptr<v3d::Shader>( fragShader ) )) return false;
+//
+//#ifdef BUILD_DEBUG
+//	v3d::Logger::getInstance().info( "Initialized {} default shaders.", shaderCache->count() );
+//#endif
 
 	return true;
 }
@@ -114,14 +129,14 @@ void Engine::release()
 	v3d::Logger::getInstance().info( "[Engine] Releasing..." );
 #endif
 	// release vulkan first
-#ifdef BUILD_DEBUG
-	shaderCache->log();
-#endif
-	shaderCache.reset();
-#ifdef BUILD_DEBUG
-	textureCache->log();
-#endif
-	textureCache.reset();
+//#ifdef BUILD_DEBUG
+//	shaderCache->log();
+//#endif
+//	shaderCache.reset();
+//#ifdef BUILD_DEBUG
+//	textureCache->log();
+//#endif
+//	textureCache.reset();
 	SAFE_DELETE( context );
 	SAFE_DELETE( window );
 	SAFE_DELETE( time );
@@ -130,7 +145,7 @@ void Engine::release()
 	if (preference) preference->save();
 	SAFE_DELETE( preference );
 
-	glslang::FinalizeProcess();
+	//
 }
 
 void Engine::run()
@@ -204,15 +219,15 @@ inline v3d::InputManager& Engine::getInputManager() const
 {
 	return *inputManager.get();
 }
-
-inline v3d::TextureCache& Engine::getTextureCache() const
-{
-	return *textureCache.get();
-}
-
-inline v3d::ShaderCache& Engine::getShaderCache() const
-{
-	return *shaderCache.get();
-}
+//
+//inline v3d::TextureCache& Engine::getTextureCache() const
+//{
+//	return *textureCache.get();
+//}
+//
+//inline v3d::ShaderCache& Engine::getShaderCache() const
+//{
+//	return *shaderCache.get();
+//}
 
 V3D_NS_END

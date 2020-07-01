@@ -268,11 +268,12 @@ bool Context::initGraphicsPipeline()
 {
 	pipeline = new v3d::vulkan::Pipeline();
 	
-	v3d::ShaderCache& shaderCache = v3d::ShaderCache::get();
-	auto vert = shaderCache.getShader( "V3D.DEFAULT.3D.VERT" );
-	auto frag = shaderCache.getShader( "V3D.DEFAULT.3D.FRAG" );
+	//@todo Fix this!!
+	//v3d::ShaderCache& shaderCache = v3d::ShaderCache::get();
+	//auto vert = shaderCache.getShader( "V3D.DEFAULT.3D.VERT" );
+	//auto frag = shaderCache.getShader( "V3D.DEFAULT.3D.FRAG" );
 
-	if (!pipeline->init( { vert, frag }, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
+	//if (!pipeline->init( { vert, frag }, swapchain->getExtent(), renderPass->getRenderPass() )) return false;
 	return true;
 }
 

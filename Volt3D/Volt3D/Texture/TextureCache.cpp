@@ -26,10 +26,10 @@ TextureCache::~TextureCache()
 	clear();
 }
 
-v3d::TextureCache& TextureCache::get()
-{
-	return v3d::Engine::get()->getTextureCache();
-}
+//v3d::TextureCache& TextureCache::get()
+//{
+//	return v3d::Engine::get()->getTextureCache();
+//}
 
 bool TextureCache::hasTexture( const std::size_t id ) const
 {

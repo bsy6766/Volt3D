@@ -19,17 +19,28 @@ V3D_NS_BEGIN
 
 ShaderCache::ShaderCache()
 	: shaders()
-{}
+{
+	// @todo Move to ShaderLoader
+	glslang::InitializeProcess();
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().info("[ShaderCache] Created");
+#endif
+}
 
 ShaderCache::~ShaderCache()
 {
 	clear();
+	// @todo Move to ShaderLoader
+	glslang::FinalizeProcess();
+#ifdef BUILD_DEBUG
+	v3d::Logger::getInstance().info("[ShaderCache] Destroyed");
+#endif
 }
 
-v3d::ShaderCache& ShaderCache::get()
-{
-	return v3d::Engine::get()->getShaderCache();
-}
+//v3d::ShaderCache& ShaderCache::get()
+//{
+//	return v3d::Engine::get()->getShaderCache();
+//}
 
 bool ShaderCache::hasShader( const std::size_t id ) const
 {

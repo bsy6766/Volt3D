@@ -97,17 +97,17 @@ bool Texture::init( const std::filesystem::path& textureFilePath, const vk::Imag
 
 	// 6. Add to texture manager
 	// @todo Maybe do something with return value?
-	addToTextureManager();
+	//addToTextureManager();
 
 	SAFE_DELETE( imgSrc );
 
 	return true;
 }
-
-bool Texture::addToTextureManager()
-{
-	return v3d::TextureCache::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
-}
+//
+//bool Texture::addToTextureManager()
+//{
+//	return v3d::TextureCache::get().addTexture( std::move(std::shared_ptr<v3d::Texture>(this)));
+//}
 
 bool Texture::isValid() const
 {

@@ -20,7 +20,7 @@ class Shader;
 */
 class VOLT3D_DLL ShaderCache
 {
-	friend class Engine;
+	friend class ResourceManager;
 
 private:
 	// default constructor
@@ -36,7 +36,7 @@ public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( ShaderCache );
 	DEFAULT_MOVE_CONSTRUCTORS( ShaderCache );
 
-	static v3d::ShaderCache& get();
+	//static v3d::ShaderCache& get();
 
 	bool hasShader( const std::size_t id ) const;
 	bool hasShader( const std::string_view name ) const;

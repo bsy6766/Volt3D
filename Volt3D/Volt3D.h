@@ -71,6 +71,13 @@
 #include "Renderer/Vertex.h"
 #include "Renderer/VertexData.h"
 
+// Resource
+#include "Resource/BaseAsset.h"
+#include "Resource/BaseCache.h"
+#include "Resource/BaseLoader.h"
+#include "Resource/ResourceManager.h"
+#include "Resource/Resources.h"
+
 // Scene
 #include "Scene/Scene.h"
 

@@ -53,7 +53,7 @@ protected:
 
 	virtual bool initImage( const vk::Extent3D& extent, const vk::Format& format );
 	bool init( const std::filesystem::path& texture_name, const vk::ImageTiling& tilling, const vk::ImageUsageFlags usage, const vk::MemoryPropertyFlags memoryProperty );
-	bool addToTextureManager();
+	//bool addToTextureManager();
 	bool isValid() const;
 
 public:

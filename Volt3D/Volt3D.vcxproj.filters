@@ -311,6 +311,21 @@
     <ClCompile Include="Volt3D\Vulkan\Images\DepthImage.cpp">
       <Filter>Volt3D\Vulkan\Images</Filter>
     </ClCompile>
+    <ClCompile Include="Volt3D\Resource\ResourceManager.cpp">
+      <Filter>Volt3D\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\Resources.cpp">
+      <Filter>Volt3D\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseCache.cpp">
+      <Filter>Volt3D\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseAsset.cpp">
+      <Filter>Volt3D\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Volt3D\Resource\BaseLoader.cpp">
+      <Filter>Volt3D\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompiled.h">
@@ -594,6 +609,21 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\Resources.h">
+      <Filter>Volt3D\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\ResourceManager.h">
+      <Filter>Volt3D\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseCache.h">
+      <Filter>Volt3D\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseAsset.h">
+      <Filter>Volt3D\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Resource\BaseLoader.h">
+      <Filter>Volt3D\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

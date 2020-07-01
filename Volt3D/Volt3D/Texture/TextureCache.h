@@ -22,7 +22,7 @@ class Texture;
 */
 class VOLT3D_DLL TextureCache
 {
-	friend class Engine;
+	friend class ResourceManager;
 
 private:
 	// default constructor
@@ -38,7 +38,7 @@ public:
 	DELETE_COPY_AND_COPY_ASSIGN_CONSTRUCTOR( TextureCache );
 	DEFAULT_MOVE_CONSTRUCTORS( TextureCache );
 
-	static v3d::TextureCache& get();
+	//static v3d::TextureCache& get();
 
 	bool hasTexture(const std::size_t id) const;
 	bool hasTexture( const std::string_view name ) const;

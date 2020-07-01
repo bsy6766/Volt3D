@@ -232,6 +232,11 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Renderer\Renderer.h" />
     <ClInclude Include="Volt3D\Renderer\Vertex.h" />
     <ClInclude Include="Volt3D\Renderer\VertexData.h" />
+    <ClInclude Include="Volt3D\Resource\BaseAsset.h" />
+    <ClInclude Include="Volt3D\Resource\BaseCache.h" />
+    <ClInclude Include="Volt3D\Resource\BaseLoader.h" />
+    <ClInclude Include="Volt3D\Resource\ResourceManager.h" />
+    <ClInclude Include="Volt3D\Resource\Resources.h" />
     <ClInclude Include="Volt3D\Scene\Scene.h" />
     <ClInclude Include="Volt3D\Shader\Shader.h" />
     <ClInclude Include="Volt3D\Shader\ShaderCache.h" />
@@ -321,6 +326,11 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClCompile Include="Volt3D\Renderer\Renderer.cpp" />
     <ClCompile Include="Volt3D\Renderer\Vertex.cpp" />
     <ClCompile Include="Volt3D\Renderer\VertexData.cpp" />
+    <ClCompile Include="Volt3D\Resource\BaseAsset.cpp" />
+    <ClCompile Include="Volt3D\Resource\BaseCache.cpp" />
+    <ClCompile Include="Volt3D\Resource\BaseLoader.cpp" />
+    <ClCompile Include="Volt3D\Resource\ResourceManager.cpp" />
+    <ClCompile Include="Volt3D\Resource\Resources.cpp" />
     <ClCompile Include="Volt3D\Scene\Scene.cpp" />
     <ClCompile Include="Volt3D\Shader\Shader.cpp" />
     <ClCompile Include="Volt3D\Shader\ShaderCache.cpp" />
