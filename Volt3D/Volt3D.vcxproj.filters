@@ -87,6 +87,9 @@
     <Filter Include="Volt3D\Model">
       <UniqueIdentifier>{d1d27805-6dd1-40d5-9cc9-a6e43757f7bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Resources">
+      <UniqueIdentifier>{9dcf81f8-1e05-4a4a-8aa8-f2c3794ae096}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
