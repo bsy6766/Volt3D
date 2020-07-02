@@ -32,6 +32,14 @@ namespace vulkan {
 #define VK_NS_END	\
 }	// namespace vulkan
 
+//#define V3D_ASSERT_WARN(cond, msg) if(!(cond)) { v3d::Logger::getInstance().warn("Assertion failed: {}", msg);}
+//#define V3D_ASSERT_ERROR(cond, msg) if(!(cond)) { v3d::Logger::getInstance().error("Assertion failed: {}", msg); return false; }
+
+#define CLASS_NAME(_CLASS_) typeid(_CLASS_).name()
+
+#define CHECKERROR(_COND_, _MSG_) if(!(_COND_)) { v3d::Logger::getInstance().error(_MSG_); }
+#define CHECKERROR_CLS(_COND_, _MSG_, _CLASS_) if(!(_COND_)) { v3d::Logger::getInstance().error("{} {}", CLASS_NAME(_CLASS_), _MSG_); }
+
 #define SAFE_DELETE(_INSTANCE_)								\
 if(_INSTANCE_) { delete _INSTANCE_; _INSTANCE_ = nullptr; }	
 

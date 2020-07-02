@@ -219,15 +219,5 @@ inline v3d::InputManager& Engine::getInputManager() const
 {
 	return *inputManager.get();
 }
-//
-//inline v3d::TextureCache& Engine::getTextureCache() const
-//{
-//	return *textureCache.get();
-//}
-//
-//inline v3d::ShaderCache& Engine::getShaderCache() const
-//{
-//	return *shaderCache.get();
-//}
 
 V3D_NS_END

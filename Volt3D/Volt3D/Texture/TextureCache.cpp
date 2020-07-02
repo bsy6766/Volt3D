@@ -14,8 +14,6 @@
 #include "Utils/Logger.h"
 #include "Utils/FileSystem.h"
 #include "Config/BuildConfig.h"
-#include "Resource/Resource.h"
-#include "Resource/AssetCache.h"
 
 V3D_NS_BEGIN
 

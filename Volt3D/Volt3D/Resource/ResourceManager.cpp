@@ -43,6 +43,27 @@ inline std::shared_ptr<v3d::BaseAsset> ResourceManager::getAsset(const std::type
 
 bool ResourceManager::init()
 {
+	if (!initCacheIndices()) return false;
+	if (!initCaches()) return false;
+	if (!initLoaders()) return false;
+	if (!initDefaultResources()) return false;
+
+#ifdef BUILD_DEBUG
+	auto& logger = v3d::Logger::getInstance();
+	logger.info("[ResourceManager] Initialized");
+	logger.info("[ResourceManager] Asset Caches Indices...");
+	for (auto& e : cacheIndices)
+	{
+		logger.info("[{}({})] -> {}({})", e.first.name(), e.first.hash_code(), e.second.name(), e.second.hash_code());
+	}
+	logger.info("[ResourceManager] Total {} caches loaded", caches.size());
+#endif
+
+	return true;
+}
+
+bool ResourceManager::initCacheIndices()
+{
 	// Register all default resources with cache
 
 	// textures
@@ -60,30 +81,40 @@ bool ResourceManager::init()
 
 	// etc...
 
+	// Validation
+#ifdef BUILD_DEBUG
+	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Texture))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager);
+	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Texture2D))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager);
+	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Shader))) != cacheIndices.end(), "Failed to find ShaderCache's cache index.", v3d::ResourceManager);
+#endif
+
+	return true;
+}
+
+bool ResourceManager::initCaches()
+{
 	// Init caches
-	v3d::TextureCache* textureCache = new (std::nothrow) v3d::TextureCache();
-	if (!textureCache) return false;
-	std::unique_ptr<v3d::BaseCache> tc_uptr = std::unique_ptr<v3d::TextureCache>(textureCache);
-	caches[textureCacheTypeIndex] = std::move(tc_uptr);
+	//v3d::TextureCache* textureCache = new (std::nothrow) v3d::TextureCache();
+	//if (!textureCache) return false;
+	//std::unique_ptr<v3d::BaseCache> tc_uptr = std::unique_ptr<v3d::TextureCache>(textureCache);
+	//caches[textureCacheTypeIndex] = std::move(tc_uptr);
 	//caches.emplace(textureCacheTypeIndex, std::unique_ptr<v3d::TextureCache>(textureCache));
 
 	//v3d::ShaderCache* shaderCache = new (std::nothrow) v3d::ShaderCache();
 	//if (!shaderCache) return false;
 	//caches.emplace(shaderCacheTypeIndex, std::unique_ptr<v3d::ShaderCache>(shaderCache));
 
-
-#ifdef BUILD_DEBUG
-	auto& logger = v3d::Logger::getInstance();
-	logger.info("[ResourceManager] Initialized");
-	logger.info("[ResourceManager] Asset Caches Indices...");
-	for (auto& e : cacheIndices)
-	{
-		logger.info("[{}({})] -> {}({})", e.first.name(), e.first.hash_code(), e.second.name(), e.second.hash_code());
-	}
-	logger.info("[ResourceManager] Total {} caches loaded", caches.size());
-#endif
-
 	return true;
+}
+
+bool ResourceManager::initLoaders()
+{
+	return false;
+}
+
+bool ResourceManager::initDefaultResources()
+{
+	return false;
 }
 
 void ResourceManager::releaseAll()

@@ -46,6 +46,10 @@ private:
 
 	/** Initialize ResourceManager */
 	bool init();
+	bool initCacheIndices();
+	bool initCaches();
+	bool initLoaders();
+	bool initDefaultResources();
 
 	template<class T>
 	std::shared_ptr<T> get(const unsigned int id)

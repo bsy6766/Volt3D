@@ -100,12 +100,6 @@ public:
 
 	/** Get InputManager */
 	inline v3d::InputManager& getInputManager() const;
-
-	///** Get TextureCache */
-	//inline v3d::TextureCache& getTextureCache() const;
-
-	///** Get ShaderCache */
-	//inline v3d::ShaderCache& getShaderCache() const;
 };
 
 V3D_NS_END

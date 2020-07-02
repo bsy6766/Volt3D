@@ -84,6 +84,7 @@
 // Shader
 #include "Shader/Shader.h"
 #include "Shader/ShaderCache.h"
+#include "Shader/ShaderLoader.h"
 #include "Shader/ShaderState.h"
 
 // Shape
@@ -109,6 +110,7 @@
 #include "Texture/Texture.h"
 #include "Texture/Texture2D.h"
 #include "Texture/TextureCache.h"
+#include "Texture/TextureLoader.h"
 
 // Utils
 #include "Utils/FileSystem.h"

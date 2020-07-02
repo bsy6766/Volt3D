@@ -45,3 +45,4 @@
 #include <cassert>
 #include <algorithm>
 #include <iterator>
+#include <typeindex>
