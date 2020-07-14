@@ -64,28 +64,24 @@ bool ResourceManager::init()
 
 bool ResourceManager::initCacheIndices()
 {
-	// Register all default resources with cache
+	// Init caches
 
-	// textures
-	const auto textureCacheTypeIndex = std::type_index(typeid(v3d::TextureCache));
-	cacheIndices.emplace(std::pair<std::type_index, std::type_index>(std::type_index(typeid(v3d::Texture)), textureCacheTypeIndex));
-	cacheIndices.emplace(std::pair<std::type_index, std::type_index>(std::type_index(typeid(v3d::Texture2D)), textureCacheTypeIndex));
-	//cacheIndices.emplace(std::pair<std::type_index, std::type_index>(std::type_index(typeid(v3d::Texture3D)), textureCacheTypeIndex));
-	//cacheIndices.emplace(std::pair<std::type_index, std::type_index>(std::type_index(typeid(v3d::Texture1D)), textureCacheTypeIndex));
+	// Texture cache
+	v3d::TextureCache* textureCache = new (std::nothrow) v3d::TextureCache();
+	if (!textureCache) return false;
+	std::unique_ptr<v3d::BaseCache> tc_uptr = std::unique_ptr<v3d::TextureCache>(textureCache);
+	caches.emplace(std::type_index(typeid(v3d::TextureCache)), std::move(tc_uptr));
 
-	// Shaders
-	const auto shaderCacheTypeIndex = std::type_index(typeid(v3d::ShaderCache));
-	cacheIndices.emplace(std::pair<std::type_index, std::type_index>(std::type_index(typeid(v3d::Shader)), shaderCacheTypeIndex));
-
-	// Audios
-
-	// etc...
+	// Shader cache
+	v3d::ShaderCache* shaderCache = new (std::nothrow) v3d::ShaderCache();
+	if (!shaderCache) return false;
+	std::unique_ptr<v3d::BaseCache> sc_uptr = std::unique_ptr<v3d::ShaderCache>(shaderCache);
+	caches.emplace(std::type_index(typeid(v3d::ShaderCache)), std::move(sc_uptr));
 
 	// Validation
 #ifdef BUILD_DEBUG
-	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Texture))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager);
-	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Texture2D))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager);
-	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::Shader))) != cacheIndices.end(), "Failed to find ShaderCache's cache index.", v3d::ResourceManager);
+	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::TextureCache))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager);
+	CHECKERROR_CLS(cacheIndices.find(std::type_index(typeid(v3d::ShaderCache))) != cacheIndices.end(), "Failed to find TextureCache's cache index.", v3d::ResourceManager)
 #endif
 
 	return true;
