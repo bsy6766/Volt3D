@@ -90,6 +90,9 @@
     <Filter Include="Volt3D\Resources">
       <UniqueIdentifier>{9dcf81f8-1e05-4a4a-8aa8-f2c3794ae096}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Volt3D\Error">
+      <UniqueIdentifier>{d0515944-98ed-4a42-8ab1-b237fd70d1d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -594,6 +597,9 @@
     </ClInclude>
     <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Volt3D\Error\Error.h">
+      <Filter>Volt3D\Error</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
