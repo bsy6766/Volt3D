@@ -38,6 +38,9 @@
 #include "Engine/Window.h"
 #include "Engine/WindowMode.h"
 
+// Error
+#include "Error/ErrorCodes.h"
+
 // Input
 #include "Input/GamepadAxis.h"
 #include "Input/GamepadButton.h"
@@ -136,6 +139,6 @@
 #include "Vulkan/Pipelines/UniformData.h"
 #include "Vulkan/Swapchain/Framebuffers.h"
 #include "Vulkan/Swapchain/RenderPass.h"
-#include "Vulkan/Swapchain/Swapchain.h"
+#include "Vulkan/Swapchain/SwapChain.h"
 
 #endif

@@ -598,7 +598,7 @@
     <ClInclude Include="Volt3D\Vulkan\Images\DepthImage.h">
       <Filter>Volt3D\Vulkan\Images</Filter>
     </ClInclude>
-    <ClInclude Include="Volt3D\Error\Error.h">
+    <ClInclude Include="Volt3D\Error\ErrorCodes.h">
       <Filter>Volt3D\Error</Filter>
     </ClInclude>
   </ItemGroup>

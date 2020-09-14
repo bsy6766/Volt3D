@@ -213,7 +213,7 @@ python $(ProjectDir)BuildScripts\count_build_number.py</Command>
     <ClInclude Include="Volt3D\Engine\Time.h" />
     <ClInclude Include="Volt3D\Engine\Window.h" />
     <ClInclude Include="Volt3D\Engine\WindowMode.h" />
-    <ClInclude Include="Volt3D\Error\Error.h" />
+    <ClInclude Include="Volt3D\Error\ErrorCodes.h" />
     <ClInclude Include="Volt3D\Input\InputManager.h" />
     <ClInclude Include="Volt3D\Input\InputState.h" />
     <ClInclude Include="Volt3D\Input\KeyCode.h" />
