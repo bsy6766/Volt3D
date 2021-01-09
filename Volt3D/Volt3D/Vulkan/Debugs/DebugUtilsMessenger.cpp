@@ -49,8 +49,20 @@ bool DebugUtilsMessenger::init( const vk::Instance& instance )
 		return false;
 	}
 
-	vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity( vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-	vk::DebugUtilsMessageTypeFlagsEXT typeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance );
+	vk::DebugUtilsMessageSeverityFlagsEXT messageSeverity
+	( 
+		vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose 
+		| vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning 
+		| vk::DebugUtilsMessageSeverityFlagBitsEXT::eError
+	);
+
+	vk::DebugUtilsMessageTypeFlagsEXT typeFlags
+	( 
+		vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral 
+		| vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation 
+		| vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance 
+	);
+
 	debugUtilsMessenger = std::move( instance.createDebugUtilsMessengerEXTUnique( vk::DebugUtilsMessengerCreateInfoEXT( {}, messageSeverity, typeFlags, debugUtilsMessengerFunc, this ) ) );
 
 	return true;
@@ -61,35 +73,6 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugUtilsMessenger::debugUtilsMessengerFunc( V
 	Logger::getInstance().debug( std::string( "Debug Util Messeage: " ) + std::string( pCallbackData->pMessage ) );
 	return VK_FALSE;
 }
-
-/*
-vk::Bool32 v3d::vulkan::DebugUtilsMessenger::debugReportCallback( VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT, uint64_t, size_t, int32_t, const char*, const char* pMessage, void* )
-{
-	switch( flags )
-	{
-	case VK_DEBUG_REPORT_INFORMATION_BIT_EXT:
-		std::cerr << "INFORMATION: ";
-		break;
-	case VK_DEBUG_REPORT_WARNING_BIT_EXT:
-		std::cerr << "WARNING: ";
-		break;
-	case VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT:
-		std::cerr << "PERFORMANCE WARNING: ";
-		break;
-	case VK_DEBUG_REPORT_ERROR_BIT_EXT:
-		std::cerr << "ERROR: ";
-		break;
-	case VK_DEBUG_REPORT_DEBUG_BIT_EXT:
-		std::cerr << "DEBUG: ";
-		break;
-	default:
-		std::cerr << "unknown flag (" << flags << "): ";
-		break;
-	}
-	std::cerr << pMessage << std::endl;
-	return VK_TRUE;
-}
-	*/
 
 V3D_NS_END
 VK_NS_END
