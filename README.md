@@ -2,14 +2,12 @@
 Personal game engine project using Vulkan backend.
 
 ## About this project
-This repo is for my personal project which is to create  
-a game engine using Vulkan as backend renderer.  
+This repo is for my personal project which is to create a game engine using Vulkan as backend renderer.  
 
-My goal is to learn and get familier with Vulkan,  
-then implement some cool stuffs like PBR.
+My goal is to learn and get familier with Vulkan, then implement some cool stuffs like PBR.
   
-I commit my works time to time,  
-but for now it will be mostly about learning Vulkan than an game engine features.  
+I commit my works time to time, but for now it will be mostly about learning Vulkan than adding engine features,  
+which I have already done on previous game engine projects.
 
 ## Development environment
 Windows 10  
